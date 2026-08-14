@@ -27,6 +27,8 @@ const mission = [
 export default function Home() {
   return <main>
     <section className="hero" id="top">
+      <div className="hero-material" aria-hidden="true" />
+      <div className="studio-light" aria-hidden="true" />
       <header className="nav">
         <a className="brand" href="#top" aria-label="Myrakal home">MYRAKAL</a>
         <nav aria-label="Primary navigation"><a href="#work">The problem</a><a href="#schedule">See it work</a><a href="#access">Request access</a></nav>
@@ -86,15 +88,20 @@ export default function Home() {
       <div className="contrast"><div className="without"><small>WITHOUT MYRAKAL</small><p><b>147</b> follow-ups</p><p><b>23</b> patients to call</p><p><b>11</b> schedule gaps</p><p><b>08</b> insurance issues</p></div><div className="with"><small>WITH MYRAKAL</small><b>3</b><strong>decisions need you</strong><p>Everything else keeps moving.</p></div></div>
     </section>
 
+    <section className="material-interlude" aria-label="Myrakal continuously owns unfinished work">
+      <div className="cloth-panel" aria-hidden="true" />
+      <div className="interlude-type"><p className="eyebrow">ALWAYS ON / QUIETLY WORKING</p><h2>Unfinished work<br/>doesn’t stay still.</h2><div className="interlude-status"><span>NOTICE</span><span>UNDERSTAND</span><span>ACT</span><span>OBSERVE</span><b>CONTINUE</b></div></div>
+    </section>
+
     <section className="ghost oxblood">
       <div className="ghost-copy"><p className="eyebrow">06 / GHOST MODE · ILLUSTRATIVE DATA</p><h2>Some of your best opportunities already disappeared.</h2><p>Myrakal reviews historical activity for treatment that never reached a terminal outcome—then uses the available evidence to decide whether there is a responsible next action.</p></div>
       <div className="ghost-ui"><div className="ghost-head"><span>GHOST_MODE / DEMO</span><span>HISTORICAL REVIEW</span></div><b>$184,300</b><span>unresolved treatment discovered</span><div className="ghost-stats"><p><b>62</b> cases identified</p><p><b>17</b> newly actionable</p><p><b>08</b> high-confidence opportunities</p></div><div className="evidence"><span>CONFIRMED BARRIER</span><span>PROBABLE BARRIER</span><span>UNKNOWN BARRIER</span><span>NEW TRIGGER</span></div></div>
     </section>
 
-    <section className="memory paper">
+    <section className="memory paper editorial-grid">
       <div><p className="eyebrow dark">07 / OPERATIONAL MEMORY</p><h2>Every conversation starts where the last one ended.</h2><p>The point is not to sound human. The point is that the practice remembers.</p></div>
       <div className="message-compare"><article><small>GENERIC SOFTWARE</small><p>“Hi Sarah, you’re due to schedule your treatment. Reply YES to schedule.”</p></article><article><small>MYRAKAL</small><p>“Hi Sarah—you mentioned evenings were easiest. A Thursday 5:10 opening just came up for the crown Dr. Patel discussed with you. Want me to see if it still works?”</p></article></div>
-      <div className="context-strip"><span>Prefers evenings</span><span>Earlier openings / yes</span><span>Benefits verified</span><span>Crown / active</span><span>Last contact / 18d</span></div>
+      <div className="context-strip"><span>Prefers evenings</span><span>Earlier openings / yes</span><span>Benefits verified</span><span>Crown / active</span><span>Last contact / 18d</span></div><div className="memory-index" aria-hidden="true">07</div>
     </section>
 
     <section className="reason black">
@@ -102,7 +109,7 @@ export default function Home() {
       <div className="reason-table"><h3>WHY MARIA?</h3><p><span>TREATMENT</span><b>Crown remains active</b></p><p><span>FIT</span><b>90-minute requirement matches</b></p><p><span>PROVIDER</span><b>Correct provider available</b></p><p><span>PREFERENCE</span><b>Previously requested earlier times</b></p><p><span>INSURANCE</span><b>No unresolved prerequisite</b></p><p><span>TIMING</span><b>Prefers afternoons</b></p></div>
     </section>
 
-    <section className="full-story paper">
+    <section className="full-story paper story-stage">
       <p className="eyebrow dark">09 / ONE OPENING · 26 MINUTES</p><h2>One thread.<br/>Owned end to end.</h2>
       <div className="story-line">{mission.map(([time,stage,text])=><div key={stage}><time>{time}</time><span>{text}</span></div>)}</div>
       <div className="story-close"><p>Nobody ran a report.</p><p>Nobody remembered to follow up.</p></div>
@@ -120,7 +127,7 @@ export default function Home() {
 
     <section className="category black"><p>NOT ANOTHER DASHBOARD.</p><p>NOT ANOTHER MASS-TEXTING TOOL.</p><p>NOT A REPLACEMENT PMS.</p><p>NOT A CHATBOT IN THE CORNER.</p><h2>Myrakal is the layer that notices unfinished work and gets it resolved.</h2></section>
 
-    <section className="outcomes paper"><p className="eyebrow dark">12 / THE MEASURE</p><h2>Measure outcomes.<br/>Not automation.</h2><div className="outcome-list"><span>SCHEDULE HOURS RECOVERED</span><span>CASES RESOLVED</span><span>TREATMENT MOVED FORWARD</span><span>STAFF TOUCHES AVOIDED</span><span>TIME TO RESOLUTION</span></div></section>
+    <section className="outcomes paper"><p className="eyebrow dark">12 / THE MEASURE</p><h2>Measure outcomes.<br/>Not automation.</h2><div className="outcome-list"><span><b>01</b>SCHEDULE HOURS RECOVERED</span><span><b>02</b>CASES RESOLVED</span><span><b>03</b>TREATMENT MOVED FORWARD</span><span><b>04</b>STAFF TOUCHES AVOIDED</span><span><b>05</b>TIME TO RESOLUTION</span></div></section>
 
     <section className="vision oxblood"><p className="eyebrow">13 / THE LARGER SYSTEM</p><h2>From recovering appointments<br/>to orchestrating the clinic.</h2><div className="vision-questions"><span>WHAT NEEDS TO HAPPEN?</span><span>WHAT CAPACITY EXISTS?</span><span>WHAT IS PREVENTING PROGRESS?</span><span>WHAT SHOULD HAPPEN NEXT?</span></div><blockquote>Every clinic has thousands of small things that have to go right. Appointments move. Patients hesitate. Insurance changes. Rooms open. Staff get busy. Cases disappear into lists.<br/><br/>Software records all of it.<br/><strong>Myrakal acts on it.</strong></blockquote></section>
 
