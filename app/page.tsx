@@ -1,4 +1,4 @@
-import { ProceduralCloth } from "./ProceduralCloth";
+import { WaveField } from "./WaveField";
 
 const execution = [
   ["10:18:04", "opening.detected", "THU 14:00 / 90m"],
@@ -25,22 +25,19 @@ const reasons = [
 export default function Home() {
   return <main>
     <section className="hero" id="top">
-      <ProceduralCloth />
+      <WaveField className="hero-wave" />
       <header className="nav">
         <a className="brand" href="#top" aria-label="Myrakal home">MYRAKAL</a>
         <nav aria-label="Primary navigation"><a href="#problem">The problem</a><a href="#schedule">See it work</a><a href="#access">Request access</a></nav>
       </header>
-      <div className="hero-copy">
-        <p className="eyebrow">RESOLUTION LAYER / HEALTHCARE OPERATIONS</p>
-        <h1>Healthcare work,<br/>resolved.</h1>
-        <p className="intro">Myrakal finds unfinished work across your practice, determines what should happen next, and keeps working until it’s resolved—or needs human judgment.</p>
-        <div className="hero-actions"><a href="#schedule">SEE MYRAKAL WORK ↓</a><a href="#difference">HOW IT WORKS</a></div>
-      </div>
+      <div className="hero-wordmark"><h1>MYRAKAL</h1><p>Healthcare work, resolved.</p></div>
       <div className="live-readout" aria-label="Live resolution states"><span>MYRA / LIVE</span><span>ACTIVE 14</span><span>WAITING 03</span><span>TERMINAL 11</span></div>
-      <div className="hero-trace" aria-label="Current resolution trace"><span>10:18:04 / OPENING.DETECTED</span><span>10:18:10 / CANDIDATES.VIABLE 03</span><b>STATE / ACTING</b></div>
+      <div className="hero-terminal" aria-label="Current resolution trace"><strong>TERMINAL / FILLED</strong><span>10:44:02 / APPOINTMENT.WRITE OK</span></div>
+      <div className="hero-copy"><p className="intro">Myrakal finds unfinished work across your practice, determines what should happen next, and keeps working until it’s resolved—or needs human judgment.</p><div className="hero-actions"><a href="#schedule">SEE MYRAKAL WORK ↓</a><a href="#difference">HOW IT WORKS</a></div></div>
     </section>
 
     <section className="problem" id="problem">
+      <WaveField className="section-wave problem-wave" density="quiet" />
       <p className="section-number">01 / THE EXECUTION PROBLEM</p>
       <div className="problem-head"><p className="eyebrow dark">YOUR PRACTICE ALREADY KNOWS</p><h2>The work isn’t missing.<br/>The follow-through is.</h2></div>
       <div className="signal-stack">
@@ -52,6 +49,7 @@ export default function Home() {
     </section>
 
     <section className="schedule" id="schedule">
+      <WaveField className="section-wave schedule-wave" density="quiet" />
       <div className="schedule-intro">
         <p className="eyebrow dark">02 / SCHEDULE RECOVERY</p>
         <h2>An opening isn’t a list.<br/>It’s a matching problem.</h2>
@@ -92,6 +90,7 @@ export default function Home() {
     <section className="difference" id="difference">
       <div className="difference-machine" aria-label="Myrakal resolution states"><div><span>MYRA / OPERATIONS</span><span>STATE / ACTIVE</span></div><b>14</b><p>CASES IN MOTION</p><ul><li><span>schedule.recovery</span><strong>acting</strong></li><li><span>insurance.dependency</span><strong>waiting</strong></li><li><span>treatment.followup</span><strong>observing</strong></li><li><span>staff.exception</span><strong>01</strong></li></ul><footer><span>RESOLVED / 11</span><span>ESCALATED / 03</span></footer></div>
       <div className="difference-copy">
+        <WaveField className="section-wave difference-wave" density="quiet" />
         <p className="eyebrow">03 / WHY MYRAKAL</p>
         <h2>Your team handles judgment.<br/>Myrakal handles persistence.</h2>
         <div className="difference-grid">
@@ -103,6 +102,7 @@ export default function Home() {
     </section>
 
     <section className="ghost">
+      <WaveField className="section-wave ghost-wave" />
       <div className="ghost-copy"><p className="eyebrow">04 / GHOST MODE · ILLUSTRATIVE DATA</p><h2>Some of your best opportunities already disappeared.</h2><p>Myrakal reviews historical activity for treatment that never reached a terminal outcome, then identifies where a responsible next action may now exist.</p></div>
       <div className="ghost-console"><div className="ghost-head"><span>GHOST_MODE / DEMO</span><span>REVIEW / COMPLETE</span></div><b>$184,300</b><span>unresolved treatment discovered</span><div className="ghost-stats"><p><b>62</b>cases identified</p><p><b>17</b>newly actionable</p><p><b>08</b>high-confidence opportunities</p></div></div>
     </section>
@@ -119,6 +119,7 @@ export default function Home() {
         <article><span>04</span><h3>Explainable</h3><p>Staff can understand what happened, what evidence was used, and why.</p></article>
       </div>
       <div className="final-cta">
+        <WaveField className="section-wave cta-wave" density="quiet" />
         <p className="eyebrow">FOR DENTAL PRACTICES / DESIGN PARTNERS</p><h2>Give Myrakal<br/>an opening.</h2>
         <a href="mailto:hello@myrakal.com?subject=See%20Myrakal%20work">SEE WHAT HAPPENS <span>↗</span></a>
         <footer><span>MYRAKAL</span><span>HEALTHCARE WORK, RESOLVED.</span><span>© 2026</span></footer>
