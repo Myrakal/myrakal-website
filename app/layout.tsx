@@ -7,16 +7,16 @@ const mono = Geist_Mono({ variable: "--font-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Myrakal — Healthcare work, resolved.",
-  description: "Myrakal is the resolution layer for healthcare operations—finding unfinished work and keeping it moving until it is resolved.",
+  description: "Myrakal is the execution layer for healthcare operations—detecting valuable work, deciding the next action, and carrying it through to an outcome.",
   openGraph: {
     title: "Myrakal — Healthcare work, resolved.",
-    description: "The resolution layer for healthcare operations.",
+    description: "The execution layer for healthcare operations.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Myrakal — Healthcare work, resolved.",
-    description: "The resolution layer for healthcare operations.",
+    description: "The execution layer for healthcare operations.",
   },
 };
 
