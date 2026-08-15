@@ -1,4 +1,4 @@
-import { ClothRipple } from "./ClothRipple";
+import { ProceduralCloth } from "./ProceduralCloth";
 
 const execution = [
   ["10:18:04", "opening.detected", "THU 14:00 / 90m"],
@@ -25,8 +25,7 @@ const reasons = [
 export default function Home() {
   return <main>
     <section className="hero" id="top">
-      <ClothRipple />
-      <div className="studio-light" aria-hidden="true" />
+      <ProceduralCloth />
       <header className="nav">
         <a className="brand" href="#top" aria-label="Myrakal home">MYRAKAL</a>
         <nav aria-label="Primary navigation"><a href="#problem">The problem</a><a href="#schedule">See it work</a><a href="#access">Request access</a></nav>
@@ -38,15 +37,16 @@ export default function Home() {
         <div className="hero-actions"><a href="#schedule">SEE MYRAKAL WORK ↓</a><a href="#difference">HOW IT WORKS</a></div>
       </div>
       <div className="live-readout" aria-label="Live resolution states"><span>MYRA / LIVE</span><span>ACTIVE 14</span><span>WAITING 03</span><span>TERMINAL 11</span></div>
+      <div className="hero-trace" aria-label="Current resolution trace"><span>10:18:04 / OPENING.DETECTED</span><span>10:18:10 / CANDIDATES.VIABLE 03</span><b>STATE / ACTING</b></div>
     </section>
 
     <section className="problem" id="problem">
       <p className="section-number">01 / THE EXECUTION PROBLEM</p>
       <div className="problem-head"><p className="eyebrow dark">YOUR PRACTICE ALREADY KNOWS</p><h2>The work isn’t missing.<br/>The follow-through is.</h2></div>
       <div className="signal-stack">
-        <article><span>01</span><p>A 90-minute opening appears tomorrow.</p></article>
-        <article><span>02</span><p>A cancelled crown is never rescheduled.</p></article>
-        <article><span>03</span><p>A patient is waiting on insurance.</p></article>
+        <article><span>01</span><p>A 90-minute opening appears tomorrow.</p><b>STATE / OPEN</b></article>
+        <article><span>02</span><p>A cancelled crown is never rescheduled.</p><b>STATE / UNRESOLVED</b></article>
+        <article><span>03</span><p>A patient is waiting on insurance.</p><b>STATE / BLOCKED</b></article>
       </div>
       <div className="problem-close"><p>Practice software records what happened.</p><strong>Nobody continuously owns what happens next.</strong><p>MYRAKAL DOES.</p></div>
     </section>
@@ -56,6 +56,7 @@ export default function Home() {
         <p className="eyebrow dark">02 / SCHEDULE RECOVERY</p>
         <h2>An opening isn’t a list.<br/>It’s a matching problem.</h2>
         <p>Thursday · 2:00 PM · 90 minutes. A cancellation creates unused capacity. Myrakal works the opening from first signal to final outcome.</p>
+        <div className="schedule-state"><span>TRIGGER / CANCELLATION</span><span>MISSION / 0418</span><b>STATE / EVALUATING</b></div>
         <div className="comparison"><article><small>TYPICAL SOFTWARE</small><b>127</b><span>patients on a list</span><em>SEND BLAST</em></article><article><small>MYRAKAL</small><b>14 → 3 → 1</b><span>possible · viable · next action</span><em>RESOLVE</em></article></div>
       </div>
 
@@ -89,12 +90,7 @@ export default function Home() {
     </section>
 
     <section className="difference" id="difference">
-      <div className="difference-machine" aria-label="Myrakal resolution states">
-        <div><span>MYRA / OPERATIONS</span><span>STATE / ACTIVE</span></div>
-        <b>14</b><p>CASES IN MOTION</p>
-        <ul><li><span>schedule.recovery</span><strong>acting</strong></li><li><span>insurance.dependency</span><strong>waiting</strong></li><li><span>treatment.followup</span><strong>observing</strong></li><li><span>staff.exception</span><strong>01</strong></li></ul>
-        <footer><span>RESOLVED / 11</span><span>ESCALATED / 03</span></footer>
-      </div>
+      <div className="difference-machine" aria-label="Myrakal resolution states"><div><span>MYRA / OPERATIONS</span><span>STATE / ACTIVE</span></div><b>14</b><p>CASES IN MOTION</p><ul><li><span>schedule.recovery</span><strong>acting</strong></li><li><span>insurance.dependency</span><strong>waiting</strong></li><li><span>treatment.followup</span><strong>observing</strong></li><li><span>staff.exception</span><strong>01</strong></li></ul><footer><span>RESOLVED / 11</span><span>ESCALATED / 03</span></footer></div>
       <div className="difference-copy">
         <p className="eyebrow">03 / WHY MYRAKAL</p>
         <h2>Your team handles judgment.<br/>Myrakal handles persistence.</h2>
