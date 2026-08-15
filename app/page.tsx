@@ -1,3 +1,5 @@
+import { ClothRipple } from "./ClothRipple";
+
 const execution = [
   ["10:18:04", "opening.detected", "THU 14:00 / 90m"],
   ["10:18:06", "patients.considered", "14"],
@@ -23,7 +25,7 @@ const reasons = [
 export default function Home() {
   return <main>
     <section className="hero" id="top">
-      <div className="hero-material" aria-hidden="true" />
+      <ClothRipple />
       <div className="studio-light" aria-hidden="true" />
       <header className="nav">
         <a className="brand" href="#top" aria-label="Myrakal home">MYRAKAL</a>
@@ -87,7 +89,12 @@ export default function Home() {
     </section>
 
     <section className="difference" id="difference">
-      <div className="difference-material" aria-hidden="true" />
+      <div className="difference-machine" aria-label="Myrakal resolution states">
+        <div><span>MYRA / OPERATIONS</span><span>STATE / ACTIVE</span></div>
+        <b>14</b><p>CASES IN MOTION</p>
+        <ul><li><span>schedule.recovery</span><strong>acting</strong></li><li><span>insurance.dependency</span><strong>waiting</strong></li><li><span>treatment.followup</span><strong>observing</strong></li><li><span>staff.exception</span><strong>01</strong></li></ul>
+        <footer><span>RESOLVED / 11</span><span>ESCALATED / 03</span></footer>
+      </div>
       <div className="difference-copy">
         <p className="eyebrow">03 / WHY MYRAKAL</p>
         <h2>Your team handles judgment.<br/>Myrakal handles persistence.</h2>
