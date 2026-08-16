@@ -60,7 +60,7 @@ export default function Home() {
         <div className="sheet-grid">
           <article className="sheet-col col-detected"><p className="col-label"><span>DETECTED</span><time>10:44:02</time></p><strong className="big-ninety">90</strong><span className="ninety-unit">MINUTES / TOMORROW</span><dl><div><dt>PRODUCTION AT RISK</dt><dd>$1,840</dd></div></dl></article>
           <article className="sheet-col col-constrained"><p className="col-label"><span>CONSTRAINED</span><time>10:44:03</time></p><ul className="ledger">{constraints.map((item,index) => <li key={item}><span>{item}</span><b>{index === 5 ? "CONSIDER" : "PASS"}</b></li>)}</ul><p className="ledger-total"><span>POSSIBLE / 17</span><b>VIABLE / 04</b></p></article>
-          <article className="sheet-col col-selected"><p className="col-label"><span>SELECTED</span><time>10:44:07</time></p><h3>Sarah&nbsp;M.</h3><ul className="facts">{["CROWN","90 MIN","HIGH READINESS","EARLIER SLOT / YES","BARRIER / RESOLVED","ATTENDANCE / HIGH"].map((fact) => <li key={fact}>{fact}</li>)}</ul></article>
+          <article className="sheet-col col-selected"><p className="col-label"><span>SELECTED</span><time>10:44:07</time></p><h3>Sarah M.</h3><ul className="facts">{["CROWN","90 MIN","HIGH READINESS","EARLIER SLOT / YES","BARRIER / RESOLVED","ATTENDANCE / HIGH"].map((fact) => <li key={fact}>{fact}</li>)}</ul></article>
         </div>
         <div className="sheet-filled"><strong>FILLED.</strong><span>CAPACITY / RECOVERED · PATIENT / ACCEPTED</span></div>
       </div>
@@ -70,7 +70,7 @@ export default function Home() {
     <section className="operating" id="company">
       <p className="section-number">03 / THE OPERATING LAYER</p><h2>One practice.<br />Thousands of competing decisions.</h2>
       <div className="operational-landscape">{landscape.map(([title,copy,state],index) => <article key={title} className={state === "WAIT" ? "landscape-wait" : ""}><span>0{index + 1}</span><h3>{title}</h3><p>{copy}</p><b>{state}</b></article>)}</div>
-      <div className="attention-panel"><div><p className="machine-head"><span>PATIENT ATTENTION</span><span>CONSTRAINT / ACTIVE</span></p><dl><div><dt>LAST CONTACT</dt><dd>18H</dd></div><div><dt>RECENT ATTEMPTS</dt><dd>02</dd></div><div><dt>URGENCY</dt><dd>LOW</dd></div><div><dt>DECISION</dt><dd>WAIT</dd></div></dl></div><blockquote><strong>Sometimes the best next action is no action.</strong><p>Myrakal treats patient attention like every other scarce resource: deliberately.</p></blockquote></div>
+      <div className="attention-panel"><div><p className="machine-head"><span>PATIENT ATTENTION</span><span>CONSTRAINT / ACTIVE</span></p><dl><div><dt>LAST CONTACT</dt><dd>18H</dd></div><div><dt>RECENT ATTEMPTS</dt><dd>02</dd></div><div><dt>URGENCY</dt><dd>LOW</dd></div><div><dt>DECISION</dt><dd>WAIT</dd></div></dl></div><blockquote><strong>Contacting patients matters. Knowing when to matters more.</strong><p>Myrakal treats patient attention like every other scarce resource: deliberately.</p></blockquote></div>
       <div className="autonomy"><p className="utility-label">EARNED AUTONOMY</p><h3>Observe first. Earn trust. Take responsibility.</h3><div>{["OBSERVE", "RECOMMEND", "ACT WITH APPROVAL", "ACT", "ESCALATE"].map((item) => <span key={item}>{item}</span>)}</div></div>
       <div className="closing"><h3>Every new state creates a new best decision.</h3><a className="button-light" href="/request-access">Request access →</a></div>
       <SiteFooter />

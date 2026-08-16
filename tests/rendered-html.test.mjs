@@ -16,7 +16,7 @@ test("server-renders the four-section Myrakal homepage", async () => {
   assert.match(html, /Healthcare operations, optimized\./);
   assert.match(html, /What should/);
   assert.match(html, /NEXT BEST ALLOCATION/);
-  assert.match(html, /Sometimes the best next action is no action/);
+  assert.match(html, /Contacting patients matters\. Knowing when to matters more\./);
   assert.equal((html.match(/<section class=/g) ?? []).length, 4);
   assert.match(html, /href="\/request-access"/);
   assert.doesNotMatch(html, /APPOINTMENT\.WRITE/);
