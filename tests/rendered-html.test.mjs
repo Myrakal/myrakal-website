@@ -14,7 +14,7 @@ test("server-renders the four-section Myrakal homepage", async () => {
   const html = await response.text();
   assert.match(html, /<title>Myrakal — Healthcare operations, optimized\.<\/title>/);
   assert.match(html, /Healthcare operations, optimized\./);
-  assert.match(html, /What deserves/);
+  assert.match(html, /What should/);
   assert.match(html, /NEXT BEST ALLOCATION/);
   assert.match(html, /Sometimes the best next action is no action/);
   assert.equal((html.match(/<section class=/g) ?? []).length, 4);
