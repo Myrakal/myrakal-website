@@ -28,8 +28,8 @@ export default function Home() {
         <p className="hero-intro">Your systems record what happened. Myrakal understands the state of your practice, decides what should happen next, and drives the work toward resolution.</p>
         <div className="hero-actions"><a className="button-dark" href="/request-access">Request access</a><a className="text-link" href="#work">See Myrakal work ↓</a></div>
       </div>
-      <div className="hero-oxblood" aria-label="Myrakal active operating state">
-        <WaveField className="hero-wave" />
+      <div className="hero-oxblood" role="group" tabIndex={0} aria-label="Interactive Myrakal operating state. Move a pointer, tap, focus, or use left and right arrow keys to influence the decision field.">
+        <WaveField className="hero-wave" interactive />
         <div className="hero-orbit" aria-hidden="true"><span>STATE</span><span>DECIDE</span><span>ACT</span><span>OBSERVE</span></div>
         <div className="hero-console">
           <p className="console-head"><span>MYRA / ACTIVE</span><span>10:44:07</span></p>
@@ -45,7 +45,7 @@ export default function Home() {
       <h2>Your software knows what happened.<br /><em>Myrakal decides what happens next.</em></h2>
       <div className="practice-state">
         <p className="machine-head"><span>PRACTICE STATE / 10:42 AM</span><span>04 OPPORTUNITIES</span></p>
-        <div className="opportunity-list">{opportunities.map(([id,title,detail]) => <article key={id} className={id === "A" ? "opportunity-selected" : ""}><b>{id}</b><h3>{title}</h3><p>{detail}</p><i aria-hidden="true" /></article>)}</div>
+        <div className="opportunity-list">{opportunities.map(([id,title,detail]) => <article key={id} className={id === "A" ? "opportunity-selected" : ""}><a className="opportunity-link" href="#work" aria-label={`See how Myrakal evaluates: ${title}`} /><b>{id}</b><h3>{title}</h3><p>{detail}</p><i aria-hidden="true" /></article>)}</div>
         <div className="allocation"><span>NEXT BEST ALLOCATION</span><strong>A / RECOVER TOMORROW&rsquo;S CAPACITY</strong><small>DECISION CONFIDENCE / HIGH</small></div>
       </div>
       <div className="decision-loop" role="group" aria-label="Continuous operational decision loop">{["UNDERSTAND", "CONSTRAIN", "PREDICT", "DECIDE", "ACT", "OBSERVE", "REPEAT"].map((step,index) => <span key={step}>{step}{index < 6 && <i aria-hidden="true">→</i>}</span>)}</div>
