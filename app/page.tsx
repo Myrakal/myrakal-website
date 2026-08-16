@@ -1,97 +1,172 @@
-import { DecisionGap } from "./DecisionGap";
-import { MissionDocket } from "./MissionDocket";
+import { CaseLifecycle } from "./CaseLifecycle";
+import { MethodFlow } from "./MethodFlow";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
 import { WaveField } from "./WaveField";
 
-const missionTypes = [
-  ["01", "SCHEDULE RECOVERY", "Fill valuable unused capacity.", "slot.detected → candidate.rank → booking.confirmed"],
-  ["02", "TREATMENT RECOVERY", "Find accepted or planned treatment that never reached an outcome.", "treatment.accepted → barrier.resolve → outcome"],
-  ["03", "BARRIER RESOLUTION", "Work through insurance, financing, scheduling, and unanswered questions.", "barrier.detected → owner.assign → state.observe"],
-  ["04", "CARE COMPLETION", "Keep multi-step treatment moving until completion.", "dependency.cleared → next_action → care.complete"],
+const memoryQuestions = [
+  "What was supposed to happen?",
+  "What actually happened?",
+  "What stopped it?",
+  "Is that blocker still true?",
+  "What should happen now?",
+];
+
+const caseExamples = [
+  { number: "0412", treatment: "Two crowns", value: "$3,200", state: "BLOCKER / BENEFITS EXHAUSTED", change: "Benefits renewed", action: "REOPEN" },
+  { number: "0731", treatment: "Root canal", value: "$1,700", state: "BLOCKER / WORK SCHEDULE", change: "Earlier availability appears", action: "REOPEN" },
+  { number: "1028", treatment: "Implant restoration", value: "", state: "STATE / CLINICAL VALIDATION REQUIRED", change: "Prepared for provider", action: "ESCALATE" },
+];
+
+const decisionFactors = [
+  ["01", "VALUE", "What is the case worth if resolved?"],
+  ["02", "PROBABILITY", "How likely is the next intervention to work?"],
+  ["03", "TIMING", "Is the opportunity improving, decaying, or waiting on something?"],
+  ["04", "COST", "How much staff time, patient attention, and operational effort should be spent pursuing it?"],
 ];
 
 export default function Home() {
   return <main>
-    <section className="campaign-hero" id="product">
+    <section className="rev-hero" id="product">
       <SiteHeader />
-      <WaveField className="campaign-wave" interactive />
-      <div className="campaign-folio" aria-hidden="true"><span>00</span><span>OPERATING FIELD / ACTIVE</span></div>
-      <div className="campaign-wordmark">
-        <p className="campaign-kicker">THE OPERATING LAYER / HEALTHCARE</p>
-        <h1>MYRAKAL</h1>
-      </div>
-      <div className="campaign-copy">
-        <h2>Healthcare operations, optimized.</h2>
-        <p>Myrakal finds where action can create value across your practice, decides what should happen next, and carries the work through to an outcome.</p>
-        <div className="campaign-actions"><a className="button-light" href="/request-access">Request access</a><a className="campaign-link" href="#work">See Myrakal work ↓</a></div>
-      </div>
-      <a className="campaign-stamp" href="#work" aria-label="Open the schedule recovery mission replay">
-        <span className="campaign-stamp__head"><b>MISSION / SCHEDULE RECOVERY</b><time>10:18:00</time></span>
-        <span className="campaign-stamp__state">DETECTED</span>
-        <span className="campaign-stamp__data"><b>OPENING</b><strong>90 MIN</strong></span>
-        <span className="campaign-stamp__data"><b>WINDOW</b><strong>TOMORROW / 10:30</strong></span>
-        <span className="campaign-stamp__foot"><b>STATE / UNRESOLVED</b><strong>VIEW MISSION ↓</strong></span>
-      </a>
-      <p className="campaign-resolution">Healthcare work, resolved.</p>
-    </section>
-
-    <section className="decision-field" id="decision">
-      <div className="editorial-insert">
-        <div className="section-heading">
-          <p className="section-number">01 / THE EXECUTION PROBLEM</p>
-          <h2>Your systems know what happened.<br /><em>Nobody owns what happens next.</em></h2>
-          <p>Your PMS records the state. Your team has to notice it, decide what to do, remember to follow up, and keep pushing until something happens.</p>
+      <WaveField className="rev-hero__wave" interactive />
+      <div className="rev-hero__index" aria-hidden="true">01</div>
+      <div className="rev-hero__copy">
+        <p className="rev-eyebrow">CARE COMPLETION / DENTAL</p>
+        <h1>Healthcare work,<br /><em>resolved.</em></h1>
+        <div className="rev-hero__body">
+          <p className="rev-hero__lede">Care gets diagnosed. Then life happens.</p>
+          <p>Insurance changes. Schedules move. Patients hesitate. Calls end with “not right now.” Treatment disappears into reports, notes, and somebody&rsquo;s memory.</p>
+          <p><strong>Myrakal reconstructs what is still unfinished, remembers what is standing in the way, and keeps working the case until there is an outcome.</strong></p>
         </div>
-        <DecisionGap />
-        <div className="ownership-statement"><span>MYRAKAL OWNS</span><strong>THE NEXT ACTION.</strong><small>SELECT → ACT → OBSERVE → CONTINUE</small></div>
-      </div>
-    </section>
-
-    <section className="mission-field" id="work">
-      <WaveField className="mission-wave" density="quiet" />
-      <div className="mission-intro">
-        <p className="section-number">02 / SEE MYRAKAL WORK</p>
-        <h2>A cancellation just created 90 minutes of unused capacity.</h2>
-        <p>One continuous mission. Every decision remains inspectable. The work does not disappear when a barrier appears.</p>
-      </div>
-      <MissionDocket />
-      <div className="mission-proof"><p>Nobody ran a report.</p><p>Nobody remembered to follow up.</p><strong>The work stayed owned until it was done.</strong></div>
-    </section>
-
-    <section className="execution-field" id="company">
-      <div className="execution-intro">
-        <p className="section-number">03 / THE EXECUTION LAYER</p>
-        <h2>The schedule is only the beginning.</h2>
-        <p>The same execution loop can work anywhere your practice has valuable work stuck between states.</p>
-      </div>
-
-      <div className="domain-ledger">
-        {missionTypes.map(([number, title, copy, trace], index) => <details key={title} open={index === 0}>
-          <summary><span>{number}</span><h3>{title}</h3><p>{copy}</p><b aria-hidden="true">+</b></summary>
-          <div className="domain-detail"><span>MISSION SHAPE</span><code>{trace}</code><a href="#work">SEE THE EXECUTION LOOP ↑</a></div>
-        </details>)}
-      </div>
-
-      <div className="architecture" role="group" aria-label="Myrakal execution architecture">
-        <span>YOUR EXISTING SYSTEMS</span><i>→</i><strong>MYRAKAL</strong><b>DETECT → DECIDE → ACT → OBSERVE → RESOLVE</b><i>→</i><span>OUTCOME</span>
-      </div>
-
-      <div className="permission-evidence">
-        <div><p className="utility-label">EARNED PERMISSION</p><h3>Responsibility expands only when trust is earned.</h3><p>Myrakal observes first, makes its reasoning inspectable, and pauses when a human decision is required.</p></div>
-        <div className="permission-table" role="table" aria-label="Myrakal permission states">
-          <p role="row"><span role="cell">OBSERVE</span><b role="cell">READ STATE</b><em role="cell">ACTIVE</em></p>
-          <p role="row"><span role="cell">PROPOSE</span><b role="cell">EXPLAIN NEXT ACTION</b><em role="cell">ACTIVE</em></p>
-          <p role="row"><span role="cell">ACT WITH APPROVAL</span><b role="cell">HUMAN GATE</b><em role="cell">WHEN REQUIRED</em></p>
-          <p role="row"><span role="cell">ESCALATE</span><b role="cell">TRANSFER OWNERSHIP</b><em role="cell">TERMINAL</em></p>
+        <div className="rev-actions">
+          <a className="rev-button rev-button--light" href="/request-access">Request access <span aria-hidden="true">↗</span></a>
+          <a className="rev-text-link" href="#method">See how it works <span aria-hidden="true">↓</span></a>
         </div>
       </div>
+      <CaseLifecycle />
+    </section>
 
-      <div className="campaign-close" id="access">
-        <WaveField className="close-wave" density="quiet" />
-        <p className="section-number">PUT MYRAKAL TO WORK</p>
-        <h2>Give Myrakal an opening.<br /><em>See what it does with it.</em></h2>
-        <div><a className="button-light" href="/request-access">Request access ↗</a><a href="mailto:hello@myrakal.com">hello@myrakal.com</a></div>
+    <section className="memory-section" id="memory">
+      <div className="section-shell">
+        <header className="editorial-heading">
+          <p className="rev-eyebrow">02 / THE MEMORY</p>
+          <div>
+            <span className="editorial-overline">YOUR PMS REMEMBERS THE TREATMENT.</span>
+            <h2>Myrakal remembers<br /><em>what happened next.</em></h2>
+          </div>
+        </header>
+
+        <div className="memory-intro">
+          <div className="memory-intro__copy">
+            <p>An unscheduled-treatment report can tell you <strong>what never got scheduled.</strong></p>
+            <p className="editorial-callout">That isn&rsquo;t enough.</p>
+            <p>Myrakal builds a living record of the unresolved case:</p>
+          </div>
+          <ol className="memory-questions">
+            {memoryQuestions.map((question, index) => <li key={question}><span>0{index + 1}</span><strong>{question}</strong></li>)}
+          </ol>
+        </div>
+
+        <div className="memory-distinctions">
+          <p>A patient who said “not this year” is different from one waiting on insurance.</p>
+          <p>A patient who cancelled because of work is different from one who stopped responding.</p>
+          <p>A case waiting on provider judgment is different from a case nobody remembered to call.</p>
+          <strong>Myrakal keeps those distinctions.</strong>
+        </div>
+
+        <div className="memory-case-heading"><span>CASE MEMORY / EXAMPLES</span><span>03 UNRESOLVED CASES</span></div>
+        <div className="memory-cases">
+          {caseExamples.map((item) => <article key={item.number}>
+            <div className="memory-case__top"><code>CASE {item.number}</code><span>UNFINISHED</span></div>
+            <h3>{item.treatment}</h3>
+            {item.value && <strong>{item.value}</strong>}
+            <code className="memory-case__state">{item.state}</code>
+            <p>{item.change} <span aria-hidden="true">→</span> <b>{item.action.toLowerCase()}</b></p>
+          </article>)}
+        </div>
+
+        <p className="memory-close">Not another stale list.<br /><em>A memory of unfinished care.</em></p>
+      </div>
+    </section>
+
+    <section className="method-section" id="method">
+      <WaveField className="method-wave" density="quiet" />
+      <div className="section-shell">
+        <header className="editorial-heading editorial-heading--light">
+          <p className="rev-eyebrow">03 / THE METHOD</p>
+          <div>
+            <span className="editorial-overline">NOT A QUEUE. A DECISION SYSTEM.</span>
+            <h2>Every case competes<br /><em>for the next action.</em></h2>
+          </div>
+        </header>
+
+        <div className="method-intro">
+          <p className="method-intro__lead">Practices do not have unlimited attention.</p>
+          <div><p>Every call spends patient goodwill.<br />Every staff handoff costs time.<br />Every empty chair hour expires.<br />And not every open treatment plan is equally recoverable.</p><strong>Myrakal evaluates the work before it acts.</strong></div>
+        </div>
+
+        <div className="factor-grid">
+          {decisionFactors.map(([number, title, copy]) => <article key={title}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}
+        </div>
+
+        <p className="method-decision">Then Myrakal decides what deserves action now — <em>and what should be left alone.</em></p>
+
+        <div className="method-subhead"><p className="rev-eyebrow">A MISSION, NOT A REMINDER</p><h3>The work moves through a complete loop.</h3></div>
+        <MethodFlow />
+
+        <div className="human-judgment">
+          <div>
+            <p className="rev-eyebrow">HUMAN JUDGMENT STAYS HUMAN.</p>
+            <h3>One prepared decision.<br /><em>The relevant context attached.</em></h3>
+          </div>
+          <div className="human-judgment__copy">
+            <p>Clinical decisions, unusual financial exceptions, sensitive conversations, and permissions your practice has withheld are not Myrakal&rsquo;s call.</p>
+            <p>When judgment is required, Myrakal surfaces <strong>one prepared decision with the relevant context attached.</strong></p>
+            <p>Your team answers.<br /><strong>Myrakal takes the work back.</strong></p>
+          </div>
+          <div className="prepared-decision" aria-label="Example prepared decision">
+            <p><span>CASE / 1028</span><span>JUDGMENT / REQUIRED</span></p>
+            <strong>CLINICAL VALIDATION</strong>
+            <dl><div><dt>CONTEXT</dt><dd>ATTACHED</dd></div><div><dt>RECOMMENDATION</dt><dd>PREPARED</dd></div><div><dt>ACTION</dt><dd>HELD</dd></div></dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section className="proof-section" id="proof">
+      <div className="section-shell">
+        <header className="editorial-heading">
+          <p className="rev-eyebrow">04 / PROOF</p>
+          <div>
+            <span className="editorial-overline">NO SAAS ROI MATH.</span>
+            <h2>Know what is actually<br /><em>recoverable.</em></h2>
+          </div>
+        </header>
+
+        <div className="proof-intro"><p>A stale treatment plan is not automatically lost revenue.</p><strong>So Myrakal separates the numbers.</strong></div>
+
+        <div className="audit-example">
+          <p className="audit-example__head"><span>PRACTICE AUDIT / EXAMPLE</span><span>EVIDENCE / ATTACHED</span></p>
+          <div className="audit-metrics">
+            <article><strong>$183,400</strong><span>Unresolved treatment identified</span></article>
+            <i aria-hidden="true">↓</i>
+            <article><strong>$71,200</strong><span>Realistically recoverable now</span></article>
+            <i aria-hidden="true">↓</i>
+            <article><strong>23 cases</strong><span>With a clear next action</span></article>
+          </div>
+        </div>
+
+        <div className="proof-evidence">
+          <div><p>And underneath every number:</p><ul><li>the patient,</li><li>the treatment,</li><li>the evidence,</li><li>the blocker,</li><li>and the reason Myrakal believes the case deserves attention.</li></ul></div>
+          <div><p>No mystery score.<br />No invented “revenue saved.”<br />No dashboard number your team cannot inspect.</p><strong>Just unresolved work, its realistic value, and what should happen next.</strong></div>
+        </div>
+
+        <div className="audit-cta" id="access">
+          <p className="rev-eyebrow">LIMITED PILOT / DENTAL PRACTICES ONLY</p>
+          <h2>Find out what your practice<br />has left <em>unfinished.</em></h2>
+          <div><p>We are onboarding a small number of dental practices to evaluate unresolved treatment, recoverable production, and the workflows required to move that care forward.</p><div className="audit-cta__action"><a className="rev-button rev-button--dark" href="/request-access">Request a practice audit <span aria-hidden="true">↗</span></a><small>Limited pilot access · Dental practices only</small></div></div>
+        </div>
       </div>
       <SiteFooter />
     </section>

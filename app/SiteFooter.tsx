@@ -1,16 +1,24 @@
 import { CookieSettingsButton } from "./CookiePreferences";
+import Link from "next/link";
 
-const groups = [
-  ["Product", [["How it works", "/#work"], ["Request access", "/request-access"]]],
-  ["Company", [["About", "/about"], ["Contact", "/contact"]]],
-  ["Trust", [["Security", "/security"], ["Privacy", "/privacy"], ["Terms", "/terms"], ["Accessibility", "/accessibility"]]],
+const links = [
+  ["Product", "/#product"],
+  ["Security", "/security"],
+  ["Privacy", "/privacy"],
+  ["Terms", "/terms"],
+  ["Contact", "/contact"],
 ] as const;
 
 export function SiteFooter() {
   return <footer className="site-footer">
-    <div className="footer-mark">MYRAKAL</div>
-    <p className="footer-thesis">Healthcare operations, optimized.</p>
-    <div className="footer-links">{groups.map(([title, links]) => <div key={title}><h2>{title}</h2>{links.map(([label, href]) => <a key={href} href={href}>{label}</a>)}</div>)}<div><h2>Connect</h2><a href="mailto:hello@myrakal.com">hello@myrakal.com</a><CookieSettingsButton /></div></div>
-    <div className="footer-legal"><span>© 2026 Myrakal. All rights reserved.</span><span>Healthcare work, resolved.</span></div>
+    <div className="footer-primary">
+      <div><Link className="footer-mark" href="/">MYRAKAL</Link><p className="footer-thesis">Healthcare work, resolved.</p></div>
+      <nav className="footer-links" aria-label="Footer navigation">{links.map(([label, href]) => <a key={href} href={href}>{label}</a>)}</nav>
+      <p className="footer-place">Chicago · 2026</p>
+    </div>
+    <div className="footer-legal">
+      <p><em>Practice-management systems remain the system of record.</em> Myrakal operates within practice-defined permissions and escalates decisions requiring human judgment.</p>
+      <CookieSettingsButton />
+    </div>
   </footer>;
 }

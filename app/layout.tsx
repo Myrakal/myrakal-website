@@ -8,23 +8,23 @@ const mono = Geist_Mono({ variable: "--font-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://myrakal-website.eshaanksood.chatgpt.site"),
-  title: "Myrakal — Healthcare operations, optimized.",
-  description: "Myrakal understands the operational state of a healthcare practice, decides what should happen next, and drives work toward resolution.",
+  title: "Myrakal — Healthcare work, resolved.",
+  description: "Myrakal reconstructs unfinished care, remembers what stands in the way, and keeps working the case until there is an outcome.",
   alternates: { canonical: "/" },
   applicationName: "Myrakal",
   icons: { icon: "/favicon.svg" },
   openGraph: {
-    title: "Myrakal — Healthcare operations, optimized.",
-    description: "The optimization and execution layer for healthcare operations.",
+    title: "Myrakal — Healthcare work, resolved.",
+    description: "A memory and execution layer for unfinished healthcare work.",
     type: "website",
     url: "/",
     siteName: "Myrakal",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Myrakal — Healthcare operations, optimized." }],
+    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Myrakal — Healthcare work, resolved." }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Myrakal — Healthcare operations, optimized.",
-    description: "The optimization and execution layer for healthcare operations.",
+    title: "Myrakal — Healthcare work, resolved.",
+    description: "A memory and execution layer for unfinished healthcare work.",
     images: ["/twitter-image.png"],
   },
 };
