@@ -55,11 +55,14 @@ export default function Home() {
     <section className="work" id="work">
       <WaveField className="work-wave" density="quiet" />
       <p className="section-number">02 / SEE IT DECIDE</p><h2>An opening appears tomorrow.</h2>
-      <div className="mission-shell">
-        <div className="mission-step step-detected"><time>10:44:02</time><div className="opening"><p>CAPACITY / DETECTED</p><strong>90</strong><span>MINUTES</span><dl><div><dt>PROVIDER</dt><dd>DR. PATEL</dd></div><div><dt>OPERATORY</dt><dd>02</dd></div><div><dt>PRODUCTION AT RISK</dt><dd>$1,840</dd></div></dl></div></div>
-        <div className="mission-step step-evaluating"><time>10:44:03</time><div className="evaluation"><p className="machine-head"><span>CONSTRAINTS LOADED</span><span>LIVE</span></p><ul>{constraints.map((item,index) => <li key={item}><span>{item}</span><b>{index === 5 ? "CONSIDER" : "PASS"}</b></li>)}</ul><div className="countdown"><span>POSSIBLE / 17</span><strong>VIABLE / 04</strong></div></div></div>
-        <div className="mission-step step-selected"><time>10:44:07</time><div className="selection"><p className="machine-head"><span>ACTION SELECTED</span><span>01 OF 04</span></p><h3>SARAH M.</h3><div className="selection-facts"><span>CROWN</span><span>90 MIN</span><span>HIGH READINESS</span><span>EARLIER SLOT / YES</span><span>BARRIER / RESOLVED</span><span>ATTENDANCE / HIGH</span></div></div></div>
-        <div className="mission-result"><p><span>MISSION / RESOLVED</span><span>PATIENT / ACCEPTED</span></p><strong>FILLED.</strong><small>CAPACITY / RECOVERED</small></div>
+      <div className="decision-sheet">
+        <p className="sheet-head"><span>MISSION SHEET / 02</span><span>OPERATORY 02 / DR. PATEL</span></p>
+        <div className="sheet-grid">
+          <article className="sheet-col col-detected"><p className="col-label"><span>DETECTED</span><time>10:44:02</time></p><strong className="big-ninety">90</strong><span className="ninety-unit">MINUTES / TOMORROW</span><dl><div><dt>PRODUCTION AT RISK</dt><dd>$1,840</dd></div></dl></article>
+          <article className="sheet-col col-constrained"><p className="col-label"><span>CONSTRAINED</span><time>10:44:03</time></p><ul className="ledger">{constraints.map((item,index) => <li key={item}><span>{item}</span><b>{index === 5 ? "CONSIDER" : "PASS"}</b></li>)}</ul><p className="ledger-total"><span>POSSIBLE / 17</span><b>VIABLE / 04</b></p></article>
+          <article className="sheet-col col-selected"><p className="col-label"><span>SELECTED</span><time>10:44:07</time></p><h3>Sarah&nbsp;M.</h3><ul className="facts">{["CROWN","90 MIN","HIGH READINESS","EARLIER SLOT / YES","BARRIER / RESOLVED","ATTENDANCE / HIGH"].map((fact) => <li key={fact}>{fact}</li>)}</ul></article>
+        </div>
+        <div className="sheet-filled"><strong>FILLED.</strong><span>CAPACITY / RECOVERED · PATIENT / ACCEPTED</span></div>
       </div>
       <div className="work-statement"><h3>It doesn&rsquo;t find a list.<br />It decides what to do with the opening.</h3></div>
     </section>
