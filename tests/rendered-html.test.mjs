@@ -14,11 +14,14 @@ test("server-renders the four-section Myrakal homepage", async () => {
   const html = await response.text();
   assert.match(html, /<title>Myrakal — Healthcare operations, optimized\.<\/title>/);
   assert.match(html, /Healthcare operations, optimized\./);
-  assert.match(html, /What should/);
   assert.match(html, /NEXT BEST ALLOCATION/);
-  assert.match(html, /Contacting patients matters\. Knowing when to matters more\./);
+  assert.match(html, /ACTION HELD — AWAITING HUMAN APPROVAL/);
+  assert.match(html, /The schedule is only the beginning\./);
+  assert.match(html, /Approve estimate discussion/);
   assert.equal((html.match(/<section class=/g) ?? []).length, 4);
   assert.match(html, /href="\/request-access"/);
+  assert.doesNotMatch(html, /class="hero"/);
+  assert.doesNotMatch(html, /What should happen next\?/);
   assert.doesNotMatch(html, /APPOINTMENT\.WRITE/);
 });
 
