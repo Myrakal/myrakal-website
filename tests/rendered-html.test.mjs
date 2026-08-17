@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 async function render(pathname = "/") {
@@ -48,9 +49,22 @@ test("server-renders the four-section Myrakal homepage", async () => {
 });
 
 test("renders trust, legal, and request routes", async () => {
-  for (const [path, expected] of [["/privacy", "marketing website"], ["/security", "Trust is operational infrastructure"], ["/terms", "Website terms"], ["/request-access", "Put Myrakal to work"]]) {
+  for (const [path, expected] of [["/privacy", "marketing website"], ["/security", "Trust is operational infrastructure"], ["/terms", "Website terms"], ["/accessibility", "Access is part of the craft"], ["/contact", "Start with the right conversation"], ["/request-access", "Put Myrakal to work"]]) {
     const response = await render(path);
     assert.equal(response.status, 200, path);
     assert.match(await response.text(), new RegExp(expected, "i"), path);
   }
+});
+
+test("routes every published contact address to the founder inbox", async () => {
+  for (const path of ["/privacy", "/security", "/terms", "/accessibility", "/contact"]) {
+    const response = await render(path);
+    const html = await response.text();
+    assert.match(html, /mailto:eshaanksood@gmail\.com/, path);
+    assert.doesNotMatch(html, /[A-Za-z]+@myrakal\.com/, path);
+  }
+
+  const formSource = await readFile(new URL("../app/RequestAccessForm.tsx", import.meta.url), "utf8");
+  assert.match(formSource, /eshaanksood@gmail\.com/);
+  assert.doesNotMatch(formSource, /[A-Za-z]+@myrakal\.com/);
 });
