@@ -1,7 +1,11 @@
 import { CaseLifecycle } from "./CaseLifecycle";
 import { DecisionIndex } from "./DecisionIndex";
+import { EngineRail } from "./EngineRail";
+import { MaterialField } from "./MaterialField";
+import { ProofLedger } from "./ProofLedger";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
+import { WordmarkMaterial } from "./WordmarkMaterial";
 
 const cases = [
   ["0412", "TWO CROWNS / $3,200", "BENEFITS EXHAUSTED", "REOPEN"],
@@ -15,7 +19,7 @@ export default function Home() {
       <SiteHeader />
       <div className="plate-hero__frame">
         <p className="plate-hero__kicker">CARE COMPLETION / DENTAL</p>
-        <p className="plate-hero__wordmark" aria-hidden="true">MYRAKAL</p>
+        <WordmarkMaterial />
         <div className="plate-hero__statement">
           <h1>Healthcare work,<br /><em>resolved.</em></h1>
           <p>Care gets diagnosed. Then life happens. Myrakal keeps working the case until there is an outcome.</p>
@@ -24,22 +28,7 @@ export default function Home() {
           <a className="plate-button" href="/request-access">Request access <span aria-hidden="true">↗</span></a>
           <a className="plate-link" href="#memory">Open a case <span aria-hidden="true">↓</span></a>
         </div>
-        <div className="hero-engine" aria-label="Myrakal execution engine">
-          <div className="hero-engine__status">
-            <span>ENGINE / READY</span>
-            <span>CASE / 01847</span>
-            <span>STATE / MONITORING</span>
-          </div>
-          <ol className="hero-engine__cycle" aria-label="Execution cycle">
-            <li><b>01</b> Detect</li>
-            <li><b>02</b> Reconstruct</li>
-            <li><b>03</b> Evaluate</li>
-            <li><b>04</b> Act</li>
-            <li><b>05</b> Observe</li>
-            <li><b>06</b> Resolve</li>
-          </ol>
-          <a href="#memory">Open engine <span aria-hidden="true">↓</span></a>
-        </div>
+        <EngineRail />
       </div>
     </section>
 
@@ -77,6 +66,7 @@ export default function Home() {
       </div>
 
       <div className="resolution-plate">
+        <MaterialField variant="judgment" />
         <p className="resolution-plate__label">PLATE / JUDGMENT</p>
         <h2>Human judgment<br /><em>stays human.</em></h2>
         <div>
@@ -94,13 +84,7 @@ export default function Home() {
             <h2>KNOW WHAT IS<br />ACTUALLY RECOVERABLE.</h2>
           </header>
 
-          <div className="proof-ledger" aria-label="Example practice audit">
-            <p><strong>$183,400</strong><span>UNRESOLVED TREATMENT IDENTIFIED</span></p>
-            <i aria-hidden="true">→</i>
-            <p><strong>$71,200</strong><span>REALISTICALLY RECOVERABLE NOW</span></p>
-            <i aria-hidden="true">→</i>
-            <p><strong>23</strong><span>CASES WITH A NEXT ACTION</span></p>
-          </div>
+          <ProofLedger />
 
           <p className="proof-note"><span>EVERY NUMBER OPENS TO</span>THE PATIENT / THE EVIDENCE / THE BLOCKER</p>
           <p className="proof-close">No mystery score. No invented revenue saved.</p>
@@ -108,6 +92,7 @@ export default function Home() {
       </div>
 
       <div className="closing-plate" id="access">
+        <MaterialField variant="closing" />
         <p>LIMITED PILOT / DENTAL PRACTICES ONLY</p>
         <h2>Find what your practice<br />left <em>unfinished.</em></h2>
         <a className="closing-button" href="/request-access">Request a practice audit <span aria-hidden="true">↗</span></a>
