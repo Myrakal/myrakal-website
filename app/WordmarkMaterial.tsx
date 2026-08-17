@@ -7,6 +7,7 @@ const WORDMARK = "MYRAKAL";
 
 export function WordmarkMaterial() {
   const hostRef = useRef<HTMLDivElement>(null);
+  const fallbackRef = useRef<HTMLSpanElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const inView = useInView(hostRef, 0.05);
   const pageVisible = usePageVisible();
@@ -15,9 +16,10 @@ export function WordmarkMaterial() {
 
   useEffect(() => {
     const host = hostRef.current;
+    const fallback = fallbackRef.current;
     const canvas = canvasRef.current;
     const mobile = window.matchMedia("(max-width: 800px)").matches;
-    if (!host || !canvas || reducedMotion || mobile || !inView || !pageVisible) return;
+    if (!host || !fallback || !canvas || reducedMotion || mobile || !inView || !pageVisible) return;
 
     const context = canvas.getContext("2d");
     if (!context) return;
@@ -34,37 +36,39 @@ export function WordmarkMaterial() {
     let dpr = 1;
 
     function sizeCanvas() {
-      width = Math.max(1, host.clientWidth);
-      height = Math.max(1, host.clientHeight);
+      const style = getComputedStyle(fallback);
+      const fontSize = Number.parseFloat(style.fontSize);
+      const padding = Math.ceil(fontSize * 0.12);
+      const layoutWidth = Math.max(1, host.clientWidth, fallback.scrollWidth);
+      const layoutHeight = Math.max(1, host.clientHeight);
+      width = layoutWidth + padding * 2;
+      height = layoutHeight + padding * 2;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
+      canvas.style.left = `${-padding}px`;
+      canvas.style.top = `${-padding}px`;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
       mask.width = canvas.width;
       mask.height = canvas.height;
 
-      const style = getComputedStyle(host);
-      const fontSize = Number.parseFloat(style.fontSize);
-      const letterSpacing = Number.parseFloat(style.letterSpacing) || 0;
       maskContext.setTransform(dpr, 0, 0, dpr, 0, 0);
       maskContext.clearRect(0, 0, width, height);
       maskContext.fillStyle = "#fff";
-      maskContext.font = `${style.fontWeight} ${fontSize}px ${style.fontFamily}`;
+      maskContext.font = `${style.fontStyle} ${style.fontWeight} ${fontSize}px ${style.fontFamily}`;
       maskContext.textBaseline = "alphabetic";
 
-      const widths = [...WORDMARK].map((letter) => maskContext.measureText(letter).width);
-      const naturalWidth = widths.reduce((sum, value) => sum + value, 0) + letterSpacing * (WORDMARK.length - 1);
-      const xScale = (width * 0.985) / naturalWidth;
+      if (!("letterSpacing" in maskContext)) {
+        setReady(false);
+        return;
+      }
+      (maskContext as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = style.letterSpacing;
       const metrics = maskContext.measureText(WORDMARK);
-      const baseline = (height + metrics.actualBoundingBoxAscent - metrics.actualBoundingBoxDescent) / 2;
-
-      maskContext.save();
-      maskContext.scale(xScale, 1);
-      let x = 0;
-      [...WORDMARK].forEach((letter, index) => {
-        maskContext.fillText(letter, x, baseline);
-        x += widths[index] + letterSpacing;
-      });
-      maskContext.restore();
+      const ascent = metrics.fontBoundingBoxAscent || metrics.actualBoundingBoxAscent;
+      const descent = metrics.fontBoundingBoxDescent || metrics.actualBoundingBoxDescent;
+      const baseline = padding + (layoutHeight - (ascent + descent)) / 2 + ascent;
+      maskContext.fillText(WORDMARK, padding, baseline);
       setReady(true);
     }
 
@@ -114,7 +118,7 @@ export function WordmarkMaterial() {
   }, [inView, pageVisible, reducedMotion]);
 
   return <div ref={hostRef} className={`plate-hero__wordmark wordmark-material ${ready ? "is-ready" : ""}`} aria-hidden="true">
-    <span className="wordmark-material__fallback">{WORDMARK}</span>
+    <span ref={fallbackRef} className="wordmark-material__fallback">{WORDMARK}</span>
     <canvas ref={canvasRef} className="wordmark-material__canvas" />
   </div>;
 }
