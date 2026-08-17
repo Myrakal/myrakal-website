@@ -1,5 +1,6 @@
 import { CookieSettingsButton } from "./CookiePreferences";
 import Link from "next/link";
+import { BrandLogo } from "./BrandLogo";
 
 const links = [
   ["Product", "/#product"],
@@ -12,7 +13,7 @@ const links = [
 export function SiteFooter() {
   return <footer className="site-footer">
     <div className="footer-primary">
-      <div><Link className="footer-mark" href="/">MYRAKAL</Link><p className="footer-thesis">Healthcare work, resolved.</p></div>
+      <div><Link className="footer-mark" href="/" aria-label="Myrakal home"><BrandLogo /></Link><p className="footer-thesis">Healthcare work, resolved.</p></div>
       <nav className="footer-links" aria-label="Footer navigation">{links.map(([label, href]) => <a key={href} href={href}>{label}</a>)}</nav>
       <p className="footer-place">Chicago · 2026</p>
     </div>
