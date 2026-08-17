@@ -32,11 +32,10 @@ section { position: relative; overflow: clip; }
 /* Navigation */
 .site-header { position: absolute; z-index: 30; top: 0; left: 0; width: 100%; min-height: 5.2rem; padding: 0 3vw; border-bottom: 1px solid currentColor; display: flex; align-items: center; justify-content: space-between; }
 .brand { color: inherit; text-decoration: none; }
-.brand-logo { --brand-line: var(--wine); display: inline-flex; align-items: center; gap: .62rem; color: inherit; }
-.brand-logo__monogram { width: 2rem; height: 1.8rem; flex: none; overflow: visible; }
-.brand-logo__contours { stroke: var(--brand-line); }
+.brand-logo { display: inline-flex; align-items: center; gap: .68rem; color: inherit; }
+.brand-logo__monogram { width: 2.4rem; height: 2.4rem; flex: none; object-fit: contain; }
 .brand-logo__wordmark { font: 500 1.23rem/.9 var(--serif); letter-spacing: .12em; }
-.utility-page .brand-logo { --brand-line: var(--paper); }
+.utility-page .brand-logo__monogram { filter: brightness(0) saturate(100%) invert(8%) sepia(91%) saturate(2730%) hue-rotate(338deg) brightness(70%) contrast(104%); }
 .site-header nav { display: flex; align-items: center; gap: 2rem; font: 650 .69rem/1 var(--mono); letter-spacing: .11em; text-transform: uppercase; }
 .site-header nav a { padding: .35rem 0; border-bottom: 1px solid transparent; text-decoration: none; }
 .site-header nav a:hover { border-bottom-color: currentColor; }
@@ -172,7 +171,7 @@ section { position: relative; overflow: clip; }
 .site-footer { padding: 4rem 3vw 2rem; background: var(--ink); color: var(--paper); }
 .footer-primary { min-height: 15rem; display: grid; grid-template-columns: 1.25fr 1fr auto; gap: 4vw; align-items: start; }
 .footer-mark { color: var(--paper); text-decoration: none; }
-.footer-mark .brand-logo { --brand-line: var(--wine); gap: 1rem; }
+.footer-mark .brand-logo { gap: 1rem; }
 .footer-mark .brand-logo__monogram { width: clamp(3.5rem, 5vw, 5.5rem); height: clamp(3.1rem, 4.5vw, 5rem); }
 .footer-mark .brand-logo__wordmark { font-size: clamp(2.5rem, 4.5vw, 4.6rem); letter-spacing: .06em; }
 .footer-thesis { margin: 1.15rem 0 0; color: var(--grey); font: 400 clamp(1.35rem, 2vw, 2rem)/1.1 var(--serif); }

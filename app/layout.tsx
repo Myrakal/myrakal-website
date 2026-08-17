@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "Myrakal reconstructs unfinished care, remembers what stands in the way, and keeps working the case until there is an outcome.",
   alternates: { canonical: "/" },
   applicationName: "Myrakal",
-  icons: { icon: "/favicon.svg" },
+  icons: { icon: [{ url: "/myrakal-favicon.png?v=2", type: "image/png" }] },
   openGraph: {
     title: "Myrakal — Healthcare work, resolved.",
     description: "A memory and execution layer for unfinished healthcare work.",
