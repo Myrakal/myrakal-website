@@ -14,6 +14,11 @@ test("server-renders the four-section Myrakal homepage", async () => {
   const html = await response.text();
   assert.match(html, /<title>Myrakal — Healthcare work, resolved\.<\/title>/);
   assert.match(html, /Care gets diagnosed\. Then life happens\./);
+  assert.match(html, /ENGINE \/ READY/);
+  assert.match(html, /STATE \/ MONITORING/);
+  assert.match(html, /Reconstruct/);
+  assert.match(html, /Resolve/);
+  assert.match(html, /Open engine/);
   assert.match(html, /MYRAKAL RECORDS WHAT HAPPENED NEXT\./);
   assert.match(html, /Waiting on insurance is not saying no\./);
   assert.match(html, /INTERACTIVE \/ CASE 01847/);

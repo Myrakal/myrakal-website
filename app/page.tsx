@@ -24,8 +24,23 @@ export default function Home() {
           <a className="plate-button" href="/request-access">Request access <span aria-hidden="true">↗</span></a>
           <a className="plate-link" href="#memory">Open a case <span aria-hidden="true">↓</span></a>
         </div>
+        <div className="hero-engine" aria-label="Myrakal execution engine">
+          <div className="hero-engine__status">
+            <span>ENGINE / READY</span>
+            <span>CASE / 01847</span>
+            <span>STATE / MONITORING</span>
+          </div>
+          <ol className="hero-engine__cycle" aria-label="Execution cycle">
+            <li><b>01</b> Detect</li>
+            <li><b>02</b> Reconstruct</li>
+            <li><b>03</b> Evaluate</li>
+            <li><b>04</b> Act</li>
+            <li><b>05</b> Observe</li>
+            <li><b>06</b> Resolve</li>
+          </ol>
+          <a href="#memory">Open engine <span aria-hidden="true">↓</span></a>
+        </div>
       </div>
-      <p className="plate-hero__folio"><span>PLATE / 01</span><span>CHICAGO / 2026</span></p>
     </section>
 
     <section className="system-memory" id="memory">
