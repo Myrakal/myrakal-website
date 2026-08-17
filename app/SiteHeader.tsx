@@ -10,7 +10,7 @@ export function SiteHeader() {
     <button className="menu-toggle" type="button" aria-expanded={open} aria-controls="site-nav" onClick={() => setOpen(!open)}>{open ? "CLOSE" : "MENU"}</button>
     <nav id="site-nav" className={open ? "nav-open" : ""} aria-label="Primary navigation">
       <a href="/#product" onClick={() => setOpen(false)}>Product</a>
-      <a href="/#method" onClick={() => setOpen(false)}>Method</a>
+      <a href="/#decision" onClick={() => setOpen(false)}>Method</a>
       <a className="nav-cta" href="/request-access">Request access</a>
     </nav>
   </header>;

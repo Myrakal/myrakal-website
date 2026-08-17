@@ -19,13 +19,13 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "Myrakal",
-    images: [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Myrakal — Healthcare work, resolved." }],
+    images: [{ url: "/og-v2.png", width: 1731, height: 909, alt: "Myrakal — Healthcare work, resolved." }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Myrakal — Healthcare work, resolved.",
     description: "A memory and execution layer for unfinished healthcare work.",
-    images: ["/twitter-image.png"],
+    images: ["/og-v2.png"],
   },
 };
 

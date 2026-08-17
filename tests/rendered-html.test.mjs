@@ -13,22 +13,28 @@ test("server-renders the four-section Myrakal homepage", async () => {
   assert.equal(response.status, 200);
   const html = await response.text();
   assert.match(html, /<title>Myrakal — Healthcare work, resolved\.<\/title>/);
-  assert.match(html, /Myrakal reconstructs what is still unfinished/);
-  assert.match(html, /YOUR PMS REMEMBERS THE TREATMENT/);
-  assert.match(html, /What should happen now\?/);
-  assert.match(html, /NOT A QUEUE\. A DECISION SYSTEM\./);
-  assert.match(html, /INTERACTIVE METHOD/);
-  assert.match(html, /NO SAAS ROI MATH\./);
+  assert.match(html, /Care gets diagnosed\. Then life happens\./);
+  assert.match(html, /MYRAKAL RECORDS WHAT HAPPENED NEXT\./);
+  assert.match(html, /Waiting on insurance is not saying no\./);
+  assert.match(html, /INTERACTIVE \/ CASE 01847/);
+  assert.match(html, /TERMINAL \/ SCHEDULED/);
+  assert.match(html, /NOT A QUEUE\./);
+  assert.match(html, /INTERACTIVE \/ SELECT A FACTOR/);
+  assert.match(html, /COST/);
+  assert.match(html, /Human judgment/);
   assert.match(html, /\$71,200/);
-  assert.match(html, /Find out what your practice/);
-  assert.match(html, /Limited pilot access · Dental practices only/);
+  assert.match(html, /No mystery score/);
+  assert.match(html, /Find what your practice/);
   assert.match(html, /Practice-management systems remain the system of record/);
   assert.equal((html.match(/<section class=/g) ?? []).length, 4);
   assert.match(html, /href="\/request-access"/);
-  assert.match(html, /<button class="case-live__control"/);
+  assert.match(html, /ADVANCE CASE/);
   assert.match(html, /role="tablist"/);
+  assert.match(html, /\/og-v2\.png/);
   assert.doesNotMatch(html, /Healthcare operations, optimized/);
-  assert.doesNotMatch(html, /APPOINTMENT\.WRITE/);
+  assert.doesNotMatch(html, /What should happen now\?/);
+  assert.doesNotMatch(html, /A MISSION, NOT A REMINDER/);
+  assert.doesNotMatch(html, /NO SAAS ROI MATH/);
 });
 
 test("renders trust, legal, and request routes", async () => {
