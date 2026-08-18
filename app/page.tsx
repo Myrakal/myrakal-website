@@ -81,7 +81,7 @@ export default function Home() {
         <div className="system-shell">
           <header className="proof-heading">
             <p>04 / PROOF</p>
-            <h2>KNOW WHAT IS<br />ACTUALLY RECOVERABLE.</h2>
+            <h2>KNOW WHAT IS ACTUALLY RECOVERABLE.</h2>
           </header>
 
           <ProofLedger />

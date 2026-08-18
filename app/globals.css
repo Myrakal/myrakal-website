@@ -147,19 +147,19 @@ section { position: relative; overflow: clip; }
 .resolution-plate > div p { max-width: 27rem; margin: 0; color: #f4f2eddd; }
 
 /* 04 — Evidence sheet and final plate */
-.evidence-sheet { padding: clamp(5rem, 8vw, 8rem) 3vw; background: var(--paper); color: var(--ink); }
-.proof-heading { display: grid; grid-template-columns: minmax(9rem, 2fr) minmax(0, 8fr); gap: 4vw; margin-bottom: clamp(5rem, 8vw, 8rem); }
+.evidence-sheet { min-height: 100svh; padding: clamp(3.5rem, 6vh, 5.5rem) 3vw; display: flex; align-items: center; background: var(--paper); color: var(--ink); }
+.proof-heading { display: grid; grid-template-columns: minmax(9rem, 2fr) minmax(0, 8fr); gap: 4vw; align-items: start; margin-bottom: clamp(2.5rem, 5vh, 4rem); }
 .proof-heading p { margin: .55rem 0 0; font: 650 var(--mono-size) var(--mono); letter-spacing: .13em; }
-.proof-heading h2 { max-width: 11ch; margin: 0; font: 760 clamp(4rem, 8vw, 9rem)/.79 var(--narrow); letter-spacing: -.05em; }
-.proof-ledger { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 2rem; align-items: center; padding: 2.5rem 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.proof-heading h2 { max-width: 15ch; margin: 0; text-wrap: balance; font: 760 clamp(3.75rem, 6.2vw, 7.2rem)/.82 var(--narrow); letter-spacing: -.05em; }
+.proof-ledger { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: clamp(1rem, 2vw, 2rem); align-items: center; padding: clamp(1.6rem, 3vh, 2.25rem) 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
 .proof-ledger p { margin: 0; display: flex; flex-direction: column; gap: .9rem; }
-.proof-ledger strong { min-width: 6.2ch; font: 760 clamp(3.1rem, 5.8vw, 6.5rem)/.8 var(--narrow); font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
+.proof-ledger strong { min-width: 6.2ch; font: 760 clamp(2.6rem, 4.2vw, 4.8rem)/.82 var(--narrow); font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
 .proof-ledger span { max-width: 17rem; font: 650 .68rem/1.4 var(--mono); letter-spacing: .07em; }
 .proof-ledger i { opacity: 0; font: 700 2rem var(--narrow); font-style: normal; transform: translateX(-.75rem); transition: opacity .08s steps(1, end), transform .2s steps(4, end); }
 .proof-ledger i.is-visible { opacity: 1; transform: none; }
-.proof-note { margin: clamp(4rem, 7vw, 7rem) 0 1.5rem; display: flex; justify-content: space-between; gap: 2rem; font: 650 .75rem var(--mono); letter-spacing: .08em; }
+.proof-note { margin: clamp(2rem, 4vh, 3rem) 0 1rem; display: flex; justify-content: space-between; gap: 2rem; font: 650 .75rem var(--mono); letter-spacing: .08em; }
 .proof-note span { color: #666; }
-.proof-close { margin: 0; padding-top: 1.5rem; border-top: 1px solid var(--ink); font: 720 clamp(2rem, 3.5vw, 3.8rem)/.95 var(--narrow); letter-spacing: -.025em; }
+.proof-close { margin: 0; padding-top: clamp(1rem, 2vh, 1.5rem); border-top: 1px solid var(--ink); font: 720 clamp(1.8rem, 2.8vw, 3.2rem)/.95 var(--narrow); letter-spacing: -.025em; }
 .closing-plate { min-height: 78svh; padding: clamp(4rem, 8vw, 8rem) 3vw; display: grid; grid-template-columns: 2fr 8fr; gap: 4vw; align-content: space-between; background: var(--wine); color: var(--paper); }
 .closing-plate > p { margin: .5rem 0 0; font: 650 .7rem var(--sans); letter-spacing: .16em; }
 .closing-plate h2 { max-width: 11ch; margin: 0; font: 400 clamp(5rem, 9.5vw, 11rem)/.81 var(--serif); letter-spacing: -.06em; }
@@ -264,9 +264,11 @@ section { position: relative; overflow: clip; }
   .hero-engine > a { min-width: 6.5rem; padding: .7rem; font-size: .55rem; }
 
   .system-memory, .decision-sheet, .evidence-sheet { padding: 5rem 1.25rem; }
+  .evidence-sheet { min-height: auto; }
   .system-heading, .proof-heading { display: block; }
   .system-heading > p, .proof-heading p { margin-bottom: 2.5rem; }
-  .system-heading h2, .proof-heading h2 { font-size: clamp(3.5rem, 15vw, 6rem); }
+  .system-heading h2 { font-size: clamp(3.5rem, 15vw, 6rem); }
+  .proof-heading h2 { max-width: 11ch; font-size: clamp(3.25rem, 13vw, 5rem); }
   .case-ledger__head { display: none; }
   .case-ledger__row { min-height: 9rem; padding: 1rem 0; grid-template-columns: 3rem 1fr auto; gap: .7rem; }
   .case-ledger__row span { grid-column: 2 / 4; }
