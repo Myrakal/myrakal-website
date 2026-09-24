@@ -13,29 +13,33 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 flex bg-primary px-6 transition-[padding] duration-300 sm:px-12 ${
-        scrolled ? 'justify-start py-5' : 'justify-center py-16'
+      className={`fixed inset-x-0 top-0 z-50 flex bg-primary px-4 py-3 sm:px-12 sm:py-5 ${
+        scrolled ? 'justify-start' : 'justify-center'
       }`}
     >
       <motion.div
         layout
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="flex items-center gap-4"
+        className="flex min-w-0 items-center gap-2 sm:gap-4"
       >
-        <img src="/myrakal-logo.png" alt="" className="h-28 w-auto" />
+        <img
+          src="/myrakal-logo.png"
+          alt=""
+          className="h-8 w-auto shrink-0 sm:h-12 lg:h-16"
+        />
         {scrolled ? (
           <motion.span
             key="tagline"
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-3xl font-medium text-primary-foreground"
+            className="truncate text-sm font-medium text-primary-foreground sm:text-lg lg:text-2xl"
           >
             Medical tourism made easy
           </motion.span>
         ) : (
           <span
             key="wordmark"
-            className="text-6xl font-medium text-primary-foreground"
+            className="text-lg font-medium text-primary-foreground sm:text-2xl lg:text-4xl"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
             Myrakal

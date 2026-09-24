@@ -34,7 +34,7 @@ const GLOBE_CONFIG = {
 export function Hero() {
   return (
     <section className="relative flex h-screen flex-col items-center justify-center gap-8 bg-background px-6 text-center">
-      <div className="relative aspect-square w-full max-w-96 rounded-full border border-primary">
+      <div className="relative aspect-square w-full max-w-64 rounded-full border border-primary sm:max-w-96">
         <Globe config={GLOBE_CONFIG} />
       </div>
       <h1 className="max-w-3xl text-4xl font-medium text-foreground sm:text-5xl md:text-6xl">

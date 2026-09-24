@@ -8,7 +8,7 @@ export function WaitlistForm() {
   if (state.succeeded) {
     return (
       <p className="text-base text-foreground">
-        You're on the list — we'll be in touch.
+        You're on the list, we'll be in touch.
       </p>
     )
   }
@@ -16,17 +16,17 @@ export function WaitlistForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex w-full max-w-2xl flex-col items-center gap-2 rounded-full border border-border bg-card p-2 shadow-sm sm:flex-row"
+      className="flex w-full max-w-2xl flex-col items-stretch gap-2 rounded-3xl border border-border bg-card p-2 shadow-sm sm:flex-row sm:items-center sm:rounded-full"
     >
       <input
         type="text"
         name="name"
         placeholder="Name"
         required
-        className="h-14 w-full flex-1 rounded-full bg-transparent px-6 text-lg text-foreground placeholder:text-muted-foreground focus:outline-none sm:w-auto"
+        className="h-12 w-full min-w-0 flex-1 rounded-full bg-transparent px-5 text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:h-14 sm:px-6 sm:text-lg"
       />
       <div
-        className="hidden h-8 w-px bg-border sm:block"
+        className="h-px w-full bg-border sm:h-8 sm:w-px"
         aria-hidden="true"
       />
       <input
@@ -34,13 +34,13 @@ export function WaitlistForm() {
         name="email"
         placeholder="Email"
         required
-        className="h-14 w-full flex-1 rounded-full bg-transparent px-6 text-lg text-foreground placeholder:text-muted-foreground focus:outline-none sm:w-auto"
+        className="h-12 w-full min-w-0 flex-1 rounded-full bg-transparent px-5 text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:h-14 sm:px-6 sm:text-lg"
       />
       <Button
         type="submit"
         size="lg"
         disabled={state.submitting}
-        className="h-14 w-full shrink-0 px-10 text-base cursor-pointer sm:w-auto"
+        className="h-12 w-full shrink-0 px-10 text-base cursor-pointer sm:h-14 sm:w-auto"
       >
         {state.submitting ? 'Joining…' : 'Join'}
       </Button>
