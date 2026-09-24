@@ -27,8 +27,8 @@ const STANDARDS = [
   },
   {
     icon: Lock,
-    title: 'Your data stays private',
-    description: 'Medical information is encrypted, always.',
+    title: 'Waitlist data only',
+    description: 'This website asks only for your name and email.',
   },
 ]
 

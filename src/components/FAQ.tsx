@@ -24,7 +24,7 @@ const FAQS = [
   {
     question: 'Is my information kept private?',
     answer:
-      'Yes. Any medical information you share with us is encrypted and never sold or shared without your consent.',
+      'The current waitlist only asks for your name and email. Please do not submit medical information through this website. Our Privacy Policy explains how we handle website data.',
   },
   {
     question: "What's next?",
