@@ -7,12 +7,6 @@ export function Footer() {
       >
         Myrakal
       </span>
-      <a
-        href="mailto:hello@myrakal.com"
-        className="text-sm text-muted-foreground hover:text-foreground"
-      >
-        hello@myrakal.com
-      </a>
       <span className="text-sm text-muted-foreground">
         © {new Date().getFullYear()} Myrakal Inc. All rights reserved.
       </span>

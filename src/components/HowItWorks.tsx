@@ -1,4 +1,4 @@
-import { ArrowRight, Globe as GlobeIcon, Stethoscope } from 'lucide-react'
+import { BadgeCheck, Lock, ShieldCheck } from 'lucide-react'
 
 const STEPS = [
   {
@@ -11,6 +11,24 @@ const STEPS = [
     number: '2',
     title: 'Select your doctor',
     description: "Browse vetted specialists and pick who's right for you.",
+  },
+]
+
+const STANDARDS = [
+  {
+    icon: BadgeCheck,
+    title: 'Board-certified doctors only',
+    description: 'Every specialist is licensed and credential-verified.',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Accredited hospitals only',
+    description: 'We work with internationally accredited facilities.',
+  },
+  {
+    icon: Lock,
+    title: 'Your data stays private',
+    description: 'Medical information is encrypted, always.',
   },
 ]
 
@@ -47,19 +65,25 @@ export function HowItWorks() {
 
         <div className="flex items-center justify-center">
           <div className="w-full max-w-lg rounded-3xl border border-cream/10 bg-cream/5 p-8 shadow-2xl">
-            <div className="mb-8 flex gap-2">
-              <span className="size-3 rounded-full bg-cream/20" />
-              <span className="size-3 rounded-full bg-cream/20" />
-              <span className="size-3 rounded-full bg-cream/20" />
+            <div className="mb-8 flex items-center justify-start">
+              <span className="text-xs font-medium tracking-[0.2em] text-cream/40 uppercase">
+                Our standards
+              </span>
             </div>
-            <div className="flex items-center justify-center gap-8 py-20">
-              <div className="flex size-28 items-center justify-center rounded-full bg-primary/15">
-                <GlobeIcon className="size-12 text-primary" />
-              </div>
-              <ArrowRight className="size-8 text-cream/30" />
-              <div className="flex size-28 items-center justify-center rounded-full bg-primary/15">
-                <Stethoscope className="size-12 text-primary" />
-              </div>
+            <div className="flex flex-col gap-8 py-4">
+              {STANDARDS.map((standard) => (
+                <div key={standard.title} className="flex items-start gap-5">
+                  <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-ivory">
+                    <standard.icon className="size-6 text-primary" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <h3 className="text-lg font-medium text-cream">
+                      {standard.title}
+                    </h3>
+                    <p className="text-cream/60">{standard.description}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

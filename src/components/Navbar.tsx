@@ -22,11 +22,13 @@ export function Navbar() {
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className="flex min-w-0 items-center gap-2 sm:gap-4"
       >
-        <img
-          src="/myrakal-logo.png"
-          alt=""
-          className="h-8 w-auto shrink-0 sm:h-12 lg:h-16"
-        />
+        {scrolled && (
+          <img
+            src="/myrakal-logo.png"
+            alt=""
+            className="h-8 w-auto shrink-0 sm:h-12 lg:h-16"
+          />
+        )}
         {scrolled ? (
           <motion.span
             key="tagline"
@@ -37,13 +39,12 @@ export function Navbar() {
             Medical tourism made easy
           </motion.span>
         ) : (
-          <span
+          <img
             key="wordmark"
-            className="text-lg font-medium text-primary-foreground sm:text-2xl lg:text-4xl"
-            style={{ fontFamily: "'Playfair Display', serif" }}
-          >
-            Myrakal
-          </span>
+            src="/myrakal-wordmark.png"
+            alt="Myrakal"
+            className="h-6 w-auto sm:h-9 lg:h-12"
+          />
         )}
       </motion.div>
     </header>
