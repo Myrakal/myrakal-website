@@ -1,3 +1,0 @@
-import type { Metadata } from "next"; import { UtilityPage } from "../UtilityPage";
-export const metadata: Metadata = { title: "Contact — Myrakal", description: "Contact Myrakal." };
-export default function Page(){return <UtilityPage label="CONTACT / 01" title="Start with the right conversation."><div className="contact-grid"><article><h2>Product and partnerships</h2><a href="mailto:eshaanksood@gmail.com?subject=Myrakal%20product%20inquiry">eshaanksood@gmail.com</a></article><article><h2>Security</h2><a href="mailto:eshaanksood@gmail.com?subject=Myrakal%20security%20inquiry">eshaanksood@gmail.com</a></article><article><h2>Privacy</h2><a href="mailto:eshaanksood@gmail.com?subject=Myrakal%20privacy%20inquiry">eshaanksood@gmail.com</a></article></div></UtilityPage>}
