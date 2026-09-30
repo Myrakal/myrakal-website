@@ -41,8 +41,7 @@ export default function Privacy() {
       <Section title="Service providers and disclosures">
         <p>
           We use service providers to support website hosting and security, form processing, email, and
-          web fonts. These currently include ChatGPT Sites and its infrastructure providers, Formspree,
-          Fontshare, and Google Fonts. They may process information on our behalf under their own terms
+          web fonts. These currently include Vercel, Formspree, Fontshare, and Google Fonts. They may process information on our behalf under their own terms
           and privacy commitments.
         </p>
         <p>
