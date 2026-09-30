@@ -1,10 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="10" fill="#5b0717"/>
-  <defs><clipPath id="mk"><path d="M8 51V13h10l14 23 14-23h10v38h-9V26L36 45h-8L17 26v25H8Z"/><path d="M33 33 48 13h11L43 34l17 17H48L33 37Z"/></clipPath></defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="210 163 900 900">
+  <rect x="210" y="163" width="900" height="900" rx="150" fill="#500f1a"/>
+  <defs>
+    <clipPath id="mk">
+      <!-- left stem + diagonal -->
+      <path d="M283 352H403L609 626L560 677L375 428V830Q376 858 440 876H283Q340 866 352 800V410Q340 372 283 352Z"/>
+      <!-- sweeping stroke -->
+      <path d="M832 352H1010Q940 372 870 420L640 650Q590 710 575 770Q574 850 636 876H508Q505 800 560 720Q600 670 660 610L850 420Q880 385 832 352Z"/>
+      <!-- right diagonal -->
+      <path d="M768 563L990 830Q1010 862 1037 876H930Q895 870 870 838L725 612Z"/>
+    </clipPath>
+  </defs>
   <g clip-path="url(#mk)">
-    <rect width="64" height="64" fill="#f5f0e8"/>
-    <g fill="none" stroke="#5b0717" stroke-width="1.35">
-      <path d="M-4 12c12-6 21 6 34 1s22-8 39-1"/><path d="M-4 20c13-6 22 7 35 1s22-8 38 0"/><path d="M-4 29c13-6 22 7 35 1s22-8 38 0"/><path d="M-4 38c13-6 22 7 35 1s22-8 38 0"/><path d="M-4 47c13-6 22 7 35 1s22-8 38 0"/>
+    <rect x="210" y="163" width="900" height="900" fill="#f5f0e8"/>
+    <g fill="none" stroke="#500f1a" stroke-width="3">
+      <path d="M340 380Q400 390 440 410T520 440"/>
+      <path d="M400 460Q450 470 500 450"/>
+      <path d="M500 590Q540 560 580 610"/>
+      <path d="M760 580Q800 640 780 700T850 780"/>
+      <path d="M820 640Q860 700 850 760T930 830"/>
     </g>
   </g>
 </svg>
