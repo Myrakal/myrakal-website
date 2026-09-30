@@ -11,10 +11,10 @@ export function Footer() {
               Myrakal
             </span>
             <a
-              href="mailto:hello@myrakal.com"
+              href="mailto:eshaansood@myrakal.com"
               className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4"
             >
-              hello@myrakal.com
+              eshaansood@myrakal.com
             </a>
           </div>
 

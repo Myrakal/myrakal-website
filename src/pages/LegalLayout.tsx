@@ -104,10 +104,10 @@ export function List({ children }: { children: ReactNode }) {
 export function MailLink({ subject, children }: { subject: string; children?: ReactNode }) {
   return (
     <a
-      href={`mailto:hello@myrakal.com?subject=${encodeURIComponent(subject)}`}
+      href={`mailto:eshaansood@myrakal.com?subject=${encodeURIComponent(subject)}`}
       className="underline underline-offset-4 hover:decoration-2"
     >
-      {children ?? 'hello@myrakal.com'}
+      {children ?? 'eshaansood@myrakal.com'}
     </a>
   )
 }
