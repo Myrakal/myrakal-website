@@ -1,0 +1,16 @@
+name: Mirror to personal
+on:
+  push:
+    branches: ["**"]
+    tags: ["**"]
+  delete:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          git push --mirror https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/anirudhk-tech/Myrakal-Website-Clone.git
