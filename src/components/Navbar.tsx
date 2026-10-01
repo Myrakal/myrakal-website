@@ -38,7 +38,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             className="truncate text-sm font-medium text-primary-foreground sm:text-lg lg:text-2xl"
           >
-            Medical tourism made easy
+            Cross-border healthcare made easy
           </motion.span>
         ) : (
           <img

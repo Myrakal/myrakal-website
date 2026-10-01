@@ -5,11 +5,13 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 
-const FAQS = [
+export type FaqItem = { question: string; answer: string }
+
+const FAQS: FaqItem[] = [
   {
     question: 'What is Myrakal?',
     answer:
-      'Myrakal is a concierge platform for medical tourism. We help you find the right country and the right doctor for the care you need, at a fraction of the cost.',
+      'Myrakal is a all-in-one platform for cross-border healthcare. We help you find the right country and the right doctor for the care you need, at a fraction of the cost.',
   },
   {
     question: 'Is Myrakal available now?',
@@ -33,16 +35,22 @@ const FAQS = [
   },
 ]
 
-export function FAQ() {
+export function FAQ({
+  faqs = FAQS,
+  className = 'bg-background',
+}: {
+  faqs?: FaqItem[]
+  className?: string
+}) {
   return (
-    <section className="flex flex-col gap-12 bg-background px-6 py-24 sm:px-12">
+    <section className={`flex flex-col gap-12 px-6 py-24 sm:px-12 ${className}`}>
       <div className="mx-auto w-full max-w-2xl text-center">
         <h2 className="text-4xl font-medium text-foreground sm:text-5xl">
           Frequently asked questions
         </h2>
       </div>
       <Accordion className="mx-auto w-full max-w-2xl">
-        {FAQS.map((faq) => (
+        {faqs.map((faq) => (
           <AccordionItem key={faq.question} value={faq.question}>
             <AccordionTrigger className="py-6 text-lg font-medium text-foreground no-underline hover:no-underline">
               {faq.question}

@@ -38,7 +38,7 @@ export function Hero() {
         <Globe config={GLOBE_CONFIG} />
       </div>
       <h1 className="max-w-3xl text-4xl font-medium text-foreground sm:text-5xl md:text-6xl">
-        International care at the <span className="underline">cheapest</span> price.
+        Top tier international care for your budget.
       </h1>
       <div className="mt-4 w-full max-w-2xl">
         <WaitlistForm />

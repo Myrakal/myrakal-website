@@ -7,7 +7,7 @@ export function CTA() {
         Open by invitation.
       </h2>
       <p className="max-w-md text-lg text-muted-foreground">
-        Access Myrakal as it redefines medical tourism.
+        Access Myrakal as it redefines how healthcare works across borders.
       </p>
       <WaitlistForm />
     </section>

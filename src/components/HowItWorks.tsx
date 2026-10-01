@@ -1,24 +1,25 @@
-import { BadgeCheck, Bone, Check, HeartPulse, ShieldCheck, Smile, Star } from 'lucide-react'
 import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-} from 'motion/react'
-import { useRef, useState, type ReactNode } from 'react'
+  BadgeCheck,
+  Bone,
+  CalendarCheck,
+  Check,
+  FileText,
+  HeartPulse,
+  Hotel,
+  MessageCircle,
+  Plane,
+  Search,
+  ShieldCheck,
+  Smile,
+  Star,
+  Stamp,
+  Stethoscope,
+  Wallet,
+  type LucideIcon,
+} from 'lucide-react'
 
-const STEPS = [
-  {
-    title: 'Select your country',
-    description:
-      "Choose where you'd like to receive care, based on where you're eligible to go.",
-  },
-  {
-    title: 'Select your doctor',
-    description: "Browse vetted specialists and pick who's right for you.",
-  },
-]
+import { MockCard } from '@/components/MockCard'
+import { ScrollSteps, type ScrollStep } from '@/components/ScrollSteps'
 
 const COUNTRIES = [
   { name: 'Mexico', code: 'MX' },
@@ -32,20 +33,6 @@ const SPECIALTIES = [
   { name: 'Cardiology', icon: HeartPulse, rating: '4.8' },
   { name: 'Dental care', icon: Smile, rating: '5.0' },
 ]
-
-function MockCard({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div className="w-full max-w-lg rounded-3xl border border-border bg-background p-6 shadow-xl sm:p-8">
-      <div className="mb-6 flex items-center justify-between">
-        <span className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
-          {label}
-        </span>
-        <span className="text-xs text-muted-foreground">Illustrative preview</span>
-      </div>
-      {children}
-    </div>
-  )
-}
 
 function CountryPicker() {
   return (
@@ -120,32 +107,182 @@ function DoctorPicker() {
   )
 }
 
-const MOCKS = [CountryPicker, DoctorPicker]
+const DOCUMENTS: { name: string; icon: LucideIcon; status: string; done: boolean }[] = [
+  { name: 'Passport check', icon: FileText, status: 'Verified', done: true },
+  { name: 'Medical visa', icon: Stamp, status: 'In review', done: false },
+  { name: 'Flight itinerary', icon: Plane, status: 'Pending', done: false },
+]
 
-function StepText({
-  index,
-  active = true,
-}: {
-  index: number
-  active?: boolean
-}) {
-  const step = STEPS[index]
+const FOLLOW_UPS: { when: string; name: string; icon: LucideIcon }[] = [
+  { when: 'Day 3', name: 'Recovery check-in', icon: MessageCircle },
+  { when: 'Week 2', name: 'Surgeon video call', icon: Stethoscope },
+  { when: 'Month 3', name: 'Local follow-up visit', icon: CalendarCheck },
+]
+
+function TravelDocuments() {
   return (
-    <div
-      className={`flex gap-6 transition-opacity duration-300 ${
-        active ? 'opacity-100' : 'opacity-35'
-      }`}
-    >
-      <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-primary text-lg text-primary-foreground">
-        {index + 1}
-      </span>
-      <div className="flex flex-col gap-2">
-        <h3 className="text-2xl font-medium">{step.title}</h3>
-        <p className="text-xl text-muted-foreground">{step.description}</p>
+    <MockCard label="Travel documents" ghost>
+      <ul className="flex flex-col gap-3">
+        {DOCUMENTS.map((doc) => (
+          <li
+            key={doc.name}
+            className={`flex items-center gap-4 rounded-2xl border px-4 py-3.5 ${
+              doc.done ? 'border-primary bg-secondary' : 'border-border'
+            }`}
+          >
+            <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <doc.icon className="size-5" aria-hidden="true" />
+            </span>
+            <span className="flex-1 text-lg font-medium">{doc.name}</span>
+            <span className="text-sm text-muted-foreground">{doc.status}</span>
+          </li>
+        ))}
+      </ul>
+    </MockCard>
+  )
+}
+
+function FollowUps() {
+  return (
+    <MockCard label="Follow-ups" ghost>
+      <ul className="flex flex-col gap-3">
+        {FOLLOW_UPS.map((item, i) => (
+          <li
+            key={item.name}
+            className={`flex items-center gap-4 rounded-2xl border px-4 py-3.5 ${
+              i === 0 ? 'border-primary bg-secondary' : 'border-border'
+            }`}
+          >
+            <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <item.icon className="size-5" aria-hidden="true" />
+            </span>
+            <span className="flex-1 text-lg font-medium">{item.name}</span>
+            <span className="text-sm text-muted-foreground">{item.when}</span>
+          </li>
+        ))}
+      </ul>
+    </MockCard>
+  )
+}
+
+const HOTELS = [
+  { name: 'Hotel Palma Centro', detail: '5 min from hospital', price: '$85' },
+  { name: 'Casa Vida Suites', detail: 'Recovery-friendly rooms', price: '$110' },
+  { name: 'Grand Plaza', detail: 'Airport shuttle included', price: '$140' },
+]
+
+const FLIGHTS = [
+  { route: 'JFK → MEX', detail: 'Nonstop · 5h 20m', price: '$310' },
+  { route: 'JFK → MEX', detail: '1 stop · 8h 05m', price: '$245' },
+  { route: 'JFK → MEX', detail: 'Nonstop · 5h 45m', price: '$365' },
+]
+
+function SearchBar({ query, budget }: { query: string; budget: string }) {
+  return (
+    <div className="mb-4 flex flex-col gap-2 sm:flex-row">
+      <div className="flex flex-1 items-center gap-3 rounded-2xl border border-border px-4 py-3 text-muted-foreground">
+        <Search className="size-5" aria-hidden="true" />
+        <span className="text-base">{query}</span>
+      </div>
+      <div className="flex items-center gap-2 rounded-2xl bg-secondary px-4 py-3 text-sm font-medium text-primary">
+        <Wallet className="size-4" aria-hidden="true" />
+        {budget}
       </div>
     </div>
   )
 }
+
+function Hotels() {
+  return (
+    <MockCard label="Hotels" ghost>
+      <SearchBar query="Search hotels" budget="Under $150/night" />
+      <ul className="flex flex-col gap-3">
+        {HOTELS.map((hotel, i) => (
+          <li
+            key={hotel.name}
+            className={`flex items-center gap-4 rounded-2xl border px-4 py-3.5 ${
+              i === 0 ? 'border-primary bg-secondary' : 'border-border'
+            }`}
+          >
+            <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <Hotel className="size-5" aria-hidden="true" />
+            </span>
+            <div className="flex flex-1 flex-col">
+              <span className="text-lg font-medium">{hotel.name}</span>
+              <span className="text-sm text-muted-foreground">{hotel.detail}</span>
+            </div>
+            <span className="text-lg font-medium">{hotel.price}</span>
+          </li>
+        ))}
+      </ul>
+    </MockCard>
+  )
+}
+
+function Flights() {
+  return (
+    <MockCard label="Flights" ghost>
+      <SearchBar query="Search flights" budget="Under $400" />
+      <ul className="flex flex-col gap-3">
+        {FLIGHTS.map((flight, i) => (
+          <li
+            key={flight.detail}
+            className={`flex items-center gap-4 rounded-2xl border px-4 py-3.5 ${
+              i === 0 ? 'border-primary bg-secondary' : 'border-border'
+            }`}
+          >
+            <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+              <Plane className="size-5" aria-hidden="true" />
+            </span>
+            <div className="flex flex-1 flex-col">
+              <span className="text-lg font-medium">{flight.route}</span>
+              <span className="text-sm text-muted-foreground">{flight.detail}</span>
+            </div>
+            <span className="text-lg font-medium">{flight.price}</span>
+          </li>
+        ))}
+      </ul>
+    </MockCard>
+  )
+}
+
+const STEPS: ScrollStep[] = [
+  {
+    title: 'Select your country',
+    description:
+      "Choose where you'd like to receive care, based on where you're eligible to go.",
+    Mock: CountryPicker,
+  },
+  {
+    title: 'Select your doctor',
+    description: "Browse vetted specialists and pick who's right for you.",
+    Mock: DoctorPicker,
+  },
+  {
+    title: 'Travel documents',
+    description: 'Visas, records, and paperwork sorted before you fly.',
+    Mock: TravelDocuments,
+    ghost: true,
+  },
+  {
+    title: 'Hotels',
+    description: 'Search stays near your hospital, all within your budget.',
+    Mock: Hotels,
+    ghost: true,
+  },
+  {
+    title: 'Flights',
+    description: 'Search flights that fit your budget and your dates.',
+    Mock: Flights,
+    ghost: true,
+  },
+  {
+    title: 'Follow-ups',
+    description: 'Aftercare and check-ins once you are back home.',
+    Mock: FollowUps,
+    ghost: true,
+  },
+]
 
 function Heading() {
   return (
@@ -153,82 +290,16 @@ function Heading() {
       <span className="text-base font-medium tracking-[0.2em] text-muted-foreground uppercase">
         How it works
       </span>
-      <h2 className="text-5xl font-medium sm:text-6xl lg:text-7xl">
-        Care made <span className="italic">simple.</span>
+      <h2 className="text-4xl font-medium whitespace-nowrap sm:text-5xl lg:text-[2.75rem] xl:text-6xl 2xl:text-7xl">
+        We make it simple.
       </h2>
       <p className="max-w-lg text-xl text-muted-foreground sm:text-2xl">
-        We get you the most reputed doctors in the country you choose.
+        We prioritize reputation and safety, all while staying in your budget.
       </p>
     </div>
   )
 }
 
 export function HowItWorks() {
-  const ref = useRef<HTMLDivElement>(null)
-  const [active, setActive] = useState(0)
-  const reduceMotion = useReducedMotion()
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start start', 'end end'],
-  })
-
-  useMotionValueEvent(scrollYProgress, 'change', (progress) => {
-    const next = Math.min(STEPS.length - 1, Math.floor(progress * STEPS.length))
-    setActive((current) => (current === next ? current : next))
-  })
-
-  const ActiveMock = MOCKS[active]
-
-  return (
-    <section className="bg-secondary">
-      <div ref={ref} className="hidden h-[220vh] lg:block">
-        <div className="sticky top-0 flex h-screen items-center px-12">
-          <div className="mx-auto grid w-full max-w-[100rem] grid-cols-2 items-center gap-20">
-            <div className="flex flex-col gap-14">
-              <Heading />
-              <ol className="flex flex-col gap-10">
-                {STEPS.map((step, i) => (
-                  <li key={step.title} aria-current={i === active ? 'step' : undefined}>
-                    <StepText index={i} active={i === active} />
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className="flex items-center justify-center">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={active}
-                  className="flex w-full justify-center"
-                  initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -16 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <ActiveMock />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-16 px-6 py-20 sm:px-12 lg:hidden">
-        <Heading />
-        <ol className="flex flex-col gap-16">
-          {STEPS.map((step, i) => {
-            const Mock = MOCKS[i]
-            return (
-              <li key={step.title} className="flex flex-col gap-8">
-                <StepText index={i} />
-                <div className="flex justify-center">
-                  <Mock />
-                </div>
-              </li>
-            )
-          })}
-        </ol>
-      </div>
-    </section>
-  )
+  return <ScrollSteps heading={<Heading />} steps={STEPS} />
 }
