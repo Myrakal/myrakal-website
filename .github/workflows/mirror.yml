@@ -14,4 +14,4 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - run: |
-          git push --mirror https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/anirudhk-tech/Myrakal-Website-Clone.git
+          git push --mirror https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/EshaanSood/myrakalsite.git
