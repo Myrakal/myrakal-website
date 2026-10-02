@@ -16,7 +16,7 @@ export function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 flex bg-primary px-4 py-3 sm:px-12 sm:py-5 ${
-        scrolled ? 'justify-start' : 'justify-center'
+        scrolled ? 'justify-start pr-36 sm:pr-80' : 'justify-center'
       }`}
     >
       <motion.div
@@ -49,6 +49,21 @@ export function Navbar() {
           />
         )}
       </motion.div>
+      <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-4 sm:right-12 sm:gap-6">
+        <a
+          href="/clinics/"
+          aria-current={window.location.pathname.startsWith('/clinics') ? 'page' : undefined}
+          className="hidden text-base font-medium text-primary-foreground underline-offset-4 hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-foreground sm:block lg:text-lg"
+        >
+          For clinics
+        </a>
+        <a
+          href="/#waitlist"
+          className="rounded-full bg-primary-foreground px-4 py-1.5 text-sm font-medium whitespace-nowrap text-primary transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-foreground sm:px-5 sm:py-2 sm:text-base"
+        >
+          Join waitlist
+        </a>
+      </div>
     </header>
   )
 }
