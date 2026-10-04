@@ -17,15 +17,16 @@ import {
   Wallet,
   type LucideIcon,
 } from 'lucide-react'
+import { IN, MX, TH, TR } from 'country-flag-icons/react/3x2'
 
 import { MockCard } from '@/components/MockCard'
 import { ScrollSteps, type ScrollStep } from '@/components/ScrollSteps'
 
 const COUNTRIES = [
-  { name: 'Mexico', code: 'MX' },
-  { name: 'Turkey', code: 'TR' },
-  { name: 'India', code: 'IN' },
-  { name: 'Thailand', code: 'TH' },
+  { name: 'Mexico', code: 'MX', Flag: MX },
+  { name: 'Turkey', code: 'TR', Flag: TR },
+  { name: 'India', code: 'IN', Flag: IN },
+  { name: 'Thailand', code: 'TH', Flag: TH },
 ]
 
 const SPECIALTIES = [
@@ -47,9 +48,10 @@ function CountryPicker() {
                 selected ? 'border-primary bg-secondary' : 'border-border'
               }`}
             >
-              <span className="flex size-10 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-                {country.code}
-              </span>
+              <country.Flag
+                aria-hidden="true"
+                className="h-7 w-auto shrink-0 rounded-sm shadow-sm ring-1 ring-black/10"
+              />
               <span className="flex-1 text-lg font-medium">{country.name}</span>
               {selected ? (
                 <Check className="size-5 text-primary" aria-label="Selected" />
