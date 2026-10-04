@@ -19,10 +19,12 @@ export function Navbar() {
         scrolled ? 'justify-start pr-36 sm:pr-80' : 'justify-center'
       }`}
     >
-      <motion.div
+      <motion.a
+        href="/"
+        aria-label="Myrakal home"
         layout
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="flex min-w-0 items-center gap-2 sm:gap-4"
+        className="flex min-w-0 items-center gap-2 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary-foreground sm:gap-4"
       >
         {scrolled && (
           <img
@@ -48,7 +50,7 @@ export function Navbar() {
             className="h-6 w-auto sm:h-9 lg:h-12"
           />
         )}
-      </motion.div>
+      </motion.a>
       <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-4 sm:right-12 sm:gap-6">
         <a
           href="/clinics/"
