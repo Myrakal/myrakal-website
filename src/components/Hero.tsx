@@ -37,8 +37,8 @@ export function Hero() {
       <div className="relative aspect-square w-full max-w-64 rounded-full border border-primary sm:max-w-96">
         <Globe config={GLOBE_CONFIG} />
       </div>
-      <h1 className="max-w-3xl text-4xl font-medium text-foreground sm:text-5xl md:text-6xl">
-        Top tier international care for your budget.
+      <h1 className="max-w-5xl text-4xl text-foreground sm:text-5xl md:text-6xl">
+        Get high-quality healthcare treatment overseas while staying on budget
       </h1>
       <div className="mt-4 w-full max-w-2xl">
         <WaitlistForm />

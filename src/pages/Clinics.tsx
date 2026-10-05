@@ -44,7 +44,7 @@ export default function Clinics() {
               <span className="text-base font-medium tracking-[0.2em] text-muted-foreground uppercase">
                 For top-tier international hospitals &amp; clinics
               </span>
-              <h1 className="text-4xl font-medium text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="text-4xl text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
                 We make you more money.
               </h1>
               <p className="max-w-xl text-xl text-muted-foreground sm:text-2xl">
@@ -64,7 +64,7 @@ export default function Clinics() {
         <ClinicFAQ />
 
         <section className="flex flex-col items-center gap-8 bg-background px-6 py-32 text-center sm:px-12">
-          <h2 className="max-w-2xl text-4xl font-medium text-foreground sm:text-5xl">
+          <h2 className="max-w-2xl text-4xl text-foreground sm:text-5xl">
             We're building a network of accredited hospitals.
           </h2>
           <a

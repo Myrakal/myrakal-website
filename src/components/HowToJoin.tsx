@@ -166,7 +166,7 @@ function Heading() {
       <span className="text-base font-medium tracking-[0.2em] text-muted-foreground uppercase">
         How to join
       </span>
-      <h2 className="text-4xl font-medium sm:text-5xl xl:text-6xl">
+      <h2 className="text-4xl sm:text-5xl xl:text-6xl">
         From hello to earning.
       </h2>
       <p className="max-w-lg text-xl text-muted-foreground sm:text-2xl">

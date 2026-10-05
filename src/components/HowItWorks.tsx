@@ -301,7 +301,7 @@ function Heading() {
       <span className="text-base font-medium tracking-[0.2em] text-muted-foreground uppercase">
         How it works
       </span>
-      <h2 className="text-4xl font-medium whitespace-nowrap sm:text-5xl lg:text-[2.75rem] xl:text-6xl 2xl:text-7xl">
+      <h2 className="text-4xl whitespace-nowrap sm:text-5xl lg:text-[2.75rem] xl:text-6xl 2xl:text-7xl">
         We make it simple.
       </h2>
       <p className="max-w-lg text-xl text-muted-foreground sm:text-2xl">

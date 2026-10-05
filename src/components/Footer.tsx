@@ -5,8 +5,7 @@ export function Footer() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-2">
             <span
-              className="block text-2xl font-medium text-primary"
-              style={{ fontFamily: "'Playfair Display', serif" }}
+              className="block font-heading text-2xl text-primary"
             >
               Myrakal
             </span>

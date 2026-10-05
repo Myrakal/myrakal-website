@@ -24,7 +24,7 @@ const BENEFITS: { title: string; description: string; icon: LucideIcon }[] = [
 export function NetworkBenefits() {
   return (
     <section className="flex flex-col items-center gap-16 bg-background px-6 py-32 sm:px-12">
-      <h2 className="max-w-3xl text-center text-4xl font-medium text-foreground sm:text-5xl lg:text-6xl">
+      <h2 className="max-w-3xl text-center text-4xl text-foreground sm:text-5xl lg:text-6xl">
         Join a network of accredited hospitals
       </h2>
 
@@ -34,7 +34,7 @@ export function NetworkBenefits() {
             <span className="flex size-20 items-center justify-center rounded-3xl bg-secondary text-primary">
               <benefit.icon className="size-9" aria-hidden="true" />
             </span>
-            <h3 className="mt-2 text-2xl font-medium text-foreground">{benefit.title}</h3>
+            <h3 className="mt-2 text-2xl text-foreground">{benefit.title}</h3>
             <p className="max-w-xs text-lg text-muted-foreground">{benefit.description}</p>
           </li>
         ))}

@@ -45,7 +45,7 @@ export function FAQ({
   return (
     <section className={`flex flex-col gap-12 px-6 py-24 sm:px-12 ${className}`}>
       <div className="mx-auto w-full max-w-2xl text-center">
-        <h2 className="text-4xl font-medium text-foreground sm:text-5xl">
+        <h2 className="text-4xl text-foreground sm:text-5xl">
           Frequently asked questions
         </h2>
       </div>

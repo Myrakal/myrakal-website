@@ -40,7 +40,7 @@ function StepText({
         {index + 1}
       </span>
       <div className="flex flex-col gap-2">
-        <h3 className="flex min-h-12 flex-wrap items-center gap-x-3 text-2xl font-medium">
+        <h3 className="flex min-h-12 flex-wrap items-center gap-x-3 text-2xl">
           {step.title}
           {ghost ? (
             <span className="rounded-full border border-border px-2.5 py-0.5 text-xs font-medium tracking-wider uppercase">
