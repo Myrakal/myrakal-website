@@ -5,7 +5,6 @@ import {
   Check,
   FileText,
   HeartPulse,
-  Hotel,
   MessageCircle,
   Plane,
   Search,
@@ -18,6 +17,12 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { IN, MX, TH, TR } from 'country-flag-icons/react/3x2'
+import aeromexico from '@/assets/airlines/AM.png'
+import american from '@/assets/airlines/AA.png'
+import delta from '@/assets/airlines/DL.png'
+import casaVida from '@/assets/hotels/casa-vida.jpg'
+import grandPlaza from '@/assets/hotels/grand-plaza.jpg'
+import palmaCentro from '@/assets/hotels/palma-centro.jpg'
 
 import { MockCard } from '@/components/MockCard'
 import { ScrollSteps, type ScrollStep } from '@/components/ScrollSteps'
@@ -168,15 +173,15 @@ function FollowUps() {
 }
 
 const HOTELS = [
-  { name: 'Hotel Palma Centro', detail: '5 min from hospital', price: '$85' },
-  { name: 'Casa Vida Suites', detail: 'Recovery-friendly rooms', price: '$110' },
-  { name: 'Grand Plaza', detail: 'Airport shuttle included', price: '$140' },
+  { name: 'Hotel Palma Centro', photo: palmaCentro, detail: '5 min from hospital', price: '$85' },
+  { name: 'Casa Vida Suites', photo: casaVida, detail: 'Recovery-friendly rooms', price: '$110' },
+  { name: 'Grand Plaza', photo: grandPlaza, detail: 'Airport shuttle included', price: '$140' },
 ]
 
 const FLIGHTS = [
-  { route: 'JFK → MEX', detail: 'Nonstop · 5h 20m', price: '$310' },
-  { route: 'JFK → MEX', detail: '1 stop · 8h 05m', price: '$245' },
-  { route: 'JFK → MEX', detail: 'Nonstop · 5h 45m', price: '$365' },
+  { airline: 'Aeroméxico', logo: aeromexico, detail: 'JFK → MEX · Nonstop · 5h 20m', price: '$310' },
+  { airline: 'Delta', logo: delta, detail: 'JFK → MEX · 1 stop · 8h 05m', price: '$245' },
+  { airline: 'American', logo: american, detail: 'JFK → MEX · Nonstop · 5h 45m', price: '$365' },
 ]
 
 function SearchBar({ query, budget }: { query: string; budget: string }) {
@@ -206,9 +211,11 @@ function Hotels() {
               i === 0 ? 'border-primary bg-secondary' : 'border-border'
             }`}
           >
-            <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <Hotel className="size-5" aria-hidden="true" />
-            </span>
+            <img
+              src={hotel.photo}
+              alt=""
+              className="size-10 shrink-0 rounded-xl object-cover ring-1 ring-black/10"
+            />
             <div className="flex flex-1 flex-col">
               <span className="text-lg font-medium">{hotel.name}</span>
               <span className="text-sm text-muted-foreground">{hotel.detail}</span>
@@ -233,11 +240,13 @@ function Flights() {
               i === 0 ? 'border-primary bg-secondary' : 'border-border'
             }`}
           >
-            <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <Plane className="size-5" aria-hidden="true" />
-            </span>
+            <img
+              src={flight.logo}
+              alt=""
+              className="size-10 shrink-0 rounded-xl bg-white object-contain p-1.5 ring-1 ring-black/10"
+            />
             <div className="flex flex-1 flex-col">
-              <span className="text-lg font-medium">{flight.route}</span>
+              <span className="text-lg font-medium">{flight.airline}</span>
               <span className="text-sm text-muted-foreground">{flight.detail}</span>
             </div>
             <span className="text-lg font-medium">{flight.price}</span>
