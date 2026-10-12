@@ -41,15 +41,15 @@ export function LegalLayout({
 
   return (
     <>
-      <header className="bg-primary px-6 py-4">
+      <header className="bg-background px-6 py-4">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-6">
           <a
             href="/"
-            className="font-heading text-2xl text-primary-foreground no-underline"
+            className="font-heading text-2xl text-foreground no-underline"
           >
             Myrakal
           </a>
-          <a href="/" className="text-sm text-primary-foreground underline-offset-4 hover:underline">
+          <a href="/" className="text-sm text-foreground underline-offset-4 hover:underline">
             Return home
           </a>
         </div>

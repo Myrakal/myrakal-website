@@ -14,9 +14,9 @@ const GLOBE_CONFIG = {
   diffuse: 0.4,
   mapSamples: 16000,
   mapBrightness: 1.2,
-  baseColor: [0.93, 0.9, 0.85] as [number, number, number],
-  markerColor: [0.345, 0.082, 0.122] as [number, number, number],
-  glowColor: [0.929, 0.902, 0.855] as [number, number, number],
+  baseColor: [0.965, 0.933, 0.894] as [number, number, number],
+  markerColor: [0.302, 0.059, 0.102] as [number, number, number],
+  glowColor: [0.965, 0.933, 0.894] as [number, number, number],
   markers: [
     { location: [14.5995, 120.9842] as [number, number], size: 0.03 },
     { location: [19.076, 72.8777] as [number, number], size: 0.1 },
@@ -34,7 +34,7 @@ const GLOBE_CONFIG = {
 export function Hero() {
   return (
     <section className="relative flex h-screen flex-col items-center justify-center gap-8 bg-background px-6 text-center">
-      <div className="relative aspect-square w-full max-w-64 rounded-full border border-primary sm:max-w-96">
+      <div className="relative aspect-square w-full max-w-64 rounded-full border border-gold sm:max-w-96">
         <Globe config={GLOBE_CONFIG} />
       </div>
       <h1 className="max-w-5xl text-3xl text-foreground sm:text-4xl md:text-5xl">
