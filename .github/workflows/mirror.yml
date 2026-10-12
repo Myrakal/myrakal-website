@@ -12,4 +12,4 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - run: |
-          git push --force https://x-access-token:${{ HEAD:refs/heads/main secrets.MIRROR_PAT }}@github.com/EshaanSood/myrakalsite.git
+          git push --force https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/EshaanSood/myrakalsite.git HEAD:refs/heads/main
