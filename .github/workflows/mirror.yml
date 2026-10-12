@@ -1,9 +1,7 @@
 name: Mirror to personal
 on:
   push:
-    branches: ["**"]
-    tags: ["**"]
-  delete:
+    branches: [main]
 
 jobs:
   mirror:
