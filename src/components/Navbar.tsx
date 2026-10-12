@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
-import logo from '@/assets/myrakal-logo.png'
-import wordmark from '@/assets/myrakal-wordmark.png'
+import logo from '@/assets/myrakal-logo.svg'
+import wordmark from '@/assets/myrakal-wordmark.svg'
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
