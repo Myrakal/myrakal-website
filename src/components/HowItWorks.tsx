@@ -55,7 +55,7 @@ function CountryPicker() {
             >
               <country.Flag
                 aria-hidden="true"
-                className="h-7 w-auto shrink-0 rounded-sm shadow-sm ring-1 ring-black/10"
+                className="h-7 w-auto shrink-0 rounded-sm shadow-sm ring-1 ring-border"
               />
               <span className="flex-1 text-lg font-medium">{country.name}</span>
               {selected ? (
@@ -214,7 +214,7 @@ function Hotels() {
             <img
               src={hotel.photo}
               alt=""
-              className="size-10 shrink-0 rounded-xl object-cover ring-1 ring-black/10"
+              className="size-10 shrink-0 rounded-xl object-cover ring-1 ring-border"
             />
             <div className="flex flex-1 flex-col">
               <span className="text-lg font-medium">{hotel.name}</span>
@@ -243,7 +243,7 @@ function Flights() {
             <img
               src={flight.logo}
               alt=""
-              className="size-10 shrink-0 rounded-xl bg-white object-contain p-1.5 ring-1 ring-black/10"
+              className="size-10 shrink-0 rounded-xl bg-card object-contain p-1.5 ring-1 ring-border"
             />
             <div className="flex flex-1 flex-col">
               <span className="text-lg font-medium">{flight.airline}</span>

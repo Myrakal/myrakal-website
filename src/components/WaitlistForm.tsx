@@ -31,10 +31,10 @@ export function WaitlistForm() {
           autoComplete="name"
           placeholder="Name"
           required
-          className="h-12 w-full min-w-0 flex-1 rounded-full bg-transparent px-5 text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:h-14 sm:px-6 sm:text-lg"
+          className="h-12 w-full min-w-0 flex-1 rounded-full bg-transparent px-5 text-base text-card-foreground placeholder:text-card-foreground/60 focus:outline-none sm:h-14 sm:px-6 sm:text-lg"
         />
         <div
-          className="h-px w-full bg-border sm:h-8 sm:w-px"
+          className="h-px w-full bg-card-foreground/20 sm:h-8 sm:w-px"
           aria-hidden="true"
         />
         <label className="sr-only" htmlFor={`${fieldId}-email`}>
@@ -47,7 +47,7 @@ export function WaitlistForm() {
           autoComplete="email"
           placeholder="Email"
           required
-          className="h-12 w-full min-w-0 flex-1 rounded-full bg-transparent px-5 text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:h-14 sm:px-6 sm:text-lg"
+          className="h-12 w-full min-w-0 flex-1 rounded-full bg-transparent px-5 text-base text-card-foreground placeholder:text-card-foreground/60 focus:outline-none sm:h-14 sm:px-6 sm:text-lg"
         />
         <Button
           type="submit"
