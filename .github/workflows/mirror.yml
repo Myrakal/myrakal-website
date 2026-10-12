@@ -1,9 +1,7 @@
 name: Mirror to personal
 on:
   push:
-    branches: ["**"]
-    tags: ["**"]
-  delete:
+    branches: [main]
 
 jobs:
   mirror:
@@ -14,4 +12,4 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - run: |
-          git push --mirror https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/EshaanSood/myrakalsite.git
+          git push --force https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/EshaanSood/myrakalsite.git HEAD:refs/heads/main
