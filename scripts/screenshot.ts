@@ -8,7 +8,7 @@ const full = args.includes('--full')
 const outIdx = args.indexOf('--out')
 const out = outIdx >= 0 ? args[outIdx + 1] : '.screenshots'
 const paths = args.filter((a, i) => !a.startsWith('--') && (outIdx < 0 || i !== outIdx + 1))
-const base = process.env.BASE_URL ?? 'http://localhost:5199'
+const base = process.env.BASE_URL ?? 'http://localhost:5173'
 const viewports = { desktop: { width: 1440, height: 900 }, mobile: { width: 390, height: 844 } }
 
 mkdirSync(out, { recursive: true })
