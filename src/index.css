@@ -59,6 +59,7 @@
 
 :root {
     /* Myrakal Velvet + Pearl palette */
+    color-scheme: dark;
     --velvet: #4d0f1a;
     --velvet-deep: #2e0810;
     --velvet-light: #6b2230;
