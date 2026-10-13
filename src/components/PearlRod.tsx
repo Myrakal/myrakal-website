@@ -21,7 +21,7 @@ export function PearlRod() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
       renderer.setClearColor(0x000000, 0)
       renderer.toneMapping = T.ACESFilmicToneMapping
-      renderer.toneMappingExposure = 1.35
+      renderer.toneMappingExposure = .85
       renderer.domElement.setAttribute('aria-hidden', 'true')
       stage.appendChild(renderer.domElement)
       dispose = () => { renderer.dispose(); renderer.domElement.remove() }
@@ -31,8 +31,8 @@ export function PearlRod() {
       const environment = pmrem.fromScene(room, .04)
       scene.environment = environment.texture
       room.dispose(); pmrem.dispose()
-      const pearl = new T.MeshPhysicalMaterial({ color: 0xfff5e4, metalness: .22, roughness: .16, clearcoat: 1, clearcoatRoughness: .06, iridescence: .48, iridescenceIOR: 1.3, iridescenceThicknessRange: [120, 360] })
-      const silver = new T.MeshPhysicalMaterial({ color: 0xe8ded1, metalness: 1, roughness: .18 })
+      const pearl = new T.MeshPhysicalMaterial({ color: 0xfff1de, metalness: .32, roughness: .12, clearcoat: 1, clearcoatRoughness: .04, iridescence: .65, iridescenceIOR: 1.3, iridescenceThicknessRange: [120, 360] })
+      const silver = new T.MeshPhysicalMaterial({ color: 0xe2e5e5, metalness: 1, roughness: .12, clearcoat: .5, iridescence: .16, iridescenceThicknessRange: [120, 280] })
       const eye = new T.MeshPhysicalMaterial({ color: 0x4d1425, metalness: .5, roughness: .18 })
       const model = new T.Group(), jewel = new T.Group()
       model.rotation.z = -.18; model.rotation.y = -.35; model.add(jewel); scene.add(model)
@@ -40,10 +40,20 @@ export function PearlRod() {
         const mesh = new T.Mesh(geometry, material)
         mesh.position.set(x, y, z); jewel.add(mesh); return mesh
       }
-      add(new T.CylinderGeometry(.09, .065, 3.75, 48))
+      add(new T.CylinderGeometry(.09, .065, 3.75, 48), silver)
       add(new T.SphereGeometry(.23, 48, 32), pearl, 0, 2.05)
+      add(new T.SphereGeometry(.236, 48, 24, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), silver, 0, 2.05)
+      add(new T.TorusGeometry(.237, .012, 10, 64), silver, 0, 2.05).rotation.x = Math.PI / 2
+      for (let i = 0; i < 6; i++) {
+        const angle = i / 6 * Math.PI * 2
+        add(new T.CylinderGeometry(.008, .008, 3.42, 8), silver, Math.cos(angle) * .079, -.06, Math.sin(angle) * .079)
+        const claw = new T.CatmullRomCurve3([new T.Vector3(Math.cos(angle) * .236, 2.04, Math.sin(angle) * .236), new T.Vector3(Math.cos(angle) * .229, 2.11, Math.sin(angle) * .229), new T.Vector3(Math.cos(angle) * .209, 2.17, Math.sin(angle) * .209)])
+        add(new T.TubeGeometry(claw, 12, .009, 6, false), silver)
+        add(new T.SphereGeometry(.022, 16, 12), silver, Math.cos(angle) * .209, 2.17, Math.sin(angle) * .209)
+      }
+      add(new T.CylinderGeometry(.105, .075, .14, 16), silver, 0, -1.88)
       add(new T.ConeGeometry(.065, .3, 8), silver, 0, -2.01).rotation.z = Math.PI
-      for (const y of [1.83, 1.91, -1.85]) {
+      for (const y of [1.83, 1.91, -1.85, -1.93]) {
         add(new T.TorusGeometry(.095, .018, 10, 48), silver, 0, y).rotation.x = Math.PI / 2
       }
       for (let i = 0; i < 10; i++) {
@@ -65,6 +75,20 @@ export function PearlRod() {
         }
       }
       tube.computeVertexNormals(); add(tube)
+      const outerPoint = (t: number, offset: number) => {
+        const center = curve.getPointAt(t), radial = new T.Vector3(center.x, 0, center.z).normalize()
+        return center.addScaledVector(radial, offset * Math.min(1, .12 + t * 5))
+      }
+      const rail = new T.CatmullRomCurve3(Array.from({ length: 180 }, (_, i) => outerPoint(i / 179, .079)))
+      add(new T.TubeGeometry(rail, 192, .015, 8, false), silver)
+      for (let i = 0; i < 56; i++) {
+        const t = .14 + i / 55 * .83, center = outerPoint(t, .085)
+        const setting = add(new T.TorusGeometry(.027, .006, 8, 12), silver, center.x, center.y, center.z)
+        const normal = new T.Vector3(center.x, 0, center.z).normalize()
+        setting.quaternion.setFromUnitVectors(new T.Vector3(0, 0, 1), normal)
+        const stone = outerPoint(t, .096)
+        add(new T.SphereGeometry(.022, 12, 10), pearl, stone.x, stone.y, stone.z)
+      }
       const headPoint = curve.getPointAt(1), direction = curve.getTangentAt(1)
       const head = new T.Group()
       head.position.copy(headPoint); head.quaternion.setFromUnitVectors(new T.Vector3(0, 1, 0), direction)
@@ -75,9 +99,9 @@ export function PearlRod() {
         gem.position.set(side * .099, .19, .025); head.add(gem)
       }
       jewel.add(head)
-      const key = new T.DirectionalLight(0xfff4dd, 3)
+      const key = new T.DirectionalLight(0xfff4dd, 1.5)
       key.position.set(-3, 4, 5); scene.add(key)
-      const rim = new T.DirectionalLight(0xdbe6ff, 2)
+      const rim = new T.DirectionalLight(0xdbe6ff, 1.2)
       rim.position.set(3, -1, -3); scene.add(rim)
       let visible = true, frame = 0, previous = 0, pointer: number | null = null, lastX = 0
       const draw = () => { if (visible && !document.hidden) renderer.render(scene, camera) }
