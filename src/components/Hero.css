@@ -1,0 +1,42 @@
+.couture-hero { position: relative; z-index: 1; min-height: max(800px, 100svh); padding: 100px 6vw 90px; background: var(--velvet-deep); isolation: isolate; overflow-x: clip; }
+.hero-fabric { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+.couture-hero__composition { display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; align-items: center; max-width: 1450px; min-height: calc(100svh - 210px); margin: 0 auto; }
+.couture-hero__copy { position: relative; z-index: 2; padding-bottom: 45px; }
+.hero-folio { margin-bottom: 30px; font-size: 10px; text-transform: uppercase; letter-spacing: .22em; animation: hero-reveal 1.8s .4s both; }
+.couture-hero h1 { font-family: 'Bodoni Moda', Didot, 'Times New Roman', serif; font-size: clamp(60px, 6.8vw, 110px); font-weight: 400; line-height: .97; letter-spacing: -.055em; animation: hero-reveal 2.2s 1s both; }
+.couture-hero h1 em { font-weight: 400; }
+.hero-description { max-width: 310px; margin-top: 30px; font-size: 17px; line-height: 1.65; color: var(--cream); animation: hero-reveal 2s 1.7s both; }
+.hero-invitation { display: inline-flex; gap: 55px; margin-top: 35px; padding: 12px 0; border-bottom: 1px solid var(--pearl); font-size: 12px; text-transform: uppercase; letter-spacing: .13em; animation: hero-reveal 2s 2.2s both; }
+.hero-invitation:focus-visible, .hero-scroll:focus-visible, .rod-control:focus-visible { outline: 2px solid var(--cream); outline-offset: 6px; }
+.hero-invitation:hover { color: var(--pearl); }
+.hero-scroll { position: absolute; z-index: 4; bottom: 60px; right: 6vw; display: flex; align-items: center; gap: 30px; font-size: 10px; letter-spacing: .13em; text-transform: uppercase; }
+.hero-fabric-fall { position: absolute; z-index: 3; width: 112%; max-width: none; height: clamp(160px, 23vw, 340px); object-fit: fill; left: -6%; bottom: -120px; pointer-events: none; transform: translateY(var(--fall, 0px)); }
+.pearl-rod { position: relative; height: min(690px, 73svh); min-height: 500px; margin: 0; }
+.rod-stage { position: relative; width: 100%; height: 100%; touch-action: pan-y; cursor: grab; outline-offset: -10px; }
+.rod-stage:active { cursor: grabbing; }
+.rod-stage:focus-visible { outline: 1px solid var(--pearl); }
+.rod-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.rod-fallback { width: 100%; height: 100%; object-fit: contain; transition: opacity .6s; }
+.is-ready .rod-fallback { opacity: 0; }
+.rod-control { position: absolute; z-index: 4; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 8px 12px; border-bottom: 1px solid #ebd3da66; color: var(--cream); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; cursor: pointer; white-space: nowrap; }
+.rod-control:disabled { visibility: hidden; }
+@keyframes hero-reveal { from { opacity: 0; transform: translateY(14px); filter: blur(4px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+@media (min-width: 1700px) { .couture-hero__composition { min-height: 800px; } }
+@media (max-width: 700px) {
+  .couture-hero { padding: 82px 24px 110px; min-height: 100svh; }
+  .hero-fabric { object-position: 40% center; }
+  .couture-hero__composition { grid-template-columns: 1fr; gap: 0; min-height: 0; }
+  .pearl-rod { height: 390px; min-height: 0; max-width: 360px; width: 100%; margin: 0 auto; }
+  .rod-control { bottom: 0; }
+  .couture-hero__copy { text-align: center; padding: 25px 0 35px; }
+  .hero-folio { margin-bottom: 20px; font-size: 8px; letter-spacing: .16em; }
+  .couture-hero h1 { font-size: clamp(55px, 14vw, 85px); }
+  .hero-description { margin: 20px auto 0; font-size: 15px; max-width: 280px; }
+  .hero-invitation { margin-top: 20px; font-size: 10px; gap: 30px; }
+  .hero-scroll { bottom: 80px; right: 24px; left: 24px; justify-content: center; font-size: 9px; }
+  .hero-fabric-fall { bottom: -100px; height: 160px; width: 135%; left: -17.5%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-folio, .couture-hero h1, .hero-description, .hero-invitation { animation: none; }
+  .rod-fallback { transition: none; }
+}
