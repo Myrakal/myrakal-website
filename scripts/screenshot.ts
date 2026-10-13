@@ -17,7 +17,10 @@ for (const path of paths.length ? paths : ['/']) {
   for (const [name, viewport] of Object.entries(viewports)) {
     const page = await browser.newPage({ viewport })
     await page.goto(base + path, { waitUntil: 'networkidle' })
-    await page.waitForTimeout(1500) // let animations and WebGL settle
+    await page.evaluate(async () => {
+      await document.fonts.ready
+      await Promise.all(document.getAnimations().filter(a => a.effect?.getTiming().iterations !== Infinity).map(a => a.finished.catch(() => {})))
+    })
     const slug = path === '/' ? 'home' : path.replace(/\W+/g, '-').replace(/^-|-$/g, '')
     const file = `${out}/${slug}-${name}.png`
     await page.screenshot({ path: file, fullPage: full })

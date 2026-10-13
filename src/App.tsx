@@ -2,6 +2,7 @@ import { CTA } from '@/components/CTA'
 import { FAQ } from '@/components/FAQ'
 import { Footer } from '@/components/Footer'
 import { Hero } from '@/components/Hero'
+import { Editorial } from '@/components/Editorial'
 import { HowItWorks } from '@/components/HowItWorks'
 import { Navbar } from '@/components/Navbar'
 import Accessibility from '@/pages/Accessibility'
@@ -13,9 +14,10 @@ import Terms from '@/pages/Terms'
 function Home() {
   return (
     <>
-      <Navbar />
+      <Navbar editorial />
       <Hero />
-      <HowItWorks />
+      <Editorial />
+      <div id="how-it-works" className="scroll-mt-24"><HowItWorks /></div>
       <FAQ />
       <CTA />
       <Footer />

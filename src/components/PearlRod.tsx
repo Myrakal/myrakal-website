@@ -152,8 +152,8 @@ export function PearlRod() {
     return () => { cancelled = true; motion.removeEventListener('change', onMotion); dispose() }
   }, [])
   return <figure className={`pearl-rod${ready ? ' is-ready' : ''}`}>
-    <div ref={host} className="rod-stage" tabIndex={ready ? 0 : -1} role="img" aria-label="Pearl Rod of Asclepius sculpture. Drag or use left and right arrow keys to rotate." style={{ touchAction: 'pan-y' }}>
-      <img className="rod-fallback" src="/images/pearl-rod.webp" alt="A luminous pearl staff with one serpent, crafted like fine jewelry." />
+    <div ref={host} className="rod-stage" tabIndex={ready ? 0 : -1} role="group" aria-roledescription="interactive 3D sculpture" aria-keyshortcuts="ArrowLeft ArrowRight" aria-label="Pearl Rod of Asclepius sculpture. Drag or use left and right arrow keys to rotate." style={{ touchAction: 'pan-y' }}>
+      <img className="rod-fallback" src="/images/pearl-rod.webp" alt="" aria-hidden="true" />
     </div>
     <button className="rod-control" type="button" disabled={!ready} aria-pressed={ready && spinning} onClick={() => setSpinning(value => !value)}>{ready && spinning ? 'Pause rotation' : 'Rotate sculpture'}</button>
   </figure>
