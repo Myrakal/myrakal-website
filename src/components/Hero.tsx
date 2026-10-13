@@ -33,18 +33,27 @@ const GLOBE_CONFIG = {
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-6 pt-20 pb-16 text-center sm:pt-28 lg:pt-32">
-      <div className="relative aspect-square w-full max-w-64 rounded-full border border-gold sm:max-w-96">
-        <Globe config={GLOBE_CONFIG} />
+    <section className="editorial-hero relative grid min-h-screen grid-cols-12 items-center gap-8 overflow-hidden bg-background px-6 pt-24 pb-20 sm:px-12 sm:pt-28 lg:pt-32">
+      <div className="relative z-10 col-span-12 flex flex-col gap-6 sm:col-span-5">
+        <div className="flex flex-col gap-4">
+          <span className="text-xs font-medium tracking-widest text-muted-foreground uppercase">
+            International care / Issue 01
+          </span>
+          <h1 className="font-heading text-4xl font-medium leading-tight text-foreground sm:text-5xl md:text-6xl">
+            Get high-quality healthcare treatment overseas while staying on budget
+          </h1>
+        </div>
+        <div className="w-full">
+          <WaitlistForm />
+        </div>
       </div>
-      <h1 className="max-w-5xl text-3xl text-foreground sm:text-4xl md:text-5xl">
-        Get high-quality healthcare treatment overseas while staying on budget
-      </h1>
-      <div className="mt-4 w-full max-w-2xl">
-        <WaitlistForm />
+      <div className="relative z-10 col-span-12 flex items-center justify-center sm:col-span-7 sm:justify-end">
+        <div className="relative aspect-square w-full max-w-2xl border border-gold">
+          <Globe config={GLOBE_CONFIG} />
+        </div>
       </div>
       <ArrowDown
-        className="absolute bottom-8 size-6 text-muted-foreground"
+        className="absolute bottom-8 left-1/2 z-10 size-6 -translate-x-1/2 text-muted-foreground"
         aria-hidden="true"
       />
     </section>

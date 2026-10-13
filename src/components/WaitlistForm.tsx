@@ -16,10 +16,10 @@ export function WaitlistForm() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl">
+    <div className="w-full max-w-2xl">
       <form
         onSubmit={handleSubmit}
-        className="flex w-full flex-col items-stretch gap-2 rounded-3xl border border-border bg-card p-2 shadow-sm sm:flex-row sm:items-center sm:rounded-full"
+        className="flex w-full flex-col border border-pearl bg-transparent sm:flex-row sm:items-stretch"
       >
         <label className="sr-only" htmlFor={`${fieldId}-name`}>
           Name
@@ -31,11 +31,7 @@ export function WaitlistForm() {
           autoComplete="name"
           placeholder="Name"
           required
-          className="h-12 w-full min-w-0 flex-1 rounded-full bg-transparent px-5 text-base text-card-foreground placeholder:text-card-foreground/60 focus:outline-none sm:h-14 sm:px-6 sm:text-lg"
-        />
-        <div
-          className="h-px w-full bg-card-foreground/20 sm:h-8 sm:w-px"
-          aria-hidden="true"
+          className="flex-1 border-b border-pearl bg-transparent px-5 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:border-r sm:border-b-0"
         />
         <label className="sr-only" htmlFor={`${fieldId}-email`}>
           Email
@@ -47,18 +43,18 @@ export function WaitlistForm() {
           autoComplete="email"
           placeholder="Email"
           required
-          className="h-12 w-full min-w-0 flex-1 rounded-full bg-transparent px-5 text-base text-card-foreground placeholder:text-card-foreground/60 focus:outline-none sm:h-14 sm:px-6 sm:text-lg"
+          className="flex-1 border-b border-pearl bg-transparent px-5 py-4 text-base text-foreground placeholder:text-muted-foreground focus:outline-none sm:border-r sm:border-b-0"
         />
         <Button
           type="submit"
           size="lg"
           disabled={state.submitting}
-          className="h-12 w-full shrink-0 cursor-pointer px-10 text-base sm:h-14 sm:w-auto"
+          className="cursor-pointer rounded-none! border-none bg-pearl px-8 text-base text-primary-foreground sm:shrink-0"
         >
           {state.submitting ? 'Joining…' : 'Join'}
         </Button>
       </form>
-      <p className="mt-3 px-2 text-center text-sm leading-6 text-muted-foreground">
+      <p className="mt-3 text-center text-xs leading-6 text-muted-foreground">
         We use your name and email to manage the waitlist and contact you. See our{' '}
         <a className="underline underline-offset-4 hover:text-foreground" href="/privacy/">
           Privacy Policy

@@ -61,7 +61,7 @@ export function Navbar() {
         </a>
         <a
           href="/#waitlist"
-          className="rounded-full bg-(image:--pearl-gradient) px-4 py-1.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-5 sm:py-2 sm:text-base"
+          className="border border-pearl bg-pearl px-4 py-1.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-5 sm:py-2 sm:text-base"
         >
           Join waitlist
         </a>
