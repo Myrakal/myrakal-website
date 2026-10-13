@@ -19,3 +19,6 @@ globalThis.IntersectionObserver ??= class {
   disconnect() {}
   takeRecords() { return [] }
 } as unknown as typeof IntersectionObserver
+window.matchMedia ??= vi.fn().mockImplementation((media: string) => ({
+  matches: false, media, addEventListener: vi.fn(), removeEventListener: vi.fn(),
+}))

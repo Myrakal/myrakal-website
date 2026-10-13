@@ -299,7 +299,7 @@ function Heading() {
   return (
     <div className="flex flex-col gap-6">
       <span className="text-base font-medium tracking-[0.2em] text-muted-foreground uppercase">
-        How it works
+        How it works / Issue 01
       </span>
       <h2 className="text-4xl whitespace-nowrap sm:text-5xl lg:text-[2.75rem] xl:text-6xl 2xl:text-7xl">
         We make it simple.

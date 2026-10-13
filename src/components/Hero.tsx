@@ -1,52 +1,35 @@
-import { ArrowDown } from 'lucide-react'
-
-import { Globe } from '@/components/ui/globe'
-import { WaitlistForm } from '@/components/WaitlistForm'
-
-const GLOBE_CONFIG = {
-  width: 800,
-  height: 800,
-  onRender: () => {},
-  devicePixelRatio: 2,
-  phi: 0,
-  theta: 0.3,
-  dark: 0,
-  diffuse: 0.4,
-  mapSamples: 16000,
-  mapBrightness: 1.2,
-  baseColor: [0.965, 0.933, 0.894] as [number, number, number],
-  markerColor: [0.302, 0.059, 0.102] as [number, number, number],
-  glowColor: [0.965, 0.933, 0.894] as [number, number, number],
-  markers: [
-    { location: [14.5995, 120.9842] as [number, number], size: 0.03 },
-    { location: [19.076, 72.8777] as [number, number], size: 0.1 },
-    { location: [23.8103, 90.4125] as [number, number], size: 0.05 },
-    { location: [30.0444, 31.2357] as [number, number], size: 0.07 },
-    { location: [39.9042, 116.4074] as [number, number], size: 0.08 },
-    { location: [-23.5505, -46.6333] as [number, number], size: 0.1 },
-    { location: [19.4326, -99.1332] as [number, number], size: 0.1 },
-    { location: [40.7128, -74.006] as [number, number], size: 0.1 },
-    { location: [34.6937, 135.5022] as [number, number], size: 0.05 },
-    { location: [41.0082, 28.9784] as [number, number], size: 0.06 },
-  ],
-}
+import { useEffect, useRef } from 'react'
+import { PearlRod } from '@/components/PearlRod'
+import './Hero.css'
 
 export function Hero() {
+  const fabric = useRef<HTMLImageElement>(null)
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+    let frame = 0
+    const update = () => {
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => fabric.current?.style.setProperty('--fall', `${reduced.matches ? 0 : Math.min(window.scrollY * .12, 95)}px`))
+    }
+    window.addEventListener('scroll', update, { passive: true })
+    reduced.addEventListener('change', update)
+    update()
+    return () => { window.removeEventListener('scroll', update); reduced.removeEventListener('change', update); cancelAnimationFrame(frame) }
+  }, [])
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-background px-6 pt-20 pb-16 text-center sm:pt-28 lg:pt-32">
-      <div className="relative aspect-square w-full max-w-64 rounded-full border border-gold sm:max-w-96">
-        <Globe config={GLOBE_CONFIG} />
+    <section className="editorial-hero couture-hero" aria-labelledby="hero-title">
+      <img className="hero-fabric" src="/images/velvet-scene.webp" alt="" fetchPriority="high" width="1536" height="1024" />
+      <div className="couture-hero__composition">
+        <PearlRod />
+        <div className="couture-hero__copy">
+          <p className="hero-folio">Myrakal / A new perspective on care</p>
+          <h1 id="hero-title">Care, without<br /><em>borders.</em></h1>
+          <p className="hero-description">High-quality healthcare treatment overseas, while staying on budget.</p>
+          <a className="hero-invitation" href="#waitlist">Begin your journey <span aria-hidden="true">↗</span></a>
+        </div>
       </div>
-      <h1 className="max-w-5xl text-3xl text-foreground sm:text-4xl md:text-5xl">
-        Get high-quality healthcare treatment overseas while staying on budget
-      </h1>
-      <div className="mt-4 w-full max-w-2xl">
-        <WaitlistForm />
-      </div>
-      <ArrowDown
-        className="absolute bottom-8 size-6 text-muted-foreground"
-        aria-hidden="true"
-      />
+      <a className="hero-scroll" href="#editorial">Discover the Myrakal edit <span aria-hidden="true">↓</span></a>
+      <img ref={fabric} className="hero-fabric-fall" src="/images/velvet-drape.webp" alt="" width="2172" height="724" />
     </section>
   )
 }

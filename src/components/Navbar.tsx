@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import logo from '@/assets/myrakal-logo.svg'
 import wordmark from '@/assets/myrakal-wordmark.svg'
 
-export function Navbar() {
+export function Navbar({ editorial = false }: { editorial?: boolean }) {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
@@ -15,8 +15,8 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 flex bg-background px-4 py-3 sm:px-12 sm:py-5 ${
-        scrolled ? 'justify-start pr-36 sm:pr-80' : 'justify-center'
+      className={`fixed inset-x-0 top-0 z-50 flex px-4 py-3 sm:px-12 sm:py-5 ${
+        scrolled ? editorial ? 'bg-background justify-center' : 'bg-background justify-start pr-36 sm:pr-80' : 'bg-transparent justify-center'
       }`}
     >
       <motion.a
@@ -26,14 +26,14 @@ export function Navbar() {
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className="flex min-w-0 items-center gap-2 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground sm:gap-4"
       >
-        {scrolled && (
+        {scrolled && !editorial && (
           <img
             src={logo}
             alt=""
             className="h-8 w-auto shrink-0 sm:h-12 lg:h-16"
           />
         )}
-        {scrolled ? (
+        {scrolled && !editorial ? (
           <motion.span
             key="tagline"
             initial={{ opacity: 0, y: -4 }}
@@ -61,7 +61,7 @@ export function Navbar() {
         </a>
         <a
           href="/#waitlist"
-          className="rounded-full bg-(image:--pearl-gradient) px-4 py-1.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-5 sm:py-2 sm:text-base"
+          className="border border-pearl bg-pearl px-4 py-1.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-5 sm:py-2 sm:text-base"
         >
           Join waitlist
         </a>
