@@ -5,7 +5,6 @@ vi.mock('posthog-js', () => ({
   default: { init: vi.fn(), capture: vi.fn() },
 }))
 
-// `enabled` is module state, so load a fresh copy per test.
 const load = () => {
   vi.resetModules()
   return import('@/lib/analytics')

@@ -1,6 +1,5 @@
 import posthog from 'posthog-js'
 
-// Waitlist funnel: $pageview (automatic) -> waitlist_focus -> waitlist_type -> waitlist_submit -> waitlist_success
 export type AnalyticsEvent = 'waitlist_focus' | 'waitlist_type' | 'waitlist_submit' | 'waitlist_success'
 
 let enabled = false

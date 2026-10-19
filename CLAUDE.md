@@ -3,6 +3,7 @@ When writing or changing any piece of code, use this exact workflow. You are the
 Rules: 
 1. Always use pnpm.
 2. Stay within a diff budget of 150 lines (excluding tests). If a spec takes more than that, propose a split and create different worktrees & PRs, spawning agents in parrelel.
+3. Write no code comments unless the user asks for them.
 
 Workflow:
 1. Create another branch + worktree for this specific feature, never work on main.

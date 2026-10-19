@@ -9,7 +9,6 @@ export function WaitlistForm() {
   const fieldId = useId()
   const fired = useRef(new Set<AnalyticsEvent>())
 
-  // Funnel steps fire once per form instance, not per focus or keystroke.
   const trackOnce = (event: AnalyticsEvent) => {
     if (fired.current.has(event)) return
     fired.current.add(event)
