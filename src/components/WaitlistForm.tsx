@@ -1,11 +1,24 @@
 import { useForm } from '@formspree/react'
-import { useId } from 'react'
+import { useEffect, useId, useRef } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { track, type AnalyticsEvent } from '@/lib/analytics'
 
 export function WaitlistForm() {
   const [state, handleSubmit] = useForm('xdekdlkq')
   const fieldId = useId()
+  const fired = useRef(new Set<AnalyticsEvent>())
+
+  // Funnel steps fire once per form instance, not per focus or keystroke.
+  const trackOnce = (event: AnalyticsEvent) => {
+    if (fired.current.has(event)) return
+    fired.current.add(event)
+    track(event)
+  }
+
+  useEffect(() => {
+    if (state.succeeded) trackOnce('waitlist_success')
+  })
 
   if (state.succeeded) {
     return (
@@ -18,7 +31,14 @@ export function WaitlistForm() {
   return (
     <div className="mx-auto w-full max-w-2xl">
       <form
-        onSubmit={handleSubmit}
+        onFocus={(e) => {
+          if (e.target instanceof HTMLInputElement) trackOnce('waitlist_focus')
+        }}
+        onChange={() => trackOnce('waitlist_type')}
+        onSubmit={(e) => {
+          trackOnce('waitlist_submit')
+          return handleSubmit(e)
+        }}
         className="flex w-full flex-col items-stretch gap-2 rounded-3xl border border-border bg-card p-2 shadow-sm sm:flex-row sm:items-center sm:rounded-full"
       >
         <label className="sr-only" htmlFor={`${fieldId}-name`}>
