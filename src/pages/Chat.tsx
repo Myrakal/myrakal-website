@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import wordmark from '@/assets/myrakal-wordmark.svg'
 import { ChatComposer } from '@/components/chat/ChatComposer'
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
+import { replyFor } from '@/lib/intake'
 
 const GREETING: Message = {
   id: 'greeting',
@@ -19,8 +20,17 @@ export default function Chat() {
     if (messages.length > 1) end.current?.scrollIntoView?.({ block: 'end' })
   }, [messages])
 
-  const send = (text: string) =>
-    setMessages((m) => [...m, { id: `user-${nextId.current++}`, role: 'user', text }])
+  const send = (text: string) => {
+    const id = nextId.current++
+    setMessages((m) => {
+      const turns = m.filter((x) => x.role === 'user').length + 1
+      return [
+        ...m,
+        { id: `user-${id}`, role: 'user', text },
+        { id: `assistant-${id}`, role: 'assistant', text: replyFor(turns) },
+      ]
+    })
+  }
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
@@ -43,7 +53,7 @@ export default function Chat() {
           {messages.map((m) => (
             <ChatMessage key={m.id} message={m} />
           ))}
-          <div ref={end} />
+          <div ref={end} className="scroll-mb-40" />
         </div>
 
         <div className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">

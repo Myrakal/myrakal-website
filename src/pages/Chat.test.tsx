@@ -64,7 +64,7 @@ describe('Chat page', () => {
       const user = userEvent.setup()
       render(<Chat />)
       await user.type(screen.getByRole('textbox', { name: 'Message' }), 'hi{Enter}')
-      expect(screen.getAllByRole('article').length).toBe(2)
+      expect(screen.getAllByRole('article').length).toBe(3)
     } finally {
       Object.defineProperty(crypto, 'randomUUID', { value: original, configurable: true })
     }
@@ -77,5 +77,24 @@ describe('Chat page', () => {
     await user.type(box, 'hi')
     await user.click(screen.getByRole('button', { name: 'Send message' }))
     expect(document.activeElement).toBe(box)
+  })
+
+  it('walks through the intake questions and finishes with a doctor review notice', async () => {
+    const user = userEvent.setup()
+    render(<Chat />)
+    const box = screen.getByRole('textbox', { name: 'Message' })
+    const log = () => screen.getByRole('log', { name: 'Conversation' }).textContent ?? ''
+    await user.type(box, 'Knee pain{Enter}')
+    expect(log()).toMatch(/going on|symptoms/i)
+    await user.type(box, 'Two months, worse on stairs{Enter}')
+    expect(log()).toMatch(/labs/i)
+    await user.type(box, 'MRI last month{Enter}')
+    expect(log()).toMatch(/insurance/i)
+    await user.type(box, 'Blue Shield PPO{Enter}')
+    expect(log()).toMatch(/email/i)
+    await user.type(box, 'Ada, ada@example.com{Enter}')
+    expect(log()).toMatch(/intake is complete/i)
+    expect(log()).toMatch(/licensed doctor/i)
+    expect(screen.getAllByRole('article').length).toBe(11)
   })
 })
