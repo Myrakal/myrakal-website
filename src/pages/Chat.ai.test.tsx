@@ -68,16 +68,30 @@ describe('Chat with AI acknowledgements', () => {
     expect(screen.queryByText('Myrakal is typing')).toBeNull()
   })
 
-  it('never sends email addresses to the AI, and sends at most 20 messages', async () => {
+  it('sends exactly one message, the latest visitor message with emails redacted, never earlier or assistant turns', async () => {
     vi.stubGlobal('fetch', routes(() => respond(200, { reply: '' })))
     const user = userEvent.setup()
     render(<Chat replyDelay={0} />)
+    await answer(user, 'first answer')
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(3))
     await answer(user, 'my email is ada@example.com')
-    await waitFor(() => expect(calls('/api/chat').length).toBe(1))
-    const sent = JSON.parse(calls('/api/chat')[0][1]!.body as string).messages
-    expect(JSON.stringify(sent)).not.toMatch(/@/)
-    expect(sent.at(-1).text).toBe('my email is [email]')
-    expect(sent.length).toBeLessThanOrEqual(20)
+    await waitFor(() => expect(calls('/api/chat').length).toBe(2))
+    const first = JSON.parse(calls('/api/chat')[0][1]!.body as string)
+    const second = JSON.parse(calls('/api/chat')[1][1]!.body as string)
+    expect(first.messages).toEqual([{ role: 'user', text: 'first answer' }])
+    expect(second.messages).toEqual([{ role: 'user', text: 'my email is [email]' }])
+    expect(JSON.stringify([first, second])).not.toMatch(/@|assistant/)
+  })
+
+  it('shows a long emergency reply intact ahead of the scripted question', async () => {
+    const emergency =
+      "I'm concerned about what you've described. Please contact your local emergency services right away, or go to the nearest emergency room. If you are in the US and having thoughts of harming yourself, call or text 988 now. You do not need to finish this form first, your safety matters most. We will be here when you are ready."
+    vi.stubGlobal('fetch', routes(() => respond(200, { reply: emergency })))
+    const user = userEvent.setup()
+    render(<Chat replyDelay={0} />)
+    await answer(user, 'chest pain')
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(3))
+    expect(screen.getAllByRole('article').at(-1)!.textContent).toBe(`${emergency} ${withoutThanks(INTAKE_PROMPTS[0])}`)
   })
 
   it('asks the AI only after the first four answers, never for the name, the email or later', async () => {

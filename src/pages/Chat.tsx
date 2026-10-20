@@ -82,7 +82,7 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     if (!askAi) return next
     const controller = new AbortController()
     pending.current = controller
-    const ack = await acknowledge(transcript, controller.signal)
+    const ack = await acknowledge(text, controller.signal)
     return ack ? `${ack} ${withoutThanks(next)}` : next
   }
 
