@@ -47,14 +47,14 @@ describe('POST /api/chat', () => {
     create.mockResolvedValue(modelReply('Thank you for sharing that.'))
     const res = await post(body)
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({ reply: 'Thank you for sharing that.' })
+    expect(await res.json()).toEqual({ reply: 'Thank you for sharing that.', emergency: false })
   })
 
   it('returns an empty reply when the output guard rejects the model text', async () => {
     create.mockResolvedValue(modelReply('You should try physical therapy.'))
     const res = await post(body)
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({ reply: '' })
+    expect(await res.json()).toEqual({ reply: '', emergency: false })
   })
 
   it('sends the model only the latest visitor message, never earlier or assistant turns', async () => {
@@ -83,7 +83,7 @@ describe('POST /api/chat', () => {
   ])('answers an emergency deterministically without calling the model: %s', async (text) => {
     const res = await post({ messages: [{ role: 'assistant', text: 'Hi' }, { role: 'user', text }] })
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({ reply: EMERGENCY_REPLY })
+    expect(await res.json()).toEqual({ reply: EMERGENCY_REPLY, emergency: true })
     expect(create).not.toHaveBeenCalled()
   })
 
@@ -91,7 +91,7 @@ describe('POST /api/chat', () => {
     vi.stubEnv('ANTHROPIC_API_KEY', '')
     const res = await post({ messages: [{ role: 'user', text: 'I took too many pills' }] })
     expect(res.status).toBe(200)
-    expect(await res.json()).toEqual({ reply: EMERGENCY_REPLY })
+    expect(await res.json()).toEqual({ reply: EMERGENCY_REPLY, emergency: true })
   })
 
   it('looks for an emergency only in the latest visitor message', async () => {
@@ -103,14 +103,25 @@ describe('POST /api/chat', () => {
         { role: 'user', text: 'My knee hurts when climbing stairs' },
       ],
     })
-    expect(await res.json()).toEqual({ reply: 'Thanks.' })
+    expect(await res.json()).toEqual({ reply: 'Thanks.', emergency: false })
     expect(create).toHaveBeenCalledTimes(1)
+  })
+
+  it('marks emergency true only for the fixed server message, never for model-generated or blank replies', async () => {
+    create.mockResolvedValue(modelReply('Thank you for telling me.'))
+    expect((await (await post(body)).json()).emergency).toBe(false)
+    create.mockResolvedValue(modelReply('You should call emergency services right away.'))
+    expect(await (await post(body)).json()).toEqual({ reply: '', emergency: false })
+    create.mockResolvedValue(modelReply(EMERGENCY_REPLY))
+    expect(await (await post(body)).json()).toEqual({ reply: EMERGENCY_REPLY, emergency: false })
+    const res = await post({ messages: [{ role: 'user', text: 'I took too many pills' }] })
+    expect(await res.json()).toEqual({ reply: EMERGENCY_REPLY, emergency: true })
   })
 
   it('cannot be tricked into an unguarded reply by emergency wording in model output', async () => {
     create.mockResolvedValue(modelReply('You should call 988 or emergency services and take your medication.'))
     const res = await post(body)
-    expect(await res.json()).toEqual({ reply: '' })
+    expect(await res.json()).toEqual({ reply: '', emergency: false })
   })
 
   it('accepts a body above 100000 bytes up to 262144, as valid non-Latin input needs', async () => {
