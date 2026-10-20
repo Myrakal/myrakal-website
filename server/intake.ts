@@ -14,6 +14,7 @@ const TEXT_FORMAT = /(?![\u200c\u200d])\p{Cf}|[\p{Zl}\p{Zp}]/u
 
 const unsafe = (value: string, control: RegExp, format: RegExp) =>
   control.test(value) || format.test(value) || LONE_SURROGATE.test(value)
+export const unsafeText = (value: string) => unsafe(value, TEXT_CONTROL, TEXT_FORMAT)
 const isRecord = (v: unknown): v is Record<string, unknown> =>
   typeof v === 'object' && v !== null && !Array.isArray(v)
 
