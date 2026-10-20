@@ -27,7 +27,6 @@
     "@tailwindcss/vite": "^4.3.3",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
-    "country-flag-icons": "^1.6.20",
     "lucide-react": "^1.48.0",
     "motion": "^13.4.3",
     "posthog-js": "^1.438.12",
