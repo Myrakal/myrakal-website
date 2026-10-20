@@ -68,6 +68,32 @@ describe('extractEmail', () => {
       expect(extractEmail(wrapped)).toBe('ada@example.com')
   })
 
+  it("keeps an apostrophe inside the address: o'brien@example.com", () => {
+    const email = "o'brien@example.com"
+    for (const text of [
+      email,
+      `"${email}"`,
+      `'${email}'`,
+      `[${email}]`,
+      `{${email}}`,
+      `${email}.`,
+      `${email}!`,
+      `${email}'`,
+      `it is ${email}, thanks`,
+      `Patrick, "${email}".`,
+    ])
+      expect(extractEmail(text)).toBe(email)
+    expect(extractEmail("old@example.com, I meant o'brien@example.com")).toBe(email)
+  })
+
+  it('still excludes double quotes, backticks, curly quotes, brackets and braces from inside an address', () => {
+    expect(extractEmail('ada"x@example.com')).toBe('x@example.com')
+    expect(extractEmail('ada`x@example.com')).toBe('x@example.com')
+    expect(extractEmail('ada\u2019x@example.com')).toBe('x@example.com')
+    expect(extractEmail('ada[x@example.com')).toBe('x@example.com')
+    expect(extractEmail('ada{x@example.com')).toBe('x@example.com')
+  })
+
   it('uses the last valid email when several appear', () => {
     expect(extractEmail('old@example.com, sorry, I meant new@example.com')).toBe('new@example.com')
   })
