@@ -11,6 +11,7 @@ import {
   INTAKE_FAILED,
   INTAKE_PROMPTS,
   composeReply,
+  INTAKE_STEPS,
   replyFor,
 } from '@/lib/intake'
 import { acknowledge } from '@/lib/acknowledge'
@@ -64,11 +65,19 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     }
   }
 
+  const emergencyThenNext = () => {
+    const next = INTAKE_STEPS[accepted.current++].ask
+    return { text: EMERGENCY_REPLY, record: `${EMERGENCY_REPLY} ${next}`, emergency: true, next }
+  }
+
   const respond = async (
     text: string,
     transcript: Message[],
-  ): Promise<{ text: string; record?: string; emergency?: boolean }> => {
-    if (detectEmergency(text)) return { text: EMERGENCY_REPLY, record: EMERGENCY_REPLY, emergency: true }
+  ): Promise<{ text: string; record?: string; emergency?: boolean; next?: string }> => {
+    const flagged = detectEmergency(text)
+    const freeText = !unsaved.current && accepted.current < INTAKE_PROMPTS.length - 1
+    if (flagged && !freeText) return { text: EMERGENCY_REPLY, record: EMERGENCY_REPLY, emergency: true }
+    if (flagged) return emergencyThenNext()
     if (unsaved.current) {
       contact.current.email = extractEmail(text) ?? contact.current.email
       return { text: await save(transcript) }
@@ -88,7 +97,7 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     const controller = new AbortController()
     pending.current = controller
     const ack = await acknowledge(text, controller.signal)
-    if (ack.emergency) return { text: EMERGENCY_REPLY, record: EMERGENCY_REPLY, emergency: true }
+    if (ack.emergency) return emergencyThenNext()
     accepted.current++
     return { text: composeReply(accepted.current, ack.reply), record: composeReply(accepted.current) }
   }
@@ -105,7 +114,7 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     try {
       const [reply] = await Promise.all([respond(text, [...messages, userMessage]), wait])
       if (mounted.current) {
-        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply.text, record: reply.record, emergency: reply.emergency }])
+        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply.text, record: reply.record, emergency: reply.emergency, next: reply.next }])
         if (reply.text === INTAKE_COMPLETE) setSaved(true)
       }
     } finally {

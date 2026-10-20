@@ -96,7 +96,7 @@ describe('acknowledge', () => {
     await expect(acknowledge('hi')).resolves.toEqual({ reply: 'Thank you for telling me.', emergency: false })
   })
 
-  it.each(['Thank you.', 'I am sorry to hear that!', 'Is that right?'])('keeps %s as is', async (reply) => {
+  it.each(['Thank you.', 'I am sorry to hear that!'])('keeps %s as is', async (reply) => {
     vi.stubGlobal('fetch', ok(reply))
     const { acknowledge } = await load()
     await expect(acknowledge('hi')).resolves.toEqual({ reply: reply, emergency: false })
@@ -284,5 +284,71 @@ describe('acknowledge', () => {
 
   it('does not export a test-only reset', async () => {
     expect(Object.keys(await load())).toEqual(['acknowledge'])
+  })
+
+  it.each([
+    ['a question mark', 'Is that right? Thank you.'],
+    ['a bare domain', 'See example.com for more.'],
+    ['a short link', 'Try bit.ly/x for details.'],
+    ['a five digit run', 'Call 55555 for help.'],
+  ])('rejects a reply with %s', async (_label, reply) => {
+    vi.stubGlobal('fetch', ok(reply))
+    const { acknowledge } = await load()
+    await expect(acknowledge('hi')).resolves.toEqual(NONE)
+  })
+
+  it('skips the AI when an email straddles the 1000 character cut, so no part of it leaks', async () => {
+    const fetchMock = ok('Thank you.')
+    vi.stubGlobal('fetch', fetchMock)
+    const { acknowledge } = await load()
+    await acknowledge(`${'x'.repeat(990)} write to ada@example.com please`)
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['a six digit run', 'my member id is 123456'],
+    ['a phone number with dashes', 'it is 555-123-4567'],
+    ['a phone number with spaces and brackets', 'call (555) 123 4567'],
+    ['a numeric date of birth', 'born 03/14/1985'],
+    ['a short date of birth', 'dob 3/4/85'],
+    ['an ISO date of birth', 'born 1985-03-14'],
+    ['a written date of birth', 'born March 14, 1985'],
+  ])('skips the AI entirely when the message has %s', async (_label, text) => {
+    const fetchMock = ok('Thank you.')
+    vi.stubGlobal('fetch', fetchMock)
+    const { acknowledge } = await load()
+    await expect(acknowledge(text)).resolves.toEqual(NONE)
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it.each(['about two months', 'twice a week for 3 weeks', 'it hurts at 2 or 3 out of 10'])(
+    'still asks the AI for an ordinary answer such as "%s"',
+    async (text) => {
+      const fetchMock = ok('Thank you.')
+      vi.stubGlobal('fetch', fetchMock)
+      const { acknowledge } = await load()
+      await acknowledge(text)
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+    },
+  )
+
+  it('runs the checks on long input in linear time', async () => {
+    vi.stubGlobal('fetch', ok(''))
+    const { acknowledge } = await load()
+    const started = performance.now()
+    await acknowledge('1 '.repeat(100000))
+    await acknowledge('at '.repeat(60000))
+    expect(performance.now() - started).toBeLessThan(200)
+  })
+
+  it('never accumulates intermittent failures: any success resets the streak', async () => {
+    const bad = { ok: false, status: 500, json: async () => ({}) }
+    const good = { ok: true, status: 200, json: async () => ({ reply: 'Thank you.', emergency: false }) }
+    const fetchMock = vi.fn()
+    for (let i = 0; i < 10; i++) fetchMock.mockResolvedValueOnce(bad).mockResolvedValueOnce(good)
+    vi.stubGlobal('fetch', fetchMock)
+    const { acknowledge } = await load()
+    for (let i = 0; i < 20; i++) await acknowledge(`m${i}`)
+    expect(fetchMock).toHaveBeenCalledTimes(20)
   })
 })

@@ -229,15 +229,41 @@ describe('Chat emergency screening', () => {
     return alert
   }
 
-  it('shows the local emergency message, marked as an alert, with the continue line, and never calls the AI', async () => {
+  it('shows the local emergency message in one alert, with the continue line and the next question inside it, and never calls the AI', async () => {
     vi.stubGlobal('fetch', routes(() => ok('should not be asked')))
     const user = userEvent.setup()
     rtl.render(<Chat replyDelay={0} />)
     await answer(user, 'I have chest pain')
     await shows(3)
-    expect(shownEmergency().closest('article')!.textContent).toBe(`${EMERGENCY_REPLY}${EMERGENCY_CONTINUE}`)
-    expect(lastText()).not.toContain(INTAKE_STEPS[0].ask)
+    const alert = shownEmergency()
+    const bubble = alert.closest('article')!
+    expect(bubble.textContent).toBe(`${EMERGENCY_REPLY}${EMERGENCY_CONTINUE}${INTAKE_STEPS[0].ask}`)
+    expect(alert.textContent).toBe(bubble.textContent)
+    expect(rtl.screen.getAllByRole('alert').length).toBe(1)
     expect(calls('/api/chat').length).toBe(0)
+  })
+
+  it('does not drop a benign symptom answer that trips the detector: it is recorded and the next question follows', async () => {
+    vi.stubGlobal('fetch', routes(() => ok('Thank you.')))
+    const user = userEvent.setup()
+    rtl.render(<Chat replyDelay={0} />)
+    await answer(user, 'mild shortness of breath when climbing stairs')
+    await shows(3)
+    expect(articles().at(-2)!.textContent).toBe('mild shortness of breath when climbing stairs')
+    expect(shownEmergency().textContent).toContain(INTAKE_STEPS[0].ask)
+    expect(calls('/api/chat').length).toBe(0)
+    for (const t of ['about two months', 'MRI last month', 'Blue Shield PPO']) {
+      await answer(user, t)
+      await settled()
+    }
+    await shows(9)
+    await answer(user, 'Ada Lovelace')
+    await settled()
+    await answer(user, 'ada@example.com')
+    await rtl.waitFor(() => expect(log()).toMatch(/intake is complete/i))
+    expect(transcript().transcript[1]).toEqual({ role: 'user', text: 'mild shortness of breath when climbing stairs' })
+    expect(assistantTexts()[1]).toBe(`${EMERGENCY_REPLY} ${INTAKE_STEPS[0].ask}`)
+    expect(JSON.stringify(transcript().transcript)).not.toContain(EMERGENCY_CONTINUE.trim())
   })
 
   it('screens a message that also contains an email, and does not send it anywhere', async () => {
@@ -251,16 +277,15 @@ describe('Chat emergency screening', () => {
     expect(calls('/api/intake').length).toBe(0)
   })
 
-  it('does not advance, and the next normal answer to the same question advances', async () => {
+  it('counts the flagged answer as that step, so the next answer goes to the next question', async () => {
     vi.stubGlobal('fetch', routes(() => ok('Thank you for telling me.')))
     const user = userEvent.setup()
     rtl.render(<Chat replyDelay={0} />)
     await answer(user, 'I have chest pain')
     await shows(3)
-    shownEmergency()
     await answer(user, 'It started last week')
     await shows(5)
-    expect(lastText()).toBe(`Thank you for telling me. ${INTAKE_STEPS[0].ask}`)
+    expect(lastText()).toBe(`Thank you for telling me. ${INTAKE_STEPS[1].ask}`)
     expect(calls('/api/chat').length).toBe(1)
   })
 
@@ -320,15 +345,15 @@ describe('Chat emergency screening', () => {
     expect(calls('/api/intake').length).toBe(before)
   })
 
-  it('shows the same local message when the server flags an emergency, ignoring its text, without advancing', async () => {
+  it('shows the same local message when the server flags an emergency, ignoring its text, and moves on to the next question', async () => {
     vi.stubGlobal('fetch', routes(() => ok('SERVER TEXT THAT MUST NOT APPEAR', true)))
     const user = userEvent.setup()
     rtl.render(<Chat replyDelay={0} />)
     await answer(user, 'my knee has been bothering me')
     await shows(3)
     expect(log()).not.toContain('SERVER TEXT')
-    shownEmergency()
-    expect(lastText()).not.toContain(INTAKE_STEPS[0].ask)
+    expect(shownEmergency().textContent).toContain(INTAKE_STEPS[0].ask)
+    expect(articles().at(-2)!.textContent).toBe('my knee has been bothering me')
   })
 
   it('stores only the fixed local message for emergencies, and no model text', async () => {
@@ -336,13 +361,13 @@ describe('Chat emergency screening', () => {
     vi.stubGlobal('fetch', routes(() => ok(replies.shift() ?? '')))
     const user = userEvent.setup()
     rtl.render(<Chat replyDelay={0} />)
-    for (const t of ['chest pain', 'a', 'b', 'c', 'd', 'Ada']) {
+    for (const t of ['chest pain', 'a', 'b', 'c', 'Ada']) {
       await answer(user, t)
       await settled()
     }
     await answer(user, 'ada@example.com')
     await rtl.waitFor(() => expect(log()).toMatch(/intake is complete/i))
-    expect(assistantTexts()[1]).toBe(EMERGENCY_REPLY)
+    expect(assistantTexts()[1]).toBe(`${EMERGENCY_REPLY} ${INTAKE_STEPS[0].ask}`)
     expect(JSON.stringify(transcript().transcript)).not.toContain('MODEL')
     expect(JSON.stringify(transcript().transcript)).not.toContain(EMERGENCY_CONTINUE.trim())
   })
@@ -358,8 +383,7 @@ describe('Chat emergency screening', () => {
     vi.stubGlobal('fetch', vi.fn(down))
     await answer(user, 'I have trouble breathing')
     await shows(7)
-    shownEmergency()
-    expect(lastText()).not.toContain(INTAKE_STEPS[2].ask)
+    expect(shownEmergency().textContent).toContain(INTAKE_STEPS[2].ask)
   })
 
   it('keeps the composer usable after an emergency message', async () => {
