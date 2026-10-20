@@ -49,8 +49,8 @@ const Intake = () => (
   <RowList
     label="Your intake"
     rows={[
-      { name: 'Labs', icon: FlaskConical, status: 'Suggested' },
-      { name: 'Imaging', icon: ScanLine, status: 'Suggested' },
+      { name: 'Labs', icon: FlaskConical, status: 'Gathered' },
+      { name: 'Imaging', icon: ScanLine, status: 'Gathered' },
       { name: 'Insurance plan', icon: ShieldCheck, status: 'Added' },
     ]}
   />
@@ -106,7 +106,7 @@ const STEPS: ScrollStep[] = [
   {
     title: 'Intake',
     description:
-      'Come with or without a diagnosis. Our AI gathers your history and suggests the labs, imaging, and other tests to get, along with your insurance plan.',
+      'Come with or without a diagnosis. Our AI gathers your history, labs, imaging, other tests, and your insurance plan, then lets you know when intake is complete.',
     Mock: Intake,
   },
   {

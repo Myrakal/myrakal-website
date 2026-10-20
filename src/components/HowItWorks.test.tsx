@@ -49,4 +49,9 @@ describe('HowItWorks', () => {
     const { container } = render(<HowItWorks />)
     expect(container.querySelectorAll('[aria-label="Selected"]').length).toBe(1)
   })
+
+  it('has the AI only gather information, never suggest', () => {
+    const { container } = render(<HowItWorks />)
+    expect(container.textContent).not.toMatch(/suggest/i)
+  })
 })
