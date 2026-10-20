@@ -6,6 +6,7 @@ import { Navbar } from '@/components/Navbar'
 import Accessibility from '@/pages/Accessibility'
 import Chat from '@/pages/Chat'
 import Contact from '@/pages/Contact'
+import Doctor from '@/pages/Doctor'
 import Privacy from '@/pages/Privacy'
 import Terms from '@/pages/Terms'
 
@@ -23,6 +24,7 @@ function Home() {
 
 const pages: Record<string, React.ComponentType> = {
   '/chat': Chat,
+  '/doctor': Doctor,
   '/privacy': Privacy,
   '/terms': Terms,
   '/contact': Contact,
