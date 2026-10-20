@@ -60,7 +60,7 @@ export function Navbar() {
           For clinics
         </a>
         <a
-          href="/#waitlist"
+          href="/contact/"
           className="rounded-full bg-(image:--pearl-gradient) px-4 py-1.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-5 sm:py-2 sm:text-base"
         >
           Talk with us

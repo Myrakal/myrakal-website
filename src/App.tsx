@@ -1,4 +1,3 @@
-import { CTA } from '@/components/CTA'
 import { FAQ } from '@/components/FAQ'
 import { Footer } from '@/components/Footer'
 import { Hero } from '@/components/Hero'
@@ -17,7 +16,6 @@ function Home() {
       <Hero />
       <HowItWorks />
       <FAQ />
-      <CTA />
       <Footer />
     </>
   )

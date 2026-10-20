@@ -37,20 +37,10 @@ describe('analytics', () => {
     )
   })
 
-  it('does nothing without a key, including on track', async () => {
+  it('does nothing without a key', async () => {
     vi.stubEnv('VITE_POSTHOG_KEY', '')
-    const { initAnalytics, track } = await load()
+    const { initAnalytics } = await load()
     initAnalytics()
-    track('waitlist_focus')
     expect(posthog.init).not.toHaveBeenCalled()
-    expect(posthog.capture).not.toHaveBeenCalled()
-  })
-
-  it('forwards events to posthog once initialised', async () => {
-    vi.stubEnv('VITE_POSTHOG_KEY', 'phc_test')
-    const { initAnalytics, track } = await load()
-    initAnalytics()
-    track('waitlist_focus')
-    expect(posthog.capture).toHaveBeenCalledWith('waitlist_focus')
   })
 })

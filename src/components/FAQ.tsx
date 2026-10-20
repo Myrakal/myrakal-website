@@ -26,7 +26,7 @@ const FAQS: FaqItem[] = [
   {
     question: 'Is my information kept private?',
     answer:
-      'Our contact form only asks for your name and email. Please do not submit medical information through this website. Our Privacy Policy explains how we handle website data.',
+      'Please do not submit medical information through this website. Our Privacy Policy explains how we handle website data.',
   },
   {
     question: "What's next?",
