@@ -11,7 +11,7 @@ export default function Contact() {
     >
       <Section title="General inquiries">
         <p>
-          Email <MailLink subject="Myrakal inquiry" /> for questions about Myrakal, the waitlist,
+          Email <MailLink subject="Myrakal inquiry" /> for questions about Myrakal, our services,
           partnerships, or this website.
         </p>
       </Section>
@@ -19,7 +19,8 @@ export default function Contact() {
       <Section title="Privacy and data requests">
         <p>
           Email <MailLink subject="Privacy request" /> with “Privacy request” in the subject line. Please
-          do not include medical records or other sensitive health information.
+          do not include health information in this email; we will tell you how to share anything needed
+          for your request securely.
         </p>
       </Section>
 

@@ -5,44 +5,46 @@ export default function Privacy() {
     <LegalLayout
       title="Privacy Policy"
       documentTitle="Privacy Policy: Myrakal"
-      description="How Myrakal collects, uses, and protects information submitted through its website."
+      description="How Myrakal collects, uses, and protects information submitted through its website and services."
       eyebrow="Legal / Privacy"
-      lede="This policy explains how Myrakal handles information collected through this public website and waitlist."
+      lede="This policy explains how Myrakal handles information collected through this public website and our intake and consult services."
     >
-      <Section title="Please do not submit medical information" callout>
+      <Section title="Health information you share" callout>
         <p>
-          The current website asks only for your name and email address. Do not send medical records,
-          diagnoses, treatment details, insurance information, payment information, or other sensitive
-          health information through the waitlist or general email.
+          Our intake and consult services ask for health information, which can include your diagnosis or
+          case, lab results, imaging, other tests, and insurance plan details. Share it only through the
+          Myrakal intake and consult experience, not through general email or the website contact form.
         </p>
       </Section>
 
       <Section title="Information we collect">
         <p>
-          We collect information you choose to provide, including your name and email address when you
-          join the waitlist and the contents of messages you send to us.
+          We collect information you choose to provide, including your name, email address, messages you
+          send us, and the health and insurance information you submit during intake and consult.
         </p>
         <p>
-          Our hosting, security, font, and form providers may also process technical information needed
-          to deliver and protect the website, such as your IP address, browser and device information,
-          requested pages, timestamps, and security events.
+          Our hosting, security, analytics, font, and form providers may also process technical
+          information needed to deliver and protect the website, such as your IP address, browser and
+          device information, requested pages, timestamps, and security events.
         </p>
       </Section>
 
       <Section title="How we use information">
         <List>
-          <li>Manage the waitlist and contact you about Myrakal.</li>
-          <li>Respond to questions and requests.</li>
-          <li>Operate, secure, troubleshoot, and improve the website.</li>
+          <li>Run intake, including using artificial intelligence (AI) tools to organize your information and suggest labs, imaging, tests, or insurance details to gather.</li>
+          <li>Share your case with a licensed doctor so they can review it, approve it, or recommend changes.</li>
+          <li>Contact you about Myrakal and respond to questions and requests.</li>
+          <li>Operate, secure, troubleshoot, and improve the website and services.</li>
           <li>Comply with law and protect our rights, users, and services.</li>
         </List>
       </Section>
 
       <Section title="Service providers and disclosures">
         <p>
-          We use service providers to support website hosting and security, form processing, email, and
-          web fonts. These currently include Vercel, Formspree, Fontshare, and Google Fonts. They may process information on our behalf under their own terms
-          and privacy commitments.
+          We use service providers to support website hosting and security, form processing, email,
+          analytics, AI processing, and web fonts. These providers currently include Vercel, Formspree, PostHog, Fontshare, and Google Fonts. They may process information on our behalf under their own terms
+          and privacy commitments. Licensed doctors who review your case also receive the information
+          needed for that review.
         </p>
         <p>
           We may disclose information when required by law, to protect rights or safety, or as part of a
@@ -54,15 +56,15 @@ export default function Privacy() {
       <Section title="Cookies and similar technologies">
         <p>
           Hosting and security providers may use cookies or similar technologies that are necessary to
-          deliver and protect the website. We do not knowingly enable advertising cookies or optional
-          marketing analytics on this website.
+          deliver and protect the website. Our analytics provider may use cookies, local storage, or similar technologies to understand
+          how the website is used. We do not knowingly enable advertising cookies.
         </p>
       </Section>
 
       <Section title="Retention and security">
         <p>
           We retain information only as long as reasonably necessary for the purposes described above,
-          including maintaining the waitlist, responding to you, meeting legal obligations, and resolving
+          including providing intake and consult services, responding to you, meeting legal obligations, and resolving
           disputes. We use safeguards appropriate to the nature of the information, but no method of
           transmission or storage is completely secure.
         </p>
@@ -87,7 +89,7 @@ export default function Privacy() {
       <Section title="Children">
         <p>
           This website is not directed to children under 18, and we do not knowingly collect personal
-          information from children through the waitlist.
+          information from children.
         </p>
       </Section>
 
