@@ -14,3 +14,4 @@ CREATE TABLE "intakes" (
 
 
 ALTER TABLE "intakes" ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON "intakes" FROM anon, authenticated;

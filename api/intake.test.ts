@@ -35,7 +35,7 @@ describe('POST /api/intake', () => {
   it('returns 201 without saving when the honeypot is filled', async () => {
     const res = await post({ ...body, website: 'http://spam.example' })
     expect(res.status).toBe(201)
-    expect(await res.json()).toEqual({ id: 'ok' })
+    expect((await res.json()).id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
     expect(create).not.toHaveBeenCalled()
   })
 
@@ -144,6 +144,137 @@ describe('POST /api/intake request hardening', () => {
     const res = await post({ ...body, website: 'x' })
     expect(res.status).toBe(201)
     expect(create).not.toHaveBeenCalled()
+  })
+})
+
+const postTo = (url: string, headers: Record<string, string>) =>
+  POST(
+    new Request(url, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...headers },
+      body: JSON.stringify(body),
+    }),
+  )
+
+describe('POST /api/intake origin check behind proxies', () => {
+  beforeEach(() => {
+    create.mockReset()
+    create.mockResolvedValue({ id: 'abc-123' })
+  })
+
+  it('compares Origin to x-forwarded-host when present', async () => {
+    const ok = await postTo('http://internal.local/api/intake', {
+      origin: 'https://myrakal.com',
+      'x-forwarded-host': 'myrakal.com',
+    })
+    expect(ok.status).toBe(201)
+  })
+
+  it('rejects an Origin that matches the URL host but not x-forwarded-host', async () => {
+    const res = await postTo('http://internal.local/api/intake', {
+      origin: 'http://internal.local',
+      'x-forwarded-host': 'myrakal.com',
+    })
+    expect(res.status).toBe(403)
+  })
+
+  it('uses the first value of a comma-separated x-forwarded-host', async () => {
+    const res = await postTo('http://internal.local/api/intake', {
+      origin: 'https://myrakal.com',
+      'x-forwarded-host': 'myrakal.com, proxy.internal',
+    })
+    expect(res.status).toBe(201)
+  })
+
+  it('compares Origin to the host header when there is no x-forwarded-host', async () => {
+    const ok = await postTo('http://internal.local/api/intake', {
+      origin: 'https://myrakal.com',
+      host: 'myrakal.com',
+    })
+    expect(ok.status).toBe(201)
+    const bad = await postTo('http://internal.local/api/intake', {
+      origin: 'http://internal.local',
+      host: 'myrakal.com',
+    })
+    expect(bad.status).toBe(403)
+  })
+
+  it('falls back to the request URL host and ignores the scheme', async () => {
+    const ok = await postTo('http://myrakal.com/api/intake', { origin: 'https://myrakal.com' })
+    expect(ok.status).toBe(201)
+    const bad = await postTo('http://myrakal.com/api/intake', { origin: 'https://other.com' })
+    expect(bad.status).toBe(403)
+  })
+
+  it('compares ports as part of the host', async () => {
+    const res = await postTo('http://localhost:5173/api/intake', { origin: 'http://localhost:3000' })
+    expect(res.status).toBe(403)
+  })
+
+  it('rejects an unparseable Origin', async () => {
+    const res = await postTo('http://localhost/api/intake', { origin: 'null' })
+    expect(res.status).toBe(403)
+  })
+})
+
+describe('POST /api/intake streaming body limit', () => {
+  beforeEach(() => {
+    create.mockReset()
+    create.mockResolvedValue({ id: 'abc-123' })
+  })
+
+  const streamed = (chunks: string[], onPull?: () => void) => {
+    const encoder = new TextEncoder()
+    let i = 0
+    const stream = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        onPull?.()
+        if (i >= chunks.length) controller.close()
+        else controller.enqueue(encoder.encode(chunks[i++]))
+      },
+    })
+    return new Request('http://localhost/api/intake', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: stream,
+      duplex: 'half',
+    } as RequestInit)
+  }
+
+  it('stops reading and returns 413 as soon as the running total exceeds the limit', async () => {
+    let pulls = 0
+    const chunks = Array.from({ length: 50 }, () => 'x'.repeat(10000))
+    const res = await POST(streamed(chunks, () => pulls++))
+    expect(res.status).toBe(413)
+    expect(pulls).toBeLessThan(20)
+    expect(create).not.toHaveBeenCalled()
+  })
+
+  it('accepts a body streamed in several chunks under the limit', async () => {
+    const json = JSON.stringify(body)
+    const res = await POST(streamed([json.slice(0, 10), json.slice(10)]))
+    expect(res.status).toBe(201)
+  })
+
+  it('decodes multi-byte characters split across chunks', async () => {
+    const payload = JSON.stringify({ ...body, name: 'José' })
+    const bytes = new TextEncoder().encode(payload)
+    const split = new TextEncoder().encode(payload.slice(0, payload.indexOf('é'))).length + 1
+    const req = new Request('http://localhost/api/intake', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(bytes.slice(0, split))
+          controller.enqueue(bytes.slice(split))
+          controller.close()
+        },
+      }),
+      duplex: 'half',
+    } as RequestInit)
+    const res = await POST(req)
+    expect(res.status).toBe(201)
+    expect(create.mock.calls[0][0].data.name).toBe('José')
   })
 })
 

@@ -39,7 +39,8 @@ describe('saveIntake', () => {
 
   it('silently skips saving when the honeypot is filled', async () => {
     const { create, db } = store()
-    await expect(saveIntake({ ...valid, website: 'http://spam.example' }, db)).resolves.toEqual({ id: 'ok' })
+    const { id } = await saveIntake({ ...valid, website: 'http://spam.example' }, db)
+    expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
     expect(create).not.toHaveBeenCalled()
   })
 
@@ -69,11 +70,39 @@ describe('saveIntake', () => {
     ['leading dot in domain', { ...valid, email: 'a@.example.com' }],
     ['trailing dot in domain', { ...valid, email: 'a@example.com.' }],
     ['control character in email', { ...valid, email: 'a\u0001b@example.com' }],
+    ['lone high surrogate in name', { ...valid, name: 'Ad\ud800a' }],
+    ['lone low surrogate in email', { ...valid, email: 'ada\udc00@example.com' }],
+    ['lone surrogate in message text', { ...valid, transcript: [{ role: 'user', text: 'hi \ud83d' }] }],
+    ['tab in name', { ...valid, name: 'Ad\ta' }],
+    ['newline in name', { ...valid, name: 'Ad\na' }],
+    ['C1 control in name', { ...valid, name: 'Ad\u0085a' }],
+    ['DEL in name', { ...valid, name: 'Ad\u007fa' }],
+    ['bell in message text', { ...valid, transcript: [{ role: 'user', text: 'hi\u0007' }] }],
+    ['escape in message text', { ...valid, transcript: [{ role: 'user', text: 'hi\u001b[0m' }] }],
+    ['DEL in message text', { ...valid, transcript: [{ role: 'user', text: 'hi\u007f' }] }],
+    ['C1 control in message text', { ...valid, transcript: [{ role: 'user', text: 'hi\u009f' }] }],
+    ['bidi override in name', { ...valid, name: 'Ada\u202e' }],
+    ['bidi override in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u202db' }] }],
+    ['bidi isolate in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u2066b' }] }],
+    ['bidi isolate in email', { ...valid, email: 'a\u2069@example.com' }],
     ['transcript over the total cap', { ...valid, transcript: Array.from({ length: 14 }, () => ({ role: 'user', text: 'x'.repeat(4000) })) }],
   ])('rejects %s', async (_label, input) => {
     const { create, db } = store()
     await expect(saveIntake(input, db)).rejects.toBeInstanceOf(InvalidIntake)
     expect(create).not.toHaveBeenCalled()
+  })
+
+  it('accepts newlines, tabs, carriage returns, emoji and accents in message text', async () => {
+    const { create, db } = store()
+    const text = 'line one\r\nline\ttwo \ud83d\ude42 café'
+    await saveIntake({ ...valid, transcript: [{ role: 'user', text }] }, db)
+    expect(create.mock.calls[0][0].data.transcript).toEqual([{ role: 'user', text }])
+  })
+
+  it('accepts accents and emoji in the name', async () => {
+    const { create, db } = store()
+    await saveIntake({ ...valid, name: 'José \ud83d\ude42' }, db)
+    expect(create.mock.calls[0][0].data.name).toBe('José \ud83d\ude42')
   })
 
   it('lowercases the email before storing', async () => {

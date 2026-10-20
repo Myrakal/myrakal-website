@@ -11,12 +11,30 @@ const json = (body: unknown, status: number, headers?: Record<string, string>) =
 
 const methodNotAllowed = () => json({ error: 'Method not allowed' }, 405, { allow: 'POST' })
 
-export const GET = methodNotAllowed
-export const PUT = methodNotAllowed
-export const PATCH = methodNotAllowed
-export const DELETE = methodNotAllowed
+export { methodNotAllowed as DELETE, methodNotAllowed as GET, methodNotAllowed as PATCH, methodNotAllowed as PUT }
 
 const tooLarge = () => json({ error: 'Request too large' }, 413)
+
+function sameHost(request: Request, origin: string) {
+  const forwarded = request.headers.get('x-forwarded-host')?.split(',')[0]?.trim()
+  const expected = forwarded || request.headers.get('host') || new URL(request.url).host
+  return URL.canParse(origin) && new URL(origin).host === expected
+}
+
+async function readLimited(request: Request) {
+  const reader = request.body?.getReader()
+  if (!reader) return ''
+  const decoder = new TextDecoder()
+  let total = 0
+  let text = ''
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) return text + decoder.decode()
+    total += value.byteLength
+    if (total > MAX_BYTES) return reader.cancel().then(() => null)
+    text += decoder.decode(value, { stream: true })
+  }
+}
 
 function logFailure(err: unknown) {
   const name = err instanceof Error ? err.name : 'UnknownError'
@@ -26,13 +44,13 @@ function logFailure(err: unknown) {
 
 export async function POST(request: Request) {
   const origin = request.headers.get('origin')
-  if (origin && origin !== new URL(request.url).origin) return json({ error: 'Forbidden' }, 403)
+  if (origin && !sameHost(request, origin)) return json({ error: 'Forbidden' }, 403)
   if (!(request.headers.get('content-type') ?? '').toLowerCase().startsWith('application/json'))
     return json({ error: 'Content-Type must be application/json' }, 415)
   if (Number(request.headers.get('content-length')) > MAX_BYTES) return tooLarge()
 
-  const text = await request.text()
-  if (new TextEncoder().encode(text).length > MAX_BYTES) return tooLarge()
+  const text = await readLimited(request)
+  if (text === null) return tooLarge()
   let input: unknown
   try {
     input = JSON.parse(text)
