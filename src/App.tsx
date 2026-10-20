@@ -4,6 +4,7 @@ import { Hero } from '@/components/Hero'
 import { HowItWorks } from '@/components/HowItWorks'
 import { Navbar } from '@/components/Navbar'
 import Accessibility from '@/pages/Accessibility'
+import Chat from '@/pages/Chat'
 import Contact from '@/pages/Contact'
 import Privacy from '@/pages/Privacy'
 import Terms from '@/pages/Terms'
@@ -21,6 +22,7 @@ function Home() {
 }
 
 const pages: Record<string, () => React.JSX.Element> = {
+  '/chat': Chat,
   '/privacy': Privacy,
   '/terms': Terms,
   '/contact': Contact,

@@ -17,9 +17,9 @@ describe('Hero', () => {
     ).toBeTruthy()
   })
 
-  it('has a short call to action linking to the contact page', () => {
+  it('has a short call to action linking to the chat', () => {
     render(<Hero />)
-    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/contact/')
+    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/chat/')
   })
 
   it('renders a muted, looping, inline autoplay demo video', () => {
