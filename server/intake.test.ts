@@ -85,6 +85,25 @@ describe('saveIntake', () => {
     ['bidi override in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u202db' }] }],
     ['bidi isolate in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u2066b' }] }],
     ['bidi isolate in email', { ...valid, email: 'a\u2069@example.com' }],
+    ['zero-width space in name', { ...valid, name: 'Ad\u200ba' }],
+    ['byte order mark in name', { ...valid, name: '\ufeffAda' }],
+    ['line separator in name', { ...valid, name: 'Ad\u2028a' }],
+    ['paragraph separator in name', { ...valid, name: 'Ad\u2029a' }],
+    ['tag character in name', { ...valid, name: 'Ada\u{e0067}' }],
+    ['zero-width joiner in name', { ...valid, name: 'Ad\u200da' }],
+    ['zero-width space in email', { ...valid, email: 'ada\u200b@example.com' }],
+    ['byte order mark in email', { ...valid, email: '\ufeffada@example.com' }],
+    ['line separator in email', { ...valid, email: 'ada\u2028@example.com' }],
+    ['tag character in email', { ...valid, email: 'ada\u{e0067}@example.com' }],
+    ['zero-width space in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u200bb' }] }],
+    ['byte order mark in message text', { ...valid, transcript: [{ role: 'user', text: 'a\ufeffb' }] }],
+    ['zero-width non-joiner in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u200cb' }] }],
+    ['soft hyphen in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u00adb' }] }],
+    ['tag character in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u{e0067}b' }] }],
+    ['line separator in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u2028b' }] }],
+    ['paragraph separator in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u2029b' }] }],
+    ['leading byte order mark in message text', { ...valid, transcript: [{ role: 'user', text: '\ufeffhello' }] }],
+    ['trailing line separator in message text', { ...valid, transcript: [{ role: 'user', text: 'hello\u2028' }] }],
     ['transcript over the total cap', { ...valid, transcript: Array.from({ length: 14 }, () => ({ role: 'user', text: 'x'.repeat(4000) })) }],
   ])('rejects %s', async (_label, input) => {
     const { create, db } = store()
@@ -95,6 +114,13 @@ describe('saveIntake', () => {
   it('accepts newlines, tabs, carriage returns, emoji and accents in message text', async () => {
     const { create, db } = store()
     const text = 'line one\r\nline\ttwo \ud83d\ude42 café'
+    await saveIntake({ ...valid, transcript: [{ role: 'user', text }] }, db)
+    expect(create.mock.calls[0][0].data.transcript).toEqual([{ role: 'user', text }])
+  })
+
+  it('accepts zero-width joiner and variation selectors in message text, as emoji sequences need them', async () => {
+    const { create, db } = store()
+    const text = '\u{1f468}\u200d\u{1f469}\u200d\u{1f467} \u2764\ufe0f \u2764\ufe0e'
     await saveIntake({ ...valid, transcript: [{ role: 'user', text }] }, db)
     expect(create.mock.calls[0][0].data.transcript).toEqual([{ role: 'user', text }])
   })

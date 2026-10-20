@@ -85,20 +85,20 @@ describe('POST /api/intake request hardening', () => {
     expect(res.status).toBe(201)
   })
 
-  it('returns 413 when content-length is over 100000 bytes, before parsing', async () => {
-    const res = await post('{not json', true, { 'content-length': '100001' })
+  it('returns 413 when content-length is over 262144 bytes, before parsing', async () => {
+    const res = await post('{not json', true, { 'content-length': '262145' })
     expect(res.status).toBe(413)
     expect(create).not.toHaveBeenCalled()
   })
 
-  it('returns 413 when the actual body is over 100000 bytes and no content-length is sent', async () => {
-    const res = await post(`{"pad":"${'x'.repeat(100001)}"}`, true)
+  it('returns 413 when the actual body is over 262144 bytes and no content-length is sent', async () => {
+    const res = await post(`{"pad":"${'x'.repeat(262145)}"}`, true)
     expect(res.status).toBe(413)
     expect(create).not.toHaveBeenCalled()
   })
 
   it('counts bytes, not characters, against the limit', async () => {
-    const res = await post(`{"pad":"${'é'.repeat(50001)}"}`, true)
+    const res = await post(`{"pad":"${'é'.repeat(131073)}"}`, true)
     expect(res.status).toBe(413)
   })
 
@@ -243,11 +243,19 @@ describe('POST /api/intake streaming body limit', () => {
 
   it('stops reading and returns 413 as soon as the running total exceeds the limit', async () => {
     let pulls = 0
-    const chunks = Array.from({ length: 50 }, () => 'x'.repeat(10000))
+    const chunks = Array.from({ length: 100 }, () => 'x'.repeat(10000))
     const res = await POST(streamed(chunks, () => pulls++))
     expect(res.status).toBe(413)
-    expect(pulls).toBeLessThan(20)
+    expect(pulls).toBeLessThan(40)
     expect(create).not.toHaveBeenCalled()
+  })
+
+  it('accepts a maximal valid transcript of three-byte characters', async () => {
+    const full = { role: 'user', text: '€'.repeat(4000) }
+    const transcript = [...Array.from({ length: 12 }, () => full), { role: 'user', text: '€'.repeat(2000) }]
+    const res = await post({ ...body, transcript })
+    expect(res.status).toBe(201)
+    expect(create).toHaveBeenCalledTimes(1)
   })
 
   it('accepts a body streamed in several chunks under the limit', async () => {

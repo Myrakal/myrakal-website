@@ -1,7 +1,7 @@
 import { db } from '../server/db.ts'
 import { InvalidIntake, saveIntake } from '../server/intake.ts'
 
-const MAX_BYTES = 100000
+const MAX_BYTES = 262144
 
 const json = (body: unknown, status: number, headers?: Record<string, string>) =>
   new Response(JSON.stringify(body), {

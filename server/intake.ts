@@ -10,27 +10,30 @@ const LONE_SURROGATE = /[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[
 const BIDI = /[\u202a-\u202e\u2066-\u2069]/
 const STRICT_CONTROL = /[\u0000-\u001f\u007f-\u009f]/
 const TEXT_CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/
+const STRICT_FORMAT = /[\p{Cf}\p{Zl}\p{Zp}]/u
+const TEXT_FORMAT = /(?!\u200d)\p{Cf}|[\p{Zl}\p{Zp}]/u
 
-const unsafe = (value: string, control: RegExp) =>
-  control.test(value) || BIDI.test(value) || LONE_SURROGATE.test(value)
+const unsafe = (value: string, control: RegExp, format: RegExp) =>
+  control.test(value) || format.test(value) || BIDI.test(value) || LONE_SURROGATE.test(value)
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
   typeof v === 'object' && v !== null && !Array.isArray(v)
 
 function parseName(value: unknown) {
   if (value === undefined || value === null) return null
-  if (typeof value !== 'string' || unsafe(value, STRICT_CONTROL) || value.trim().length > MAX.name)
+  if (typeof value !== 'string' || unsafe(value, STRICT_CONTROL, STRICT_FORMAT) || value.trim().length > MAX.name)
     throw new InvalidIntake('Invalid name')
   return value.trim() || null
 }
 
 function parseEmail(value: unknown) {
-  const email = typeof value === 'string' ? value.trim().toLowerCase() : ''
+  const raw = typeof value === 'string' ? value : ''
+  const email = raw.trim().toLowerCase()
   const domain = email.slice(email.indexOf('@') + 1)
   if (
     email.length > MAX.email ||
     !EMAIL.test(email) ||
-    unsafe(email, STRICT_CONTROL) ||
+    unsafe(raw, STRICT_CONTROL, STRICT_FORMAT) ||
     email.includes('..') ||
     domain.startsWith('.') ||
     domain.endsWith('.')
@@ -45,8 +48,9 @@ function parseTranscript(value: unknown): Message[] {
   let total = 0
   return value.map((m) => {
     if (!isRecord(m) || (m.role !== 'assistant' && m.role !== 'user')) throw new InvalidIntake('Invalid message')
-    const text = typeof m.text === 'string' ? m.text.trim() : ''
-    if (text.length < 1 || text.length > MAX.text || unsafe(text, TEXT_CONTROL))
+    const raw = typeof m.text === 'string' ? m.text : ''
+    const text = raw.trim()
+    if (text.length < 1 || text.length > MAX.text || unsafe(raw, TEXT_CONTROL, TEXT_FORMAT))
       throw new InvalidIntake('Invalid message text')
     total += text.length
     if (total > MAX.total) throw new InvalidIntake('Transcript too long')

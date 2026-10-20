@@ -1,6 +1,3 @@
--- CreateSchema
-CREATE SCHEMA IF NOT EXISTS "public";
-
 -- CreateTable
 CREATE TABLE "intakes" (
     "id" UUID NOT NULL,
@@ -14,4 +11,12 @@ CREATE TABLE "intakes" (
 
 
 ALTER TABLE "intakes" ENABLE ROW LEVEL SECURITY;
-REVOKE ALL ON "intakes" FROM anon, authenticated;
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN
+    REVOKE ALL ON "intakes" FROM anon;
+  END IF;
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN
+    REVOKE ALL ON "intakes" FROM authenticated;
+  END IF;
+END $$;
