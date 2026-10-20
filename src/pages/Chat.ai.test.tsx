@@ -405,6 +405,10 @@ describe('Chat emergency screening', () => {
     'Ada Lovelace',
     'can you help me understand my costs',
     'I would like to see my options abroad',
+    'mild lower back pain, my back is killing me when I sit',
+    "I can't breathe through my nose when I sleep",
+    'I hurt myself playing basketball last month',
+    'ada@example.com',
     "I'm a little worried about the price",
   ])('does not treat the ordinary answer "%s" as an emergency', (text) => {
     expect(detectEmergency(text)).toBe(false)
@@ -428,6 +432,27 @@ describe('Chat emergency screening', () => {
     await rtl.waitFor(() => expect(log()).toMatch(/intake is complete/i))
     expect(rtl.screen.queryByRole('alert')).toBeNull()
     expect(assistantTexts()).not.toContain(EMERGENCY_REPLY)
+  })
+
+  it('completes a second realistic intake with colloquial and nose or sports wording, and never shows an alert', async () => {
+    vi.stubGlobal('fetch', routes(() => ok('Thank you.')))
+    const user = userEvent.setup()
+    rtl.render(<Chat replyDelay={0} />)
+    for (const t of [
+      'mild lower back pain, my back is killing me when I sit',
+      "I can't breathe through my nose when I sleep",
+      'I hurt myself playing basketball last month',
+      'Blue Shield PPO',
+      'Ada Lovelace',
+    ]) {
+      await answer(user, t)
+      await settled()
+    }
+    await answer(user, 'ada@example.com')
+    await rtl.waitFor(() => expect(log()).toMatch(/intake is complete/i))
+    expect(rtl.screen.queryByRole('alert')).toBeNull()
+    expect(assistantTexts()).not.toContain(EMERGENCY_REPLY)
+    expect(assistantTexts().some((t: string) => t.includes(EMERGENCY_REPLY))).toBe(false)
   })
 
   it('asks the AI about a help request that is not an emergency, and keeps the flow going', async () => {
