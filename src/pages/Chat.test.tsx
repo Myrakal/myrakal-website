@@ -369,4 +369,38 @@ describe('Chat page', () => {
       vi.useRealTimers()
     }
   })
+
+  describe('emergency notice', () => {
+    const NOTICE = 'If this is an emergency, call 911 or your local emergency number. This chat is not monitored in real time.'
+    const notice = () => screen.getAllByText(NOTICE)
+
+    it('is shown once, in the footer under the composer, in the initial state', () => {
+      render(<Chat replyDelay={0} />)
+      expect(notice().length).toBe(1)
+      const composer = screen.getByRole('textbox', { name: 'Message' })
+      expect(composer.compareDocumentPosition(notice()[0]) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+      expect(notice()[0].className).toMatch(/text-muted-foreground/)
+    })
+
+    it('stays visible mid-intake and after the intake is complete and locked', async () => {
+      const user = userEvent.setup()
+      render(<Chat replyDelay={0} />)
+      await answer(user, 'a')
+      await waitFor(() => expect(screen.getAllByRole('article').length).toBe(3))
+      expect(notice().length).toBe(1)
+      for (const t of ['b', 'c', 'd', 'Ada Lovelace', 'ada@example.com']) {
+        await answer(user, t)
+        await waitFor(() => expect((screen.getByRole('button', { name: 'Send message' }) as HTMLButtonElement).disabled).toBe(true))
+      }
+      await waitFor(() => expect(screen.getByRole('log').textContent).toMatch(/intake is complete/i))
+      expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).readOnly).toBe(true)
+      expect(notice().length).toBe(1)
+    })
+
+    it('is in the sticky footer block with the composer, not inside the scrolling log', () => {
+      render(<Chat replyDelay={0} />)
+      expect(screen.getByRole('log').contains(notice()[0])).toBe(false)
+      expect(notice()[0].closest('.sticky')).toBe(screen.getByRole('textbox', { name: 'Message' }).closest('.sticky'))
+    })
+  })
 })

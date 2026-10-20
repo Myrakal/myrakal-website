@@ -18,6 +18,9 @@ import { acknowledge } from '@/lib/acknowledge'
 import { detectEmergency, EMERGENCY_REPLY } from '@/lib/emergency'
 import { submitIntake } from '@/lib/submitIntake'
 
+const EMERGENCY_NOTE =
+  'If this is an emergency, call 911 or your local emergency number. This chat is not monitored in real time.'
+
 const GREETING: Message = {
   id: 'greeting',
   role: 'assistant',
@@ -151,7 +154,8 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
             {saved ? 'Intake complete. A licensed doctor will review your case.' : ''}
           </p>
           <ChatComposer onSend={send} busy={typing} locked={saved} />
-          <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">
+          <p className="mt-2 px-2 text-center text-xs leading-5 text-muted-foreground">{EMERGENCY_NOTE}</p>
+          <p className="mt-1 px-2 text-center text-xs leading-5 text-muted-foreground">
             No account needed. See our{' '}
             <a className="underline underline-offset-4 hover:text-foreground" href="/privacy/">
               Privacy Policy
