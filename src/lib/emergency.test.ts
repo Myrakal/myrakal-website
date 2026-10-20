@@ -539,6 +539,13 @@ describe('detectEmergency: pathological input stays fast', () => {
     ['spaced letters', 'c a n t '.repeat(32000)],
     ['almost phrases', "i can't breath e ".repeat(15000)],
     ['unicode', '​'.repeat(131000) + 'é'.repeat(65000)],
+    ['car accident a b', 'car accident a b c d e f g '.repeat(10000)],
+    ['hit my head a b', 'hit my head a b c d e f g h i '.repeat(9000)],
+    ['crushing a a a', 'crushing a a a a a a '.repeat(12000)],
+    ['please just oh god', 'please just oh god please '.repeat(10000)],
+    ['i need', 'i need '.repeat(37000)],
+    ['sentence segments', '. help me '.repeat(25000)],
+    ['short typo tokens', 'kil '.repeat(65000)],
   ]
   it.each(cases)('%s', (_label, text) => {
     const start = performance.now()
