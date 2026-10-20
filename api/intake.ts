@@ -2,7 +2,6 @@ import { db } from '../server/db.ts'
 import { InvalidIntake, saveIntake } from '../server/intake.ts'
 
 const MAX_BYTES = 262144
-
 const json = (body: unknown, status: number, headers?: Record<string, string>) =>
   new Response(JSON.stringify(body), {
     status,
@@ -12,7 +11,6 @@ const json = (body: unknown, status: number, headers?: Record<string, string>) =
 const methodNotAllowed = () => json({ error: 'Method not allowed' }, 405, { allow: 'POST' })
 
 export { methodNotAllowed as DELETE, methodNotAllowed as GET, methodNotAllowed as PATCH, methodNotAllowed as PUT }
-
 const tooLarge = () => json({ error: 'Request too large' }, 413)
 
 function sameHost(request: Request, origin: string) {
@@ -24,7 +22,7 @@ function sameHost(request: Request, origin: string) {
 async function readLimited(request: Request) {
   const reader = request.body?.getReader()
   if (!reader) return ''
-  const decoder = new TextDecoder()
+  const decoder = new TextDecoder('utf-8', { fatal: true })
   let total = 0
   let text = ''
   for (;;) {
@@ -38,8 +36,8 @@ async function readLimited(request: Request) {
 
 function logFailure(err: unknown) {
   const name = err instanceof Error ? err.name : 'UnknownError'
-  const code = typeof (err as { code?: unknown })?.code === 'string' ? (err as { code: string }).code : undefined
-  console.error('intake save failed', name, code)
+  const code = (err as { code?: unknown })?.code
+  console.error('intake save failed', name, typeof code === 'string' ? code : undefined)
 }
 
 export async function POST(request: Request) {
@@ -49,13 +47,15 @@ export async function POST(request: Request) {
     return json({ error: 'Content-Type must be application/json' }, 415)
   if (Number(request.headers.get('content-length')) > MAX_BYTES) return tooLarge()
 
-  const text = await readLimited(request)
-  if (text === null) return tooLarge()
   let input: unknown
   try {
+    const text = await readLimited(request)
+    if (text === null) return tooLarge()
     input = JSON.parse(text)
-  } catch {
-    return json({ error: 'Invalid JSON' }, 400)
+  } catch (err) {
+    if (err instanceof SyntaxError) return json({ error: 'Invalid JSON' }, 400)
+    logFailure(err)
+    return json({ error: 'Invalid request body' }, 400)
   }
   try {
     const { id } = await saveIntake(input, db())

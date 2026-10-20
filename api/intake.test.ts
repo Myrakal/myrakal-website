@@ -286,6 +286,54 @@ describe('POST /api/intake streaming body limit', () => {
   })
 })
 
+describe('POST /api/intake body read failures and encoding', () => {
+  beforeEach(() => {
+    create.mockReset()
+    create.mockResolvedValue({ id: 'abc-123' })
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+  })
+
+  const withBody = (body: BodyInit) =>
+    new Request('http://localhost/api/intake', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body,
+      duplex: 'half',
+    } as RequestInit)
+
+  it('returns 400, not an unhandled error, when the body stream fails', async () => {
+    const stream = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        controller.error(Object.assign(new Error('socket secret detail'), { name: 'AbortError', code: 'ECONNRESET' }))
+      },
+    })
+    const res = await POST(withBody(stream))
+    expect(res.status).toBe(400)
+    expect(typeof (await res.json()).error).toBe('string')
+    const logged = JSON.stringify(vi.mocked(console.error).mock.calls)
+    expect(logged).toMatch(/AbortError/)
+    expect(logged).toMatch(/ECONNRESET/)
+    expect(logged).not.toMatch(/secret detail/)
+    expect(create).not.toHaveBeenCalled()
+  })
+
+  it('returns 400 for invalid UTF-8 instead of storing replacement characters', async () => {
+    const encoder = new TextEncoder()
+    const head = encoder.encode('{"email":"ada@example.com","transcript":[{"role":"user","text":"hi ')
+    const tail = encoder.encode('"}]}')
+    const bytes = new Uint8Array([...head, 0xff, 0xfe, ...tail])
+    const res = await POST(withBody(bytes))
+    expect(res.status).toBe(400)
+    expect(create).not.toHaveBeenCalled()
+  })
+
+  it('returns 400 for a body that ends in the middle of a multi-byte character', async () => {
+    const bytes = new TextEncoder().encode('{"a":"é"}')
+    const res = await POST(withBody(bytes.slice(0, bytes.indexOf(0xc3) + 1)))
+    expect(res.status).toBe(400)
+  })
+})
+
 describe('other methods', () => {
   it.each([
     ['GET', GET],

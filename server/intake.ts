@@ -27,14 +27,16 @@ function parseName(value: unknown) {
 function parseEmail(value: unknown) {
   const raw = typeof value === 'string' ? value : ''
   const email = raw.trim().toLowerCase()
-  const domain = email.slice(email.indexOf('@') + 1)
+  const at = email.indexOf('@')
+  const local = email.slice(0, at)
   if (
     email.length > MAX.email ||
     !EMAIL.test(email) ||
     unsafe(raw, STRICT_CONTROL, STRICT_FORMAT) ||
     email.includes('..') ||
-    domain.startsWith('.') ||
-    domain.endsWith('.')
+    local.length > 64 ||
+    /^\.|\.$/.test(local) ||
+    email.slice(at + 1).split('.').some((label) => !label || label.startsWith('-') || label.endsWith('-'))
   )
     throw new InvalidIntake('Invalid email')
   return email
@@ -59,10 +61,8 @@ function parseTranscript(value: unknown): Message[] {
 export async function saveIntake(input: unknown, store: Pick<PrismaClient, 'intake'>) {
   if (!isRecord(input)) throw new InvalidIntake('Invalid request')
   if (typeof input.website === 'string' && input.website.length > 0) return { id: crypto.randomUUID() }
-  const data = {
-    name: parseName(input.name),
-    email: parseEmail(input.email),
-    transcript: parseTranscript(input.transcript),
-  }
-  return store.intake.create({ data, select: { id: true } })
+  return store.intake.create({
+    data: { name: parseName(input.name), email: parseEmail(input.email), transcript: parseTranscript(input.transcript) },
+    select: { id: true },
+  })
 }

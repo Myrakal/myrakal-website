@@ -104,6 +104,13 @@ describe('saveIntake', () => {
     ['paragraph separator in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u2029b' }] }],
     ['leading byte order mark in message text', { ...valid, transcript: [{ role: 'user', text: '\ufeffhello' }] }],
     ['trailing line separator in message text', { ...valid, transcript: [{ role: 'user', text: 'hello\u2028' }] }],
+    ['local part over 64 characters', { ...valid, email: `${'a'.repeat(65)}@example.com` }],
+    ['leading dot in local part', { ...valid, email: '.ada@example.com' }],
+    ['trailing dot in local part', { ...valid, email: 'ada.@example.com' }],
+    ['domain label starting with a hyphen', { ...valid, email: 'ada@-example.com' }],
+    ['domain label ending with a hyphen', { ...valid, email: 'ada@example-.com' }],
+    ['tld starting with a hyphen', { ...valid, email: 'ada@example.-com' }],
+    ['domain ending with a hyphen', { ...valid, email: 'ada@example.com-' }],
     ['transcript over the total cap', { ...valid, transcript: Array.from({ length: 14 }, () => ({ role: 'user', text: 'x'.repeat(4000) })) }],
   ])('rejects %s', async (_label, input) => {
     const { create, db } = store()
@@ -138,6 +145,19 @@ describe('saveIntake', () => {
     const { create, db } = store()
     await saveIntake({ ...valid, name: 'José \ud83d\ude42' }, db)
     expect(create.mock.calls[0][0].data.name).toBe('José \ud83d\ude42')
+  })
+
+  it('accepts a 64 character local part and hyphens inside domain labels', async () => {
+    const { create, db } = store()
+    const email = `${'a'.repeat(64)}@my-example.co.uk`
+    await saveIntake({ ...valid, email }, db)
+    expect(create.mock.calls[0][0].data.email).toBe(email)
+  })
+
+  it('accepts dots inside the local part', async () => {
+    const { create, db } = store()
+    await saveIntake({ ...valid, email: 'ada.lovelace@example.com' }, db)
+    expect(create.mock.calls[0][0].data.email).toBe('ada.lovelace@example.com')
   })
 
   it('lowercases the email before storing', async () => {
