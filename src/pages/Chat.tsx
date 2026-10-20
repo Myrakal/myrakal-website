@@ -146,7 +146,7 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
             <ChatMessage key={m.id} message={m} />
           ))}
           {typing && <TypingIndicator />}
-          <div ref={end} className="scroll-mb-40" />
+          <div ref={end} className="scroll-mb-56" />
         </div>
 
         <div className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">
