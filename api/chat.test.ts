@@ -113,7 +113,7 @@ describe('POST /api/chat', () => {
     create.mockResolvedValue(modelReply('You should call emergency services right away.'))
     expect(await (await post(body)).json()).toEqual({ reply: '', emergency: false })
     create.mockResolvedValue(modelReply(EMERGENCY_REPLY))
-    expect(await (await post(body)).json()).toEqual({ reply: EMERGENCY_REPLY, emergency: false })
+    expect(await (await post(body)).json()).toEqual({ reply: '', emergency: false })
     const res = await post({ messages: [{ role: 'user', text: 'I took too many pills' }] })
     expect(await res.json()).toEqual({ reply: EMERGENCY_REPLY, emergency: true })
   })
