@@ -132,16 +132,19 @@ describe('Chat page', () => {
     }
   })
 
-  it('invites extra details once intake is complete', async () => {
+  it('locks the composer once intake is saved', async () => {
     const user = userEvent.setup()
     render(<Chat replyDelay={0} />)
     const box = screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement
     expect(box.placeholder).toBe('Type your message')
+    expect(box.disabled).toBe(false)
     for (let i = 1; i <= 5; i++) {
       await user.type(box, i === 5 ? 'Ada ada@example.com{Enter}' : `answer ${i}{Enter}`)
       await waitFor(() => expect(screen.getAllByRole('article').length).toBe(1 + 2 * i))
     }
-    expect(box.placeholder).toBe('Add anything else for the doctor')
+    expect(box.disabled).toBe(true)
+    expect(box.placeholder).toBe('Intake complete. A licensed doctor will review your case.')
+    expect((screen.getByRole('button', { name: 'Send message' }) as HTMLButtonElement).disabled).toBe(true)
   })
 
   it('asks again, without advancing, when no email is given at the contact step', async () => {
@@ -170,8 +173,7 @@ describe('Chat page', () => {
     expect(sent.name).toBe('Ada')
     expect(sent.transcript[0].role).toBe('assistant')
     expect(sent.transcript.at(-1)).toEqual({ role: 'user', text: 'Ada, ada@example.com' })
-    await answer(user, 'one more thing')
-    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(13))
+    expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).disabled).toBe(true)
     expect(fetch).toHaveBeenCalledTimes(1)
   })
 
@@ -190,8 +192,64 @@ describe('Chat page', () => {
     await answer(user, 'please try again')
     await waitFor(() => expect(screen.getByRole('log').textContent).toMatch(/intake is complete/i))
     expect(fetchMock).toHaveBeenCalledTimes(2)
-    await answer(user, 'thanks')
-    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(15))
+    expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).disabled).toBe(true)
     expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body).email).toBe('ada@example.com')
+  })
+
+  it('uses a corrected email from the retry message', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 500, json: async () => ({ error: 'x' }) })
+      .mockResolvedValueOnce({ ok: true, status: 201, json: async () => ({ id: 'abc' }) })
+    vi.stubGlobal('fetch', fetchMock)
+    const user = userEvent.setup()
+    render(<Chat replyDelay={0} />)
+    for (const t of ['a', 'b', 'c', 'd', 'Ada, ada@exmaple.com']) await answer(user, t)
+    await waitFor(() => expect(screen.getByRole('log').textContent).toContain('eshaansood@myrakal.com'))
+    await answer(user, 'sorry, typo: ada@example.com')
+    await waitFor(() => expect(screen.getByRole('log').textContent).toMatch(/intake is complete/i))
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body).email).toBe('ada@example.com')
+  })
+
+  it('gives up on a hanging save after 10 seconds and shows the failure message', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    try {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn((_url: string, init: RequestInit) =>
+          new Promise((_resolve, reject) => {
+            init.signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')))
+          }),
+        ),
+      )
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      render(<Chat replyDelay={0} />)
+      for (const t of ['a', 'b', 'c', 'd', 'Ada, ada@example.com']) await answer(user, t)
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(10_500)
+      })
+      expect(screen.getByRole('log').textContent).toContain('eshaansood@myrakal.com')
+      expect(screen.queryByRole('status')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('aborts an in-flight save when the page unmounts', async () => {
+    let signal: AbortSignal | undefined
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((_url: string, init: RequestInit) => {
+        signal = init.signal as AbortSignal
+        return new Promise(() => {})
+      }),
+    )
+    const user = userEvent.setup()
+    const { unmount } = render(<Chat replyDelay={0} />)
+    for (const t of ['a', 'b', 'c', 'd', 'Ada, ada@example.com']) await answer(user, t)
+    await waitFor(() => expect(signal).toBeDefined())
+    unmount()
+    expect(signal!.aborted).toBe(true)
   })
 })

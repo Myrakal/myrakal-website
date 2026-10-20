@@ -1,3 +1,4 @@
+import { act } from '@testing-library/react'
 import { vi } from 'vitest'
 import { submitIntake } from '@/lib/submitIntake'
 
@@ -39,5 +40,47 @@ describe('submitIntake', () => {
   it('throws when the network fails', async () => {
     vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new TypeError('offline')))
     await expect(submitIntake(body)).rejects.toThrow()
+  })
+
+  it('treats any 2xx as success even without a JSON body', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, status: 204, json: async () => { throw new SyntaxError('empty') } }))
+    await expect(submitIntake(body)).resolves.toEqual({ id: undefined })
+  })
+
+  it('aborts and fails after 10 seconds', async () => {
+    vi.useFakeTimers()
+    try {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn((_url: string, init: RequestInit) =>
+          new Promise((_resolve, reject) => {
+            init.signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')))
+          }),
+        ),
+      )
+      const result = submitIntake(body)
+      const assertion = expect(result).rejects.toThrow()
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(10_000)
+      })
+      await assertion
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('aborts when the caller signal aborts', async () => {
+    const controller = new AbortController()
+    vi.stubGlobal(
+      'fetch',
+      vi.fn((_url: string, init: RequestInit) =>
+        new Promise((_resolve, reject) => {
+          init.signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')))
+        }),
+      ),
+    )
+    const result = submitIntake(body, controller.signal)
+    controller.abort()
+    await expect(result).rejects.toThrow()
   })
 })

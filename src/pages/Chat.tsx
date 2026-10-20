@@ -29,41 +29,47 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
   const accepted = useRef(0)
   const contact = useRef<{ name?: string; email: string } | null>(null)
   const unsaved = useRef(false)
-  const [failed, setFailed] = useState(false)
-  const [answered, setAnswered] = useState(0)
-  const complete = answered > INTAKE_PROMPTS.length && !typing && !failed
+  const pending = useRef<AbortController>(undefined)
+  const [saved, setSaved] = useState(false)
 
-  useEffect(() => () => clearTimeout(timer.current), [])
+  useEffect(
+    () => () => {
+      clearTimeout(timer.current)
+      pending.current?.abort()
+    },
+    [],
+  )
 
   useEffect(() => {
     if (messages.length > 1) end.current?.scrollIntoView?.({ block: 'end' })
   }, [messages, typing])
 
   const save = async (transcript: Message[]) => {
+    pending.current = new AbortController()
     try {
-      await submitIntake({ ...contact.current!, transcript })
+      await submitIntake({ ...contact.current!, transcript }, pending.current.signal)
       unsaved.current = false
-      setFailed(false)
+      setSaved(true)
       return INTAKE_COMPLETE
     } catch {
       unsaved.current = true
-      setFailed(true)
       return INTAKE_FAILED
     }
   }
 
   const respond = async (text: string, transcript: Message[]) => {
-    if (unsaved.current) return save(transcript)
+    if (unsaved.current) {
+      contact.current = extractContact(text) ?? contact.current
+      return save(transcript)
+    }
     if (accepted.current === INTAKE_PROMPTS.length) {
       const found = extractContact(text)
       if (!found) return CONTACT_RETRY
       contact.current = found
       accepted.current++
-      setAnswered(accepted.current)
       return save(transcript)
     }
     accepted.current++
-    setAnswered(accepted.current)
     return replyFor(accepted.current)
   }
 
@@ -75,9 +81,12 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     const wait = new Promise((resolve) => {
       timer.current = setTimeout(resolve, replyDelay)
     })
-    const [reply] = await Promise.all([respond(text, [...messages, userMessage]), wait])
-    setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply }])
-    setTyping(false)
+    try {
+      const [reply] = await Promise.all([respond(text, [...messages, userMessage]), wait])
+      setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply }])
+    } finally {
+      setTyping(false)
+    }
   }
 
   return (
@@ -109,7 +118,10 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
           <ChatComposer
             onSend={send}
             busy={typing}
-            placeholder={complete ? 'Add anything else for the doctor' : 'Type your message'}
+            disabled={saved}
+            placeholder={
+              saved ? 'Intake complete. A licensed doctor will review your case.' : 'Type your message'
+            }
           />
           <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">
             No account needed. See our{' '}

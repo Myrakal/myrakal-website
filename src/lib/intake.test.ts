@@ -5,6 +5,7 @@ import {
   INTAKE_FAILED,
   INTAKE_PROMPTS,
   replyFor,
+  SUPPORT_EMAIL,
 } from '@/lib/intake'
 
 describe('intake script', () => {
@@ -53,6 +54,25 @@ describe('extractContact', () => {
     expect(extractContact('ada@example.com')).toEqual({ email: 'ada@example.com' })
   })
 
+  it('strips trailing and leading punctuation from the email', () => {
+    expect(extractContact('Ada, ada@example.com.')?.email).toBe('ada@example.com')
+    expect(extractContact('(ada@example.com)!')?.email).toBe('ada@example.com')
+    expect(extractContact('email: ada@example.com?')?.email).toBe('ada@example.com')
+  })
+
+  it('removes only a leading filler phrase from the name, never words in the middle', () => {
+    expect(extractContact('Smith and Jones, ada@example.com')?.name).toBe('Smith and Jones')
+    expect(extractContact("I'm Ada, ada@example.com")?.name).toBe('Ada')
+    expect(extractContact('This is Ada Lovelace. ada@example.com')?.name).toBe('Ada Lovelace')
+    expect(extractContact('Reach me at ada@example.com, Ada')?.name).toBe('Ada')
+    expect(extractContact('Ada and Bob Lee, contact me at ada@example.com')?.name).toBe('Ada and Bob Lee')
+  })
+
+  it('leaves the name undefined when only filler and punctuation remain', () => {
+    expect(extractContact('my email is ada@example.com.')).toEqual({ email: 'ada@example.com' })
+    expect(extractContact('email: ada@example.com')).toEqual({ email: 'ada@example.com' })
+  })
+
   it('returns null when there is no valid email', () => {
     expect(extractContact('Ada Lovelace')).toBeNull()
     expect(extractContact('ada@example')).toBeNull()
@@ -67,7 +87,14 @@ describe('contact and failure copy', () => {
   })
 
   it('points to the real support address if saving fails', () => {
-    expect(INTAKE_FAILED).toContain('eshaansood@myrakal.com')
+    expect(SUPPORT_EMAIL).toBe('eshaansood@myrakal.com')
+    expect(INTAKE_FAILED).toContain(SUPPORT_EMAIL)
     expect(INTAKE_FAILED).not.toMatch(/hello@myrakal\.com/)
+  })
+
+  it('closes intake honestly: no invitation to add more here, points to the support email', () => {
+    expect(INTAKE_COMPLETE).not.toMatch(/add it here|feel free/i)
+    expect(INTAKE_COMPLETE).toContain(SUPPORT_EMAIL)
+    expect(INTAKE_COMPLETE).toMatch(/licensed doctor/i)
   })
 })
