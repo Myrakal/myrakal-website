@@ -22,7 +22,7 @@ export function WaitlistForm() {
   if (state.succeeded) {
     return (
       <p className="text-base text-foreground" role="status">
-        You're on the list, we'll be in touch.
+        Thanks, we'll be in touch to show you how you can save money.
       </p>
     )
   }
@@ -72,13 +72,13 @@ export function WaitlistForm() {
           type="submit"
           size="lg"
           disabled={state.submitting}
-          className="h-12 w-full shrink-0 cursor-pointer px-10 text-base sm:h-14 sm:w-auto"
+          className="h-auto min-h-12 w-full shrink-0 cursor-pointer px-8 py-2 text-base whitespace-normal sm:min-h-14 sm:w-auto sm:max-w-64"
         >
-          {state.submitting ? 'Joining…' : 'Join'}
+          {state.submitting ? 'Sending…' : 'Talk with us to see how you can save money'}
         </Button>
       </form>
       <p className="mt-3 px-2 text-center text-sm leading-6 text-muted-foreground">
-        We use your name and email to manage the waitlist and contact you. See our{' '}
+        We use your name and email to contact you about Myrakal. See our{' '}
         <a className="underline underline-offset-4 hover:text-foreground" href="/privacy/">
           Privacy Policy
         </a>
