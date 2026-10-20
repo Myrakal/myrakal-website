@@ -4,7 +4,15 @@ import wordmark from '@/assets/myrakal-wordmark.svg'
 import { ChatComposer } from '@/components/chat/ChatComposer'
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
 import { TypingIndicator } from '@/components/chat/TypingIndicator'
-import { INTAKE_PROMPTS, replyFor } from '@/lib/intake'
+import {
+  EMAIL_RETRY,
+  extractEmail,
+  INTAKE_COMPLETE,
+  INTAKE_FAILED,
+  INTAKE_PROMPTS,
+  replyFor,
+} from '@/lib/intake'
+import { submitIntake } from '@/lib/submitIntake'
 
 const GREETING: Message = {
   id: 'greeting',
@@ -18,28 +26,77 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
   const [typing, setTyping] = useState(false)
   const nextId = useRef(0)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const turns = useRef(0)
-  const [answered, setAnswered] = useState(0)
-  const complete = answered > INTAKE_PROMPTS.length && !typing
+  const accepted = useRef(0)
+  const contact = useRef({ name: '', email: '' })
+  const mounted = useRef(true)
+  const wake = useRef<() => void>(undefined)
+  const unsaved = useRef(false)
+  const pending = useRef<AbortController>(undefined)
+  const [saved, setSaved] = useState(false)
 
-  useEffect(() => () => clearTimeout(timer.current), [])
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+      clearTimeout(timer.current)
+      pending.current?.abort()
+      wake.current?.()
+    }
+  }, [])
 
   useEffect(() => {
     if (messages.length > 1) end.current?.scrollIntoView?.({ block: 'end' })
   }, [messages, typing])
 
-  const send = (text: string) => {
-    const id = nextId.current++
-    const turn = ++turns.current
-    setAnswered(turn)
-    setMessages((m) => [...m, { id: `user-${id}`, role: 'user', text }])
-    setTyping(true)
-    timer.current = setTimeout(() => {
-      setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: replyFor(turn) }])
-      setTyping(false)
-    }, replyDelay)
+  const save = async (transcript: Message[]) => {
+    const controller = new AbortController()
+    pending.current = controller
+    try {
+      await submitIntake({ ...contact.current, transcript }, controller.signal)
+      if (!controller.signal.aborted) unsaved.current = false
+      return INTAKE_COMPLETE
+    } catch {
+      if (!controller.signal.aborted) unsaved.current = true
+      return INTAKE_FAILED
+    }
   }
 
+  const respond = async (text: string, transcript: Message[]) => {
+    if (unsaved.current) {
+      contact.current.email = extractEmail(text) ?? contact.current.email
+      return save(transcript)
+    }
+    if (accepted.current === INTAKE_PROMPTS.length) {
+      const email = extractEmail(text)
+      if (!email) return EMAIL_RETRY
+      contact.current.email = email
+      accepted.current++
+      return save(transcript)
+    }
+    if (accepted.current === INTAKE_PROMPTS.length - 1) contact.current.name = text.trim().slice(0, 200)
+    accepted.current++
+    return replyFor(accepted.current)
+  }
+
+  const send = async (text: string) => {
+    const id = nextId.current++
+    const userMessage: Message = { id: `user-${id}`, role: 'user', text }
+    setMessages((m) => [...m, userMessage])
+    setTyping(true)
+    const wait = new Promise<void>((resolve) => {
+      wake.current = resolve
+      timer.current = setTimeout(resolve, replyDelay)
+    })
+    try {
+      const [reply] = await Promise.all([respond(text, [...messages, userMessage]), wait])
+      if (mounted.current) {
+        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply }])
+        if (reply === INTAKE_COMPLETE) setSaved(true)
+      }
+    } finally {
+      if (mounted.current) setTyping(false)
+    }
+  }
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
       <header className="sticky top-0 z-10 flex items-center bg-background px-4 py-4 sm:px-8">
@@ -66,11 +123,10 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
         </div>
 
         <div className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">
-          <ChatComposer
-            onSend={send}
-            busy={typing}
-            placeholder={complete ? 'Add anything else for the doctor' : 'Type your message'}
-          />
+          <p role="status" className="min-h-6 px-2 pb-2 text-center text-sm text-foreground">
+            {saved ? 'Intake complete. A licensed doctor will review your case.' : ''}
+          </p>
+          <ChatComposer onSend={send} busy={typing} locked={saved} />
           <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">
             No account needed. See our{' '}
             <a className="underline underline-offset-4 hover:text-foreground" href="/privacy/">

@@ -1,15 +1,21 @@
 import { ArrowUp } from 'lucide-react'
-import { useId, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 
-type Props = { onSend: (text: string) => void; busy?: boolean; placeholder?: string }
+type Props = { onSend: (text: string) => void; busy?: boolean; locked?: boolean }
 
-export function ChatComposer({ onSend, busy = false, placeholder = 'Type your message' }: Props) {
+export function ChatComposer({ onSend, busy = false, locked = false }: Props) {
   const [text, setText] = useState('')
   const id = useId()
   const box = useRef<HTMLTextAreaElement>(null)
-  const canSend = text.trim().length > 0 && !busy
+  const canSend = text.trim().length > 0 && !busy && !locked
+
+  useEffect(() => {
+    if (!locked) return
+    setText('')
+    if (box.current) box.current.style.height = ''
+  }, [locked])
 
   const send = () => {
     if (!canSend) return
@@ -40,13 +46,15 @@ export function ChatComposer({ onSend, busy = false, placeholder = 'Type your me
         id={id}
         ref={box}
         rows={1}
-        value={text}
+        value={locked ? '' : text}
         onChange={(e) => {
           setText(e.target.value)
           grow(e.target)
         }}
         onKeyDown={onKeyDown}
-        placeholder={placeholder}
+        placeholder="Type your message"
+        readOnly={locked}
+        aria-readonly={locked}
         className="max-h-40 min-h-12 flex-1 resize-none bg-transparent px-4 py-3 text-base text-card-foreground placeholder:text-card-foreground/60 focus:outline-none"
       />
       <Button
