@@ -1,5 +1,5 @@
 import { ArrowUp } from 'lucide-react'
-import { useId, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 
@@ -10,6 +10,12 @@ export function ChatComposer({ onSend, busy = false, locked = false }: Props) {
   const id = useId()
   const box = useRef<HTMLTextAreaElement>(null)
   const canSend = text.trim().length > 0 && !busy && !locked
+
+  useEffect(() => {
+    if (!locked) return
+    setText('')
+    if (box.current) box.current.style.height = ''
+  }, [locked])
 
   const send = () => {
     if (!canSend) return
@@ -40,7 +46,7 @@ export function ChatComposer({ onSend, busy = false, locked = false }: Props) {
         id={id}
         ref={box}
         rows={1}
-        value={text}
+        value={locked ? '' : text}
         onChange={(e) => {
           setText(e.target.value)
           grow(e.target)

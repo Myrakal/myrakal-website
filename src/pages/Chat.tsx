@@ -53,10 +53,7 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     pending.current = controller
     try {
       await submitIntake({ ...contact.current, transcript }, controller.signal)
-      if (!controller.signal.aborted) {
-        unsaved.current = false
-        setSaved(true)
-      }
+      if (!controller.signal.aborted) unsaved.current = false
       return INTAKE_COMPLETE
     } catch {
       if (!controller.signal.aborted) unsaved.current = true
@@ -92,7 +89,10 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     })
     try {
       const [reply] = await Promise.all([respond(text, [...messages, userMessage]), wait])
-      if (mounted.current) setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply }])
+      if (mounted.current) {
+        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply }])
+        if (reply === INTAKE_COMPLETE) setSaved(true)
+      }
     } finally {
       if (mounted.current) setTyping(false)
     }

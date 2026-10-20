@@ -20,8 +20,8 @@ export const EMAIL_RETRY =
 export const INTAKE_FAILED =
   `I'm sorry, I wasn't able to save that just now. Please send me any message to try again, or email ${SUPPORT_EMAIL} and we'll take it from there.`
 
-const EMAIL = /[^\s@,;<>()]+@[^\s@,;<>()]+\.[^\s@,;<>()]+/
-const EDGE = /^[\s.,;:!?()]+|[\s.,;:!?()]+$/g
+const EMAIL = /[^\s@,;<>()[\]{}"'`\u2018\u2019\u201c\u201d]+@[^\s@,;<>()[\]{}"'`\u2018\u2019\u201c\u201d]+\.[^\s@,;<>()[\]{}"'`\u2018\u2019\u201c\u201d]+/
+const EDGE = /^[\s.,;:!?()[\]{}"'`\u2018\u2019\u201c\u201d]+|[\s.,;:!?()[\]{}"'`\u2018\u2019\u201c\u201d]+$/g
 
 export function extractEmail(text: string) {
   const found = text.match(new RegExp(EMAIL.source, 'g'))?.map((m) => m.replace(EDGE, ''))

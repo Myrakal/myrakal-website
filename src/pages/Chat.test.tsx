@@ -318,4 +318,53 @@ describe('Chat page', () => {
       vi.useRealTimers()
     }
   })
+
+  it('clears any draft text when the composer locks', async () => {
+    const user = userEvent.setup()
+    render(<Chat replyDelay={300} />)
+    for (const t of ['a', 'b', 'c', 'd', 'Ada']) {
+      await answer(user, t)
+      await waitFor(() => expect(screen.queryByText('Myrakal is typing')).toBeNull())
+    }
+    const box = screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement
+    await answer(user, 'ada@example.com')
+    await user.type(box, 'one more thing')
+    expect(box.value).toBe('one more thing')
+    await waitFor(() => expect(box.readOnly).toBe(true))
+    expect(box.value).toBe('')
+  })
+
+  it('shows the completion status only together with the completion message, never beside the typing indicator', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    try {
+      const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime })
+      render(<Chat replyDelay={500} />)
+      for (const t of ['a', 'b', 'c', 'd', 'Ada']) {
+        await answer(user, t)
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(600)
+        })
+      }
+      await answer(user, 'ada@example.com')
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(100)
+      })
+      expect(screen.getByText('Myrakal is typing')).toBeTruthy()
+      expect(fetch).toHaveBeenCalledTimes(1)
+      const statuses = screen.getAllByRole('status')
+      expect(statuses.filter((s) => s.textContent?.includes('Intake complete'))).toHaveLength(0)
+      expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).readOnly).toBe(false)
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(600)
+      })
+      expect(screen.queryByText('Myrakal is typing')).toBeNull()
+      const done = screen.getAllByRole('status')
+      expect(done).toHaveLength(1)
+      expect(done[0].textContent).toBe('Intake complete. A licensed doctor will review your case.')
+      expect(screen.getByRole('log').textContent).toMatch(/intake is complete/i)
+      expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).readOnly).toBe(true)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 })

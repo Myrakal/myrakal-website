@@ -52,6 +52,22 @@ describe('extractEmail', () => {
     expect(extractEmail('email: ada@example.com?')).toBe('ada@example.com')
   })
 
+  it('strips quotes, brackets and braces around the email', () => {
+    for (const wrapped of [
+      '"ada@example.com"',
+      "'ada@example.com'",
+      '`ada@example.com`',
+      '\u2018ada@example.com\u2019',
+      '\u201cada@example.com\u201d',
+      '[ada@example.com]',
+      '{ada@example.com}',
+      'ada@example.com"',
+      'ada@example.com\u201d.',
+      'it is "ada@example.com", thanks',
+    ])
+      expect(extractEmail(wrapped)).toBe('ada@example.com')
+  })
+
   it('uses the last valid email when several appear', () => {
     expect(extractEmail('old@example.com, sorry, I meant new@example.com')).toBe('new@example.com')
   })
