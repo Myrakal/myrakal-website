@@ -53,7 +53,7 @@ export function Navbar() {
       </motion.a>
       <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-4 sm:right-12 sm:gap-6">
         <a
-          href="/contact/"
+          href="/chat/"
           className="rounded-full bg-(image:--pearl-gradient) px-4 py-1.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-5 sm:py-2 sm:text-base"
         >
           Talk with us

@@ -10,7 +10,7 @@ export function Hero() {
         Made for people who want to understand their healthcare costs and explore options
       </p>
       <a
-        href="/contact/"
+        href="/chat/"
         className="rounded-full bg-(image:--pearl-gradient) px-8 py-3 text-base font-medium text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
       >
         Talk with us
