@@ -1,6 +1,7 @@
 import {
   EMAIL_RETRY,
   extractEmail,
+  withoutThanks,
   INTAKE_COMPLETE,
   INTAKE_FAILED,
   INTAKE_PROMPTS,
@@ -121,5 +122,14 @@ describe('contact and failure copy', () => {
     expect(INTAKE_COMPLETE).not.toMatch(/add it here|feel free/i)
     expect(INTAKE_COMPLETE).toContain(SUPPORT_EMAIL)
     expect(INTAKE_COMPLETE).toMatch(/licensed doctor/i)
+  })
+
+  it('drops a leading thank-you from a scripted question when an acknowledgement precedes it', () => {
+    expect(withoutThanks(INTAKE_PROMPTS[0])).toMatch(/^Could you tell me/)
+    expect(withoutThanks(INTAKE_PROMPTS[1])).toMatch(/^Do you have any recent labs/)
+    expect(withoutThanks(INTAKE_PROMPTS[2])).toBe('What insurance plan do you have, if any?')
+    expect(withoutThanks(INTAKE_PROMPTS[3])).toBe("We're almost done. What's your name?")
+    expect(withoutThanks(INTAKE_PROMPTS[4])).toMatch(/^And what's the best email/)
+    expect(withoutThanks('Could you say more?')).toBe('Could you say more?')
   })
 })

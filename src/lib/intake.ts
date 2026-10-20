@@ -11,6 +11,9 @@ export const SUPPORT_EMAIL = 'eshaansood@myrakal.com'
 export const INTAKE_COMPLETE =
   `Thank you so much, that's everything I need. Intake is complete. A licensed doctor will review your case, and we'll be in touch once they have.\n\nIf you remember anything else, you can email ${SUPPORT_EMAIL}.`
 
+export const withoutThanks = (text: string) =>
+  text.replace(/^(Thank you for sharing that|That's very helpful|Thank you)\.\s+/, '')
+
 export const replyFor = (userTurns: number) =>
   INTAKE_PROMPTS[userTurns - 1] ?? INTAKE_COMPLETE
 

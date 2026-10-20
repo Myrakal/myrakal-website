@@ -11,7 +11,9 @@ import {
   INTAKE_FAILED,
   INTAKE_PROMPTS,
   replyFor,
+  withoutThanks,
 } from '@/lib/intake'
+import { acknowledge } from '@/lib/acknowledge'
 import { submitIntake } from '@/lib/submitIntake'
 
 const GREETING: Message = {
@@ -73,9 +75,15 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
       accepted.current++
       return save(transcript)
     }
+    const askAi = accepted.current < INTAKE_PROMPTS.length - 1
     if (accepted.current === INTAKE_PROMPTS.length - 1) contact.current.name = text.trim().slice(0, 200)
     accepted.current++
-    return replyFor(accepted.current)
+    const next = replyFor(accepted.current)
+    if (!askAi) return next
+    const controller = new AbortController()
+    pending.current = controller
+    const ack = await acknowledge(transcript, controller.signal)
+    return ack ? `${ack} ${withoutThanks(next)}` : next
   }
 
   const send = async (text: string) => {
