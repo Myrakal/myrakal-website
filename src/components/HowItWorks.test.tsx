@@ -44,4 +44,9 @@ describe('HowItWorks', () => {
     expect(stepTitles()).not.toContain('Hotels')
     expect(stepTitles()).not.toContain('Flights')
   })
+
+  it('marks a selection only on the plan options, where the consumer picks', () => {
+    const { container } = render(<HowItWorks />)
+    expect(container.querySelectorAll('[aria-label="Selected"]').length).toBe(1)
+  })
 })

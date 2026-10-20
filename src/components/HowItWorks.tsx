@@ -11,6 +11,7 @@ import {
   Pill,
   ScanLine,
   ShieldCheck,
+  Shuffle,
   Stethoscope,
   type LucideIcon,
 } from 'lucide-react'
@@ -20,7 +21,7 @@ import { ScrollSteps, type ScrollStep } from '@/components/ScrollSteps'
 
 type Row = { name: string; icon: LucideIcon; status: string }
 
-function RowList({ label, rows }: { label: string; rows: Row[] }) {
+function RowList({ label, rows, selectable = false }: { label: string; rows: Row[]; selectable?: boolean }) {
   return (
     <MockCard label={label}>
       <ul className="flex flex-col gap-3">
@@ -28,7 +29,7 @@ function RowList({ label, rows }: { label: string; rows: Row[] }) {
           <li
             key={row.name}
             className={`flex items-center gap-4 rounded-2xl border px-4 py-3.5 ${
-              i === 0 ? 'border-primary bg-secondary' : 'border-border'
+              selectable && i === 0 ? 'border-primary bg-secondary' : 'border-border'
             }`}
           >
             <span className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
@@ -36,7 +37,7 @@ function RowList({ label, rows }: { label: string; rows: Row[] }) {
             </span>
             <span className="flex-1 text-lg font-medium">{row.name}</span>
             <span className="text-sm text-muted-foreground">{row.status}</span>
-            {i === 0 ? <Check className="size-5 text-primary" aria-label="Selected" /> : null}
+            {selectable && i === 0 ? <Check className="size-5 text-primary" role="img" aria-label="Selected" /> : null}
           </li>
         ))}
       </ul>
@@ -69,10 +70,11 @@ const Consult = () => (
 const Plan = () => (
   <RowList
     label="Your options"
+    selectable
     rows={[
       { name: 'Close to home', icon: House, status: 'Nearby' },
       { name: 'Abroad', icon: Globe, status: 'Overseas' },
-      { name: 'Hybrid', icon: Stethoscope, status: 'Mix of both' },
+      { name: 'Hybrid', icon: Shuffle, status: 'Mix of both' },
     ]}
   />
 )
