@@ -85,6 +85,12 @@ describe('detectEmergency: coverage', () => {
     'she is vomiting blood',
     'there is severe bleeding from the cut',
     'she is bleeding a lot',
+    'I wish I was dead',
+    "I can't go on anymore",
+    'I feel like I might die',
+    'my husband is turning blue',
+    'pain behind my breastbone',
+    'I took an entire bottle of Tylenol',
   ])('detects: %s', (text) => {
     expect(detectEmergency(text)).toBe(true)
   })
@@ -172,6 +178,9 @@ describe('detectEmergency: negation', () => {
     'I passed my driving test',
     'Blue Shield PPO',
     'I live in the country and my knee hurts',
+    "I can't go on vacation this year",
+    'I wish I was taller',
+    'I took a bottle of water to the clinic',
     '',
   ])('does not treat ordinary text as an emergency: %s', (text) => {
     expect(detectEmergency(text)).toBe(false)
