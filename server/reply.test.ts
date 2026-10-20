@@ -25,6 +25,7 @@ describe('guardReply', () => {
     'recommend', 'suggest', 'advise', 'you should', 'you could', 'try', 'trying', 'consider', 'diagnosis', 'diagnose',
     'treat', 'treatment', 'therapy', 'therapist', 'medication', 'medicine', 'meds', 'drug', 'prescribe', 'prescription',
     'dose', 'dosage', 'surgery', 'supplement', 'ibuprofen', 'antibiotic', 'antibiotics', 'cure',
+    'sounds like', 'avoid', 'stop taking', 'rest', 'drink', 'you need to', 'need to see', 'migraine', 'diet', 'exercise',
   ])('rejects advice or clinical wording: %s', (word) => {
     expect(guardReply(`Thank you for sharing. It may help to ${word} something.`)).toBe('')
     expect(guardReply(`Thank you. ${word.toUpperCase()} something.`)).toBe('')
@@ -43,12 +44,27 @@ describe('guardReply', () => {
     'Call 555-123-4567 now.',
     'Call +1 (555) 123 4567 now.',
     'Reach us on 5551234567.',
+    'Ring 12345 today.',
+    'Visit bit.ly/abc for more.',
+    'Go to tinyurl.com/x now.',
+    'Look at example.co.uk please.',
+    'Email me: ada at example dot com.',
+    'Write to ada [at] example [dot] com.',
+    'Thanks for sharing.Visit health.gov',
   ])('rejects links, emails and phone numbers: %s', (text) => {
     expect(guardReply(text)).toBe('')
   })
 
   it.each(['988', '911', '112', '999'])('rejects emergency numbers in model output: %s', (n) => {
     expect(guardReply(`Please call ${n} right away.`)).toBe('')
+  })
+
+  it('allows ordinary acknowledgements, including words that merely contain a denylisted fragment', () => {
+    for (const text of [
+      'Thank you for sharing that. I appreciate you telling me about your interest in cheaper care.',
+      'That sounds hard, and thank you for being open about it.',
+    ])
+      expect(guardReply(text)).toBe(text)
   })
 
   it('has no emergency exemption: emergency wording is held to the same checks as everything else', () => {

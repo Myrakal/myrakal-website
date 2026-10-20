@@ -1,4 +1,4 @@
-import { InvalidChat, parseLatestMessage } from './chat.ts'
+import { InvalidChat, latestUserText, parseLatestMessage } from './chat.ts'
 
 const user = (text: string) => ({ role: 'user', text })
 const assistant = (text: string) => ({ role: 'assistant', text })
@@ -45,5 +45,24 @@ describe('parseLatestMessage', () => {
   it('allows newlines, tabs and emoji joiners in message text', () => {
     const text = 'line one\r\nline\ttwo \u{1f468}‍\u{1f469}'
     expect(parseLatestMessage({ messages: [user(text)] })).toBe(text)
+  })
+})
+
+describe('latestUserText', () => {
+  it('returns the raw text of the last message when it is from the visitor, even if it would fail validation', () => {
+    expect(latestUserText({ messages: [user('a'), user('bad \u0000 text')] })).toBe('bad \u0000 text')
+    expect(latestUserText({ messages: [user('a'.repeat(5000))] })).toHaveLength(5000)
+  })
+
+  it.each([
+    ['null', null],
+    ['no messages', {}],
+    ['not an array', { messages: 'x' }],
+    ['an empty array', { messages: [] }],
+    ['an assistant last message', { messages: [user('a'), assistant('b')] }],
+    ['a null last message', { messages: [null] }],
+    ['non-string text', { messages: [{ role: 'user', text: 5 }] }],
+  ])('returns null for %s', (_label, input) => {
+    expect(latestUserText(input)).toBeNull()
   })
 })

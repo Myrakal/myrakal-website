@@ -33,7 +33,7 @@ describe('acknowledge', () => {
 
   it('returns the guarded reply text', async () => {
     const { client } = fake(reply('  That sounds hard. Thank you for telling me.  '))
-    expect(await acknowledge(client, 'x', 'm')).toBe('That sounds hard. Thank you for telling me.')
+    expect((await acknowledge(client, 'x', 'm')).reply).toBe('That sounds hard. Thank you for telling me.')
   })
 
   it('joins several text blocks and ignores other block types', async () => {
@@ -41,21 +41,26 @@ describe('acknowledge', () => {
       stop_reason: 'end_turn',
       content: [{ type: 'thinking', thinking: 'x' }, { type: 'text', text: 'Thank you.' }, { type: 'text', text: ' I hear you.' }],
     })
-    expect(await acknowledge(client, 'x', 'm')).toBe('Thank you. I hear you.')
+    expect((await acknowledge(client, 'x', 'm')).reply).toBe('Thank you. I hear you.')
   })
 
   it('returns an empty reply when the guard rejects the text', async () => {
     const { client } = fake(reply('You should see a specialist.'))
-    expect(await acknowledge(client, 'x', 'm')).toBe('')
+    expect((await acknowledge(client, 'x', 'm')).reply).toBe('')
   })
 
   it('returns an empty reply on a refusal or a truncated reply', async () => {
-    expect(await acknowledge(fake(reply('Thank you.', 'refusal')).client, 'x', 'm')).toBe('')
-    expect(await acknowledge(fake(reply('Thank you.', 'max_tokens')).client, 'x', 'm')).toBe('')
+    expect(await acknowledge(fake(reply('Thank you.', 'refusal')).client, 'x', 'm')).toEqual({ reply: '', raw: '' })
+    expect(await acknowledge(fake(reply('Thank you.', 'max_tokens')).client, 'x', 'm')).toEqual({ reply: '', raw: '' })
   })
 
   it('lets upstream errors propagate to the caller', async () => {
     const create = vi.fn().mockRejectedValue(new Error('boom'))
     await expect(acknowledge({ messages: { create } } as never, 'x', 'm')).rejects.toThrow('boom')
+  })
+
+  it('also returns the raw model text, so the caller can spot an emergency the guard blanked', async () => {
+    const { client } = fake(reply('You should call 988 right away.'))
+    expect(await acknowledge(client, 'x', 'm')).toEqual({ reply: '', raw: 'You should call 988 right away.' })
   })
 })

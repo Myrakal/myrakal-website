@@ -14,6 +14,7 @@ export async function acknowledge(client: Pick<Anthropic, 'messages'>, text: str
     },
     { timeout: 8000 },
   )
-  if (response.stop_reason !== 'end_turn') return ''
-  return guardReply(response.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join(''))
+  if (response.stop_reason !== 'end_turn') return { reply: '', raw: '' }
+  const raw = response.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join('')
+  return { reply: guardReply(raw), raw }
 }

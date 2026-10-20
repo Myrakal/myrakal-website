@@ -10,7 +10,7 @@ vi.mock('@anthropic-ai/sdk', () => ({
   },
 }))
 
-import { EMERGENCY_REPLY } from '../server/emergency'
+import { EMERGENCY_REPLY } from '../src/lib/emergency'
 import { DELETE, GET, PATCH, POST, PUT } from './chat'
 
 const body = {
@@ -107,21 +107,60 @@ describe('POST /api/chat', () => {
     expect(create).toHaveBeenCalledTimes(1)
   })
 
-  it('marks emergency true only for the fixed server message, never for model-generated or blank replies', async () => {
+  it('marks emergency true only with the fixed server message, never with model words or a blank reply', async () => {
     create.mockResolvedValue(modelReply('Thank you for telling me.'))
     expect((await (await post(body)).json()).emergency).toBe(false)
-    create.mockResolvedValue(modelReply('You should call emergency services right away.'))
-    expect(await (await post(body)).json()).toEqual({ reply: '', emergency: false })
-    create.mockResolvedValue(modelReply(EMERGENCY_REPLY))
+    create.mockResolvedValue(modelReply('You should see a specialist.'))
     expect(await (await post(body)).json()).toEqual({ reply: '', emergency: false })
     const res = await post({ messages: [{ role: 'user', text: 'I took too many pills' }] })
     expect(await res.json()).toEqual({ reply: EMERGENCY_REPLY, emergency: true })
   })
 
-  it('cannot be tricked into an unguarded reply by emergency wording in model output', async () => {
-    create.mockResolvedValue(modelReply('You should call 988 or emergency services and take your medication.'))
+  it.each([
+    'You should call 988 or emergency services and take your medication.',
+    'Please call 911 right away.',
+    'Contact your local emergency services.',
+    'Dial 112 now.',
+    'It sounds like you need to call emergency help.',
+    'Please contact your local emergency services right away.',
+  ])('replaces a model reply that mentions emergency services with the fixed message: %s', async (text) => {
+    create.mockResolvedValue(modelReply(text))
     const res = await post(body)
-    expect(await res.json()).toEqual({ reply: '', emergency: false })
+    expect(await res.json()).toEqual({ reply: EMERGENCY_REPLY, emergency: true })
+  })
+
+  it('never returns the model words when it recognised an emergency the detector missed', async () => {
+    create.mockResolvedValue(modelReply('Please call 988 and take two aspirin.'))
+    const json = await (await post(body)).json()
+    expect(json.reply).toBe(EMERGENCY_REPLY)
+    expect(JSON.stringify(json)).not.toMatch(/aspirin/)
+  })
+
+  it.each([
+    ['a NUL character', 'I took too many pills\u0000'],
+    ['a control character', 'I took too many pills\u001b'],
+    ['a bidi override', '\u202eI want to kill myself'],
+    ['a zero-width space inside the words', 'su\u200bicide'],
+    ['over 4000 characters, at the end', `${'a'.repeat(5000)} I want to end my life`],
+    ['over 4000 characters, at the start', `I want to end my life ${'a'.repeat(5000)}`],
+  ])('answers an emergency even when the message fails validation: %s', async (_label, text) => {
+    const res = await post({ messages: [{ role: 'user', text }] })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ reply: EMERGENCY_REPLY, emergency: true })
+    expect(create).not.toHaveBeenCalled()
+  })
+
+  it('still returns 400 for an invalid message that is not an emergency', async () => {
+    expect((await post({ messages: [{ role: 'user', text: 'hello\u0000' }] })).status).toBe(400)
+    expect((await post({ messages: [{ role: 'user', text: 'a'.repeat(4001) }] })).status).toBe(400)
+  })
+
+  it('does not run detection on an assistant message or earlier turns', async () => {
+    create.mockResolvedValue(modelReply('Thanks.'))
+    const res = await post({
+      messages: [{ role: 'user', text: 'I want to kill myself' }, { role: 'assistant', text: 'x' }, { role: 'user', text: 'hello' }],
+    })
+    expect(await res.json()).toEqual({ reply: 'Thanks.', emergency: false })
   })
 
   it('accepts a body above 100000 bytes up to 262144, as valid non-Latin input needs', async () => {
