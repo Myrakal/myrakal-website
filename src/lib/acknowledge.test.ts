@@ -313,6 +313,11 @@ describe('acknowledge', () => {
     ['a short date of birth', 'dob 3/4/85'],
     ['an ISO date of birth', 'born 1985-03-14'],
     ['a written date of birth', 'born March 14, 1985'],
+    ['a day-first written date of birth', 'I was born 14 March 1985'],
+    ['an ordinal day-first date of birth', 'born the 5th of March 1985'],
+    ['an abbreviated day-first date of birth', 'dob 14 Mar 85'],
+    ['a phone number with spaced hyphens', 'call me on +1 555 - 123 - 4567'],
+    ['a phone number with dots and spaces', 'it is 555 . 123 . 4567'],
   ])('skips the AI entirely when the message has %s', async (_label, text) => {
     const fetchMock = ok('Thank you.')
     vi.stubGlobal('fetch', fetchMock)

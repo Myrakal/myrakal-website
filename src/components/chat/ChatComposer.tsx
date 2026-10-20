@@ -43,6 +43,7 @@ export function ChatComposer({ onSend, busy = false, locked = false }: Props) {
         Message
       </label>
       <textarea
+        maxLength={4000}
         id={id}
         ref={box}
         rows={1}

@@ -10,14 +10,17 @@ let failures = 0
 
 const MONTH = /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{1,2}(st|nd|rd|th)?,?\s+(19|20)?\d{2}\b/i
 
+const DAY_FIRST = /\b\d{1,2}(st|nd|rd|th)?\s+(of\s+)?(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?,?\s+(19|20)?\d{2}\b/i
+
 const hasAddressMarker = (t: string) =>
   /@/.test(t) || /\bat\b[\s\S]{0,40}\bdot\b/i.test(t) || /\bat\s+[\w-]{1,63}(\.[\w-]{1,63})+/i.test(t)
 
 const hasPersonalNumber = (t: string) =>
-  /\d{6,}/.test(t.replace(/(?<=\d)[\s.\-/()](?=\d)/g, '')) ||
+  /\d{6,}/.test(t.replace(/(?<=\d)[\s.\-/()]+(?=\d)/g, '')) ||
   /\b\d{1,2}[/.-]\d{1,2}[/.-]\d{2,4}\b/.test(t) ||
   /\b(19|20)\d{2}[/.-]\d{1,2}[/.-]\d{1,2}\b/.test(t) ||
-  MONTH.test(t)
+  MONTH.test(t) ||
+  DAY_FIRST.test(t)
 
 const shapedReply = (reply: string) => {
   const text = reply.trim()
