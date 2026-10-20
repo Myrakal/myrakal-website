@@ -16,7 +16,7 @@ const FAQS: FaqItem[] = [
   {
     question: 'Is Myrakal available now?',
     answer:
-      "We're currently invite only. Join the waitlist and we'll let you know the moment you can get started.",
+      "We're currently invite only. Talk with us and we'll get you started.",
   },
   {
     question: 'How do you vet doctors and hospitals?',
@@ -26,7 +26,7 @@ const FAQS: FaqItem[] = [
   {
     question: 'Is my information kept private?',
     answer:
-      'The current waitlist only asks for your name and email. Please do not submit medical information through this website. Our Privacy Policy explains how we handle website data.',
+      'Our contact form only asks for your name and email. Please do not submit medical information through this website. Our Privacy Policy explains how we handle website data.',
   },
   {
     question: "What's next?",

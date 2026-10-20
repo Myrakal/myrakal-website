@@ -39,7 +39,7 @@ describe('WaitlistForm funnel events', () => {
     render(<WaitlistForm />)
     await user.type(screen.getByPlaceholderText('Name'), 'Ada')
     await user.type(screen.getByPlaceholderText('Email'), 'ada@x.com')
-    await user.click(screen.getByRole('button', { name: 'Join' }))
+    await user.click(screen.getByRole('button', { name: 'Talk with us' }))
     expect(track).toHaveBeenLastCalledWith('waitlist_submit')
     expect(submit).toHaveBeenCalled()
   })
@@ -48,5 +48,19 @@ describe('WaitlistForm funnel events', () => {
     succeeded = true
     render(<WaitlistForm />)
     expect(track).toHaveBeenCalledWith('waitlist_success')
+  })
+
+  it('has no waitlist copy and a short call to action', () => {
+    render(<WaitlistForm />)
+    expect(screen.getByRole('button', { name: 'Talk with us' })).toBeTruthy()
+    expect(screen.queryByText(/waitlist/i)).toBeNull()
+  })
+
+  it('confirms the team will be in touch after success', () => {
+    succeeded = true
+    render(<WaitlistForm />)
+    const text = screen.getByRole('status').textContent ?? ''
+    expect(text).toMatch(/in touch/i)
+    expect(text).not.toMatch(/list/i)
   })
 })
