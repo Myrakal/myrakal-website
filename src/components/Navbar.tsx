@@ -40,7 +40,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             className="truncate text-sm font-medium text-foreground sm:text-lg lg:text-2xl"
           >
-            Cross-border healthcare made easy
+            Healthcare, but way cheaper
           </motion.span>
         ) : (
           <img
