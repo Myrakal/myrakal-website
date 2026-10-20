@@ -60,11 +60,32 @@ describe('saveIntake', () => {
     ['text too long', { ...valid, transcript: [{ role: 'user', text: 'x'.repeat(4001) }] }],
     ['text not a string', { ...valid, transcript: [{ role: 'user', text: 5 }] }],
     ['message not an object', { ...valid, transcript: ['hi'] }],
+    ['NUL in name', { ...valid, name: 'Ad\u0000a' }],
+    ['NUL in email', { ...valid, email: 'ada\u0000@example.com' }],
+    ['NUL in message text', { ...valid, transcript: [{ role: 'user', text: 'hi\u0000there' }] }],
+    ['whitespace-only message text', { ...valid, transcript: [{ role: 'user', text: '   \n ' }] }],
+    ['consecutive dots in email', { ...valid, email: 'a..b@example.com' }],
+    ['consecutive dots in domain', { ...valid, email: 'a@exa..mple.com' }],
+    ['leading dot in domain', { ...valid, email: 'a@.example.com' }],
+    ['trailing dot in domain', { ...valid, email: 'a@example.com.' }],
+    ['control character in email', { ...valid, email: 'a\u0001b@example.com' }],
     ['transcript over the total cap', { ...valid, transcript: Array.from({ length: 14 }, () => ({ role: 'user', text: 'x'.repeat(4000) })) }],
   ])('rejects %s', async (_label, input) => {
     const { create, db } = store()
     await expect(saveIntake(input, db)).rejects.toBeInstanceOf(InvalidIntake)
     expect(create).not.toHaveBeenCalled()
+  })
+
+  it('lowercases the email before storing', async () => {
+    const { create, db } = store()
+    await saveIntake({ ...valid, email: '  Ada@Example.COM ' }, db)
+    expect(create.mock.calls[0][0].data.email).toBe('ada@example.com')
+  })
+
+  it('trims message text before storing', async () => {
+    const { create, db } = store()
+    await saveIntake({ ...valid, transcript: [{ role: 'user', text: '  hello  ' }] }, db)
+    expect(create.mock.calls[0][0].data.transcript).toEqual([{ role: 'user', text: 'hello' }])
   })
 
   it('drops unexpected fields from stored messages', async () => {
