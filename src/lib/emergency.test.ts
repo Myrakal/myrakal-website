@@ -172,6 +172,11 @@ describe('detectEmergency: no negation handling, by design', () => {
     "I can't go on vacation this year",
     'I wish I was taller',
     'I took a bottle of water to the clinic',
+    'I took 2 pills',
+    'I took 2 pills this morning',
+    'took 1 tylenol',
+    'I took 7 pills over the week as prescribed',
+    'I took 3 sleeping pills last night as directed',
     'I like to play chess and check my email',
     'I want to diet before my surgery',
     'My insurance is Aetna and I am 52 years old',
@@ -214,7 +219,6 @@ describe('detectEmergency: more phrases', () => {
     "I think I'm dying",
     'he is dying',
     'took too many',
-    'I took 2 pills',
     'I took 30 tylenol',
     'I took a lot of ibuprofen',
     'I took all the pills in the cabinet',
@@ -265,6 +269,193 @@ describe('detectEmergency: more phrases', () => {
   })
 })
 
+describe('detectEmergency: requests for help and emergency services', () => {
+  it.each([
+    'help me',
+    'Help me!',
+    'HELP ME!!!',
+    'help!',
+    'help',
+    'please help',
+    'please help me',
+    'help me please',
+    'Hi. Help me.',
+    "I'm scared, please help",
+    'I need help right now',
+    'I need help now',
+    'I need help immediately',
+    'I need urgent help',
+    'I need emergency help',
+    'I need an ambulance',
+    'we need an ambulance',
+    'call 911',
+    'Please call 911!',
+    'call an ambulance',
+    'call 999',
+    'call 112',
+    'call 988',
+    'someone call 911',
+    'I called 911',
+    'emergency',
+    'this is an emergency',
+    "it's a medical emergency",
+    'send help',
+    'somebody help',
+    'someone help me',
+    'anyone help me please',
+    'help us',
+  ])('triggers: %s', (text) => {
+    expect(detectEmergency(text)).toBe(true)
+  })
+
+  it.each([
+    'can you help me understand my costs',
+    'Can you help me understand my costs?',
+    'help me understand my costs',
+    'help me with my insurance',
+    'help me find a doctor in Mexico',
+    'please help me choose a clinic',
+    'I need help finding a hospital in Turkey',
+    'I need help understanding my plan',
+    'I need help',
+    'I would like some help with the paperwork',
+    'how does this help me save money',
+    'the clinic will help me',
+    'this might help',
+    'Hi. I need help. Can you help me understand my costs?',
+    'emergency room visits are expensive in the US',
+    'does my insurance cover emergency care abroad',
+    'I called the insurance company',
+    'he called 9 times',
+  ])('does not trigger on ordinary help wording: %s', (text) => {
+    expect(detectEmergency(text)).toBe(false)
+  })
+})
+
+describe('detectEmergency: self-harm and violence without the usual words', () => {
+  it.each([
+    "I can't do this anymore",
+    "I can't take it anymore",
+    "I can't take this anymore",
+    "I can't handle this any longer",
+    'I want to disappear',
+    'I want to disappear forever',
+    "I don't want to exist",
+    'I have a gun and want to use it on myself',
+    'I have a plan to hurt myself',
+    "I'm going to hurt myself",
+    "I'm going to kill someone",
+    "I'm going to hurt someone",
+    'I want to hurt someone',
+    'I want to kill my boss',
+    'I am homicidal',
+    'homicidal thoughts',
+    "I'm gonna shoot myself",
+    'thinking about stabbing myself',
+  ])('triggers: %s', (text) => {
+    expect(detectEmergency(text)).toBe(true)
+  })
+
+  it.each([
+    'I want to go home',
+    'I want to see a doctor in Mexico',
+    "I can't do my taxes this year",
+    'I plan to travel in March',
+    'I am going to call my insurance company',
+    'I want to disappoint nobody',
+  ])('does not trigger: %s', (text) => {
+    expect(detectEmergency(text)).toBe(false)
+  })
+})
+
+describe('detectEmergency: other emergencies', () => {
+  it.each([
+    'he is convulsing',
+    'she had a convulsion',
+    'having convulsions',
+    'she is turning purple',
+    'he is turning grey',
+    'his lips are turning gray',
+    'crushing chest',
+    'a crushing pain in my chest',
+    'my chest feels like it is being crushed, crushing',
+    'I drank bleach',
+    'she swallowed antifreeze',
+    'he ingested poison',
+    'I drank some chemicals',
+    'the baby swallowed a battery',
+    'I think it is poisoning',
+    'he was poisoned',
+    'I took rat poison',
+    'I feel like I am going to faint',
+    'I am about to pass out',
+    'I feel faint',
+    'she was electrocuted',
+    'he was burned badly',
+    'a major burn on her arm',
+    'he was hurt in a car accident',
+    'injured in a car crash',
+    'after the car accident she is bleeding',
+    'a severe head injury',
+    'a head injury and he is unconscious',
+    'I hit my head and I am confused',
+    'she hit her head and keeps vomiting',
+    'vomiting since I hit my head',
+  ])('triggers: %s', (text) => {
+    expect(detectEmergency(text)).toBe(true)
+  })
+
+  it.each([
+    'I was in a car accident ten years ago',
+    'I drive a car to work',
+    'I hit my head on a shelf yesterday but feel fine',
+    'my bill was burned into my memory',
+    'I need to renew my battery warranty',
+    'I would like to understand my options for a knee replacement abroad',
+  ])('does not trigger: %s', (text) => {
+    expect(detectEmergency(text)).toBe(false)
+  })
+})
+
+describe('detectEmergency: how many pills', () => {
+  it.each([
+    'I took 8 pills',
+    'I took 9 tablets',
+    'I took 10 capsules',
+    'I took 30 tylenol',
+    'I took 100 pills',
+    'took eight pills',
+    'took ten pills',
+    'I took twenty xanax',
+    'I took too many pills',
+    'took too many',
+    'I took a lot of ibuprofen',
+    'I took lots of tylenol',
+    'I took a bunch of pills',
+    'I took a handful of aspirin',
+    'I took the whole bottle of pills',
+    'I took the entire bottle',
+    'I took all the pills in the cabinet',
+    'I took all of my insulin',
+    'she swallowed 12 tablets',
+  ])('triggers: %s', (text) => {
+    expect(detectEmergency(text)).toBe(true)
+  })
+
+  it.each([
+    'I took 2 pills',
+    'I took 2 pills this morning',
+    'took 1 tylenol',
+    'I took 1 aspirin for my headache',
+    'I took 3 tablets yesterday as directed',
+    'I took 7 pills over the week',
+    'I took four ibuprofen',
+    'I took two pills',
+  ])('does not trigger: %s', (text) => {
+    expect(detectEmergency(text)).toBe(false)
+  })
+})
+
 describe('detectEmergency: typos of the highest-risk words', () => {
   it.each([
     'cant brethe',
@@ -279,6 +470,18 @@ describe('detectEmergency: typos of the highest-risk words', () => {
     'ches pain',
     'cheat pain is bad but my chsst pain is worse',
     'hard time breathng',
+    'cnat breathe',
+    'i cnat breathe',
+    'canot breathe',
+    'cannnot breathe',
+    'cannt breathe',
+    'kil myself',
+    'kll myself',
+    'I want to kil myself',
+    'kill mysefl',
+    'hurt myslef',
+    'sucide',
+    'suiside',
   ])('detects a near miss: %s', (text) => {
     expect(detectEmergency(text)).toBe(true)
   })
@@ -289,6 +492,10 @@ describe('detectEmergency: typos of the highest-risk words', () => {
     'the steak was overdone',
     'I was out of breathing room at work',
     'I want a cheaper clinic',
+    'Can you fill me in on the costs',
+    'I want to breathe easier on my flight',
+    'will me and my wife both be covered',
+    'I cant wait to travel',
   ])('does not map unrelated words: %s', (text) => {
     expect(detectEmergency(text)).toBe(false)
   })
