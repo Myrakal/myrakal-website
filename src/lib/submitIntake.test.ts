@@ -83,4 +83,23 @@ describe('submitIntake', () => {
     controller.abort()
     await expect(result).rejects.toThrow()
   })
+
+  it('rejects without sending when the caller signal is already aborted', async () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    const controller = new AbortController()
+    controller.abort()
+    await expect(submitIntake(body, controller.signal)).rejects.toThrow()
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('removes its abort listener once the request settles', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => ({ id: 'x' }) }))
+    const controller = new AbortController()
+    const add = vi.spyOn(controller.signal, 'addEventListener')
+    const remove = vi.spyOn(controller.signal, 'removeEventListener')
+    await submitIntake(body, controller.signal)
+    expect(add).toHaveBeenCalledTimes(1)
+    expect(remove).toHaveBeenCalledWith('abort', add.mock.calls[0][1])
+  })
 })
