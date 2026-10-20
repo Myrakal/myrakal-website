@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
-import { EMERGENCY_REPLY } from '@/lib/emergency'
+import { detectEmergency, EMERGENCY_REPLY } from '@/lib/emergency'
 import { EMERGENCY_CONTINUE, INTAKE_PROMPTS, INTAKE_STEPS } from '@/lib/intake'
 
 type Rtl = typeof import('@testing-library/react')
@@ -371,5 +371,58 @@ describe('Chat emergency screening', () => {
     const box = rtl.screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement
     expect(box.readOnly).toBe(false)
     expect(box.disabled).toBe(false)
+  })
+
+  it.each([
+    'my knee hurts when I climb stairs',
+    'about two months',
+    'MRI last month, blood work from March',
+    'Blue Shield PPO',
+    'Ada Lovelace',
+    'can you help me understand my costs',
+    'I would like to see my options abroad',
+    "I'm a little worried about the price",
+  ])('does not treat the ordinary answer "%s" as an emergency', (text) => {
+    expect(detectEmergency(text)).toBe(false)
+  })
+
+  it('completes a whole intake with realistic benign answers and never shows an alert', async () => {
+    vi.stubGlobal('fetch', routes(() => ok('Thank you.')))
+    const user = userEvent.setup()
+    rtl.render(<Chat replyDelay={0} />)
+    for (const t of [
+      'my knee hurts when I climb stairs',
+      'about two months',
+      'MRI last month, blood work from March',
+      'Blue Shield PPO',
+      'Ada Lovelace',
+    ]) {
+      await answer(user, t)
+      await settled()
+    }
+    await answer(user, 'ada@example.com')
+    await rtl.waitFor(() => expect(log()).toMatch(/intake is complete/i))
+    expect(rtl.screen.queryByRole('alert')).toBeNull()
+    expect(assistantTexts()).not.toContain(EMERGENCY_REPLY)
+  })
+
+  it('asks the AI about a help request that is not an emergency, and keeps the flow going', async () => {
+    vi.stubGlobal('fetch', routes(() => ok('Happy to help.')))
+    const user = userEvent.setup()
+    rtl.render(<Chat replyDelay={0} />)
+    await answer(user, 'can you help me understand my costs')
+    await shows(3)
+    expect(rtl.screen.queryByRole('alert')).toBeNull()
+    expect(lastText()).toBe(`Happy to help. ${INTAKE_STEPS[0].ask}`)
+  })
+
+  it('screens a denial too, because the detector no longer tries to read negation', async () => {
+    vi.stubGlobal('fetch', routes(() => ok('')))
+    const user = userEvent.setup()
+    rtl.render(<Chat replyDelay={0} />)
+    await answer(user, 'no chest pain')
+    await shows(3)
+    shownEmergency()
+    expect(calls('/api/chat').length).toBe(0)
   })
 })
