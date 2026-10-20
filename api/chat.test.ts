@@ -141,6 +141,7 @@ describe('POST /api/chat', () => {
     ['a control character', 'I took too many pills\u001b'],
     ['a bidi override', '\u202eI want to kill myself'],
     ['a zero-width space inside the words', 'su\u200bicide'],
+    ['over 4000 characters, in the middle of a 10000 character paste', `${'knee pain on the stairs. '.repeat(200)} I took too many pills ${'knee pain on the stairs. '.repeat(200)}`],
     ['over 4000 characters, at the end', `${'a'.repeat(5000)} I want to end my life`],
     ['over 4000 characters, at the start', `I want to end my life ${'a'.repeat(5000)}`],
   ])('answers an emergency even when the message fails validation: %s', async (_label, text) => {

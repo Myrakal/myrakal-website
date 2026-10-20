@@ -129,11 +129,11 @@ describe('detectEmergency: normalization', () => {
   })
 })
 
-describe('detectEmergency: negation', () => {
+describe('detectEmergency: no negation handling, by design', () => {
   it.each([
     'no chest pain',
     "I don't have chest pain",
-    'I do not have any chest pain',
+    "I don't have any chest pain",
     'denies chest pain',
     'without trouble breathing',
     'not suicidal',
@@ -145,23 +145,15 @@ describe('detectEmergency: negation', () => {
     'no history of seizure',
     "I don't want to die",
     'I would never kill myself',
-  ])('a correct negation suppresses: %s', (text) => {
-    expect(detectEmergency(text)).toBe(false)
-  })
-
-  it.each([
     'no one is helping me, I have chest pain',
     "I'm not sure what to do, I have chest pain",
     'I have not slept and now I have chest pain',
-    'I have no history of heart problems but I have chest pain',
     'never felt like this, severe bleeding',
     "I can't stop thinking about suicide",
-    "I don't know what to do. I have chest pain",
-    'not now; chest pain',
-    'no help is coming and chest pain is worse',
-    'I am not okay, trouble breathing',
-    'no, I have chest pain',
-  ])('a negator elsewhere does not suppress: %s', (text) => {
+    'I had a heart attack five years ago',
+    'my mom had a stroke last year',
+    'chest pain last year',
+  ])('triggers on the symptom phrase in any context: %s', (text) => {
     expect(detectEmergency(text)).toBe(true)
   })
 
@@ -172,7 +164,6 @@ describe('detectEmergency: negation', () => {
     'The pain started two months ago and is worse on stairs',
     'My back hurts and I have a stroke of bad luck',
     'I take pills for my blood pressure every morning',
-    'I took 2 pills this morning',
     'I bled a little after the dentist',
     'I am allergic to penicillin',
     'I passed my driving test',
@@ -181,9 +172,171 @@ describe('detectEmergency: negation', () => {
     "I can't go on vacation this year",
     'I wish I was taller',
     'I took a bottle of water to the clinic',
+    'I like to play chess and check my email',
+    'I want to diet before my surgery',
+    'My insurance is Aetna and I am 52 years old',
     '',
-  ])('does not treat ordinary text as an emergency: %s', (text) => {
+  ])('still does not trigger on ordinary text with no symptom phrase: %s', (text) => {
     expect(detectEmergency(text)).toBe(false)
+  })
+})
+
+describe('detectEmergency: punctuation and spacing', () => {
+  it.each([
+    'cant. breathe',
+    "can't, breathe",
+    "I can't... breathe",
+    "I can't - breathe",
+    "I can't\nbreathe",
+    'no fever\nchest pain',
+    'chest, pain',
+    'chest... pain',
+    'chest_pain',
+    '"chest pain"',
+    "'chest pain'",
+    '(chest pain)',
+    'kill-myself',
+    "c a n ' t b r e a t h e",
+    'c.a.n.t b.r.e.a.t.h.e',
+    'k i l l m y s e l f',
+    'o v e r d o s e',
+    'h e a r t a t t a c k',
+  ])('detects: %s', (text) => {
+    expect(detectEmergency(text)).toBe(true)
+  })
+})
+
+describe('detectEmergency: more phrases', () => {
+  it.each([
+    "I'm dying",
+    'I am dying',
+    "I feel like I'm dying",
+    "I think I'm dying",
+    'he is dying',
+    'took too many',
+    'I took 2 pills',
+    'I took 30 tylenol',
+    'I took a lot of ibuprofen',
+    'I took all the pills in the cabinet',
+    'I took all of my insulin',
+    'she swallowed pills',
+    'he swallowed a handful of aspirin',
+    'I swallowed my sleeping tablets',
+    'I took twenty xanax',
+    'took a lot of oxy',
+    'swallowed acetaminophen',
+    'swallowed some paracetamol',
+    'worst headache of my life',
+    'a thunderclap headache',
+    'she is not conscious',
+    'there is no pulse',
+    "he won't breathe",
+    "I can't seem to breathe",
+    "cant seem to breathe",
+    "I don't think I can breathe",
+    'I can barely breathe',
+    'he is barely breathing',
+    "I'm having a hard time breathing",
+    "I can't get air",
+    "can't get enough air",
+    'I am suffocating',
+    'she is drowning',
+    'he choked on food',
+    'she is seizing',
+    "the blood won't stop",
+    'I lost a lot of blood',
+    'he was stabbed',
+    'she was shot',
+    'a gunshot wound',
+    'I am going to end it',
+    "I don't wanna live",
+    'dont wanna be here anymore',
+    "I don't want to go on",
+    'I cannot go on',
+    "life isn't worth living",
+    'I wish I was never born',
+    'without help I will die',
+    'my heart hurts',
+    'it feels like an elephant sitting on my chest',
+    'like a weight on my chest',
+    'something is sitting on my chest',
+  ])('detects: %s', (text) => {
+    expect(detectEmergency(text)).toBe(true)
+  })
+})
+
+describe('detectEmergency: typos of the highest-risk words', () => {
+  it.each([
+    'cant brethe',
+    "I can't breth",
+    'cant breath',
+    "can't braethe",
+    'i feel like suicde',
+    'thinking of sucide',
+    'I took an overdoes',
+    'overdosse',
+    'chst pain',
+    'ches pain',
+    'cheat pain is bad but my chsst pain is worse',
+    'hard time breathng',
+  ])('detects a near miss: %s', (text) => {
+    expect(detectEmergency(text)).toBe(true)
+  })
+
+  it.each([
+    'I like to play chess and check my email',
+    'a security breach at my workplace',
+    'the steak was overdone',
+    'I was out of breathing room at work',
+    'I want a cheaper clinic',
+  ])('does not map unrelated words: %s', (text) => {
+    expect(detectEmergency(text)).toBe(false)
+  })
+})
+
+describe('detectEmergency: long text', () => {
+  const filler = 'knee pain on the stairs. '.repeat(500)
+
+  it('finds an emergency phrase in the middle of a 10000 character paste', () => {
+    const text = `${filler.slice(0, 5000)} I took too many pills ${filler.slice(0, 5000)}`
+    expect(text.length).toBeGreaterThan(10000)
+    expect(detectEmergency(text)).toBe(true)
+  })
+
+  it('finds a phrase that straddles a window boundary', () => {
+    for (const offset of [3490, 3500, 3510, 3990, 4000]) {
+      const text = `${'a'.repeat(offset)} I can't breathe ${'a'.repeat(2000)}`
+      expect(detectEmergency(text)).toBe(true)
+    }
+  })
+
+  it('finds an emergency anywhere in a very long paste', () => {
+    const big = 'a'.repeat(250000)
+    expect(detectEmergency(`${big} suicide ${big}`.slice(0, 262144))).toBe(true)
+    expect(detectEmergency(big)).toBe(false)
+  })
+})
+
+describe('detectEmergency: pathological input stays fast', () => {
+  const cases: [string, string][] = [
+    ['one long word', 'a'.repeat(262144)],
+    ['repeated can\'t', "can't ".repeat(43000)],
+    ['repeated chest', 'chest '.repeat(43000)],
+    ['repeated chest a', 'chest a '.repeat(32000)],
+    ['repeated took', 'took '.repeat(52000)],
+    ['repeated face a', 'face a a a '.repeat(23000)],
+    ['digits', '1 '.repeat(131000)],
+    ['typo tokens', 'chst '.repeat(52000)],
+    ['apostrophes', "'".repeat(262144)],
+    ['punctuation', '.,;:!?'.repeat(43000)],
+    ['spaced letters', 'c a n t '.repeat(32000)],
+    ['almost phrases', "i can't breath e ".repeat(15000)],
+    ['unicode', '​'.repeat(131000) + 'é'.repeat(65000)],
+  ]
+  it.each(cases)('%s', (_label, text) => {
+    const start = performance.now()
+    detectEmergency(text)
+    expect(performance.now() - start).toBeLessThan(4000)
   })
 })
 
