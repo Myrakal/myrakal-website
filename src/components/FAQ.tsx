@@ -16,17 +16,17 @@ const FAQS: FaqItem[] = [
   {
     question: 'How does it work?',
     answer:
-      'It starts with intake. Our AI gathers your information and suggests lab results, imaging, other tests, and your insurance plan details to bring in. Then a licensed doctor reviews your case and either approves it or recommends changes.',
+      "It starts with intake. Our AI only gathers information: your lab results, imaging, other tests, and your insurance plan. It gives no advice. Once intake is complete, it tells you it's done. Then a licensed doctor reviews your case and either approves it or makes changes. Nothing is recommended before the doctor has reviewed your case.",
   },
   {
     question: 'Do I need a diagnosis to start?',
     answer:
-      "No. You can come to us with or without a current diagnosis or case, and intake will help you work out what information is worth gathering.",
+      "No. You can come to us with or without a current diagnosis or case. Intake gathers whatever you have, and the licensed doctor decides what is needed next.",
   },
   {
     question: 'Does AI make medical decisions?',
     answer:
-      'No. AI helps organize your information and suggests next steps, but a licensed doctor reviews your case before anything is approved or changed.',
+      "No. AI only gathers your information. It doesn't diagnose or advise. A licensed doctor reviews your case before anything is recommended, approved, or changed.",
   },
   {
     question: 'Is my information kept private?',

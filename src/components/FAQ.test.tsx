@@ -40,4 +40,16 @@ describe('FAQ', () => {
     const t = await openAll()
     expect(t).toMatch(/not by general email or the website contact form/i)
   })
+
+  it('says AI only gathers information and never suggests anything', async () => {
+    const t = await openAll()
+    expect(t).not.toMatch(/suggest/i)
+    expect(t).toMatch(/only gathers/i)
+    expect(t).toMatch(/lets you know when (it|intake) is done|when intake is complete|once intake is complete/i)
+  })
+
+  it('says the licensed doctor reviews the case before anything is recommended', async () => {
+    const t = await openAll()
+    expect(t).toMatch(/before (we|anything is|any) (recommend|suggest)/i)
+  })
 })
