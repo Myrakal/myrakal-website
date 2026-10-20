@@ -14,7 +14,7 @@ export async function submitIntake({ name, email, transcript }: IntakeBody, sign
     const res = await fetch('/api/intake', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, transcript: transcript.map(({ role, text }) => ({ role, text })) }),
+      body: JSON.stringify({ name, email, transcript: transcript.map(({ role, text, record }) => ({ role, text: record ?? text })) }),
       signal: controller.signal,
     })
     if (!res.ok) throw new Error(`Intake request failed: ${res.status}`)

@@ -10,8 +10,8 @@ import {
   INTAKE_COMPLETE,
   INTAKE_FAILED,
   INTAKE_PROMPTS,
+  composeReply,
   replyFor,
-  withoutThanks,
 } from '@/lib/intake'
 import { acknowledge } from '@/lib/acknowledge'
 import { submitIntake } from '@/lib/submitIntake'
@@ -63,27 +63,29 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     }
   }
 
-  const respond = async (text: string, transcript: Message[]) => {
+  const respond = async (text: string, transcript: Message[]): Promise<{ text: string; record?: string }> => {
     if (unsaved.current) {
       contact.current.email = extractEmail(text) ?? contact.current.email
-      return save(transcript)
+      return { text: await save(transcript) }
     }
     if (accepted.current === INTAKE_PROMPTS.length) {
       const email = extractEmail(text)
-      if (!email) return EMAIL_RETRY
+      if (!email) return { text: EMAIL_RETRY }
       contact.current.email = email
       accepted.current++
-      return save(transcript)
+      return { text: await save(transcript) }
     }
-    const askAi = accepted.current < INTAKE_PROMPTS.length - 1
-    if (accepted.current === INTAKE_PROMPTS.length - 1) contact.current.name = text.trim().slice(0, 200)
-    accepted.current++
-    const next = replyFor(accepted.current)
-    if (!askAi) return next
+    if (accepted.current === INTAKE_PROMPTS.length - 1) {
+      contact.current.name = text.trim().slice(0, 200)
+      accepted.current++
+      return { text: replyFor(accepted.current) }
+    }
     const controller = new AbortController()
     pending.current = controller
     const ack = await acknowledge(text, controller.signal)
-    return ack ? `${ack} ${withoutThanks(next)}` : next
+    if (ack.emergency) return { text: ack.reply, record: ack.reply }
+    accepted.current++
+    return { text: composeReply(accepted.current, ack.reply), record: composeReply(accepted.current) }
   }
 
   const send = async (text: string) => {
@@ -98,8 +100,8 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     try {
       const [reply] = await Promise.all([respond(text, [...messages, userMessage]), wait])
       if (mounted.current) {
-        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply }])
-        if (reply === INTAKE_COMPLETE) setSaved(true)
+        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply.text, record: reply.record }])
+        if (reply.text === INTAKE_COMPLETE) setSaved(true)
       }
     } finally {
       if (mounted.current) setTyping(false)

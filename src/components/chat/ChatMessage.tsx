@@ -1,4 +1,4 @@
-export type Message = { id: string; role: 'assistant' | 'user'; text: string }
+export type Message = { id: string; role: 'assistant' | 'user'; text: string; record?: string }
 
 export function ChatMessage({ message }: { message: Message }) {
   const mine = message.role === 'user'

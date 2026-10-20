@@ -1,7 +1,8 @@
 import {
   EMAIL_RETRY,
   extractEmail,
-  withoutThanks,
+  composeReply,
+  INTAKE_STEPS,
   INTAKE_COMPLETE,
   INTAKE_FAILED,
   INTAKE_PROMPTS,
@@ -124,12 +125,22 @@ describe('contact and failure copy', () => {
     expect(INTAKE_COMPLETE).toMatch(/licensed doctor/i)
   })
 
-  it('drops a leading thank-you from a scripted question when an acknowledgement precedes it', () => {
-    expect(withoutThanks(INTAKE_PROMPTS[0])).toMatch(/^Could you tell me/)
-    expect(withoutThanks(INTAKE_PROMPTS[1])).toMatch(/^Do you have any recent labs/)
-    expect(withoutThanks(INTAKE_PROMPTS[2])).toBe('What insurance plan do you have, if any?')
-    expect(withoutThanks(INTAKE_PROMPTS[3])).toBe("We're almost done. What's your name?")
-    expect(withoutThanks(INTAKE_PROMPTS[4])).toMatch(/^And what's the best email/)
-    expect(withoutThanks('Could you say more?')).toBe('Could you say more?')
+  it('keeps the scripted-only text identical to the original prompts', () => {
+    expect(INTAKE_PROMPTS).toEqual([
+      "Thank you for sharing that. Could you tell me a little more about what's going on, such as your symptoms, how long you've had them, and anything you've already tried?",
+      "That's very helpful. Do you have any recent labs, imaging, or other tests? Let me know what you have, or just say none.",
+      'Thank you. What insurance plan do you have, if any?',
+      "Thank you. We're almost done. What's your name?",
+      "Thank you. And what's the best email to reach you once a licensed doctor has reviewed your case?",
+    ])
+  })
+
+  it('splits each step into a gratitude lead and the question, and composes either way', () => {
+    expect(INTAKE_STEPS.length).toBe(INTAKE_PROMPTS.length)
+    for (const [i, step] of INTAKE_STEPS.entries()) {
+      expect(composeReply(i + 1)).toBe(INTAKE_PROMPTS[i])
+      expect(composeReply(i + 1, 'I am sorry to hear that.')).toBe(`I am sorry to hear that. ${step.ask}`)
+    }
+    expect(composeReply(INTAKE_PROMPTS.length + 1, 'Ignored.')).toBe(INTAKE_COMPLETE)
   })
 })
