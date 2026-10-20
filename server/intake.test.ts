@@ -90,14 +90,14 @@ describe('saveIntake', () => {
     ['line separator in name', { ...valid, name: 'Ad\u2028a' }],
     ['paragraph separator in name', { ...valid, name: 'Ad\u2029a' }],
     ['tag character in name', { ...valid, name: 'Ada\u{e0067}' }],
-    ['zero-width joiner in name', { ...valid, name: 'Ad\u200da' }],
+    ['zero-width non-joiner in email', { ...valid, email: 'ada\u200c@example.com' }],
+    ['zero-width joiner in email', { ...valid, email: 'ada\u200d@example.com' }],
     ['zero-width space in email', { ...valid, email: 'ada\u200b@example.com' }],
     ['byte order mark in email', { ...valid, email: '\ufeffada@example.com' }],
     ['line separator in email', { ...valid, email: 'ada\u2028@example.com' }],
     ['tag character in email', { ...valid, email: 'ada\u{e0067}@example.com' }],
     ['zero-width space in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u200bb' }] }],
     ['byte order mark in message text', { ...valid, transcript: [{ role: 'user', text: 'a\ufeffb' }] }],
-    ['zero-width non-joiner in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u200cb' }] }],
     ['soft hyphen in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u00adb' }] }],
     ['tag character in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u{e0067}b' }] }],
     ['line separator in message text', { ...valid, transcript: [{ role: 'user', text: 'a\u2028b' }] }],
@@ -122,6 +122,15 @@ describe('saveIntake', () => {
     const { create, db } = store()
     const text = '\u{1f468}\u200d\u{1f469}\u200d\u{1f467} \u2764\ufe0f \u2764\ufe0e'
     await saveIntake({ ...valid, transcript: [{ role: 'user', text }] }, db)
+    expect(create.mock.calls[0][0].data.transcript).toEqual([{ role: 'user', text }])
+  })
+
+  it('accepts the zero-width non-joiner in names and message text, as Persian and other scripts need it', async () => {
+    const { create, db } = store()
+    const name = '\u0645\u06cc\u200c\u062e\u0648\u0627\u0647\u0645'
+    const text = '\u0645\u06cc\u200c\u062e\u0648\u0627\u0647\u0645 \u062f\u06a9\u062a\u0631'
+    await saveIntake({ ...valid, name, transcript: [{ role: 'user', text }] }, db)
+    expect(create.mock.calls[0][0].data.name).toBe(name)
     expect(create.mock.calls[0][0].data.transcript).toEqual([{ role: 'user', text }])
   })
 

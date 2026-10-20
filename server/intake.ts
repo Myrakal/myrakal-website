@@ -10,7 +10,7 @@ const LONE_SURROGATE = /[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[
 const STRICT_CONTROL = /[\u0000-\u001f\u007f-\u009f]/
 const TEXT_CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/
 const STRICT_FORMAT = /[\p{Cf}\p{Zl}\p{Zp}]/u
-const TEXT_FORMAT = /(?!\u200d)\p{Cf}|[\p{Zl}\p{Zp}]/u
+const TEXT_FORMAT = /(?![\u200c\u200d])\p{Cf}|[\p{Zl}\p{Zp}]/u
 
 const unsafe = (value: string, control: RegExp, format: RegExp) =>
   control.test(value) || format.test(value) || LONE_SURROGATE.test(value)
@@ -19,7 +19,7 @@ const isRecord = (v: unknown): v is Record<string, unknown> =>
 
 function parseName(value: unknown) {
   if (value === undefined || value === null) return null
-  if (typeof value !== 'string' || unsafe(value, STRICT_CONTROL, STRICT_FORMAT) || value.trim().length > MAX.name)
+  if (typeof value !== 'string' || unsafe(value, STRICT_CONTROL, TEXT_FORMAT) || value.trim().length > MAX.name)
     throw new InvalidIntake('Invalid name')
   return value.trim() || null
 }
