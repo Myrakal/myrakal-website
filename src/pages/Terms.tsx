@@ -5,29 +5,45 @@ export default function Terms() {
     <LegalLayout
       title="Terms of Service"
       documentTitle="Terms of Service: Myrakal"
-      description="Terms governing use of the Myrakal website and waitlist."
+      description="Terms governing use of the Myrakal website and intake and consult services."
       eyebrow="Legal / Terms"
-      lede="These terms govern your use of the public Myrakal website and waitlist."
+      lede="These terms govern your use of the public Myrakal website and the intake and consult services offered through it."
     >
       <Section title="Acceptance">
         <p>
           By using this website, you agree to these Terms of Service. If you do not agree, do not use the
-          website. You must be at least 18 years old to join the waitlist.
+          website. You must be at least 18 years old to use the services.
         </p>
       </Section>
 
-      <Section title="Current service">
+      <Section title="Our service">
         <p>
-          The current website provides general information and a waitlist. It does not currently complete
-          medical bookings, accept payments, provide medical records, or create a patient-provider
-          relationship.
+          Myrakal helps you evaluate care options through two steps. In intake, you can come to us with or
+          without a current diagnosis or case. Our AI tools help gather, or suggest that you obtain,
+          information such as lab results, imaging, other tests, and your insurance plan. In consult, a
+          licensed doctor reviews your case and either approves it or recommends changes.
+        </p>
+        <p>
+          Myrakal does not currently accept bookings or payments through the website. A
+          patient-provider relationship with a doctor is formed only as described at the time of a
+          consult.
+        </p>
+      </Section>
+
+      <Section title="AI-assisted intake">
+        <p>
+          AI tools may be inaccurate or incomplete. They help organize information and suggest next
+          steps, but they do not diagnose, treat, or replace a doctor. A licensed doctor reviews your
+          case before any approval or change is communicated to you. You are responsible for the accuracy
+          and completeness of the information you provide.
         </p>
       </Section>
 
       <Section title="Not medical advice or emergency service" callout>
         <p>
-          Myrakal is not a healthcare provider. Website content is informational and is not medical
-          advice, diagnosis, treatment, or a substitute for professional judgment. Do not use the website
+          Myrakal is not itself a healthcare provider. Clinical advice comes only from the licensed doctor
+          who reviews your case. Website content and AI-generated suggestions are informational and are
+          not medical advice, diagnosis, or treatment. Do not use the website
           for emergencies. Contact local emergency services if you may be experiencing a medical
           emergency.
         </p>
@@ -44,7 +60,7 @@ export default function Terms() {
 
       <Section title="Bookings, payments, cancellations, and refunds">
         <p>
-          The current website does not accept bookings or payments. If Myrakal later offers a transaction,
+          The website does not currently accept bookings or payments. If Myrakal offers a transaction,
           the applicable price, payment terms, provider terms, cancellation rules, and refund policy will
           be presented before you authorize payment. Those transaction-specific terms will control if they
           conflict with these website terms.
