@@ -52,4 +52,10 @@ describe('FAQ', () => {
     const t = await openAll()
     expect(t).toMatch(/before (we|anything is|any) (recommend|suggest)/i)
   })
+
+  it('says intake is self-serve rather than invite only', async () => {
+    const t = await openAll()
+    expect(t).toMatch(/self-serve/i)
+    expect(t).not.toMatch(/invite/i)
+  })
 })

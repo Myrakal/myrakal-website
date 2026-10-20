@@ -36,7 +36,7 @@ const FAQS: FaqItem[] = [
   {
     question: 'Is Myrakal available now?',
     answer:
-      "We're currently invite only. Talk with us and we'll get you started.",
+      "Yes. Intake is self-serve, so you can start whenever you're ready with no invite needed. Talk with us if you have questions along the way.",
   },
   {
     question: 'How do you vet doctors and hospitals?',
