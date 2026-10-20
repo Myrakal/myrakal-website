@@ -8,20 +8,17 @@ const NONE = { reply: '', emergency: false }
 let unavailable = false
 let failures = 0
 
-const hasAddressMarker = (text: string) =>
-  /[@＠]/.test(text) || /\bat\b.{0,40}\bdot\b/i.test(text)
+const hasAddressMarker = (text: string) => {
+  const t = text.normalize('NFKC')
+  return /@/.test(t) || /\bat\b[\s\S]{0,40}\bdot\b/i.test(t) || /\bat\s+[\w-]{1,63}(\.[\w-]{1,63})+/i.test(t)
+}
 
 const shapedReply = (reply: string) => {
   const text = reply.trim()
   if (!text || text.length > MAX_REPLY) return ''
-  if (/[\r\n*#`_[\]()]/.test(text) || /https?:|www\./i.test(text)) return ''
+  if (/[@\r\n*#`_[\]()]/.test(text) || /https?:|www\./i.test(text)) return ''
   if ((text.match(/\d/g)?.length ?? 0) > text.length * 0.15) return ''
   return /[.!?]$/.test(text) ? text : `${text}.`
-}
-
-export function resetAcknowledge() {
-  unavailable = false
-  failures = 0
 }
 
 const fail = () => {
@@ -44,14 +41,15 @@ export async function acknowledge(text: string, signal?: AbortSignal) {
       signal: controller.signal,
     })
     if (UNAVAILABLE.has(res.status)) unavailable = true
+    if (res.status === 400 || res.status === 429) return NONE
     if (!res.ok) return fail()
     failures = 0
     const { reply, emergency } = await res.json()
+    if (emergency === true) return { reply: '', emergency: true }
     if (typeof reply !== 'string') return NONE
-    if (emergency === true && reply.trim()) return { reply: reply.trim(), emergency: true }
     return { reply: shapedReply(reply), emergency: false }
   } catch {
-    return fail()
+    return signal?.aborted ? NONE : fail()
   } finally {
     clearTimeout(timeout)
     signal?.removeEventListener('abort', onAbort)

@@ -52,6 +52,10 @@ describe('acknowledge', () => {
     ['an obfuscated address', 'ada at example dot com'],
     ['a bracketed obfuscated address', 'ada (at) example [dot] com'],
     ['a capitalised obfuscated address', 'Ada AT example DOT com'],
+    ['an obfuscated address across a newline', 'ada at\nexample dot com'],
+    ['a small commercial at sign', 'ada\ufe6bexample.com'],
+    ['full-width letters', '\uff41\uff44\uff41 \uff41\uff54 example \uff44\uff4f\uff54 com'],
+    ['name at domain', 'write to ada at example.com'],
   ])('skips the AI entirely when the message has %s', async (_label, text) => {
     const fetchMock = ok('Thank you.')
     vi.stubGlobal('fetch', fetchMock)
@@ -79,6 +83,7 @@ describe('acknowledge', () => {
     ['a www url', 'Visit www.example.com now.'],
     ['mostly digits', '123456789 12345 6789 12345'],
     ['too long', 'Thank you. '.repeat(30)],
+    ['an at sign', 'Write to ada@example.com.'],
   ])('rejects a reply with %s', async (_label, reply) => {
     vi.stubGlobal('fetch', ok(reply))
     const { acknowledge } = await load()
@@ -97,12 +102,16 @@ describe('acknowledge', () => {
     await expect(acknowledge('hi')).resolves.toEqual({ reply: reply, emergency: false })
   })
 
-  it('returns a flagged emergency reply intact, even when long, with digits and punctuation the shape rules would reject', async () => {
-    const emergency =
-      "I'm concerned about what you've described. Please contact your local emergency services right away (call 911, or 988 in the US). If you are in danger, do not wait. You do not need to finish this form first.\n\nYour safety matters most, and we will be here when you are ready."
-    vi.stubGlobal('fetch', ok(emergency, true))
+  it('returns emergency true and ignores whatever text the server sent', async () => {
+    vi.stubGlobal('fetch', ok('SERVER TEXT (call 911)\nplease', true))
     const { acknowledge } = await load()
-    await expect(acknowledge('hi')).resolves.toEqual({ reply: emergency, emergency: true })
+    await expect(acknowledge('hi')).resolves.toEqual({ reply: '', emergency: true })
+  })
+
+  it('treats a flagged emergency with an empty reply as an emergency', async () => {
+    vi.stubGlobal('fetch', ok('', true))
+    const { acknowledge } = await load()
+    await expect(acknowledge('hi')).resolves.toEqual({ reply: '', emergency: true })
   })
 
   it.each([
@@ -117,13 +126,7 @@ describe('acknowledge', () => {
     await expect(acknowledge('hi')).resolves.toEqual({ reply: 'Thank you.', emergency: false })
   })
 
-  it('treats a flagged emergency with no usable reply as a non-emergency', async () => {
-    vi.stubGlobal('fetch', ok('', true))
-    const { acknowledge } = await load()
-    await expect(acknowledge('hi')).resolves.toEqual(NONE)
-  })
-
-  it('does not let a non-emergency reply bypass the shape rules', async () => {
+  it('does not let a reply that merely mentions emergencies bypass the shape rules', async () => {
     vi.stubGlobal('fetch', ok('Call 911 now (really).', false))
     const { acknowledge } = await load()
     await expect(acknowledge('hi')).resolves.toEqual(NONE)
@@ -251,5 +254,35 @@ describe('acknowledge', () => {
     live.abort()
     await expect(pending).resolves.toEqual(NONE)
     expect(sent!.aborted).toBe(true)
+  })
+
+  it('does not count a caller abort as a failure, nor mark the AI unavailable', async () => {
+    const fetchMock = vi.fn(
+      (_url: string, init: RequestInit) =>
+        new Promise((_resolve, reject) => {
+          init.signal?.addEventListener('abort', () => reject(new DOMException('Aborted', 'AbortError')))
+        }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    const { acknowledge } = await load()
+    for (let i = 0; i < 4; i++) {
+      const controller = new AbortController()
+      const pending = acknowledge(`try ${i}`, controller.signal)
+      controller.abort()
+      await expect(pending).resolves.toEqual(NONE)
+    }
+    expect(fetchMock).toHaveBeenCalledTimes(4)
+  })
+
+  it.each([400, 429])('does not mark the AI unavailable after a %i', async (status) => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false, status, json: async () => ({}) })
+    vi.stubGlobal('fetch', fetchMock)
+    const { acknowledge } = await load()
+    for (let i = 0; i < 4; i++) await expect(acknowledge('hi')).resolves.toEqual(NONE)
+    expect(fetchMock).toHaveBeenCalledTimes(4)
+  })
+
+  it('does not export a test-only reset', async () => {
+    expect(Object.keys(await load())).toEqual(['acknowledge'])
   })
 })

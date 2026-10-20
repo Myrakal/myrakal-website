@@ -14,6 +14,7 @@ import {
   replyFor,
 } from '@/lib/intake'
 import { acknowledge } from '@/lib/acknowledge'
+import { detectEmergency, EMERGENCY_REPLY } from '@/lib/emergency'
 import { submitIntake } from '@/lib/submitIntake'
 
 const GREETING: Message = {
@@ -63,7 +64,11 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     }
   }
 
-  const respond = async (text: string, transcript: Message[]): Promise<{ text: string; record?: string }> => {
+  const respond = async (
+    text: string,
+    transcript: Message[],
+  ): Promise<{ text: string; record?: string; emergency?: boolean }> => {
+    if (detectEmergency(text)) return { text: EMERGENCY_REPLY, record: EMERGENCY_REPLY, emergency: true }
     if (unsaved.current) {
       contact.current.email = extractEmail(text) ?? contact.current.email
       return { text: await save(transcript) }
@@ -83,7 +88,7 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     const controller = new AbortController()
     pending.current = controller
     const ack = await acknowledge(text, controller.signal)
-    if (ack.emergency) return { text: ack.reply, record: ack.reply }
+    if (ack.emergency) return { text: EMERGENCY_REPLY, record: EMERGENCY_REPLY, emergency: true }
     accepted.current++
     return { text: composeReply(accepted.current, ack.reply), record: composeReply(accepted.current) }
   }
@@ -100,7 +105,7 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     try {
       const [reply] = await Promise.all([respond(text, [...messages, userMessage]), wait])
       if (mounted.current) {
-        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply.text, record: reply.record }])
+        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply.text, record: reply.record, emergency: reply.emergency }])
         if (reply.text === INTAKE_COMPLETE) setSaved(true)
       }
     } finally {

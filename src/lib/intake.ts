@@ -17,6 +17,8 @@ export const INTAKE_STEPS = [
 
 export const INTAKE_PROMPTS = INTAKE_STEPS.map(({ lead, ask }) => `${lead} ${ask}`)
 
+export const EMERGENCY_CONTINUE = "Whenever you're ready, we can continue."
+
 export const SUPPORT_EMAIL = 'eshaansood@myrakal.com'
 
 export const INTAKE_COMPLETE =

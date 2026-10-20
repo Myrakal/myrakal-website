@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import Chat from '@/pages/Chat'
 
-vi.mock('@/lib/acknowledge', () => ({ acknowledge: vi.fn().mockResolvedValue('') }))
+vi.mock('@/lib/acknowledge', () => ({ acknowledge: vi.fn().mockResolvedValue({ reply: '', emergency: false }) }))
 
 const intakeOk = () => vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => ({ id: 'abc' }) })
 
