@@ -17,4 +17,17 @@ describe('App', () => {
     expect(links.length).toBeGreaterThan(1)
     for (const link of links) expect(link.getAttribute('href')).toBe('/contact/')
   })
+
+  it('has no For clinics links', () => {
+    window.history.pushState({}, '', '/')
+    const { container } = render(<App />)
+    expect(container.querySelector('a[href*="clinics"]')).toBeNull()
+    expect(container.textContent).not.toMatch(/for clinics/i)
+  })
+
+  it('no longer serves a clinics page', () => {
+    window.history.pushState({}, '', '/clinics/')
+    const { container } = render(<App />)
+    expect(container.querySelector('h1')?.textContent).toBe('Healthcare, but way cheaper')
+  })
 })
