@@ -497,7 +497,6 @@ describe('detectEmergency: false alarms that were fixed', () => {
     'I passed out of the program',
     'I have heavy bleeding during periods',
     'I took 12 ibuprofen over the last week',
-    'I took 20 tylenol over the month',
     'I took 6 xanax per week as prescribed',
     'I was injured in a car crash last year',
     'car accident two years ago hurt my neck',
@@ -541,6 +540,7 @@ describe('detectEmergency: false alarms that were fixed', () => {
     'heavy bleeding that won\'t stop',
     'I took 12 ibuprofen at once',
     'I took 20 tylenol',
+    'I took 20 tylenol over the month',
     'Chest. pain',
     'chest. pain',
   ])('still triggers: %s', (text) => {
@@ -667,6 +667,53 @@ describe('detectEmergency: emergencies that were missed', () => {
     'help',
   ])('triggers: %s', (text) => {
     expect(detectEmergency(text)).toBe(true)
+  })
+})
+
+describe('detectEmergency: regressions fixed in the final round', () => {
+  it.each([
+    'I took 40 pills in the last hour',
+    'I took 30 pills in the past hour',
+    'I took 20 pills during the night',
+    'I took 25 tylenol over the last hour',
+    'I took like 30 advil',
+    'I took 15 xanax today',
+    'I took 50 pills tonight',
+    'I took 30 pills just now',
+    'I took 12 pills 10 minutes ago',
+    'I took 30 pills at once',
+    'I took 10 Tylenol per day no I mean tonight',
+    "I can't. Breathe.",
+    "I CAN'T. BREATHE.",
+    "I can't! Breathe!",
+    "I can't... Breathe",
+    "I don't want to. Live.",
+    'I want to. Die.',
+    "I want to kill. Myself.",
+    "I can't. Go on.",
+    "Sorry. I can't go on.",
+    'Hello. I wish I were dead',
+    'Hi. I dont want to live',
+  ])('triggers: %s', (text) => {
+    expect(detectEmergency(text)).toBe(true)
+  })
+
+  it.each([
+    'I take 3 Tylenol a day',
+    'I took 3 Advil last night',
+    'I took 5 mg of oxycodone',
+    'I took 10 pills per day',
+    'I took 9 pills a day as prescribed',
+    'I took 20 pills twice a day',
+    'I took 20 pills daily',
+    'I took 2 pills every 6 hours',
+    'I took 12 ibuprofen over the last week',
+    'I took 6 xanax per week as prescribed',
+    'No issues with my chest. Pain is in my knee.',
+    'My chest is fine. Pain level is 6 in my knee.',
+    'I can breathe fine. Knee pain is the issue.',
+  ])('does not trigger: %s', (text) => {
+    expect(detectEmergency(text)).toBe(false)
   })
 })
 
