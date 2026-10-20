@@ -40,7 +40,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             className="truncate text-sm font-medium text-foreground sm:text-lg lg:text-2xl"
           >
-            Cross-border healthcare made easy
+            Healthcare, but way cheaper
           </motion.span>
         ) : (
           <img
@@ -60,10 +60,10 @@ export function Navbar() {
           For clinics
         </a>
         <a
-          href="/#waitlist"
+          href="/contact/"
           className="rounded-full bg-(image:--pearl-gradient) px-4 py-1.5 text-sm font-medium whitespace-nowrap text-primary-foreground transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground sm:px-5 sm:py-2 sm:text-base"
         >
-          Join waitlist
+          Talk with us
         </a>
       </div>
     </header>

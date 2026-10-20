@@ -15,11 +15,9 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
-    "@formspree/react": "^3.0.0",
     "@tailwindcss/vite": "^4.3.3",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
-    "cobe": "^0.6.5",
     "country-flag-icons": "^1.6.20",
     "lucide-react": "^1.48.0",
     "motion": "^13.4.3",

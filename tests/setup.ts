@@ -1,13 +1,9 @@
 import '@testing-library/jest-dom/vitest'
 import { cleanup } from '@testing-library/react'
-import { afterEach, vi } from 'vitest'
+import { afterEach } from 'vitest'
 
 afterEach(cleanup)
 
-// jsdom has no canvas/WebGL or layout APIs; stub what the app touches.
-vi.mock('cobe', () => ({
-  default: () => ({ destroy: () => {} }),
-}))
 globalThis.ResizeObserver ??= class {
   observe() {}
   unobserve() {}
