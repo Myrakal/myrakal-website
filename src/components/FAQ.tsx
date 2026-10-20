@@ -11,7 +11,27 @@ const FAQS: FaqItem[] = [
   {
     question: 'What is Myrakal?',
     answer:
-      'Myrakal is a all-in-one platform for cross-border healthcare. We help you find the right country and the right doctor for the care you need, at a fraction of the cost.',
+      'Myrakal helps you understand your healthcare costs and explore your options, including care abroad. You tell us about your situation, and a licensed doctor reviews your case.',
+  },
+  {
+    question: 'How does it work?',
+    answer:
+      'It starts with intake. Our AI gathers your information and suggests lab results, imaging, other tests, and your insurance plan details to bring in. Then a licensed doctor reviews your case and either approves it or recommends changes.',
+  },
+  {
+    question: 'Do I need a diagnosis to start?',
+    answer:
+      "No. You can come to us with or without a current diagnosis or case, and intake will help you work out what information is worth gathering.",
+  },
+  {
+    question: 'Does AI make medical decisions?',
+    answer:
+      'No. AI helps organize your information and suggests next steps, but a licensed doctor reviews your case before anything is approved or changed.',
+  },
+  {
+    question: 'Is my information kept private?',
+    answer:
+      'Health and insurance information you share during intake and consult is handled as described in our Privacy Policy. Please share it only through Myrakal intake, not by general email.',
   },
   {
     question: 'Is Myrakal available now?',
@@ -24,14 +44,9 @@ const FAQS: FaqItem[] = [
       'Every doctor is licensed and credential-verified, and every hospital we work with is internationally accredited. We hold every partner to the same standard we’d want for our own family.',
   },
   {
-    question: 'Is my information kept private?',
-    answer:
-      'Please do not submit medical information through this website. Our Privacy Policy explains how we handle website data.',
-  },
-  {
     question: "What's next?",
     answer:
-      "Country and doctor selection is just the start. We're building out flight and hotel booking, ground transportation, insurance support, and a doctor portal for sending documents. Your entire trip is handled in one place.",
+      "Intake and consult are just the start. We're building out flight and hotel booking, ground transportation, insurance support, and a doctor portal for sending documents. Your entire trip is handled in one place.",
   },
 ]
 
