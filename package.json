@@ -11,10 +11,19 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "screenshot": "node --experimental-strip-types scripts/screenshot.ts"
+    "screenshot": "node --experimental-strip-types scripts/screenshot.ts",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio",
+    "db:check": "node --experimental-strip-types scripts/db-check.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "@supabase/supabase-js": "2.118.0",
     "@tailwindcss/vite": "^4.3.3",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
@@ -37,8 +46,10 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "dotenv": "18.0.8",
     "jsdom": "^30.1.2",
     "oxlint": "^1.81.0",
+    "prisma": "7.10.1",
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.4"
