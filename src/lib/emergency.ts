@@ -117,7 +117,10 @@ const SOURCES = [
   String.raw`\b(?:blood sugar|glucose)\b(?: [\w']+){0,3} (?:over|above) [4-9][0-9][0-9]\b|\bpain so (?:bad|severe|intense)\b(?: [\w']+){0,4} (?:can'?t|cannot) (?:stand|walk|move|breathe|think)\b|\b(?:appendix|appendicitis)\b(?: [\w']+){0,6} (?:burst|ruptured)\b|\bgonna die\b`,
   String.raw`\bbroke my (?:back|neck)\b|\bfell down (?:the |a flight of )?stairs\b${PAST}|\b(?:car|auto|vehicle|bike|motorcycle|traffic) (?:accident|crash|wreck)\b(?: [\w']+){0,3} (?:just now|minutes ago|tonight|today|this morning|an hour ago)\b|\b(?:bad|serious|terrible|major) (?:accident|crash|wreck)\b(?: [\w']+){0,6} (?:hurts?|hurt|injured|bleeding|unconscious)\b`,
 ]
-const PATTERN = new RegExp(SOURCES.join('|'))
+const PATTERNS = Array.from({ length: Math.ceil(SOURCES.length / 12) }, (_, i) =>
+  new RegExp(SOURCES.slice(i * 12, i * 12 + 12).join('|')),
+)
+const matches = (t: string) => PATTERNS.some((re) => re.test(t))
 
 const HELP = new RegExp(
   [
@@ -228,7 +231,7 @@ function despace(t: string) {
 
 function scanWindow(w: string) {
   const spaced = despace(w)
-  for (const t of spaced.runs.length ? [w, spaced.text] : [w]) if (PATTERN.test(t) || PATTERN.test(fixTypos(t))) return true
+  for (const t of spaced.runs.length ? [w, spaced.text] : [w]) if (matches(t) || matches(fixTypos(t))) return true
   return spaced.runs.some((r) => LETTERS.some((x) => r.includes(x)))
 }
 

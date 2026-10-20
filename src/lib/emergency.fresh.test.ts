@@ -714,3 +714,49 @@ describe('fresh review fragmented typing and acute overdoses', () => {
     expect(detectEmergency(text)).toBe(false)
   })
 })
+
+describe('fresh review pathological inputs stay under one second', () => {
+  const N = 262144
+  const cases: Record<string, string> = {
+    a: 'a'.repeat(N),
+    space: 'a '.repeat(N / 2),
+    single: 'a b '.repeat(N / 4),
+    chest: 'chest '.repeat(N / 6),
+    heart: 'heart '.repeat(N / 6),
+    took: 'took '.repeat(N / 5),
+    tookMy: 'took 9 of my '.repeat(N / 13),
+    quotes: "'".repeat(N),
+    words: "x'y ".repeat(N / 4),
+    severe: 'severe '.repeat(N / 7),
+    sweat: 'sweating '.repeat(N / 9),
+    pipes: 'a.B '.repeat(N / 4),
+    confused: 'confused '.repeat(N / 9),
+    fever: 'fever '.repeat(N / 6),
+    nums: '1 '.repeat(N / 2),
+    hit: 'hit my head '.repeat(N / 12),
+    bloodSugar: 'blood sugar '.repeat(N / 12),
+    caps: 'A. B. '.repeat(N / 6),
+    lens: 'l '.repeat(N / 2) + 'x',
+    swallowed: 'swallowed a '.repeat(N / 12),
+    cant: 'cant '.repeat(N / 5),
+    child: 'child '.repeat(N / 6),
+    crush: 'chest a '.repeat(N / 8) + 'crush',
+    hurts: 'hurts in '.repeat(N / 9),
+    pain: 'pain in the '.repeat(N / 12),
+    car: 'car accident '.repeat(N / 13),
+    longToken: 'x'.repeat(3999) + ' ' + 'y'.repeat(N - 4000),
+    wake: 'wake '.repeat(N / 5),
+    spacedLetters: 'e x p '.repeat(N / 6),
+    accents: 'é'.repeat(N),
+    emoji: (String.fromCodePoint(0x1f600) + ' ').repeat(N / 3),
+    singleThenLong: 'a '.repeat(3499) + 'b'.repeat(N),
+    acute: 'took 30 pills just now '.repeat(N / 22),
+    helpSegments: 'help. Me. '.repeat(N / 10),
+    fragments: "I can't. Breathe. ".repeat(N / 18),
+  }
+  it.each(Object.entries(cases))('%s', (_label, text) => {
+    const start = performance.now()
+    detectEmergency(text.slice(0, N))
+    expect(performance.now() - start).toBeLessThan(1000)
+  })
+})
