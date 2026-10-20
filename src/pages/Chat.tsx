@@ -18,9 +18,7 @@ import { acknowledge } from '@/lib/acknowledge'
 import { detectEmergency, EMERGENCY_REPLY } from '@/lib/emergency'
 import { submitIntake } from '@/lib/submitIntake'
 
-const EMERGENCY_NOTE =
-  'If this is an emergency, call 911 or your local emergency number. This chat is not monitored in real time.'
-
+const EMERGENCY_NOTE = 'If this is an emergency, call 911 or your local emergency number. This chat is not monitored in real time.'
 const GREETING: Message = {
   id: 'greeting',
   role: 'assistant',
