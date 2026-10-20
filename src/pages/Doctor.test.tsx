@@ -76,6 +76,25 @@ describe('Doctor page', () => {
     expect(within(details).getByText(/Hi, do you already have a diagnosis\?/)).toBeTruthy()
   })
 
+  it('collapses the full conversation when switching patients', async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [intakes[0], { ...intakes[0], id: 'c', name: 'Alan Turing' }],
+    } as Response)
+    const user = await signIn()
+    await screen.findByRole('heading', { name: 'Insurance' })
+    await user.click(screen.getByText('Full conversation'))
+    await user.click(screen.getByRole('button', { name: /Alan Turing/ }))
+    expect((screen.getByText('Full conversation').closest('details') as HTMLDetailsElement).open).toBe(false)
+  })
+
+  it('shows an error instead of crashing on a malformed response', async () => {
+    vi.mocked(fetch).mockResolvedValue({ ok: true, status: 200, json: async () => ({ oops: true }) } as Response)
+    await signIn()
+    expect(await screen.findByRole('alert')).toBeTruthy()
+  })
+
   it('shows an error and keeps the form on a bad token', async () => {
     vi.mocked(fetch).mockResolvedValue({ ok: false, status: 401, json: async () => ({}) } as Response)
     await signIn('wrong')

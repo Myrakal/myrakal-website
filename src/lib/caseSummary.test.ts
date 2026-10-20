@@ -32,6 +32,16 @@ describe('summarize', () => {
     })
   })
 
+  it('still classifies reworded questions', () => {
+    const reworded = [
+      { role: 'assistant', text: 'Any recent lab results or scans?' },
+      { role: 'user', text: 'Blood panel in May' },
+      { role: 'assistant', text: 'Who is your coverage with?' },
+      { role: 'user', text: 'Cigna' },
+    ] as const
+    expect(summarize([...reworded])).toMatchObject({ history: [], tests: 'Blood panel in May', insurance: 'Cigna' })
+  })
+
   it('does not put the name or email answers in the history', () => {
     expect(summarize([...transcript]).history.join(' ')).not.toMatch(/Ada|@/)
   })

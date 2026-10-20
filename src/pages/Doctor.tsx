@@ -19,15 +19,14 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function Case({ intake }: { intake: Intake }) {
   const { history, tests, insurance } = summarize(intake.transcript)
-  const missing = <p className="text-muted-foreground">Not provided</p>
-  const text = (v: string) => (v ? <p>{v}</p> : missing)
+  const text = (v: string) => (v ? <p>{v}</p> : <p className="text-muted-foreground">Not provided</p>)
   return (
     <article className="space-y-8 rounded-2xl border border-border p-6 sm:p-8">
       <header>
         <h2 className="font-heading text-3xl">{intake.name ?? 'Name not given'}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{intake.email} · Submitted {when(intake.createdAt)}</p>
       </header>
-      <Field label="Symptoms and history">{history.length ? history.map((h, i) => <p key={i}>{h}</p>) : missing}</Field>
+      <Field label="Symptoms and history">{history.length ? history.map((h, i) => <p key={i}>{h}</p>) : text('')}</Field>
       <Field label="Labs and imaging">{text(tests)}</Field>
       <Field label="Insurance">{text(insurance)}</Field>
       <details className="rounded-xl bg-muted/50 p-4">
@@ -53,8 +52,9 @@ export default function Doctor() {
     setError('')
     try {
       const res = await fetch('/api/intakes', { headers: { authorization: `Bearer ${token}` } })
-      if (!res.ok) throw new Error(String(res.status))
-      setIntakes(await res.json())
+      const body = res.ok ? await res.json() : null
+      if (!Array.isArray(body)) throw new Error(String(res.status))
+      setIntakes(body)
     } catch (err) {
       setError(err instanceof Error && err.message === '401' ? 'That token was not accepted. Please try again.' : 'Could not load patients. Please try again.')
     }
@@ -87,16 +87,16 @@ export default function Doctor() {
                 <button
                   key={p.id}
                   type="button"
-                  aria-current={i === selected}
+                  aria-pressed={i === selected}
                   onClick={() => setSelected(i)}
-                  className="shrink-0 rounded-xl border border-border px-4 py-3 text-left text-sm aria-[current=true]:border-foreground aria-[current=true]:bg-muted"
+                  className="shrink-0 rounded-xl border border-border px-4 py-3 text-left text-sm aria-pressed:border-foreground aria-pressed:bg-muted"
                 >
                   <span className="block font-medium">{p.name ?? p.email}</span>
                   <span className="block text-muted-foreground">{when(p.createdAt)}</span>
                 </button>
               ))}
             </nav>
-            {intakes[selected] && <Case intake={intakes[selected]} />}
+            {intakes[selected] && <Case key={intakes[selected].id} intake={intakes[selected]} />}
           </div>
         )}
       </main>
