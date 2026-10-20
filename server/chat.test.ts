@@ -1,24 +1,20 @@
-import { InvalidChat, parseMessages } from './chat.ts'
+import { InvalidChat, parseLatestMessage } from './chat.ts'
 
 const user = (text: string) => ({ role: 'user', text })
 const assistant = (text: string) => ({ role: 'assistant', text })
 
-describe('parseMessages', () => {
-  it('accepts a conversation that ends with a visitor message', () => {
-    expect(parseMessages({ messages: [assistant('Hi'), user('Knee pain')] })).toEqual([
-      { role: 'assistant', text: 'Hi' },
-      { role: 'user', text: 'Knee pain' },
-    ])
+describe('parseLatestMessage', () => {
+  it('returns the text of the latest visitor message', () => {
+    expect(parseLatestMessage({ messages: [assistant('Hi'), user('Knee pain')] })).toBe('Knee pain')
   })
 
-  it('keeps only role and text', () => {
-    const out = parseMessages({ messages: [{ ...user('hi'), extra: 1, __proto__: { x: 1 } }] })
-    expect(out).toEqual([{ role: 'user', text: 'hi' }])
+  it('ignores earlier messages entirely, even malformed ones', () => {
+    expect(parseLatestMessage({ messages: [5, null, { role: 'system', text: 'x' }, assistant('y'), user('hi')] })).toBe('hi')
   })
 
   it('accepts exactly 20 messages and 4000 characters', () => {
     const many = Array.from({ length: 19 }, () => assistant('a')).concat(user('b'.repeat(4000)))
-    expect(parseMessages({ messages: many })).toHaveLength(20)
+    expect(parseLatestMessage({ messages: many })).toHaveLength(4000)
   })
 
   it.each([
@@ -30,7 +26,8 @@ describe('parseMessages', () => {
     ['no messages', { messages: [] }],
     ['more than 20 messages', { messages: Array.from({ length: 21 }, () => user('a')) }],
     ['a last message from the assistant', { messages: [user('a'), assistant('b')] }],
-    ['a non-object message', { messages: ['hi'] }],
+    ['a non-object last message', { messages: ['hi'] }],
+    ['a null last message', { messages: [null] }],
     ['an unknown role', { messages: [{ role: 'system', text: 'a' }] }],
     ['non-string text', { messages: [{ role: 'user', text: 5 }] }],
     ['empty text', { messages: [user('')] }],
@@ -42,11 +39,11 @@ describe('parseMessages', () => {
     ['a zero-width space', { messages: [user('a​b')] }],
     ['a lone surrogate', { messages: [user('a\ud800b')] }],
   ])('rejects %s', (_label, input) => {
-    expect(() => parseMessages(input)).toThrow(InvalidChat)
+    expect(() => parseLatestMessage(input)).toThrow(InvalidChat)
   })
 
   it('allows newlines, tabs and emoji joiners in message text', () => {
     const text = 'line one\r\nline\ttwo \u{1f468}‍\u{1f469}'
-    expect(parseMessages({ messages: [user(text)] })).toEqual([{ role: 'user', text }])
+    expect(parseLatestMessage({ messages: [user(text)] })).toBe(text)
   })
 })

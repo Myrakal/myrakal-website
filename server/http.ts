@@ -1,3 +1,5 @@
+export const MAX_BODY_BYTES = 262144
+
 export const json = (body: unknown, status: number, headers?: Record<string, string>) =>
   new Response(JSON.stringify(body), {
     status,

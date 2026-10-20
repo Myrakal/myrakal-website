@@ -1,18 +1,16 @@
 import type Anthropic from '@anthropic-ai/sdk'
 
-import type { ChatMessage } from './chat.ts'
 import { INTAKE_SYSTEM_PROMPT } from './prompts/intake.ts'
 import { guardReply } from './reply.ts'
 
-export async function acknowledge(client: Pick<Anthropic, 'messages'>, messages: ChatMessage[], model: string) {
-  const start = messages.findIndex((m) => m.role === 'user')
+export async function acknowledge(client: Pick<Anthropic, 'messages'>, text: string, model: string) {
   const response = await client.messages.create(
     {
       model,
       max_tokens: 160,
       thinking: { type: 'disabled' },
       system: INTAKE_SYSTEM_PROMPT,
-      messages: messages.slice(start).map((m) => ({ role: m.role, content: m.text })),
+      messages: [{ role: 'user', content: text }],
     },
     { timeout: 8000 },
   )
