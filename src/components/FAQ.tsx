@@ -31,7 +31,7 @@ const FAQS: FaqItem[] = [
   {
     question: 'Is my information kept private?',
     answer:
-      'Health and insurance information you share during intake and consult is handled as described in our Privacy Policy. Please share it only through Myrakal intake, not by general email.',
+      'Health and insurance information you share during intake and consult is handled as described in our Privacy Policy. Please share it only through Myrakal intake, not by general email or the website contact form.',
   },
   {
     question: 'Is Myrakal available now?',

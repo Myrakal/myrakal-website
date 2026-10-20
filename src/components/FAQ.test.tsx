@@ -35,4 +35,9 @@ describe('FAQ', () => {
     expect(t).not.toMatch(/do not submit medical information/i)
     expect(t).not.toMatch(/waitlist/i)
   })
+
+  it('tells visitors not to send health information by email or the contact form', async () => {
+    const t = await openAll()
+    expect(t).toMatch(/not by general email or the website contact form/i)
+  })
 })
