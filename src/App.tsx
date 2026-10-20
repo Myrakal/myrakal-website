@@ -21,7 +21,7 @@ function Home() {
   )
 }
 
-const pages: Record<string, () => React.JSX.Element> = {
+const pages: Record<string, React.ComponentType> = {
   '/chat': Chat,
   '/privacy': Privacy,
   '/terms': Terms,
