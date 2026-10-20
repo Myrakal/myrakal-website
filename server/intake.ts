@@ -7,15 +7,13 @@ type Message = { role: 'assistant' | 'user'; text: string }
 const MAX = { email: 254, name: 200, messages: 100, text: 4000, total: 50000 }
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const LONE_SURROGATE = /[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/
-const BIDI = /[\u202a-\u202e\u2066-\u2069]/
 const STRICT_CONTROL = /[\u0000-\u001f\u007f-\u009f]/
 const TEXT_CONTROL = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f]/
 const STRICT_FORMAT = /[\p{Cf}\p{Zl}\p{Zp}]/u
 const TEXT_FORMAT = /(?!\u200d)\p{Cf}|[\p{Zl}\p{Zp}]/u
 
 const unsafe = (value: string, control: RegExp, format: RegExp) =>
-  control.test(value) || format.test(value) || BIDI.test(value) || LONE_SURROGATE.test(value)
-
+  control.test(value) || format.test(value) || LONE_SURROGATE.test(value)
 const isRecord = (v: unknown): v is Record<string, unknown> =>
   typeof v === 'object' && v !== null && !Array.isArray(v)
 
