@@ -8,7 +8,7 @@ import { replyFor } from '@/lib/intake'
 const GREETING: Message = {
   id: 'greeting',
   role: 'assistant',
-  text: "Hi, I'm Myrakal's intake assistant. I'll gather a few details so a licensed doctor can review your case. Do you already have a diagnosis, or are you still figuring things out?",
+  text: "Hi, and welcome to Myrakal. Thank you for reaching out. I'm here to gather a few details so one of our licensed doctors can review your case. To start, do you already have a diagnosis, or are you still figuring things out? Either is perfectly fine.",
 }
 
 export default function Chat() {
