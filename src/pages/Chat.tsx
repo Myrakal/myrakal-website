@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import wordmark from '@/assets/myrakal-wordmark.svg'
 import { ChatComposer } from '@/components/chat/ChatComposer'
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
-import { replyFor } from '@/lib/intake'
+import { TypingIndicator } from '@/components/chat/TypingIndicator'
+import { INTAKE_PROMPTS, replyFor } from '@/lib/intake'
 
 const GREETING: Message = {
   id: 'greeting',
@@ -11,25 +12,32 @@ const GREETING: Message = {
   text: "Hi, and welcome to Myrakal. Thank you for reaching out. I'm here to gather a few details so one of our licensed doctors can review your case. To start, do you already have a diagnosis, or are you still figuring things out? Either is perfectly fine.",
 }
 
-export default function Chat() {
+export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
   const [messages, setMessages] = useState<Message[]>([GREETING])
   const end = useRef<HTMLDivElement>(null)
+  const [typing, setTyping] = useState(false)
   const nextId = useRef(0)
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const turns = useRef(0)
+  const [answered, setAnswered] = useState(0)
+  const complete = answered > INTAKE_PROMPTS.length && !typing
+
+  useEffect(() => () => clearTimeout(timer.current), [])
 
   useEffect(() => {
     if (messages.length > 1) end.current?.scrollIntoView?.({ block: 'end' })
-  }, [messages])
+  }, [messages, typing])
 
   const send = (text: string) => {
     const id = nextId.current++
-    setMessages((m) => {
-      const turns = m.filter((x) => x.role === 'user').length + 1
-      return [
-        ...m,
-        { id: `user-${id}`, role: 'user', text },
-        { id: `assistant-${id}`, role: 'assistant', text: replyFor(turns) },
-      ]
-    })
+    const turn = ++turns.current
+    setAnswered(turn)
+    setMessages((m) => [...m, { id: `user-${id}`, role: 'user', text }])
+    setTyping(true)
+    timer.current = setTimeout(() => {
+      setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: replyFor(turn) }])
+      setTyping(false)
+    }, replyDelay)
   }
 
   return (
@@ -53,11 +61,16 @@ export default function Chat() {
           {messages.map((m) => (
             <ChatMessage key={m.id} message={m} />
           ))}
+          {typing && <TypingIndicator />}
           <div ref={end} className="scroll-mb-40" />
         </div>
 
         <div className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">
-          <ChatComposer onSend={send} />
+          <ChatComposer
+            onSend={send}
+            busy={typing}
+            placeholder={complete ? 'Add anything else for the doctor' : 'Type your message'}
+          />
           <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">
             No account needed. See our{' '}
             <a className="underline underline-offset-4 hover:text-foreground" href="/privacy/">

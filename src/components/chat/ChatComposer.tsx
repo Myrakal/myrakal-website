@@ -3,11 +3,13 @@ import { useId, useRef, useState, type KeyboardEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 
-export function ChatComposer({ onSend }: { onSend: (text: string) => void }) {
+type Props = { onSend: (text: string) => void; busy?: boolean; placeholder?: string }
+
+export function ChatComposer({ onSend, busy = false, placeholder = 'Type your message' }: Props) {
   const [text, setText] = useState('')
   const id = useId()
   const box = useRef<HTMLTextAreaElement>(null)
-  const canSend = text.trim().length > 0
+  const canSend = text.trim().length > 0 && !busy
 
   const send = () => {
     if (!canSend) return
@@ -44,7 +46,7 @@ export function ChatComposer({ onSend }: { onSend: (text: string) => void }) {
           grow(e.target)
         }}
         onKeyDown={onKeyDown}
-        placeholder="Type your message"
+        placeholder={placeholder}
         className="max-h-40 min-h-12 flex-1 resize-none bg-transparent px-4 py-3 text-base text-card-foreground placeholder:text-card-foreground/60 focus:outline-none"
       />
       <Button
