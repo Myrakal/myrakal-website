@@ -1,4 +1,11 @@
-import { INTAKE_COMPLETE, INTAKE_PROMPTS, replyFor } from '@/lib/intake'
+import {
+  CONTACT_RETRY,
+  extractContact,
+  INTAKE_COMPLETE,
+  INTAKE_FAILED,
+  INTAKE_PROMPTS,
+  replyFor,
+} from '@/lib/intake'
 
 describe('intake script', () => {
   it('asks about history, then tests, then insurance, in order', () => {
@@ -27,5 +34,40 @@ describe('intake script', () => {
     expect(all).not.toMatch(/suggest|recommend|you should|diagnos(e|is) is/i)
     expect(INTAKE_COMPLETE).toMatch(/licensed doctor/i)
     expect(INTAKE_COMPLETE).toMatch(/complete/i)
+  })
+})
+
+describe('extractContact', () => {
+  it('reads a name and email separated by a comma', () => {
+    expect(extractContact('Ada, ada@example.com')).toEqual({ name: 'Ada', email: 'ada@example.com' })
+  })
+
+  it('strips filler like "my name is" and "my email is"', () => {
+    expect(extractContact('My name is Ada Lovelace and my email is ada@example.com')).toEqual({
+      name: 'Ada Lovelace',
+      email: 'ada@example.com',
+    })
+  })
+
+  it('returns an email with no name when only an email is given', () => {
+    expect(extractContact('ada@example.com')).toEqual({ email: 'ada@example.com' })
+  })
+
+  it('returns null when there is no valid email', () => {
+    expect(extractContact('Ada Lovelace')).toBeNull()
+    expect(extractContact('ada@example')).toBeNull()
+    expect(extractContact('')).toBeNull()
+  })
+})
+
+describe('contact and failure copy', () => {
+  it('asks again for an email politely', () => {
+    expect(CONTACT_RETRY).toMatch(/email/i)
+    expect(CONTACT_RETRY).toMatch(/thank/i)
+  })
+
+  it('points to the real support address if saving fails', () => {
+    expect(INTAKE_FAILED).toContain('eshaansood@myrakal.com')
+    expect(INTAKE_FAILED).not.toMatch(/hello@myrakal\.com/)
   })
 })

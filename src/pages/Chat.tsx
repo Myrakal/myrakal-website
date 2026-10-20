@@ -4,7 +4,15 @@ import wordmark from '@/assets/myrakal-wordmark.svg'
 import { ChatComposer } from '@/components/chat/ChatComposer'
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
 import { TypingIndicator } from '@/components/chat/TypingIndicator'
-import { INTAKE_PROMPTS, replyFor } from '@/lib/intake'
+import {
+  CONTACT_RETRY,
+  extractContact,
+  INTAKE_COMPLETE,
+  INTAKE_FAILED,
+  INTAKE_PROMPTS,
+  replyFor,
+} from '@/lib/intake'
+import { submitIntake } from '@/lib/submitIntake'
 
 const GREETING: Message = {
   id: 'greeting',
@@ -18,9 +26,12 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
   const [typing, setTyping] = useState(false)
   const nextId = useRef(0)
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const turns = useRef(0)
+  const accepted = useRef(0)
+  const contact = useRef<{ name?: string; email: string } | null>(null)
+  const unsaved = useRef(false)
+  const [failed, setFailed] = useState(false)
   const [answered, setAnswered] = useState(0)
-  const complete = answered > INTAKE_PROMPTS.length && !typing
+  const complete = answered > INTAKE_PROMPTS.length && !typing && !failed
 
   useEffect(() => () => clearTimeout(timer.current), [])
 
@@ -28,16 +39,45 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     if (messages.length > 1) end.current?.scrollIntoView?.({ block: 'end' })
   }, [messages, typing])
 
-  const send = (text: string) => {
+  const save = async (transcript: Message[]) => {
+    try {
+      await submitIntake({ ...contact.current!, transcript })
+      unsaved.current = false
+      setFailed(false)
+      return INTAKE_COMPLETE
+    } catch {
+      unsaved.current = true
+      setFailed(true)
+      return INTAKE_FAILED
+    }
+  }
+
+  const respond = async (text: string, transcript: Message[]) => {
+    if (unsaved.current) return save(transcript)
+    if (accepted.current === INTAKE_PROMPTS.length) {
+      const found = extractContact(text)
+      if (!found) return CONTACT_RETRY
+      contact.current = found
+      accepted.current++
+      setAnswered(accepted.current)
+      return save(transcript)
+    }
+    accepted.current++
+    setAnswered(accepted.current)
+    return replyFor(accepted.current)
+  }
+
+  const send = async (text: string) => {
     const id = nextId.current++
-    const turn = ++turns.current
-    setAnswered(turn)
-    setMessages((m) => [...m, { id: `user-${id}`, role: 'user', text }])
+    const userMessage: Message = { id: `user-${id}`, role: 'user', text }
+    setMessages((m) => [...m, userMessage])
     setTyping(true)
-    timer.current = setTimeout(() => {
-      setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: replyFor(turn) }])
-      setTyping(false)
-    }, replyDelay)
+    const wait = new Promise((resolve) => {
+      timer.current = setTimeout(resolve, replyDelay)
+    })
+    const [reply] = await Promise.all([respond(text, [...messages, userMessage]), wait])
+    setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply }])
+    setTyping(false)
   }
 
   return (

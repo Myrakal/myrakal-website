@@ -3,7 +3,21 @@ import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import Chat from '@/pages/Chat'
 
+const intakeOk = () => vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => ({ id: 'abc' }) })
+
+const answer = async (user: ReturnType<typeof userEvent.setup>, text: string) => {
+  await user.type(screen.getByRole('textbox', { name: 'Message' }), `${text}{Enter}`)
+}
+
 describe('Chat page', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', intakeOk())
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
   it('opens with an assistant greeting in a live message log', () => {
     render(<Chat replyDelay={0} />)
     const log = screen.getByRole('log', { name: 'Conversation' })
@@ -124,9 +138,60 @@ describe('Chat page', () => {
     const box = screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement
     expect(box.placeholder).toBe('Type your message')
     for (let i = 1; i <= 5; i++) {
-      await user.type(box, `answer ${i}{Enter}`)
+      await user.type(box, i === 5 ? 'Ada ada@example.com{Enter}' : `answer ${i}{Enter}`)
       await waitFor(() => expect(screen.getAllByRole('article').length).toBe(1 + 2 * i))
     }
     expect(box.placeholder).toBe('Add anything else for the doctor')
+  })
+
+  it('asks again, without advancing, when no email is given at the contact step', async () => {
+    const user = userEvent.setup()
+    render(<Chat replyDelay={0} />)
+    for (const t of ['a', 'b', 'c', 'd']) await answer(user, t)
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(9))
+    await answer(user, 'Ada Lovelace')
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(11))
+    const log = screen.getByRole('log', { name: 'Conversation' }).textContent ?? ''
+    expect(log).toMatch(/couldn't find an email/i)
+    expect(log).not.toMatch(/intake is complete/i)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('submits the transcript once when a valid contact is given', async () => {
+    const user = userEvent.setup()
+    render(<Chat replyDelay={0} />)
+    for (const t of ['a', 'b', 'c', 'd', 'Ada, ada@example.com']) await answer(user, t)
+    await waitFor(() => expect(screen.getByRole('log').textContent).toMatch(/intake is complete/i))
+    expect(fetch).toHaveBeenCalledTimes(1)
+    const [url, init] = vi.mocked(fetch).mock.calls[0]
+    expect(url).toBe('/api/intake')
+    const sent = JSON.parse(init!.body as string)
+    expect(sent.email).toBe('ada@example.com')
+    expect(sent.name).toBe('Ada')
+    expect(sent.transcript[0].role).toBe('assistant')
+    expect(sent.transcript.at(-1)).toEqual({ role: 'user', text: 'Ada, ada@example.com' })
+    await answer(user, 'one more thing')
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(13))
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
+  it('apologises with the support email when saving fails, then retries on the next message', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new TypeError('offline'))
+      .mockResolvedValueOnce({ ok: true, status: 201, json: async () => ({ id: 'abc' }) })
+    vi.stubGlobal('fetch', fetchMock)
+    const user = userEvent.setup()
+    render(<Chat replyDelay={0} />)
+    for (const t of ['a', 'b', 'c', 'd', 'Ada, ada@example.com']) await answer(user, t)
+    await waitFor(() => expect(screen.getByRole('log').textContent).toContain('eshaansood@myrakal.com'))
+    expect(screen.getByRole('log').textContent).not.toMatch(/intake is complete/i)
+    expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).placeholder).toBe('Type your message')
+    await answer(user, 'please try again')
+    await waitFor(() => expect(screen.getByRole('log').textContent).toMatch(/intake is complete/i))
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+    await answer(user, 'thanks')
+    await waitFor(() => expect(screen.getAllByRole('article').length).toBe(15))
+    expect(fetchMock).toHaveBeenCalledTimes(2)
   })
 })
