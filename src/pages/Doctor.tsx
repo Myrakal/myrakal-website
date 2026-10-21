@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import wordmark from '@/assets/myrakal-wordmark.svg'
 import { Button } from '@/components/ui/button'
 import { summarize, type Message } from '@/lib/caseSummary'
@@ -36,8 +36,22 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   )
 }
 
-function Decide({ id, token, onDone }: { id: string; token: string; onDone: (d: Decision) => void }) {
-  const [note, setNote] = useState('')
+const DECISION_ERRORS: Record<string, string> = {
+  '401': 'That token was not accepted. Please reload and sign in again.',
+  '404': 'This patient could not be found.',
+  '409': 'This case is no longer awaiting review.',
+}
+
+type DecideProps = { id: string; token: string; note: string; onNote: (v: string) => void; onDone: (id: string, d: Decision) => void }
+
+function Decide({ id, token, note, onNote, onDone }: DecideProps) {
+  const alive = useRef(true)
+  useEffect(() => {
+    alive.current = true
+    return () => {
+      alive.current = false
+    }
+  }, [])
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -52,9 +66,10 @@ function Decide({ id, token, onDone }: { id: string; token: string; onDone: (d: 
         body: JSON.stringify({ id, decision, note: note.trim() }),
       })
       if (!res.ok) throw new Error(String(res.status))
-      onDone(await res.json())
+      onDone(id, await res.json())
     } catch (err) {
-      setError(err instanceof Error && err.message === '409' ? 'This case is no longer awaiting review.' : 'Could not save your decision. Please try again.')
+      if (!alive.current) return
+      setError((err instanceof Error && DECISION_ERRORS[err.message]) || 'Could not save your decision. Please try again.')
       setBusy(false)
     }
   }
@@ -63,7 +78,7 @@ function Decide({ id, token, onDone }: { id: string; token: string; onDone: (d: 
     <section className="space-y-3">
       <label className="block space-y-1.5 text-sm font-medium">
         Note to patient
-        <textarea value={note} onChange={(e) => setNote(e.target.value)} maxLength={4000} rows={4} className="w-full rounded-lg border border-input bg-background p-3 text-base" />
+        <textarea value={note} onChange={(e) => onNote(e.target.value)} maxLength={4000} rows={4} className="w-full rounded-lg border border-input bg-background p-3 text-base" />
       </label>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       <div className="flex flex-wrap gap-2">
@@ -74,7 +89,7 @@ function Decide({ id, token, onDone }: { id: string; token: string; onDone: (d: 
   )
 }
 
-function Case({ intake, token, onDecided }: { intake: Intake; token: string; onDecided: (d: Decision) => void }) {
+function Case({ intake, ...decide }: { intake: Intake } & Omit<DecideProps, 'id'>) {
   const { history, tests, insurance } = summarize(intake.transcript)
   const text = (v: string) => (v ? <p>{v}</p> : <p className="text-muted-foreground">Not provided</p>)
   return (
@@ -98,7 +113,7 @@ function Case({ intake, token, onDecided }: { intake: Intake; token: string; onD
           ))}
         </ul>
       </details>
-      {intake.consultStatus === 'in_review' && <Decide id={intake.id} token={token} onDone={onDecided} />}
+      {intake.consultStatus === 'in_review' && <Decide id={intake.id} {...decide} />}
     </article>
   )
 }
@@ -108,6 +123,7 @@ export default function Doctor() {
   const [intakes, setIntakes] = useState<Intake[] | null>(null)
   const [selected, setSelected] = useState(0)
   const [error, setError] = useState('')
+  const [drafts, setDrafts] = useState<Record<string, string>>({})
 
   async function load(e: React.FormEvent) {
     e.preventDefault()
@@ -163,7 +179,9 @@ export default function Doctor() {
                 key={intakes[selected].id}
                 intake={intakes[selected]}
                 token={token}
-                onDecided={(d) => setIntakes(intakes.map((p, i) => (i === selected ? { ...p, ...d } : p)))}
+                note={drafts[intakes[selected].id] ?? ''}
+                onNote={(v) => setDrafts((d) => ({ ...d, [intakes[selected].id]: v }))}
+                onDone={(id, d) => setIntakes((list) => list && list.map((p) => (p.id === id ? { ...p, ...d } : p)))}
               />}
           </div>
         )}

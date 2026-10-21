@@ -172,4 +172,50 @@ describe('Doctor page', () => {
     expect((await screen.findByRole('alert')).textContent).toMatch(/note/i)
     expect(fetch).toHaveBeenCalledTimes(1)
   })
+
+  it.each([
+    [401, /reload and sign in again/i],
+    [404, /could not be found/i],
+    [409, /no longer awaiting review/i],
+    [500, /could not save/i],
+  ])('explains a %i from the decision endpoint', async (status, message) => {
+    const user = await signIn()
+    vi.mocked(fetch).mockResolvedValueOnce({ ok: false, status, json: async () => ({}) } as Response)
+    await user.click(await screen.findByRole('button', { name: 'Approve' }))
+    expect((await screen.findByRole('alert')).textContent).toMatch(message)
+  })
+
+  it('keeps drafted notes per patient when switching', async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [intakes[0], { ...intakes[0], id: 'c', name: 'Alan Turing' }],
+    } as Response)
+    const user = await signIn()
+    await user.type(await screen.findByLabelText('Note to patient'), 'for Ada')
+    await user.click(screen.getByRole('button', { name: /Alan Turing/ }))
+    expect((screen.getByLabelText('Note to patient') as HTMLTextAreaElement).value).toBe('')
+    await user.type(screen.getByLabelText('Note to patient'), 'for Alan')
+    await user.click(screen.getByRole('button', { name: /Ada Lovelace/ }))
+    expect((screen.getByLabelText('Note to patient') as HTMLTextAreaElement).value).toBe('for Ada')
+    await user.click(screen.getByRole('button', { name: /Alan Turing/ }))
+    expect((screen.getByLabelText('Note to patient') as HTMLTextAreaElement).value).toBe('for Alan')
+  })
+
+  it('applies a late decision to the patient it was for, not the one on screen', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => [intakes[0], { ...intakes[0], id: 'c', name: 'Alan Turing' }],
+    } as Response)
+    const user = await signIn()
+    let finish!: (r: Response) => void
+    vi.mocked(fetch).mockReturnValueOnce(new Promise<Response>((r) => (finish = r)))
+    await user.click(await screen.findByRole('button', { name: 'Approve' }))
+    await user.click(screen.getByRole('button', { name: /Alan Turing/ }))
+    finish({ ok: true, status: 200, json: async () => ({ id: 'a', consultStatus: 'approved', consultNote: null, reviewedAt: '2026-10-20T17:00:00.000Z' }) } as Response)
+    await waitFor(() => expect(within(screen.getByRole('button', { name: /Ada Lovelace/ })).getByText('Approved')).toBeTruthy())
+    expect(within(screen.getByRole('button', { name: /Alan Turing/ })).getByText('In review')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Approve' })).toBeTruthy()
+  })
 })
