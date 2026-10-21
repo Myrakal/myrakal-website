@@ -9,11 +9,16 @@ datasource db {
 }
 
 model Intake {
-  id         String   @id @default(uuid()) @db.Uuid
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  name       String?
-  email      String
-  transcript Json
+  id              String    @id @default(uuid()) @db.Uuid
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  name            String?
+  email           String
+  transcript      Json
+  consultStatus   String    @default("awaiting_payment") @map("consult_status")
+  paidAt          DateTime? @map("paid_at") @db.Timestamptz(6)
+  stripeSessionId String?   @unique @map("stripe_session_id")
+  consultNote     String?   @map("consult_note")
+  reviewedAt      DateTime? @map("reviewed_at") @db.Timestamptz(6)
 
   @@map("intakes")
 }
