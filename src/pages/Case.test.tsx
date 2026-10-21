@@ -110,6 +110,70 @@ describe('Case page', () => {
     expect(f).toHaveBeenCalledTimes(11)
   })
 
+  it('does not offer payment when polling is exhausted', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    setup(`?id=${ID}&paid=1`, vi.fn().mockResolvedValue(reply(200, base)))
+    await act(() => vi.advanceTimersByTimeAsync(60000))
+    expect(screen.getByText("We're still confirming your payment. Check back in a few minutes or email eshaansood@myrakal.com.")).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Pay for consult' })).toBeNull()
+  })
+
+  it('keeps the last good state through a transient polling failure', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    const f = vi.fn()
+      .mockResolvedValueOnce(reply(200, base))
+      .mockResolvedValueOnce(reply(500, {}))
+      .mockResolvedValue(reply(200, { ...base, status: 'in_review', paid: true }))
+    setup(`?id=${ID}&paid=1`, f)
+    expect(await screen.findByText('Confirming your payment...')).toBeTruthy()
+    await act(() => vi.advanceTimersByTimeAsync(3000))
+    expect(screen.getByText('Confirming your payment...')).toBeTruthy()
+    expect(screen.queryByText(/something went wrong/i)).toBeNull()
+    await act(() => vi.advanceTimersByTimeAsync(3000))
+    expect(await screen.findByText('Payment received. A licensed doctor is reviewing your case.')).toBeTruthy()
+  })
+
+  it('marks only earlier steps as done and the current one as current', async () => {
+    setup(`?id=${ID}`, vi.fn().mockResolvedValue(reply(200, { ...base, status: 'in_review', paid: true })))
+    await screen.findByText(/in review/i)
+    expect(screen.getByText('Intake').getAttribute('data-step')).toBe('done')
+    expect(screen.getByText('Payment').getAttribute('data-step')).toBe('done')
+    expect(screen.getByText('Doctor review').getAttribute('data-step')).toBe('current')
+    expect(screen.getByText('Decision').getAttribute('data-step')).toBe('upcoming')
+  })
+
+  it('marks every step done once decided', async () => {
+    setup(`?id=${ID}`, vi.fn().mockResolvedValue(reply(200, { ...base, status: 'approved', paid: true })))
+    await screen.findByRole('heading', { name: /approved/i })
+    for (const s of ['Intake', 'Payment', 'Doctor review', 'Decision']) expect(screen.getByText(s).getAttribute('data-step')).toBe('done')
+  })
+
+  it('keeps the pay button disabled after redirecting and shows Redirecting', async () => {
+    const f = vi.fn()
+      .mockResolvedValueOnce(reply(200, base))
+      .mockResolvedValueOnce(reply(200, { url: 'https://stripe.test/c' }))
+    setup(`?id=${ID}`, f)
+    await userEvent.click(await screen.findByRole('button', { name: 'Pay for consult' }))
+    await waitFor(() => expect(assign).toHaveBeenCalled())
+    const btn = screen.getByRole('button', { name: 'Redirecting...' }) as HTMLButtonElement
+    expect(btn.disabled).toBe(true)
+  })
+
+  it('re-enables the pay button after a failure', async () => {
+    const f = vi.fn().mockResolvedValueOnce(reply(200, base)).mockResolvedValueOnce(reply(500, {}))
+    setup(`?id=${ID}`, f)
+    await userEvent.click(await screen.findByRole('button', { name: 'Pay for consult' }))
+    await screen.findByRole('alert')
+    expect((screen.getByRole('button', { name: 'Pay for consult' }) as HTMLButtonElement).disabled).toBe(false)
+  })
+
+  it('gives loading and error states a heading', async () => {
+    setup(`?id=${ID}`, vi.fn().mockRejectedValue(new Error('x')))
+    expect(screen.getByRole('heading', { level: 1 })).toBeTruthy()
+    await screen.findByRole('alert')
+    expect(screen.getByRole('heading', { level: 1 })).toBeTruthy()
+  })
+
   it('shows the four progress steps', async () => {
     setup(`?id=${ID}`, vi.fn().mockResolvedValue(reply(200, base)))
     await screen.findByText(/\$150/)

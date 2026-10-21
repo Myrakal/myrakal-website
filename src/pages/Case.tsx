@@ -15,7 +15,8 @@ type Status = 'awaiting_payment' | 'in_review' | 'approved' | 'changes_requested
 type CaseData = { status: Status; name: string | null; paid: boolean; note: string | null; reviewedAt: string | null }
 type State = { kind: 'loading' | 'missing' | 'error' } | { kind: 'ready'; data: CaseData }
 
-const reached: Record<Status, number> = { awaiting_payment: 2, in_review: 3, approved: 4, changes_requested: 4 }
+const current: Record<Status, number> = { awaiting_payment: 1, in_review: 2, approved: 4, changes_requested: 4 }
+const STEP_STYLE = { done: 'border-foreground', current: 'border-primary bg-muted font-semibold', upcoming: 'border-border text-muted-foreground' }
 const H1 = 'font-heading text-3xl'
 
 async function fetchCase(id: string): Promise<State> {
@@ -27,12 +28,12 @@ async function fetchCase(id: string): Promise<State> {
 }
 
 function Progress({ status }: { status: Status }) {
-  const at = reached[status]
   return (
     <ol aria-label="Progress" className="grid grid-cols-4 gap-2 text-xs sm:text-sm">
-      {STEPS.map((s, i) => (
-        <li key={s} aria-current={i === at - 1 ? 'step' : undefined} className={`border-t-2 pt-2 ${i < at ? 'border-foreground font-medium' : 'border-border text-muted-foreground'}`}>{s}</li>
-      ))}
+      {STEPS.map((s, i) => {
+        const step = i < current[status] ? 'done' : i === current[status] ? 'current' : 'upcoming'
+        return <li key={s} data-step={step} aria-current={step === 'current' ? 'step' : undefined} className={`border-t-2 px-1 pt-2 ${STEP_STYLE[step]}`}>{s}</li>
+      })}
     </ol>
   )
 }
@@ -46,11 +47,13 @@ function Awaiting({ id }: { id: string }) {
     setError('')
     try {
       const res = await fetch('/api/checkout', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ intakeId: id }) })
-      if (res.status === 503) return setError(NO_PAYMENTS)
       const body = res.ok ? await res.json() : null
-      if (!body?.url) return setError(CHECKOUT_ERROR)
+      if (!body?.url) throw res.status
       window.location.assign(body.url)
-    } catch { setError(CHECKOUT_ERROR) } finally { setBusy(false) }
+    } catch (e) {
+      setError(e === 503 ? NO_PAYMENTS : CHECKOUT_ERROR)
+      setBusy(false)
+    }
   }
 
   return (
@@ -58,14 +61,15 @@ function Awaiting({ id }: { id: string }) {
       <h1 className={H1}>One more step</h1>
       <p className="leading-7">A licensed doctor reviews your case for a consult fee of {CONSULT_PRICE_DISPLAY}, credited toward any treatment you choose.</p>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      <Button size="lg" onClick={pay} disabled={busy}>Pay for consult</Button>
+      <Button size="lg" onClick={pay} disabled={busy}>{busy ? 'Redirecting...' : 'Pay for consult'}</Button>
     </>
   )
 }
 
-function Body({ id, data, confirming }: { id: string; data: CaseData; confirming: boolean }) {
+function Body({ id, data, phase }: { id: string; data: CaseData; phase: 'polling' | 'stalled' | 'idle' }) {
   if (data.status === 'awaiting_payment') {
-    if (!confirming) return <Awaiting id={id} />
+    if (phase === 'idle') return <Awaiting id={id} />
+    if (phase === 'stalled') return <><h1 className={H1}>Confirming your payment</h1><p role="status">We're still confirming your payment. Check back in a few minutes or email {SUPPORT}.</p></>
     return <><h1 className={H1}>Thanks{data.name ? `, ${data.name}` : ''}</h1><p role="status">Confirming your payment...</p></>
   }
   if (data.status === 'in_review') {
@@ -87,7 +91,7 @@ export default function Case() {
   const id = params.get('id') ?? ''
   const justPaid = params.get('paid') === '1'
   const [state, setState] = useState<State>({ kind: id ? 'loading' : 'missing' })
-  const [polling, setPolling] = useState(justPaid)
+  const [phase, setPhase] = useState<'polling' | 'stalled' | 'idle'>(justPaid ? 'polling' : 'idle')
 
   useEffect(() => {
     if (!id) return
@@ -97,10 +101,10 @@ export default function Case() {
     const run = async () => {
       const next = await fetchCase(id)
       if (cancelled) return
-      setState(next)
-      const waiting = next.kind === 'ready' && next.data.status === 'awaiting_payment'
-      if (justPaid && waiting && attempts++ < POLL_MAX) timer = setTimeout(run, POLL_MS)
-      else setPolling(false)
+      setState((prev) => (next.kind === 'error' && prev.kind === 'ready' ? prev : next))
+      const unsettled = next.kind === 'error' || (next.kind === 'ready' && next.data.status === 'awaiting_payment')
+      if (justPaid && unsettled && attempts++ < POLL_MAX) timer = setTimeout(run, POLL_MS)
+      else setPhase(justPaid && unsettled ? 'stalled' : 'idle')
     }
     run()
     return () => { cancelled = true; clearTimeout(timer) }
@@ -112,10 +116,10 @@ export default function Case() {
         <a href="/" aria-label="Myrakal home"><img src={wordmark} alt="" className="h-7 w-auto sm:h-9" /></a>
       </header>
       <main className="mx-auto w-full max-w-xl space-y-6 px-4 pb-16 pt-8 sm:px-8">
-        {state.kind === 'loading' && <p role="status" className="text-muted-foreground">Loading your case...</p>}
+        {state.kind === 'loading' && <><h1 className={H1}>Your case</h1><p role="status" className="text-muted-foreground">Loading your case...</p></>}
         {state.kind === 'missing' && <><h1 className={H1}>Case not found</h1><p role="alert">We couldn't find that case. Please check your link or email {SUPPORT}.</p></>}
-        {state.kind === 'error' && <p role="alert">Something went wrong loading your case. Please refresh and try again.</p>}
-        {state.kind === 'ready' && <><Progress status={state.data.status} /><Body id={id} data={state.data} confirming={polling} /></>}
+        {state.kind === 'error' && <><h1 className={H1}>Something went wrong</h1><p role="alert">We couldn't load your case. Please refresh and try again.</p></>}
+        {state.kind === 'ready' && <><Progress status={state.data.status} /><Body id={id} data={state.data} phase={phase} /></>}
       </main>
     </div>
   )
