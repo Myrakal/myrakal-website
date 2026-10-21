@@ -24,6 +24,14 @@ describe('FAQ', () => {
       expect(screen.getByRole('button', { name: q })).toBeTruthy()
   })
 
+  it('answers the cost question with the flat consult fee credited toward treatment', async () => {
+    render(<FAQ />)
+    expect(screen.getByRole('button', { name: 'How much does it cost?' })).toBeTruthy()
+    const t = await openAll()
+    expect(t).toMatch(/\$150/)
+    expect(t).toMatch(/credited toward any treatment/i)
+  })
+
   it('explains intake, AI and the licensed doctor consult', async () => {
     const t = await openAll()
     for (const term of [/intake/i, /lab results|labs/i, /imaging/i, /insurance plan/i, /licensed doctor/i, /approv/i])

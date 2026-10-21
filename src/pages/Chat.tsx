@@ -10,9 +10,12 @@ import {
   INTAKE_COMPLETE,
   INTAKE_FAILED,
   INTAKE_PROMPTS,
+  INTAKE_SAVED_NO_LINK,
   replyFor,
 } from '@/lib/intake'
 import { submitIntake } from '@/lib/submitIntake'
+
+const CONTINUE_LABEL = 'Continue to your consult'
 
 const GREETING: Message = {
   id: 'greeting',
@@ -33,6 +36,8 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
   const unsaved = useRef(false)
   const pending = useRef<AbortController>(undefined)
   const [saved, setSaved] = useState(false)
+  const caseHref = useRef<string>(undefined)
+  const [href, setHref] = useState<string>()
 
   useEffect(() => {
     mounted.current = true
@@ -52,9 +57,10 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     const controller = new AbortController()
     pending.current = controller
     try {
-      await submitIntake({ ...contact.current, transcript }, controller.signal)
+      const { id } = await submitIntake({ ...contact.current, transcript }, controller.signal)
       if (!controller.signal.aborted) unsaved.current = false
-      return INTAKE_COMPLETE
+      if (id) caseHref.current = `/case?id=${encodeURIComponent(id)}`
+      return id ? INTAKE_COMPLETE : INTAKE_SAVED_NO_LINK
     } catch {
       if (!controller.signal.aborted) unsaved.current = true
       return INTAKE_FAILED
@@ -90,8 +96,13 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     try {
       const [reply] = await Promise.all([respond(text, [...messages, userMessage]), wait])
       if (mounted.current) {
-        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply }])
-        if (reply === INTAKE_COMPLETE) setSaved(true)
+        const done = reply === INTAKE_COMPLETE || reply === INTAKE_SAVED_NO_LINK
+        const link = reply === INTAKE_COMPLETE && caseHref.current ? { href: caseHref.current, label: CONTINUE_LABEL } : undefined
+        setMessages((m) => [...m, { id: `assistant-${id}`, role: 'assistant', text: reply, link }])
+        if (done) {
+          setHref(caseHref.current)
+          setSaved(true)
+        }
       }
     } finally {
       if (mounted.current) setTyping(false)
@@ -124,7 +135,15 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
 
         <div className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">
           <p role="status" className="min-h-6 px-2 pb-2 text-center text-sm text-foreground">
-            {saved ? 'Intake complete. A licensed doctor will review your case.' : ''}
+            {saved ? 'Intake complete.' : ''}
+            {saved && href && (
+              <>
+                {' '}
+                <a className="font-medium underline underline-offset-4" href={href}>
+                  {CONTINUE_LABEL}
+                </a>
+              </>
+            )}
           </p>
           <ChatComposer onSend={send} busy={typing} locked={saved} />
           <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">

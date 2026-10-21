@@ -39,6 +39,11 @@ const FAQS: FaqItem[] = [
       "Yes. Intake is self-serve, so you can start whenever you're ready. Talk with us if you have questions along the way.",
   },
   {
+    question: 'How much does it cost?',
+    answer:
+      'The consult is a flat $150 fee. It is credited toward any treatment you choose through Myrakal.',
+  },
+  {
     question: 'How do you vet doctors and hospitals?',
     answer:
       'Every doctor is licensed and credential-verified, and every hospital we work with is internationally accredited. We hold every partner to the same standard we’d want for our own family.',
