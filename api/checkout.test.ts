@@ -3,6 +3,7 @@ import { vi } from 'vitest'
 const findUnique = vi.fn()
 const update = vi.fn()
 const create = vi.fn()
+const retrieve = vi.fn()
 vi.mock('../server/db.ts', () => ({ db: () => ({ intake: { findUnique, update } }) }))
 vi.mock('../server/stripe.ts', async () => {
   class StripeNotConfigured extends Error {}
@@ -10,7 +11,7 @@ vi.mock('../server/stripe.ts', async () => {
     StripeNotConfigured,
     stripe: () => {
       if (!process.env.STRIPE_SECRET_KEY) throw new StripeNotConfigured()
-      return { checkout: { sessions: { create } } }
+      return { checkout: { sessions: { create, retrieve } } }
     },
   }
 })
@@ -32,6 +33,7 @@ describe('POST /api/checkout', () => {
     findUnique.mockReset()
     update.mockReset()
     create.mockReset()
+    retrieve.mockReset()
     process.env.STRIPE_SECRET_KEY = 'sk_test_123'
     delete process.env.CONSULT_PRICE_CENTS
   })
@@ -97,5 +99,30 @@ describe('POST /api/checkout', () => {
     const res = await post({ intakeId: id })
     expect(res.status).toBe(502)
     expect(await res.text()).not.toMatch(/sk_test/)
+  })
+
+  it('reuses an open session instead of creating a second one', async () => {
+    findUnique.mockResolvedValue({ id, email: 'a@b.co', paidAt: null, stripeSessionId: 'cs_old' })
+    retrieve.mockResolvedValue({ id: 'cs_old', status: 'open', url: 'https://checkout.stripe.com/c/cs_old' })
+    const res = await post({ intakeId: id })
+    expect(await res.json()).toEqual({ url: 'https://checkout.stripe.com/c/cs_old' })
+    expect(retrieve).toHaveBeenCalledWith('cs_old')
+    expect(create).not.toHaveBeenCalled()
+  })
+
+  it('creates a new session when the old one is expired', async () => {
+    findUnique.mockResolvedValue({ id, email: 'a@b.co', paidAt: null, stripeSessionId: 'cs_old' })
+    retrieve.mockResolvedValue({ id: 'cs_old', status: 'expired', url: null })
+    create.mockResolvedValue({ id: 'cs_new', url: 'https://checkout.stripe.com/c/cs_new' })
+    expect(await (await post({ intakeId: id })).json()).toEqual({ url: 'https://checkout.stripe.com/c/cs_new' })
+    expect(update).toHaveBeenCalledWith({ where: { id }, data: { stripeSessionId: 'cs_new' } })
+  })
+
+  it('creates a new session when retrieval fails', async () => {
+    findUnique.mockResolvedValue({ id, email: 'a@b.co', paidAt: null, stripeSessionId: 'cs_old' })
+    retrieve.mockRejectedValue(new Error('gone'))
+    create.mockResolvedValue({ id: 'cs_new', url: 'https://checkout.stripe.com/c/cs_new' })
+    expect((await post({ intakeId: id })).status).toBe(200)
+    expect(create).toHaveBeenCalled()
   })
 })

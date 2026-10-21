@@ -1,5 +1,5 @@
 import { db } from '../server/db.ts'
-import { markPaid } from '../server/payment.ts'
+import { markPaid, UUID } from '../server/payment.ts'
 import { stripe } from '../server/stripe.ts'
 
 const json = (body: unknown, status: number) =>
@@ -21,8 +21,12 @@ export async function POST(request: Request) {
     const session = event.data.object
     const intakeId = session.metadata?.intakeId
     if (session.payment_status === 'paid' && intakeId) {
+      if (!UUID.test(intakeId)) {
+        console.error('paid session with malformed intake id')
+        return json({ received: true }, 200)
+      }
       try {
-        await markPaid(db(), intakeId)
+        if (!(await markPaid(db(), intakeId))) console.error(`paid session matched no awaiting intake ${intakeId}`)
       } catch (err) {
         console.error('mark paid failed', err instanceof Error ? err.name : 'UnknownError')
         return json({ error: 'Could not record payment' }, 500)

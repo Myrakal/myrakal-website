@@ -1,8 +1,8 @@
 import { consultPriceCents } from '../server/consult.ts'
 import { db } from '../server/db.ts'
+import { UUID } from '../server/payment.ts'
 import { StripeNotConfigured, stripe } from '../server/stripe.ts'
 
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 const json = (body: unknown, status: number, headers?: Record<string, string>) =>
   new Response(JSON.stringify(body), {
     status,
@@ -32,9 +32,14 @@ export async function POST(request: Request) {
   if (typeof intakeId !== 'string' || !UUID.test(intakeId)) return json({ error: 'Not found' }, 404)
 
   try {
-    const intake = await db().intake.findUnique({ where: { id: intakeId }, select: { id: true, email: true, paidAt: true } })
+    const intake = await db().intake.findUnique({ where: { id: intakeId }, select: { id: true, email: true, paidAt: true, stripeSessionId: true } })
     if (!intake) return json({ error: 'Not found' }, 404)
     if (intake.paidAt) return json({ error: 'Already paid' }, 409)
+
+    if (intake.stripeSessionId) {
+      const existing = await stripe().checkout.sessions.retrieve(intake.stripeSessionId).catch(() => null)
+      if (existing?.status === 'open' && existing.url) return json({ url: existing.url }, 200)
+    }
 
     const base = origin ?? new URL(request.url).origin
     const session = await stripe().checkout.sessions.create({

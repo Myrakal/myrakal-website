@@ -1,4 +1,5 @@
 import type { PrismaClient } from '../generated/prisma/client.ts'
+export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export async function markPaid(store: Pick<PrismaClient, 'intake'>, intakeId: string) {
   const { count } = await store.intake.updateMany({

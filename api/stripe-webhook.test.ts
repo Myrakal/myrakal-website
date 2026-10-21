@@ -1,5 +1,6 @@
 import { vi } from 'vitest'
 
+const ID = '11111111-1111-4111-8111-111111111111'
 const constructEventAsync = vi.fn()
 const updateMany = vi.fn()
 vi.mock('../server/db.ts', () => ({ db: () => ({ intake: { updateMany } }) }))
@@ -38,11 +39,11 @@ describe('POST /api/stripe-webhook', () => {
   it('marks the intake paid on a paid completed session', async () => {
     constructEventAsync.mockResolvedValue({
       type: 'checkout.session.completed',
-      data: { object: { payment_status: 'paid', metadata: { intakeId: 'abc' } } },
+      data: { object: { payment_status: 'paid', metadata: { intakeId: ID } } },
     })
     expect((await post()).status).toBe(200)
     expect(updateMany).toHaveBeenCalledWith({
-      where: { id: 'abc', consultStatus: 'awaiting_payment' },
+      where: { id: ID, consultStatus: 'awaiting_payment' },
       data: { paidAt: expect.any(Date), consultStatus: 'in_review' },
     })
   })
@@ -50,7 +51,7 @@ describe('POST /api/stripe-webhook', () => {
   it('ignores unpaid sessions and other events', async () => {
     constructEventAsync.mockResolvedValue({
       type: 'checkout.session.completed',
-      data: { object: { payment_status: 'unpaid', metadata: { intakeId: 'abc' } } },
+      data: { object: { payment_status: 'unpaid', metadata: { intakeId: ID } } },
     })
     expect((await post()).status).toBe(200)
     constructEventAsync.mockResolvedValue({ type: 'other', data: { object: {} } })
@@ -61,9 +62,33 @@ describe('POST /api/stripe-webhook', () => {
   it('returns 500 when the database fails so Stripe retries', async () => {
     constructEventAsync.mockResolvedValue({
       type: 'checkout.session.completed',
-      data: { object: { payment_status: 'paid', metadata: { intakeId: 'abc' } } },
+      data: { object: { payment_status: 'paid', metadata: { intakeId: ID } } },
     })
     updateMany.mockRejectedValue(new Error('db down'))
     expect((await post()).status).toBe(500)
+  })
+
+  it('logs the intake id when no awaiting intake matched', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    constructEventAsync.mockResolvedValue({
+      type: 'checkout.session.completed',
+      data: { object: { payment_status: 'paid', metadata: { intakeId: ID } } },
+    })
+    updateMany.mockResolvedValue({ count: 0 })
+    expect((await post()).status).toBe(200)
+    expect(error).toHaveBeenCalledWith(expect.stringContaining(ID))
+    error.mockRestore()
+  })
+
+  it('returns 200 without touching the database for a malformed intake id', async () => {
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    constructEventAsync.mockResolvedValue({
+      type: 'checkout.session.completed',
+      data: { object: { payment_status: 'paid', metadata: { intakeId: 'not-a-uuid' } } },
+    })
+    expect((await post()).status).toBe(200)
+    expect(updateMany).not.toHaveBeenCalled()
+    expect(error).toHaveBeenCalled()
+    error.mockRestore()
   })
 })
