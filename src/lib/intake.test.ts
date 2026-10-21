@@ -2,6 +2,7 @@ import {
   EMAIL_RETRY,
   extractEmail,
   INTAKE_COMPLETE,
+  INTAKE_SAVED_NO_LINK,
   INTAKE_FAILED,
   INTAKE_PROMPTS,
   replyFor,
@@ -38,6 +39,13 @@ describe('intake script', () => {
     expect(all).not.toMatch(/suggest|recommend|you should|diagnos(e|is) is/i)
     expect(INTAKE_COMPLETE).toMatch(/licensed doctor/i)
     expect(INTAKE_COMPLETE).toMatch(/complete/i)
+  })
+
+  it('points to a paid consult credited toward treatment, with doctor review after payment', () => {
+    expect(INTAKE_COMPLETE).toMatch(/consult fee/i)
+    expect(INTAKE_COMPLETE).toMatch(/credited toward (your )?treatment/i)
+    expect(INTAKE_COMPLETE).toMatch(/after (you )?pay/i)
+    expect(INTAKE_COMPLETE).not.toMatch(/be in touch/i)
   })
 })
 
@@ -121,5 +129,11 @@ describe('contact and failure copy', () => {
     expect(INTAKE_COMPLETE).not.toMatch(/add it here|feel free/i)
     expect(INTAKE_COMPLETE).toContain(SUPPORT_EMAIL)
     expect(INTAKE_COMPLETE).toMatch(/licensed doctor/i)
+    expect(INTAKE_SAVED_NO_LINK).toContain(SUPPORT_EMAIL)
+    expect(INTAKE_SAVED_NO_LINK).toMatch(/saved/i)
+    expect(INTAKE_SAVED_NO_LINK).toMatch(/consult fee/i)
+    expect(INTAKE_SAVED_NO_LINK).toMatch(/credited toward (your )?treatment/i)
+    expect(INTAKE_SAVED_NO_LINK).toMatch(/email you a payment link/i)
+    expect(INTAKE_SAVED_NO_LINK).not.toMatch(/be in touch|will review your case,/i)
   })
 })

@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import Chat from '@/pages/Chat'
@@ -146,7 +146,8 @@ describe('Chat page', () => {
       await user.type(box, `${answers[i]}{Enter}`)
       await waitFor(() => expect(screen.getAllByRole('article').length).toBe(3 + 2 * i))
     }
-    expect(status().textContent).toBe('Intake complete. A licensed doctor will review your case.')
+    expect(status().textContent).toContain('Intake complete.')
+    expect(within(status()).getByRole('link', { name: 'Continue to your consult' }).getAttribute('href')).toBe('/case?id=abc')
     expect(box.readOnly).toBe(true)
     expect(box.getAttribute('aria-readonly')).toBe('true')
     expect(box.disabled).toBe(false)
@@ -360,11 +361,32 @@ describe('Chat page', () => {
       expect(screen.queryByText('Myrakal is typing')).toBeNull()
       const done = screen.getAllByRole('status')
       expect(done).toHaveLength(1)
-      expect(done[0].textContent).toBe('Intake complete. A licensed doctor will review your case.')
+      expect(done[0].textContent).toContain('Intake complete.')
       expect(screen.getByRole('log').textContent).toMatch(/intake is complete/i)
       expect((screen.getByRole('textbox', { name: 'Message' }) as HTMLTextAreaElement).readOnly).toBe(true)
     } finally {
       vi.useRealTimers()
     }
+  })
+
+  it('links the completion message to the case page', async () => {
+    const user = userEvent.setup()
+    render(<Chat replyDelay={0} />)
+    for (const t of ['a', 'b', 'c', 'd', 'Ada', 'ada@example.com']) await answer(user, t)
+    await waitFor(() => expect(screen.getAllByRole('link', { name: 'Continue to your consult' })).toHaveLength(2))
+    const inLog = within(screen.getByRole('log')).getByRole('link', { name: 'Continue to your consult' })
+    expect(inLog.getAttribute('href')).toBe('/case?id=abc')
+    expect(screen.getByRole('log').textContent).toMatch(/consult fee/i)
+  })
+
+  it('falls back to the support email with no link when no id comes back', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, status: 201, json: async () => ({}) }))
+    const user = userEvent.setup()
+    render(<Chat replyDelay={0} />)
+    for (const t of ['a', 'b', 'c', 'd', 'Ada', 'ada@example.com']) await answer(user, t)
+    await waitFor(() => expect(screen.getByRole('log').textContent).toMatch(/intake is complete/i))
+    expect(screen.queryByRole('link', { name: 'Continue to your consult' })).toBeNull()
+    expect(screen.getByRole('log').textContent).toContain('eshaansood@myrakal.com')
+    expect(screen.getByRole('status').textContent).toBe('Intake complete.')
   })
 })

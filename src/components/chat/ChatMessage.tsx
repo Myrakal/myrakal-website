@@ -1,4 +1,4 @@
-export type Message = { id: string; role: 'assistant' | 'user'; text: string }
+export type Message = { id: string; role: 'assistant' | 'user'; text: string; link?: { href: string; label: string } }
 
 export function ChatMessage({ message }: { message: Message }) {
   const mine = message.role === 'user'
@@ -15,6 +15,14 @@ export function ChatMessage({ message }: { message: Message }) {
         }`}
       >
         {message.text}
+        {message.link && (
+          <a
+            href={message.link.href}
+            className="mt-3 block font-medium underline underline-offset-4"
+          >
+            {message.link.label}
+          </a>
+        )}
       </p>
     </article>
   )

@@ -111,7 +111,7 @@ const STEPS: ScrollStep[] = [
   },
   {
     title: 'Consult',
-    description: 'A licensed doctor reviews your case, then approves it or makes changes.',
+    description: 'After a flat $150 consult fee, credited toward treatment, a licensed doctor reviews your case.',
     Mock: Consult,
   },
   {

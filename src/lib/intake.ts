@@ -8,8 +8,14 @@ export const INTAKE_PROMPTS = [
 
 export const SUPPORT_EMAIL = 'eshaansood@myrakal.com'
 
+const COMPLETE_INTRO = "Thank you so much, that's everything I need. Intake is complete."
+const SUPPORT_LINE = `If you remember anything else, you can email ${SUPPORT_EMAIL}.`
+
 export const INTAKE_COMPLETE =
-  `Thank you so much, that's everything I need. Intake is complete. A licensed doctor will review your case, and we'll be in touch once they have.\n\nIf you remember anything else, you can email ${SUPPORT_EMAIL}.`
+  `${COMPLETE_INTRO} The next step is a consult fee, which is credited toward treatment. A licensed doctor will review your case after you pay.\n\n${SUPPORT_LINE}`
+
+export const INTAKE_SAVED_NO_LINK =
+  `${COMPLETE_INTRO} Your intake is saved. The next step is a consult fee, which is credited toward treatment. We'll email you a payment link, and a licensed doctor will review your case after you pay.\n\nYou can also email ${SUPPORT_EMAIL} and we'll take it from there.`
 
 export const replyFor = (userTurns: number) =>
   INTAKE_PROMPTS[userTurns - 1] ?? INTAKE_COMPLETE
