@@ -1,9 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import wordmark from '@/assets/myrakal-wordmark.svg'
 import { Button } from '@/components/ui/button'
 import { summarize, type Message } from '@/lib/caseSummary'
 
-type Intake = { id: string; createdAt: string; name: string | null; email: string; transcript: Message[] }
+type Intake = {
+  id: string
+  createdAt: string
+  name: string | null
+  email: string
+  transcript: Message[]
+  consultStatus: string
+  paidAt: string | null
+  consultNote: string | null
+  reviewedAt: string | null
+}
+type Decision = Pick<Intake, 'consultStatus' | 'consultNote' | 'reviewedAt'>
+
+const STATUS: Record<string, string> = {
+  awaiting_payment: 'Awaiting payment',
+  in_review: 'In review',
+  approved: 'Approved',
+  changes_requested: 'Changes requested',
+}
+const statusLabel = (s: string) => STATUS[s] ?? s
 
 const when = (iso: string) =>
   new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
@@ -17,7 +36,60 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   )
 }
 
-function Case({ intake }: { intake: Intake }) {
+const DECISION_ERRORS: Record<string, string> = {
+  '401': 'That token was not accepted. Please reload and sign in again.',
+  '404': 'This patient could not be found.',
+  '409': 'This case is no longer awaiting review.',
+}
+
+type DecideProps = { id: string; token: string; note: string; onNote: (v: string) => void; onDone: (id: string, d: Decision) => void }
+
+function Decide({ id, token, note, onNote, onDone }: DecideProps) {
+  const alive = useRef(true)
+  useEffect(() => {
+    alive.current = true
+    return () => {
+      alive.current = false
+    }
+  }, [])
+  const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  async function submit(decision: 'approved' | 'changes_requested') {
+    if (decision === 'changes_requested' && !note.trim()) return setError('Add a note explaining the changes you need.')
+    setError('')
+    setBusy(true)
+    try {
+      const res = await fetch('/api/intakes', {
+        method: 'POST',
+        headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
+        body: JSON.stringify({ id, decision, note: note.trim() }),
+      })
+      if (!res.ok) throw new Error(String(res.status))
+      onDone(id, await res.json())
+    } catch (err) {
+      if (!alive.current) return
+      setError((err instanceof Error && DECISION_ERRORS[err.message]) || 'Could not save your decision. Please try again.')
+      setBusy(false)
+    }
+  }
+
+  return (
+    <section className="space-y-3">
+      <label className="block space-y-1.5 text-sm font-medium">
+        Note to patient
+        <textarea value={note} onChange={(e) => onNote(e.target.value)} maxLength={4000} rows={4} className="w-full rounded-lg border border-input bg-background p-3 text-base" />
+      </label>
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      <div className="flex flex-wrap gap-2">
+        <Button type="button" disabled={busy} onClick={() => submit('approved')}>Approve</Button>
+        <Button type="button" variant="outline" disabled={busy} onClick={() => submit('changes_requested')}>Request changes</Button>
+      </div>
+    </section>
+  )
+}
+
+function Case({ intake, ...decide }: { intake: Intake } & Omit<DecideProps, 'id'>) {
   const { history, tests, insurance } = summarize(intake.transcript)
   const text = (v: string) => (v ? <p>{v}</p> : <p className="text-muted-foreground">Not provided</p>)
   return (
@@ -25,6 +97,10 @@ function Case({ intake }: { intake: Intake }) {
       <header>
         <h2 className="font-heading text-3xl">{intake.name ?? 'Name not given'}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{intake.email} · Submitted {when(intake.createdAt)}</p>
+        <p role="status" className="mt-3 text-sm">
+          <b className="rounded-full bg-muted px-3 py-1">{statusLabel(intake.consultStatus)}</b>
+          {intake.consultNote && <span className="mt-2 block leading-6">{intake.consultNote}</span>}
+        </p>
       </header>
       <Field label="Symptoms and history">{history.length ? history.map((h, i) => <p key={i}>{h}</p>) : text('')}</Field>
       <Field label="Labs and imaging">{text(tests)}</Field>
@@ -37,6 +113,7 @@ function Case({ intake }: { intake: Intake }) {
           ))}
         </ul>
       </details>
+      {intake.consultStatus === 'in_review' && <Decide id={intake.id} {...decide} />}
     </article>
   )
 }
@@ -46,6 +123,7 @@ export default function Doctor() {
   const [intakes, setIntakes] = useState<Intake[] | null>(null)
   const [selected, setSelected] = useState(0)
   const [error, setError] = useState('')
+  const [drafts, setDrafts] = useState<Record<string, string>>({})
 
   async function load(e: React.FormEvent) {
     e.preventDefault()
@@ -93,10 +171,18 @@ export default function Doctor() {
                 >
                   <span className="block font-medium">{p.name ?? p.email}</span>
                   <span className="block text-muted-foreground">{when(p.createdAt)}</span>
+                  <span className="mt-1 block text-xs font-medium">{statusLabel(p.consultStatus)}</span>
                 </button>
               ))}
             </nav>
-            {intakes[selected] && <Case key={intakes[selected].id} intake={intakes[selected]} />}
+            {intakes[selected] && <Case
+                key={intakes[selected].id}
+                intake={intakes[selected]}
+                token={token}
+                note={drafts[intakes[selected].id] ?? ''}
+                onNote={(v) => setDrafts((d) => ({ ...d, [intakes[selected].id]: v }))}
+                onDone={(id, d) => setIntakes((list) => list && list.map((p) => (p.id === id ? { ...p, ...d } : p)))}
+              />}
           </div>
         )}
       </main>
