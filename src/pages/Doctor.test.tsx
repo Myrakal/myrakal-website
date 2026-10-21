@@ -6,6 +6,10 @@ import Doctor from '@/pages/Doctor'
 const intakes = [
   {
     id: 'a',
+    consultStatus: 'in_review',
+    paidAt: '2026-10-20T16:00:00.000Z',
+    consultNote: null,
+    reviewedAt: null,
     createdAt: '2026-10-20T15:00:00.000Z',
     name: 'Ada Lovelace',
     email: 'ada@example.com',
@@ -18,7 +22,7 @@ const intakes = [
       { role: 'user', text: 'Aetna PPO' },
     ],
   },
-  { id: 'b', createdAt: '2026-10-19T15:00:00.000Z', name: null, email: 'grace@example.com', transcript: [] },
+  { id: 'b', consultStatus: 'awaiting_payment', paidAt: null, consultNote: null, reviewedAt: null, createdAt: '2026-10-19T15:00:00.000Z', name: null, email: 'grace@example.com', transcript: [] },
 ]
 
 const section = (name: string) => within(screen.getByRole('heading', { name }).parentElement!)
@@ -106,5 +110,66 @@ describe('Doctor page', () => {
     vi.mocked(fetch).mockResolvedValue({ ok: true, status: 200, json: async () => [] } as Response)
     await signIn()
     expect(await screen.findByText(/no patients yet/i)).toBeTruthy()
+  })
+
+  it('shows a status label per patient and a badge for the open case', async () => {
+    await signIn()
+    expect(within(await screen.findByRole('button', { name: /Ada Lovelace/ })).getByText('In review')).toBeTruthy()
+    expect(within(screen.getByRole('button', { name: /grace@example.com/ })).getByText('Awaiting payment')).toBeTruthy()
+    expect(screen.getByRole('status').textContent).toMatch(/in review/i)
+  })
+
+  it('offers decision controls only while in review', async () => {
+    const user = await signIn()
+    expect(await screen.findByRole('button', { name: 'Approve' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Request changes' })).toBeTruthy()
+    await user.click(screen.getByRole('button', { name: /grace@example.com/ }))
+    expect(screen.queryByRole('button', { name: 'Approve' })).toBeNull()
+    expect(screen.queryByLabelText('Note to patient')).toBeNull()
+  })
+
+  it('posts the decision with the token and updates the case and list', async () => {
+    const user = await signIn()
+    await user.type(await screen.findByLabelText('Note to patient'), '  Get an MRI first ')
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ id: 'a', consultStatus: 'changes_requested', consultNote: 'Get an MRI first', reviewedAt: '2026-10-20T17:00:00.000Z' }),
+    } as Response)
+    await user.click(screen.getByRole('button', { name: 'Request changes' }))
+    const call = vi.mocked(fetch).mock.calls[1]
+    expect(call[0]).toBe('/api/intakes')
+    expect(call[1]).toMatchObject({ method: 'POST', headers: { authorization: 'Bearer secret-token' } })
+    expect(JSON.parse(call[1]!.body as string)).toEqual({ id: 'a', decision: 'changes_requested', note: 'Get an MRI first' })
+    await waitFor(() => expect(screen.queryByRole('button', { name: 'Approve' })).toBeNull())
+    expect(screen.getByRole('status').textContent).toMatch(/changes requested/i)
+    expect(screen.getByRole('status').textContent).toContain('Get an MRI first')
+    expect(within(screen.getByRole('button', { name: /Ada Lovelace/ })).getByText('Changes requested')).toBeTruthy()
+  })
+
+  it('shows decided cases with their note and no controls', async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => [{ ...intakes[0], consultStatus: 'approved', consultNote: 'Looks good', reviewedAt: '2026-10-20T17:00:00.000Z' }],
+    } as Response)
+    await signIn()
+    expect((await screen.findByRole('status')).textContent).toContain('Looks good')
+    expect(screen.queryByRole('button', { name: 'Approve' })).toBeNull()
+  })
+
+  it('shows an error and keeps the controls when the decision fails', async () => {
+    const user = await signIn()
+    vi.mocked(fetch).mockResolvedValueOnce({ ok: false, status: 409, json: async () => ({}) } as Response)
+    await user.click(await screen.findByRole('button', { name: 'Approve' }))
+    expect((await screen.findByRole('alert')).textContent).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Approve' })).toBeTruthy()
+  })
+
+  it('requires a note to request changes', async () => {
+    const user = await signIn()
+    await user.click(await screen.findByRole('button', { name: 'Request changes' }))
+    expect((await screen.findByRole('alert')).textContent).toMatch(/note/i)
+    expect(fetch).toHaveBeenCalledTimes(1)
   })
 })
