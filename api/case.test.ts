@@ -1,7 +1,10 @@
 import { vi } from 'vitest'
 
 const findUnique = vi.fn()
-vi.mock('../server/db.ts', () => ({ db: () => ({ intake: { findUnique } }) }))
+const updateMany = vi.fn()
+const retrieve = vi.fn()
+vi.mock('../server/db.ts', () => ({ db: () => ({ intake: { findUnique, updateMany } }) }))
+vi.mock('../server/stripe.ts', () => ({ stripe: () => ({ checkout: { sessions: { retrieve } } }) }))
 
 import { GET, POST } from './case'
 
@@ -20,6 +23,8 @@ const row = (over: Record<string, unknown> = {}) => ({
 describe('GET /api/case', () => {
   beforeEach(() => {
     findUnique.mockReset()
+    updateMany.mockReset()
+    retrieve.mockReset()
   })
 
   it('rejects a missing or non-uuid id without touching the database', async () => {
@@ -38,7 +43,7 @@ describe('GET /api/case', () => {
     await get(ID)
     expect(findUnique).toHaveBeenCalledWith({
       where: { id: ID },
-      select: { consultStatus: true, name: true, paidAt: true, consultNote: true, reviewedAt: true },
+      select: { consultStatus: true, name: true, paidAt: true, consultNote: true, reviewedAt: true, stripeSessionId: true },
     })
   })
 
@@ -74,5 +79,47 @@ describe('GET /api/case', () => {
     const res = POST()
     expect(res.status).toBe(405)
     expect(res.headers.get('allow')).toBe('GET')
+  })
+})
+
+describe('payment reconciliation', () => {
+  const unpaid = () => row({ consultStatus: 'awaiting_payment', paidAt: null, stripeSessionId: 'cs_1' })
+
+  beforeEach(() => {
+    findUnique.mockReset()
+    updateMany.mockReset()
+    retrieve.mockReset()
+  })
+
+  it('marks the intake paid when Stripe says the session is paid', async () => {
+    findUnique.mockResolvedValue(unpaid())
+    retrieve.mockResolvedValue({ payment_status: 'paid' })
+    updateMany.mockResolvedValue({ count: 1 })
+    const body = await (await get(ID)).json()
+    expect(retrieve).toHaveBeenCalledWith('cs_1')
+    expect(updateMany).toHaveBeenCalled()
+    expect(body).toMatchObject({ status: 'in_review', paid: true })
+  })
+
+  it('leaves the intake awaiting payment when the session is unpaid', async () => {
+    findUnique.mockResolvedValue(unpaid())
+    retrieve.mockResolvedValue({ payment_status: 'unpaid' })
+    const body = await (await get(ID)).json()
+    expect(updateMany).not.toHaveBeenCalled()
+    expect(body).toMatchObject({ status: 'awaiting_payment', paid: false })
+  })
+
+  it('skips Stripe when there is no session', async () => {
+    findUnique.mockResolvedValue(row({ consultStatus: 'awaiting_payment', paidAt: null, stripeSessionId: null }))
+    await get(ID)
+    expect(retrieve).not.toHaveBeenCalled()
+  })
+
+  it('still answers when Stripe fails', async () => {
+    findUnique.mockResolvedValue(unpaid())
+    retrieve.mockRejectedValue(new Error('down'))
+    const res = await get(ID)
+    expect(res.status).toBe(200)
+    expect((await res.json()).status).toBe('awaiting_payment')
   })
 })
