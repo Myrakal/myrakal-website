@@ -59,7 +59,7 @@ export default function Chat({ replyDelay = 800 }: { replyDelay?: number }) {
     try {
       const { id } = await submitIntake({ ...contact.current, transcript }, controller.signal)
       if (!controller.signal.aborted) unsaved.current = false
-      if (id) caseHref.current = `/case?id=${encodeURIComponent(id)}`
+      caseHref.current = id ? `/case?id=${encodeURIComponent(id)}` : undefined
       return id ? INTAKE_COMPLETE : INTAKE_SAVED_NO_LINK
     } catch {
       if (!controller.signal.aborted) unsaved.current = true
