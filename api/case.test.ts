@@ -18,7 +18,9 @@ const row = (over: Record<string, unknown> = {}) => ({
 })
 
 describe('GET /api/case', () => {
-  beforeEach(() => findUnique.mockReset())
+  beforeEach(() => {
+    findUnique.mockReset()
+  })
 
   it('rejects a missing or non-uuid id without touching the database', async () => {
     expect((await get()).status).toBe(400)
