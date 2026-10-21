@@ -13,11 +13,10 @@ const json = (body: unknown, status: number, headers?: Record<string, string>) =
 
 async function confirmPayment(id: string, sessionId: string) {
   try {
-    const session = await stripe().checkout.sessions.retrieve(sessionId)
-    if (session.payment_status !== 'paid') return false
-    await markPaid(db(), id)
-    return true
-  } catch {
+    const session = await stripe().checkout.sessions.retrieve(sessionId, undefined, { timeout: 5000, maxNetworkRetries: 0 })
+    return session.payment_status === 'paid' && (await markPaid(db(), id))
+  } catch (err) {
+    console.error('payment reconcile failed', err instanceof Error ? err.name : 'UnknownError')
     return false
   }
 }

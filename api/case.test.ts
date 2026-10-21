@@ -96,9 +96,23 @@ describe('payment reconciliation', () => {
     retrieve.mockResolvedValue({ payment_status: 'paid' })
     updateMany.mockResolvedValue({ count: 1 })
     const body = await (await get(ID)).json()
-    expect(retrieve).toHaveBeenCalledWith('cs_1')
+    expect(retrieve).toHaveBeenCalledWith('cs_1', undefined, { timeout: 5000, maxNetworkRetries: 0 })
     expect(updateMany).toHaveBeenCalled()
     expect(body).toMatchObject({ status: 'in_review', paid: true })
+  })
+
+  it('does not claim payment when the row had already moved on', async () => {
+    findUnique.mockResolvedValue(unpaid())
+    retrieve.mockResolvedValue({ payment_status: 'paid' })
+    updateMany.mockResolvedValue({ count: 0 })
+    expect(await (await get(ID)).json()).toMatchObject({ status: 'awaiting_payment', paid: false })
+  })
+
+  it('bounds the Stripe call with a short timeout and no retries', async () => {
+    findUnique.mockResolvedValue(unpaid())
+    retrieve.mockResolvedValue({ payment_status: 'unpaid' })
+    await get(ID)
+    expect(retrieve).toHaveBeenCalledWith('cs_1', undefined, { timeout: 5000, maxNetworkRetries: 0 })
   })
 
   it('leaves the intake awaiting payment when the session is unpaid', async () => {
