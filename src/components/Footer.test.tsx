@@ -1,0 +1,40 @@
+import { render, screen } from '@testing-library/react'
+import { Footer } from '@/components/Footer'
+
+describe('Footer', () => {
+  it('tells visitors it is not for emergencies', () => {
+    render(<Footer />)
+    expect(screen.getByText(/not for emergencies/i).textContent).toMatch(/911/)
+  })
+
+  it('says the website is not medical advice and doctors make clinical decisions', () => {
+    const { container } = render(<Footer />)
+    expect(container.textContent).toMatch(/website is not medical advice/i)
+    expect(container.textContent).toMatch(/licensed doctors/i)
+  })
+
+  it('links to every legal and contact page', () => {
+    render(<Footer />)
+    for (const [name, href] of [
+      ['Privacy Policy', '/privacy/'],
+      ['Terms of Service', '/terms/'],
+      ['Contact', '/contact/'],
+      ['Accessibility', '/accessibility/'],
+    ])
+      expect(screen.getByRole('link', { name }).getAttribute('href')).toBe(href)
+  })
+
+  it('keeps the contact email, copyright and location', () => {
+    const { container } = render(<Footer />)
+    expect(screen.getByRole('link', { name: 'eshaansood@myrakal.com' }).getAttribute('href')).toBe(
+      'mailto:eshaansood@myrakal.com',
+    )
+    expect(container.textContent).toMatch(new RegExp(`© ${new Date().getFullYear()} Myrakal Inc`))
+    expect(container.textContent).toMatch(/Chicago, Illinois/)
+  })
+
+  it('shows the wordmark', () => {
+    render(<Footer />)
+    expect(screen.getByRole('img', { name: 'Myrakal' }).getAttribute('src')).toMatch(/myrakal-wordmark/)
+  })
+})
