@@ -27,6 +27,9 @@ export default function Chat() {
         </div>
 
         <div className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">
+          <p role="status" className="px-2 pb-2 text-center text-sm">
+            Chat is being rebuilt and is temporarily unavailable. Please check back soon.
+          </p>
           <ChatComposer onSend={() => {}} locked />
           <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">
             See our{' '}
