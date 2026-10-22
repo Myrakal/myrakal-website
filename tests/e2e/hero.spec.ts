@@ -32,8 +32,11 @@ for (const viewport of [
   })
 }
 
-test('scene text sits below its photograph on phones', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 })
+for (const viewport of [
+  { width: 390, height: 844 },
+  { width: 768, height: 1024 },
+]) test(`scene text sits below its photograph at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+  await page.setViewportSize(viewport)
   await page.goto('/', { waitUntil: 'networkidle' })
   const heading = page.getByRole('heading', { name: 'Everything, arranged' })
   await heading.scrollIntoViewIfNeeded()

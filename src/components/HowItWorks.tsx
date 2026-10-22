@@ -46,9 +46,9 @@ export function HowItWorks() {
         numeral="III"
         title="Everything, arranged"
       >
-        We map out your options for care at home or abroad, and you choose the one that fits. Then we manage
-        scheduling, documentation, logistics, and accommodations, and handle medication orders through affordable,
-        credentialed domestic pharmacies.
+        We map out your options for care at home, abroad, or a mix of both, and you choose the one that fits. Then we
+        manage scheduling, documentation, logistics, and accommodations, and handle medication orders through
+        affordable, credentialed domestic pharmacies, splitting fulfillment where needed.
       </Scene>
       <Scene
         image={glass}

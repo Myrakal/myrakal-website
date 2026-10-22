@@ -33,6 +33,8 @@ describe('HowItWorks', () => {
       /scheduling/i,
       /medication/i,
       /domestic pharmac/i,
+      /mix of both|hybrid/i,
+      /split/i,
       /aftercare/i,
     ])
       expect(t).toMatch(term)
@@ -55,6 +57,13 @@ describe('HowItWorks', () => {
     const { container } = render(<HowItWorks />)
     expect(container.querySelector('[aria-label="Selected"]')).toBeNull()
     expect(container.textContent).not.toMatch(/coming soon|select your country/i)
+  })
+
+  it('keeps the step numerals out of the spoken headings', () => {
+    const { container } = render(<HowItWorks />)
+    const numerals = [...container.querySelectorAll('p')].filter((p) => /^[IV]+$/.test(p.textContent ?? ''))
+    expect(numerals).toHaveLength(4)
+    for (const n of numerals) expect(n.getAttribute('aria-hidden')).toBe('true')
   })
 
   it('has the AI only gather information, never suggest', () => {
