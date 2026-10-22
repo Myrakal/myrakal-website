@@ -56,7 +56,7 @@ export function HowItWorks() {
         alt="A cut crystal glass of water with a slice of blood orange, casting warm light across the linen"
         textSide="right"
         numeral="IV"
-        title="Recover somewhere beautiful"
+        title="Recover beautifully"
       >
         Check-ins and aftercare once your treatment is done, wherever you choose to recover.
       </Scene>

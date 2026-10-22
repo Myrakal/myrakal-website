@@ -44,3 +44,22 @@ for (const viewport of [
   const title = await heading.boundingBox()
   expect(photo!.y + photo!.height).toBeLessThanOrEqual(title!.y)
 })
+
+for (const viewport of [
+  { width: 1440, height: 900 },
+  { width: 1280, height: 800 },
+  { width: 768, height: 1024 },
+  { width: 390, height: 844 },
+  { width: 360, height: 740 },
+]) {
+  test(`every scene title fits on one line at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+    await page.setViewportSize(viewport)
+    await page.goto('/', { waitUntil: 'networkidle' })
+    for (const heading of await page.locator('section[aria-labelledby="how-it-works"] h3').all()) {
+      const lineHeight = await heading.evaluate((el) => parseFloat(getComputedStyle(el).lineHeight))
+      const box = await heading.boundingBox()
+      expect(box!.height).toBeLessThan(lineHeight * 1.5)
+      expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width)
+    }
+  })
+}

@@ -10,7 +10,7 @@ describe('HowItWorks', () => {
       'Tell us what you need',
       'A licensed doctor reviews',
       'Everything, arranged',
-      'Recover somewhere beautiful',
+      'Recover beautifully',
     ])
   })
 

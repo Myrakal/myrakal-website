@@ -25,10 +25,10 @@ export function Scene({ image, imageSmall, alt, textSide, numeral, title, childr
         className={`absolute inset-0 -z-10 hidden from-charcoal/85 via-charcoal/60 via-35% to-transparent to-60% lg:block ${left ? 'bg-linear-to-r' : 'bg-linear-to-l'}`}
       />
       <div className={`mx-auto flex w-full max-w-7xl px-6 pt-10 pb-16 sm:px-12 lg:py-16 ${left ? 'justify-start' : 'justify-end'}`}>
-        <div className="max-w-md">
+        <div>
           <p aria-hidden="true" className="font-grotesk text-xs tracking-[0.3em] text-champagne uppercase">{numeral}</p>
-          <h3 className="mt-4 font-display text-4xl leading-tight text-cream sm:text-5xl">{title}</h3>
-          <p className="mt-5 font-grotesk text-base leading-relaxed text-cream/85">{children}</p>
+          <h3 className="mt-4 font-display text-[clamp(1.75rem,7vw,3rem)] leading-tight whitespace-nowrap text-cream">{title}</h3>
+          <p className="mt-5 max-w-md font-grotesk text-base leading-relaxed text-cream/85">{children}</p>
         </div>
       </div>
     </section>
