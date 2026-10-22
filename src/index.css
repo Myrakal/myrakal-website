@@ -6,6 +6,8 @@
 
 @theme inline {
     --font-heading: 'Lora', Georgia, 'Times New Roman', serif;
+    --font-display: 'Bodoni Moda', Didot, Georgia, serif;
+    --font-grotesk: 'Space Grotesk', system-ui, sans-serif;
     --font-sans:
       'Source Sans 3', 'Helvetica Neue', Helvetica, Arial, system-ui,
       sans-serif;
@@ -68,7 +70,7 @@
     --charcoal: var(--velvet-deep);
     --greige: #3d0c15;
     --pearl: #ebd3da;
-    --gold: #c9a36b;
+    --gold: #f2d38a;
     --pearl-gradient: linear-gradient(
       120deg,
       #e3d3f0 0%,
