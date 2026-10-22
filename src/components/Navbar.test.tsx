@@ -13,7 +13,7 @@ describe('Navbar', () => {
   it('shows the new tagline after scrolling', () => {
     render(<Navbar />)
     scrollTo(200)
-    expect(screen.getByText('Healthcare, but way cheaper')).toBeTruthy()
+    expect(screen.getByText('Healthcare, as it should be')).toBeTruthy()
     expect(screen.queryByText(/cross-border/i)).toBeNull()
   })
 

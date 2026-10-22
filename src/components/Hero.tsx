@@ -24,7 +24,7 @@ export function Hero() {
           className="pointer-events-none w-[min(92vw,1080px,120svh)] opacity-95"
         />
       </div>
-      <h1 className="font-display text-2xl text-champagne italic sm:text-3xl">Healthcare, but way cheaper</h1>
+      <h1 className="font-display text-2xl text-champagne italic sm:text-3xl">Healthcare, as it should be</h1>
       <p className="mt-3 max-w-md font-grotesk text-xs tracking-[0.2em] text-cream/80 uppercase">
         The best care, at the best price. Anywhere.
       </p>

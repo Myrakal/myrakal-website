@@ -4,7 +4,7 @@ import { Hero } from '@/components/Hero'
 describe('Hero', () => {
   it('keeps the headline as the page heading', () => {
     render(<Hero />)
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Healthcare, but way cheaper')
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Healthcare, as it should be')
   })
 
   it('has a short call to action linking to the chat', () => {

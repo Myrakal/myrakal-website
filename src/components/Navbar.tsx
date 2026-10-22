@@ -37,7 +37,7 @@ export function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             className="truncate text-sm font-medium text-foreground sm:text-lg lg:text-2xl"
           >
-            Healthcare, but way cheaper
+            Healthcare, as it should be
           </motion.span>
         )}
       </motion.a>

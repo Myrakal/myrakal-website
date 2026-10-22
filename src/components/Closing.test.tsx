@@ -9,7 +9,8 @@ describe('Closing', () => {
 
   it('closes with a heading and a call to action into the intake', () => {
     render(<Closing />)
-    expect(screen.getByRole('heading', { level: 2 }).textContent).toBe("We'll take it from here.")
+    expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('The art of vitality.')
+    expect(screen.getByText("We'll take it from here.")).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/chat/')
   })
 })

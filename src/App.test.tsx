@@ -28,7 +28,7 @@ describe('App', () => {
   it('no longer serves a clinics page', () => {
     window.history.pushState({}, '', '/clinics/')
     const { container } = render(<App />)
-    expect(container.querySelector('h1')?.textContent).toBe('Healthcare, but way cheaper')
+    expect(container.querySelector('h1')?.textContent).toBe('Healthcare, as it should be')
   })
 })
 
