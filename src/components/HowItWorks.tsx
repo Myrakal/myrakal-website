@@ -6,18 +6,9 @@ import pen from '@/assets/scene-pen.webp'
 import penSmall from '@/assets/scene-pen-960.webp'
 import watch from '@/assets/scene-watch.webp'
 import watchSmall from '@/assets/scene-watch-960.webp'
-import monogram from '@/assets/myrakal-logo.svg'
 import { Scene } from '@/components/Scene'
 
-function Divider() {
-  return (
-    <div aria-hidden="true" className="flex items-center justify-center gap-6 bg-charcoal py-12 sm:py-16">
-      <span className="h-px w-16 bg-champagne/40 sm:w-24" />
-      <img src={monogram} alt="" className="h-12 w-12 opacity-75" />
-      <span className="h-px w-16 bg-champagne/40 sm:w-24" />
-    </div>
-  )
-}
+const Gap = () => <div aria-hidden="true" data-scene-gap className="hidden h-24 bg-charcoal lg:block" />
 
 export function HowItWorks() {
   return (
@@ -38,7 +29,7 @@ export function HowItWorks() {
       >
         Come with or without a diagnosis. Our AI gathers your history, labs, imaging, and insurance.
       </Scene>
-      <Divider />
+      <Gap />
       <Scene
         image={glasses}
         imageSmall={glassesSmall}
@@ -49,7 +40,7 @@ export function HowItWorks() {
       >
         A licensed doctor reviews your case for a flat $150, credited toward your treatment.
       </Scene>
-      <Divider />
+      <Gap />
       <Scene
         image={watch}
         imageSmall={watchSmall}
@@ -61,7 +52,7 @@ export function HowItWorks() {
         Choose care at home, abroad, or both. We book the appointments, travel, and stay, and find your prescriptions
         for less.
       </Scene>
-      <Divider />
+      <Gap />
       <Scene
         image={glass}
         imageSmall={glassSmall}
