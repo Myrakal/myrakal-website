@@ -1,6 +1,6 @@
 # Myrakal rebuild plan
 
-Every agent reads this file first, plus `CLAUDE.md`. This file is the source of truth for scope, contracts and who builds what. If reality disagrees with it, stop and ask the user; do not improvise a contract.
+Every agent reads this file first, plus `CLAUDE.md`. This file is the source of truth for scope, contracts and who builds what. Re-read this file and `CLAUDE.md` before starting every MR; it can change while you work. If reality disagrees with it, extend the contract minimally and say so in the PR (see Autonomy).
 
 ## Product
 
@@ -68,9 +68,19 @@ Required: name, DOB, country of residence, passport nationality, phone, preferre
 2. One MR = one branch = one worktree at `/Users/ani/Code/myrakal/worktrees/<branch with / replaced by ->`, created from the MR's base (table below). Branch names are exactly as listed.
 3. Order inside an MR: failing tests first, then code until green, then `pnpm lint`, `pnpm exec tsc -b`, `pnpm test`, `pnpm build`. Copy `.env` into each new worktree and run `pnpm install`.
 4. Frontend MRs: screenshots with `scripts/screenshot.ts`, published as claude.ai artifacts and linked in the PR.
-5. Run the `reviewer` agent with only the diff command. Fix its findings. Ask the user on tradeoffs.
+5. Run the `reviewer` agent with only the diff command. Fix its findings; decide tradeoffs yourself and record them (see Autonomy).
 6. Open the PR with `gh pr create --base <base branch>` using `.github/pr_template.md`.
 7. Frontend tests mock `fetch` against the contract above; backend tests mock Prisma, Supabase and Stripe. No MR may need the other side to be merged to pass.
+
+## Autonomy
+
+This section overrides every "ask the user" line in `CLAUDE.md` and in this file. The user is away and reviews everything later, expecting a finished product.
+
+- Never stop, pause or ask questions, and never wait for a reply. Decide product, UX, copy and tradeoffs yourself, choosing the simplest option consistent with this plan. List each decision in the PR under "Decisions made".
+- Never do anything destructive or hard to reverse: do not delete or force-push branches or files you do not own (`--force-with-lease` on your own branches only), merge any PR, reset, drop or migrate the real database, touch another window's files or worktrees, or skip tests or hooks.
+- Keep going until every MR on your list has an open PR with passing local checks, a reviewer pass and its findings fixed. Work your MRs in listed order, but skip to the next unblocked one when a base is missing. When a base is not on origin, poll for it every 2-3 minutes (a background until-loop on `git ls-remote`) instead of stopping.
+- Things only the user can do (env vars or secrets, Supabase Storage bucket or Auth dashboard settings, Stripe or Anthropic account steps, Vercel config, GitHub repo settings, migrations against the real DB): build and test against mocks anyway. Add a "Setup needed from you" section to the MR description with exact copy-pasteable steps (variable names, where they go, what to click) and what stays unverified until done. Write "Setup needed from you: none" if there is nothing.
+- When your list is done, or only blocked on other windows, send one final summary: every PR link, decisions made, setup needed, anything unverified.
 
 ## Coordination between windows
 
@@ -78,7 +88,7 @@ Required: name, DOB, country of residence, passport nationality, phone, preferre
 - If the base is not on origin yet, work on another MR from your list or wait. Never build on a base you cannot see.
 - After you change a branch that others stack on, push with `--force-with-lease` and post a one-line note on the PR; the owner of each child rebases with `git rebase --onto <new base> <old base> <child>`.
 - After a parent merges into main, retarget the child PR to `main` and rebase.
-- Do not edit another window's files. Anything missing from the contract goes to the user, not into your MR.
+- Do not edit another window's files. A gap in the contract is fixed minimally in your MR and flagged in the PR and your final summary so other windows can adapt.
 - `gh pr list --state open` shows what is in flight.
 
 ## MRs and ownership
