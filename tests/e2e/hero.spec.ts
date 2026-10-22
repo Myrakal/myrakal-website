@@ -31,3 +31,13 @@ for (const viewport of [
     expect(wordmark!.y + wordmark!.height).toBeLessThanOrEqual(heading!.y)
   })
 }
+
+test('scene text sits below its photograph on phones', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/', { waitUntil: 'networkidle' })
+  const heading = page.getByRole('heading', { name: 'Everything, arranged' })
+  await heading.scrollIntoViewIfNeeded()
+  const photo = await page.getByRole('img', { name: /watch/i }).boundingBox()
+  const title = await heading.boundingBox()
+  expect(photo!.y + photo!.height).toBeLessThanOrEqual(title!.y)
+})

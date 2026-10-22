@@ -1,14 +1,22 @@
 import { render, screen } from '@testing-library/react'
 import { HowItWorks } from '@/components/HowItWorks'
 
-const stepTitles = () => [
-  ...new Set(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)),
-]
+const stepTitles = () => screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
 
 describe('HowItWorks', () => {
-  it('walks through intake, consult, plan, coordinate and follow-up in order', () => {
+  it('walks through the four scenes in order', () => {
     render(<HowItWorks />)
-    expect(stepTitles()).toEqual(['Intake', 'Consult', 'Plan', 'Coordinate', 'Follow-up'])
+    expect(stepTitles()).toEqual([
+      'Tell us what you need',
+      'A licensed doctor reviews',
+      'Everything, arranged',
+      'Recover somewhere beautiful',
+    ])
+  })
+
+  it('introduces the section with a heading', () => {
+    render(<HowItWorks />)
+    expect(screen.getByRole('heading', { level: 2, name: /any care, at home or abroad, for less/i })).toBeTruthy()
   })
 
   it('describes each step of the workflow', () => {
@@ -19,8 +27,9 @@ describe('HowItWorks', () => {
       /imaging/i,
       /insurance/i,
       /licensed doctor/i,
+      /\$150/,
       /options/i,
-      /pick|choose/i,
+      /choose/i,
       /scheduling/i,
       /medication/i,
       /domestic pharmac/i,
@@ -36,18 +45,16 @@ describe('HowItWorks', () => {
     expect(t).toMatch(/home|domestic|local/i)
   })
 
-  it('no longer shows the old country, hotel and flight steps or coming-soon labels', () => {
-    const { container } = render(<HowItWorks />)
-    const t = container.textContent ?? ''
-    expect(t).not.toMatch(/select your country|select your doctor|travel documents/i)
-    expect(t).not.toMatch(/coming soon/i)
-    expect(stepTitles()).not.toContain('Hotels')
-    expect(stepTitles()).not.toContain('Flights')
+  it('gives every scene a described photograph', () => {
+    render(<HowItWorks />)
+    for (const name of [/fountain pen/i, /reading glasses/i, /watch/i, /crystal glass/i])
+      expect(screen.getByRole('img', { name })).toBeTruthy()
   })
 
-  it('marks a selection only on the plan options, where the consumer picks', () => {
+  it('no longer uses the old cards, stepper or coming-soon labels', () => {
     const { container } = render(<HowItWorks />)
-    expect(container.querySelectorAll('[aria-label="Selected"]').length).toBe(1)
+    expect(container.querySelector('[aria-label="Selected"]')).toBeNull()
+    expect(container.textContent).not.toMatch(/coming soon|select your country/i)
   })
 
   it('has the AI only gather information, never suggest', () => {
