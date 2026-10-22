@@ -70,6 +70,12 @@ describe('HowItWorks', () => {
     for (const n of numerals) expect(n.getAttribute('aria-hidden')).toBe('true')
   })
 
+  it('separates each scene from the next with the monogram', () => {
+    const { container } = render(<HowItWorks />)
+    const dividers = container.querySelectorAll('[aria-hidden="true"] img[src*="myrakal-logo"]')
+    expect(dividers).toHaveLength(3)
+  })
+
   it('has the AI only gather information, never suggest', () => {
     const { container } = render(<HowItWorks />)
     expect(container.textContent).not.toMatch(/suggest/i)
