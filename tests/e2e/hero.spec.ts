@@ -14,3 +14,20 @@ for (const viewport of [
     expect(ring!.y).toBeGreaterThanOrEqual(nav!.y + nav!.height)
   })
 }
+
+for (const viewport of [
+  { width: 844, height: 390 },
+  { width: 1366, height: 600 },
+  { width: 1440, height: 900 },
+  { width: 390, height: 844 },
+]) {
+  test(`hero wordmark never covers the headline at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+    await page.setViewportSize(viewport)
+    await page.goto('/', { waitUntil: 'networkidle' })
+    const wordmark = await page.locator('section img[src*="myrakal-wordmark"]').first().boundingBox()
+    const heading = await page.locator('h1').first().boundingBox()
+    expect(wordmark).not.toBeNull()
+    expect(heading).not.toBeNull()
+    expect(wordmark!.y + wordmark!.height).toBeLessThanOrEqual(heading!.y)
+  })
+}

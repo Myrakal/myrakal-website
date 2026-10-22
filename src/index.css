@@ -50,6 +50,7 @@
     --color-greige: var(--greige);
     --color-pearl: var(--pearl);
     --color-gold: var(--gold);
+    --color-champagne: var(--champagne);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -70,7 +71,8 @@
     --charcoal: var(--velvet-deep);
     --greige: #3d0c15;
     --pearl: #ebd3da;
-    --gold: #f2d38a;
+    --gold: #c9a36b;
+    --champagne: #f2d38a;
     --pearl-gradient: linear-gradient(
       120deg,
       #e3d3f0 0%,
