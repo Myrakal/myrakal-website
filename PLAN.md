@@ -12,7 +12,7 @@ We never send email from code. Only Supabase Auth sends mail. The team flips `st
 
 ## Stack
 
-The whole app is Next.js (latest stable, App Router, `src/` directory), TypeScript, Tailwind 4, pnpm, deployed on Vercel. Vite is gone: no `vite.config.ts`, `index.html`, `src/main.tsx`, `vercel.json` rewrites or `@vitejs/plugin-react`, and `vite` is not a declared dependency. Vitest stays as the unit test runner (it brings Vite in transitively; that is accepted) and Playwright stays for e2e.
+The whole app is Next.js (latest stable, App Router, `src/` directory), TypeScript, Tailwind 4, pnpm, deployed on Vercel. Vite is gone: no `vite.config.ts`, `index.html`, `src/main.tsx`, `vercel.json` rewrites or `@vitejs/plugin-react`, and `vite` and `vitest` are not dependencies anywhere. Unit tests run on Jest through `next/jest` (SWC, `jest-environment-jsdom`, Testing Library); Playwright stays for e2e. `pnpm test` runs Jest.
 
 - Routing is the filesystem under `src/app`. Per-route titles use the `metadata` export. Unknown paths use `src/app/not-found.tsx`.
 - Components that use state, effects, `motion` or browser APIs start with `'use client'`. Static pages stay server components.
@@ -44,7 +44,7 @@ Allowed API transitions only: `intake->doctor_review`, `plan_ready->clarificatio
 - AI replies are not streamed (single JSON response). Model name in env `ANTHROPIC_MODEL` (Sonnet). The system prompt forbids diagnosing and sends emergencies to 911.
 - The old scripted intake, emergency detector branches and doctor token page are not carried over.
 - Env renames: `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` become `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (X1, together with every `import.meta.env` read, so the build stays green). The server reuses `NEXT_PUBLIC_SUPABASE_URL`. New server vars, added to `.env.example` in B2 only: `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `SUPABASE_SERVICE_ROLE_KEY`, `PLAN_PRICE_CENTS`, `PLAN_BUCKET` (default `plans`). `DOCTOR_TOKEN` and `CONSULT_PRICE_CENTS` are removed in R4.
-- Dependencies: X1 adds `next` and `@tailwindcss/postcss` and removes `vite`, `@vitejs/plugin-react` and `@tailwindcss/vite`; F2 adds `@supabase/ssr`; B10 adds `@anthropic-ai/sdk`. No other MR touches `package.json` or the lockfile without a note in its PR.
+- Dependencies: X1 adds `next`, `@tailwindcss/postcss`, `jest`, `jest-environment-jsdom` and `@types/jest`, and removes `vite`, `vitest`, `jsdom`, `@vitejs/plugin-react` and `@tailwindcss/vite`; F2 adds `@supabase/ssr`; B10 adds `@anthropic-ai/sdk`. No other MR touches `package.json` or the lockfile without a note in its PR.
 
 ## Data model (B1)
 
@@ -86,7 +86,7 @@ Required: name, DOB, country of residence, passport nationality, phone, preferre
 
 ## Autonomy
 
-This section overrides every "ask the user" line in `CLAUDE.md` and in this file. The user is away and reviews everything later, expecting a finished product.
+This section, and only this section, overrides `CLAUDE.md`: every "ask the user" line there and in this file is void. The user is away and reviews everything later, expecting a finished product.
 
 - Never stop, pause or ask questions, and never wait for a reply. Decide product, UX, copy and tradeoffs yourself, choosing the simplest option consistent with this plan. List each decision in the PR under "Decisions made".
 - Never do anything destructive or hard to reverse: do not delete or force-push branches or files you do not own (`--force-with-lease` on your own branches only), merge any PR, reset, drop or migrate the real database, touch another window's files or worktrees, or skip tests or hooks.
@@ -113,7 +113,7 @@ Window 1 owns the trunk `R4 -> R5 -> X1` and pushes each branch the moment local
 |---|---|---|---|
 | R4 | `refactor/remove-legacy-api` | main | Delete legacy `api/` and `server/` consult code, its tests and the `DOCTOR_TOKEN`/`CONSULT_PRICE_CENTS` env lines; keep `server/stripe.ts` and `server/db.ts` |
 | R5 | `refactor/remove-legacy-pages` | R4 | Delete Doctor, Case, caseSummary, scripted intake, their routes and tests |
-| X1 | `chore/next-scaffold` | R5 | Add `next`; remove Vite packages, `vite.config.ts`, `index.html`, `main.tsx`, `App.tsx`, `vercel.json`; `src/app/layout.tsx` + `page.tsx` render the landing page; move `server/` to `src/server/`; add `postcss.config.mjs` for Tailwind; switch `import.meta.env.VITE_*` to `process.env.NEXT_PUBLIC_*` and rename `.env.example`; make `.webp`/`.svg` asset imports work in Next (`StaticImageData` is an object, use `.src` or `next/image`) and stub them in vitest; update tsconfig, vitest config (own JSX transform, `@` alias), oxlint, scripts, `playwright.config.ts` (port 3000) and `scripts/screenshot.ts`. If it will not fit the diff budget, split off the asset work as `chore/next-assets` and say so |
+| X1 | `chore/next-scaffold` | R5 | Add `next`; remove Vite packages, `vite.config.ts`, `index.html`, `main.tsx`, `App.tsx`, `vercel.json`; `src/app/layout.tsx` + `page.tsx` render the landing page; move `server/` to `src/server/`; add `postcss.config.mjs` for Tailwind; switch `import.meta.env.VITE_*` to `process.env.NEXT_PUBLIC_*` and rename `.env.example`; make `.webp`/`.svg` asset imports work in Next (`StaticImageData` is an object, use `.src` or `next/image`) and stub them in Jest; replace vitest with Jest (`jest.config.ts` via `next/jest`, `@` alias, `tests/setup.ts`, convert every `vi.*` and `vitest` import to `jest.*`/globals); update tsconfig, oxlint, scripts, `playwright.config.ts` (port 3000) and `scripts/screenshot.ts`. If it will not fit the diff budget, split off the asset work as `chore/next-assets` and say so |
 | X2 | `chore/next-routes` | X1 | `/privacy`, `/terms`, `/contact`, `/accessibility`, `/chat` (client page) as App Router routes with `metadata` titles, `not-found.tsx`; delete the hand-rolled router tests |
 | X3 | `chore/next-env-analytics` | X1 | Move PostHog init into `src/instrumentation-client.ts` and delete `src/lib/analytics.ts` init wiring |
 | R1 | `chore/ci` | X1 | Actions: lint, tsc, test, build |
@@ -146,3 +146,23 @@ Window 1 owns the trunk `R4 -> R5 -> X1` and pushes each branch the moment local
 | F12 | `feat/landing-cta` | F3 | Landing CTAs and navbar login or logout |
 | Z1 | `test/e2e-flow` | F11 | Playwright flow with API and Supabase mocked |
 | Z2 | `docs/ops-runbook` | B1 | SQL to flip statuses, PDF naming and upload, bucket setup |
+
+## Window prompts
+
+Each window reads its own prompt below. Start Window 1 first; the others wait on its `chore/next-scaffold` branch.
+
+### Window 1: trunk and infrastructure
+
+You are Window 1 of 4 rebuilding the Myrakal site as a Next.js app (no Vite). Read `CLAUDE.md` and `PLAN.md` fully, then build your MRs in this order: R4, R5, X1, X2, X3, R1, R2, R3, Z2. R4 -> R5 -> X1 is the trunk every other window waits on: push each branch the moment its local checks pass, before the review round, then keep going. Follow the Rules, Autonomy and Coordination sections of `PLAN.md` exactly. Work only in your own worktrees. When your list is done, send the final summary.
+
+### Window 2: chats and payments backend
+
+You are Window 2 of 4 rebuilding the Myrakal site as a Next.js app. Read `CLAUDE.md` and `PLAN.md` fully, then build your MRs in this order: B1, B2, B3, B4, B5, B6, B7, B8. B1 is based on `chore/next-scaffold` (X1) from Window 1; poll `git ls-remote --heads origin chore/next-scaffold` until it exists, and do not build on a base you cannot see. Backend code is App Router Route Handlers under `src/app/api` and helpers under `src/server`, exactly as in the API contract. Tests mock Prisma, Supabase and Stripe. Follow the Rules, Autonomy and Coordination sections of `PLAN.md` exactly. Push B2 as soon as it is green because Window 4 stacks on it. When your list is done, send the final summary.
+
+### Window 3: auth and patient portal frontend
+
+You are Window 3 of 4 rebuilding the Myrakal site as a Next.js app. Read `CLAUDE.md` and `PLAN.md` fully, then build your MRs in this order: F1, F2, F3, F4, F5, F6, F7, F12 (F12 is based on F3 and can go whenever F3 is pushed). F1 is based on `chore/next-routes` (X2) from Window 1; poll `git ls-remote --heads origin chore/next-routes` until it exists. Use the App Router, mark interactive components `'use client'`, and mock `fetch` against the API contract in your tests. Frontend MRs need screenshots from `scripts/screenshot.ts`, published as claude.ai artifacts and linked in the PR. Follow the Rules, Autonomy and Coordination sections of `PLAN.md` exactly. Push F7 as soon as it is green because Window 4 stacks on it. When your list is done, send the final summary.
+
+### Window 4: AI intake and plan frontend
+
+You are Window 4 of 4 rebuilding the Myrakal site as a Next.js app. Read `CLAUDE.md` and `PLAN.md` fully, then build your MRs in this order: B9, B10, B11, B12, B13, then F8, F9, F10, F11, Z1. B9 is based on `feat/chats-api` (B2) from Window 2; poll `git ls-remote --heads origin feat/chats-api` until it exists. F8 is based on `feat/portal-chat` (F7) from Window 3; poll for it the same way, and until then keep working the backend chain. Test the Claude client with a mocked SDK; never call the real API. Frontend MRs need screenshots from `scripts/screenshot.ts`, published as claude.ai artifacts and linked in the PR. Follow the Rules, Autonomy and Coordination sections of `PLAN.md` exactly. When your list is done, send the final summary.
