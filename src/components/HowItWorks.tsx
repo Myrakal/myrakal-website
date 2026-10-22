@@ -25,8 +25,7 @@ export function HowItWorks() {
         numeral="I"
         title="Tell us what you need"
       >
-        Come with or without a diagnosis. Our AI gathers your history, labs, imaging, other tests, and your insurance
-        plan, then lets you know when intake is complete.
+        Come with or without a diagnosis. Our AI gathers your history, labs, imaging, and insurance.
       </Scene>
       <Scene
         image={glasses}
@@ -36,7 +35,7 @@ export function HowItWorks() {
         numeral="II"
         title="A licensed doctor reviews"
       >
-        After a flat $150 consult fee, credited toward treatment, a licensed doctor reviews your case.
+        A licensed doctor reviews your case for a flat $150, credited toward your treatment.
       </Scene>
       <Scene
         image={watch}
@@ -46,9 +45,8 @@ export function HowItWorks() {
         numeral="III"
         title="Everything, arranged"
       >
-        We map out your options for care at home, abroad, or a mix of both, and you choose the one that fits. Then we
-        manage scheduling, documentation, logistics, and accommodations, and handle medication orders through
-        affordable, credentialed domestic pharmacies, splitting fulfillment where needed.
+        Choose care at home, abroad, or both. We book the appointments, travel, and stay, and find your prescriptions
+        for less.
       </Scene>
       <Scene
         image={glass}
@@ -58,7 +56,7 @@ export function HowItWorks() {
         numeral="IV"
         title="Recover beautifully"
       >
-        Check-ins and aftercare once your treatment is done, wherever you choose to recover.
+        Rest wherever you choose, with check-ins and aftercare along the way.
       </Scene>
     </section>
   )

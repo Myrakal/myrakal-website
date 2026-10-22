@@ -28,16 +28,20 @@ describe('HowItWorks', () => {
       /insurance/i,
       /licensed doctor/i,
       /\$150/,
-      /options/i,
       /choose/i,
-      /scheduling/i,
-      /medication/i,
-      /domestic pharmac/i,
-      /mix of both|hybrid/i,
-      /split/i,
+      /or both/i,
+      /book/i,
+      /prescriptions/i,
       /aftercare/i,
     ])
       expect(t).toMatch(term)
+  })
+
+  it('keeps every blurb quick to read', () => {
+    const { container } = render(<HowItWorks />)
+    const blurbs = [...container.querySelectorAll('h3 + p')].map((p) => p.textContent ?? '')
+    expect(blurbs).toHaveLength(4)
+    for (const blurb of blurbs) expect(blurb.trim().split(/\s+/).length).toBeLessThanOrEqual(25)
   })
 
   it('keeps the international angle while covering any care', () => {
