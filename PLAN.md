@@ -40,14 +40,16 @@ Allowed API transitions only: `intake->doctor_review`, `plan_ready->clarificatio
 
 ## API contract
 
+`progress` is `{ collected: number, total: number }`: required intake fields filled so far, and how many there are. It is computed on the server from `Chat.intake`, never from the transcript.
+
 All routes need the bearer token (401 without), return JSON, and use `cache-control: no-store`. UUID path segment is `:id`.
 
 | Route | Request | Response |
 |---|---|---|
 | `POST /api/chats` | none | 201 `{ id }` |
 | `GET /api/chats` | none | `[{ id, status, createdAt, summary: string\|null }]` newest first, own chats only |
-| `GET /api/chats/:id` | none | `{ id, status, createdAt, priceCents, paid, messages:[{id,role,text,createdAt}], comments:[{id,text,createdAt}] }` |
-| `POST /api/chats/:id/messages` | `{ text }` | `{ reply:{id,role:'assistant',text,createdAt}, status }`; only in `intake`, else 409 |
+| `GET /api/chats/:id` | none | `{ id, status, createdAt, priceCents, paid, progress, messages:[{id,role,text,createdAt}], comments:[{id,text,createdAt}] }` |
+| `POST /api/chats/:id/messages` | `{ text }` | `{ reply:{id,role:'assistant',text,createdAt}, status, progress }`; only in `intake`, else 409 |
 | `GET /api/chats/:id/plan` | none | `{ url }` or 404 |
 | `POST /api/chats/:id/comments` | `{ text }` (max 4000) | 201 `{ status:'clarification_review' }`; only from `plan_ready`, else 409 |
 | `POST /api/chats/:id/approve` | none | `{ status:'awaiting_payment' }`; only from `plan_ready`, else 409 |
@@ -58,7 +60,7 @@ Files live at `api/chats/index.ts`, `api/chats/[id]/index.ts`, `api/chats/[id]/<
 
 ## Info the AI collects (B9)
 
-Required: name, DOB, country of residence, passport nationality, phone, preferred language; condition or goal, symptoms and duration, past treatments and surgeries, current medications, allergies, other conditions, urgency; care preferences (destinations or open, doctor gender and language, priority: cost, wait time or reputation); departure city, date flexibility, travelers and companions, mobility needs, expected recovery length; budget range, insurance plan; visas held, passport valid 6+ months; consent that the AI is not medical advice and a doctor reviews the case. Optional: existing records and doctors. Claude gets a `submit_intake` tool; calling it with all required fields completes intake (B12). The system prompt forbids diagnosing and sends emergencies to 911.
+Required: name, DOB, country of residence, passport nationality, phone, preferred language; condition or goal, symptoms and duration, past treatments and surgeries, current medications, allergies, other conditions, urgency; care preferences (destinations or open, doctor gender and language, priority: cost, wait time or reputation); departure city, date flexibility, travelers and companions, mobility needs, expected recovery length; budget range, insurance plan; visas held, passport valid 6+ months; consent that the AI is not medical advice and a doctor reviews the case. Optional: existing records and doctors. Claude gets an `update_intake` tool and calls it with whatever new fields it learned each turn; the server merges them into `Chat.intake` (B11). Intake completes when every required field is filled (B12). The chat page shows a simple bar filling as `progress.collected / progress.total` grows (F6). The system prompt forbids diagnosing and sends emergencies to 911.
 
 ## Rules for every agent
 
@@ -98,17 +100,17 @@ Window 1: R1, R2, R3, B9, B10, B11, B12, B13, Z2. Window 2: R4, B1, B2, B3, B4, 
 | B6 | `feat/approve-api` | B2 | `POST .../approve` |
 | B7 | `feat/checkout-api` | B2 | `POST .../checkout` |
 | B8 | `feat/stripe-webhook` | B7 | `POST /api/stripe-webhook` |
-| B9 | `feat/intake-fields` | B2 | Typed field schema, `submit_intake` tool definition |
+| B9 | `feat/intake-fields` | B2 | Typed field schema, `update_intake` tool definition, `intakeProgress()` helper |
 | B10 | `feat/claude-client` | B9 | SDK dependency, client, system prompt |
-| B11 | `feat/messages-api` | B10 | `POST .../messages`, persists both sides |
-| B12 | `feat/intake-complete` | B11 | `submit_intake` completes intake -> `doctor_review`, stores `intake` |
+| B11 | `feat/messages-api` | B10 | `POST .../messages`, persists both sides, merges `update_intake` fields, returns `progress` |
+| B12 | `feat/intake-complete` | B11 | Complete when `progress.collected === total` -> `doctor_review` |
 | B13 | `feat/ai-limits` | B12 | Per-user caps on chats per day and messages per chat, counted from tables |
 | F1 | `feat/router` | R5 | Param-aware router, 404, per-route titles; routes `/login`, `/dashboard`, `/chats/:id`, `/chat`, legal pages |
 | F2 | `feat/session-guard` | F1 | Supabase session hook, `apiFetch` with bearer, route guard |
 | F3 | `feat/login` | F2 | Email + password sign in and sign up |
 | F4 | `feat/password-reset` | F3 | Forgot and reset password |
 | F5 | `feat/dashboard` | F4 | `/dashboard` chat list, status badges, new chat |
-| F6 | `feat/intake-ui` | F5 | Chat page on the API; redirect to `/chats/:id` on completion; fix ChatComposer lint warning |
+| F6 | `feat/intake-ui` | F5 | Chat page on the API; redirect to `/chats/:id` on completion; progress bar (`role="progressbar"`, `aria-valuenow`) above the composer, restored from `GET /api/chats/:id` on reload; fix ChatComposer lint warning |
 | F7 | `feat/portal-chat` | F6 | `/chats/:id`: transcript, back to dashboard, status copy for all 7 statuses |
 | F8 | `feat/plan-viewer` | F7 | Inline PDF and download link |
 | F9 | `feat/comments-ui` | F8 | Comment list and form in `plan_ready` |
