@@ -7,7 +7,7 @@ const text = (el: import('react').ReactElement) => render(el).container.textCont
 
 describe('legal pages reflect the intake and consult product', () => {
   it('no longer describe a waitlist', () => {
-    for (const page of [<Terms />, <Privacy />, <Contact />]) {
+    for (const page of [<Terms key="terms" />, <Privacy key="privacy" />, <Contact key="contact" />]) {
       expect(text(page)).not.toMatch(/waitlist/i)
     }
   })
