@@ -19,7 +19,7 @@ The whole app is Next.js (latest stable, App Router, `src/` directory), TypeScri
 - API routes are Route Handlers at `src/app/api/**/route.ts`, exporting `GET`/`POST` on the Web `Request`/`Response`. `params` is a Promise: `{ params }: { params: Promise<{ id: string }> }`. Unsupported methods return 405 with `allow`.
 - Server code lives in `src/server/` (imported as `@/server/...`). Prisma stays server-side only.
 - Env: client vars are `NEXT_PUBLIC_*`. Analytics is initialised in `src/instrumentation-client.ts`.
-- Auth uses `@supabase/ssr` cookie sessions, not bearer tokens. `src/proxy.ts` refreshes the session and redirects signed-out visitors from `/dashboard`, `/chat` and `/chats/*` to `/login`.
+- Auth uses `@supabase/ssr` cookie sessions, not bearer tokens. `src/proxy.ts` runs on every path except static assets and `/api/stripe-webhook`: it refreshes the session everywhere (API routes included) and redirects signed-out visitors from `/dashboard`, `/chat` and `/chats/*` to `/login`. Cookie sessions are CSRF-exposed, so every non-GET route except the webhook calls `sameHost` and returns 403 on mismatch, besides `requireUser`.
 
 ## Status enum (`ChatStatus`)
 
@@ -43,8 +43,8 @@ Allowed API transitions only: `intake->doctor_review`, `plan_ready->clarificatio
 - Comments are a per-chat list with timestamps; no cancel flow; no record uploads.
 - AI replies are not streamed (single JSON response). Model name in env `ANTHROPIC_MODEL` (Sonnet). The system prompt forbids diagnosing and sends emergencies to 911.
 - The old scripted intake, emergency detector branches and doctor token page are not carried over.
-- Env renames: `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` become `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (X3). The server reuses `NEXT_PUBLIC_SUPABASE_URL`. New server vars, added to `.env.example` in B2 only: `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `SUPABASE_SERVICE_ROLE_KEY`, `PLAN_PRICE_CENTS`, `PLAN_BUCKET` (default `plans`). `DOCTOR_TOKEN` and `CONSULT_PRICE_CENTS` are removed in R4.
-- Dependencies: X1 adds `next` and removes the Vite packages; F2 adds `@supabase/ssr`; B10 adds `@anthropic-ai/sdk`. No other MR touches `package.json` or the lockfile without a note in its PR.
+- Env renames: `VITE_POSTHOG_KEY`, `VITE_POSTHOG_HOST`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` become `NEXT_PUBLIC_POSTHOG_KEY`, `NEXT_PUBLIC_POSTHOG_HOST`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (X1, together with every `import.meta.env` read, so the build stays green). The server reuses `NEXT_PUBLIC_SUPABASE_URL`. New server vars, added to `.env.example` in B2 only: `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `SUPABASE_SERVICE_ROLE_KEY`, `PLAN_PRICE_CENTS`, `PLAN_BUCKET` (default `plans`). `DOCTOR_TOKEN` and `CONSULT_PRICE_CENTS` are removed in R4.
+- Dependencies: X1 adds `next` and `@tailwindcss/postcss` and removes `vite`, `@vitejs/plugin-react` and `@tailwindcss/vite`; F2 adds `@supabase/ssr`; B10 adds `@anthropic-ai/sdk`. No other MR touches `package.json` or the lockfile without a note in its PR.
 
 ## Data model (B1)
 
@@ -113,9 +113,9 @@ Window 1 owns the trunk `R4 -> R5 -> X1` and pushes each branch the moment local
 |---|---|---|---|
 | R4 | `refactor/remove-legacy-api` | main | Delete legacy `api/` and `server/` consult code, its tests and the `DOCTOR_TOKEN`/`CONSULT_PRICE_CENTS` env lines; keep `server/stripe.ts` and `server/db.ts` |
 | R5 | `refactor/remove-legacy-pages` | R4 | Delete Doctor, Case, caseSummary, scripted intake, their routes and tests |
-| X1 | `chore/next-scaffold` | R5 | Add `next`; remove Vite packages, `vite.config.ts`, `index.html`, `main.tsx`, `App.tsx`, `vercel.json`; `src/app/layout.tsx` + `page.tsx` render the landing page; move `server/` to `src/server/`; update tsconfig, vitest config (own JSX transform, `@` alias), oxlint, scripts, `playwright.config.ts` (port 3000) and `scripts/screenshot.ts` |
+| X1 | `chore/next-scaffold` | R5 | Add `next`; remove Vite packages, `vite.config.ts`, `index.html`, `main.tsx`, `App.tsx`, `vercel.json`; `src/app/layout.tsx` + `page.tsx` render the landing page; move `server/` to `src/server/`; add `postcss.config.mjs` for Tailwind; switch `import.meta.env.VITE_*` to `process.env.NEXT_PUBLIC_*` and rename `.env.example`; make `.webp`/`.svg` asset imports work in Next (`StaticImageData` is an object, use `.src` or `next/image`) and stub them in vitest; update tsconfig, vitest config (own JSX transform, `@` alias), oxlint, scripts, `playwright.config.ts` (port 3000) and `scripts/screenshot.ts`. If it will not fit the diff budget, split off the asset work as `chore/next-assets` and say so |
 | X2 | `chore/next-routes` | X1 | `/privacy`, `/terms`, `/contact`, `/accessibility`, `/chat` (client page) as App Router routes with `metadata` titles, `not-found.tsx`; delete the hand-rolled router tests |
-| X3 | `chore/next-env-analytics` | X1 | `NEXT_PUBLIC_*` renames in code and `.env.example`; PostHog in `src/instrumentation-client.ts`; remove `import.meta.env` |
+| X3 | `chore/next-env-analytics` | X1 | Move PostHog init into `src/instrumentation-client.ts` and delete `src/lib/analytics.ts` init wiring |
 | R1 | `chore/ci` | X1 | Actions: lint, tsc, test, build |
 | R2 | `chore/lint-cleanup` | X1 | Legal test keys, `button.tsx` export warning |
 | R3 | `docs/readme` | X1 | Real README for Next; fix `.claude/agents/reviewer.md` (Next.js, no cobe, Formspree or Vite) |
