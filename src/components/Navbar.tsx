@@ -17,7 +17,7 @@ export function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 flex px-4 py-3 transition-colors sm:px-12 sm:py-5 ${
-        scrolled ? 'justify-start bg-background pr-36 sm:pr-80' : 'justify-center bg-transparent'
+        scrolled ? 'justify-start bg-background pr-36 sm:pr-[30rem]' : 'justify-center bg-transparent'
       }`}
     >
       <motion.a
