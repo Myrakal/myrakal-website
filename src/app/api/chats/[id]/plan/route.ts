@@ -17,6 +17,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   if (!url || !serviceKey) throw new Error('NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not set')
   const supabase = createClient(url, serviceKey, { auth: { persistSession: false } })
   const { data, error } = await supabase.storage.from(process.env.PLAN_BUCKET || 'plans').createSignedUrl(`${id}_plan.pdf`, 300)
+  if (error && !/not found/i.test(error.message)) throw error
   if (error || !data) return json({ error: 'not found' }, 404)
   return json({ url: data.signedUrl })
 }

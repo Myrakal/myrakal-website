@@ -71,4 +71,9 @@ describe('GET /api/chats/:id/plan', () => {
     createSignedUrl.mockResolvedValue({ data: null, error: { message: 'Object not found' } })
     expect((await call()).status).toBe(404)
   })
+
+  it('throws on storage failures other than a missing object', async () => {
+    createSignedUrl.mockResolvedValue({ data: null, error: { message: 'Invalid API key' } })
+    await expect(call()).rejects.toBeDefined()
+  })
 })
