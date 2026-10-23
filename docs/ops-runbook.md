@@ -49,7 +49,7 @@ select intake from chats where id = '<chat id>';
 ## Upload the plan PDF
 
 1. Name the file exactly `<chat id>_plan.pdf`, for example `0b7e1c52-3f0a-4a6e-9a43-6a2f4f1d9c11_plan.pdf`.
-2. Supabase -> Storage -> bucket `plans` -> Upload file. For a revision, upload again with the same name and choose to replace the existing file; the patient always sees the latest file.
+2. Supabase -> Storage -> bucket `plans` -> Upload file. For a revision, upload again with the same name and choose to replace the existing file (if the dashboard refuses a duplicate name, delete the old file first, then upload); the patient always sees the latest file.
 3. Flip the status:
 
 ```sql
