@@ -113,7 +113,7 @@ describe('ChatPortal comments', () => {
   })
 
   it('shows no comment section in doctor_review', async () => {
-    mockApi('doctor_review')
+    respond(200, detail('doctor_review'))
     render(<ChatPortal />)
     await screen.findByRole('region', { name: 'Conversation' })
     expect(screen.queryByText('Move the date please')).toBeNull()
@@ -254,5 +254,16 @@ describe('ChatPortal', () => {
     fetchMock.mockRejectedValue(new Error('offline'))
     render(<ChatPortal />)
     expect((await screen.findByRole('alert')).textContent).toMatch(/could not load/i)
+  })
+
+  it('puts the status banner above the back link and the conversation', async () => {
+    respond(200, detail('doctor_review'))
+    render(<ChatPortal />)
+    const banner = await screen.findByRole('region', { name: 'Case status' })
+    const back = screen.getByRole('link', { name: /your chats/i })
+    const conversation = screen.getByRole('region', { name: 'Conversation' })
+    expect(banner.compareDocumentPosition(back) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(banner.compareDocumentPosition(conversation) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(within(banner).getByText('With our doctors')).toBeTruthy()
   })
 })

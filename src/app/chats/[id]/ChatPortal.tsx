@@ -9,7 +9,8 @@ import { CommentSection, type PlanComment } from '@/components/portal/CommentSec
 import { PayPlan } from '@/components/portal/PayPlan'
 import { PlanViewer } from '@/components/portal/PlanViewer'
 import { PortalShell } from '@/components/portal/PortalShell'
-import { PLAN_STATUSES, STATUS_COPY } from '@/components/portal/statusCopy'
+import { StatusBanner } from '@/components/portal/StatusBanner'
+import { PLAN_STATUSES } from '@/components/portal/statusCopy'
 
 type Detail = { id: string; status: string; messages: Message[]; comments?: PlanComment[]; priceCents?: number | null }
 type State = { phase: 'loading' } | { phase: 'error'; text: string } | { phase: 'ready'; chat: Detail }
@@ -47,7 +48,8 @@ export default function ChatPortal() {
 
   return (
     <PortalShell title="Your case">
-      <a href="/dashboard" className="mt-2 inline-block text-sm underline underline-offset-4">
+      {state.phase === 'ready' && <StatusBanner chatId={state.chat.id} status={state.chat.status} />}
+      <a href="/dashboard" className="mt-6 inline-block text-sm underline underline-offset-4">
         ← Your chats
       </a>
       {state.phase === 'loading' && <p role="status" className="mt-6 text-sm">Loading your case…</p>}
@@ -58,15 +60,6 @@ export default function ChatPortal() {
       )}
       {state.phase === 'ready' && (
         <>
-          <section aria-label="Case status" className="mt-6 rounded-2xl border border-border bg-card px-5 py-4 text-card-foreground">
-            <p className="mb-1 text-xs font-bold tracking-[0.15em] text-card-foreground/70 uppercase">Status</p>
-            <p>{STATUS_COPY[state.chat.status] ?? 'We are working on your case.'}</p>
-            {state.chat.status === 'intake' && (
-              <a href={`/chat?id=${state.chat.id}`} className="mt-3 inline-block font-medium underline underline-offset-4">
-                Continue your conversation
-              </a>
-            )}
-          </section>
           {PLAN_STATUSES.includes(state.chat.status) && (
             <>
               <PlanViewer chatId={state.chat.id} />
