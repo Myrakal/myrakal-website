@@ -22,7 +22,7 @@ const href = (chat: Chat) => (chat.status === 'intake' ? `/chat?id=${chat.id}` :
 export function ChatList() {
   const router = useRouter()
   const [chats, setChats] = useState<Chat[] | null>(null)
-  const [state, setState] = useState<'loading' | 'ready' | 'error' | 'signed-out'>('loading')
+  const [state, setState] = useState<'loading' | 'starting' | 'ready' | 'error' | 'signed-out'>('loading')
 
   useEffect(() => {
     const controller = new AbortController()
@@ -36,6 +36,10 @@ export function ChatList() {
         if (!res.ok) throw new Error()
         const body = await res.json()
         if (!Array.isArray(body)) throw new Error()
+        if (body.length === 0) {
+          setState('starting')
+          return router.replace('/chat')
+        }
         setChats(body)
         setState('ready')
       })
@@ -47,10 +51,13 @@ export function ChatList() {
 
   return (
     <div className="mt-8">
-      <a href="/chat" className={buttonVariants({ size: 'lg', className: 'h-11 px-5' })}>
-        New chat
-      </a>
+      {state !== 'starting' && (
+        <a href="/chat" className={buttonVariants({ size: 'lg', className: 'h-11 px-5' })}>
+          New chat
+        </a>
+      )}
       {state === 'loading' && <p role="status" className="mt-6 text-sm">Loading your chats…</p>}
+      {state === 'starting' && <p role="status" className="mt-6 text-sm">Starting your chat…</p>}
       {state === 'signed-out' && <p role="status" className="mt-6 text-sm">Redirecting to log in…</p>}
       {state === 'error' && (
         <p role="alert" className="mt-6 text-sm text-destructive">

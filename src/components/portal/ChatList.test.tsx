@@ -9,7 +9,8 @@ const chats = [
 ]
 
 const mockReplace = jest.fn()
-jest.mock('next/navigation', () => ({ useRouter: () => ({ replace: mockReplace }) }))
+const mockRouter = { replace: mockReplace }
+jest.mock('next/navigation', () => ({ useRouter: () => mockRouter }))
 
 const fetchMock = jest.fn()
 globalThis.fetch = fetchMock
@@ -58,11 +59,20 @@ describe('ChatList', () => {
     expect((await screen.findByRole('link', { name: 'New chat' })).getAttribute('href')).toBe('/chat')
   })
 
-  it('shows an empty state with a way to start', async () => {
-    respond(200, [])
+  it('sends someone with no chats straight to a new chat', async () => {
+    const fetchSpy = respond(200, [])
     render(<ChatList />)
-    expect(await screen.findByText(/no chats yet/i)).toBeTruthy()
-    expect(screen.getByRole('link', { name: 'New chat' })).toBeTruthy()
+    expect(await screen.findByText(/starting your chat/i)).toBeTruthy()
+    expect(mockReplace).toHaveBeenCalledWith('/chat')
+    expect(screen.queryByRole('link', { name: 'New chat' })).toBeNull()
+    expect(fetchSpy.mock.calls.filter(([, init]) => init?.method === 'POST')).toHaveLength(0)
+  })
+
+  it('keeps showing the chats for someone who already has some', async () => {
+    respond(200, chats)
+    render(<ChatList />)
+    await screen.findByText('Knee replacement in Spain')
+    expect(mockReplace).not.toHaveBeenCalled()
   })
 
   it('shows an error when the request fails', async () => {
