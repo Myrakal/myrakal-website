@@ -10,7 +10,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!UUID.test(id)) return json({ error: 'not found' }, 404)
   const body = await request.json().catch(() => null)
   const text = typeof body?.text === 'string' ? body.text.trim() : ''
-  if (!text || text.length > 4000) return json({ error: 'invalid text' }, 400)
+  if (!text || text.length > 4000 || text.includes('\u0000')) return json({ error: 'invalid text' }, 400)
   const result = await db().$transaction(async (tx) => {
     const moved = await tx.chat.updateMany({
       where: { id, userId: user.id, status: 'plan_ready' },

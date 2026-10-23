@@ -44,7 +44,7 @@ describe('POST /api/chats/:id/comments', () => {
     expect((await call({ text: 'hi' }, { id: 'nope' })).status).toBe(404)
   })
 
-  it.each([['not json'], [{}], [{ text: 5 }], [{ text: '   ' }], [{ text: 'x'.repeat(4001) }]])('returns 400 for invalid body %p', async (body) => {
+  it.each([['not json'], [{}], [{ text: 5 }], [{ text: '   ' }], [{ text: 'x'.repeat(4001) }], [{ text: 'hi\u0000' }]])('returns 400 for invalid body %p', async (body) => {
     expect((await call(body)).status).toBe(400)
     expect(updateMany).not.toHaveBeenCalled()
   })
