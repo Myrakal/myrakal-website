@@ -48,11 +48,15 @@ const sendMessage = async (text: string) => {
 
 const messageCall = () => fetchMock.mock.calls.find(([url]) => url === `/api/chats/${ID}/messages`)
 
+const scrollIntoView = jest.fn()
+
 beforeEach(() => {
   mockParams = new URLSearchParams()
+  Element.prototype.scrollIntoView = scrollIntoView
 })
 
 afterEach(() => {
+  scrollIntoView.mockReset()
   fetchMock.mockReset()
   mockReplace.mockReset()
   mockPush.mockReset()
@@ -220,5 +224,72 @@ describe('Chat', () => {
     route({ [`GET /api/chats/${ID}`]: () => reply(404, { error: 'not found' }) })
     render(<Chat />)
     expect((await screen.findByRole('alert')).textContent).toMatch(/could not load/i)
+  })
+
+  it('clears the text field as soon as a message is sent', async () => {
+    let finish: (value: unknown) => void = () => {}
+    route({
+      'POST /api/chats': () => reply(201, { id: ID }),
+      [`POST /api/chats/${ID}/messages`]: () => new Promise((resolve) => (finish = resolve)),
+    })
+    render(<Chat />)
+    await sendMessage('Hello there')
+    expect((screen.getByLabelText('Message') as HTMLTextAreaElement).value).toBe('')
+    finish(reply(200, { reply: { id: 'r', role: 'assistant', text: 'Hi', createdAt: '2026-10-20T10:02:00.000Z' }, status: 'intake', progress: { collected: 1, total: 20 } }))
+    expect(await screen.findByText('Hi')).toBeTruthy()
+  })
+
+  it('scrolls to the latest message when a chat is opened', async () => {
+    mockParams = new URLSearchParams({ id: ID })
+    route({ [`GET /api/chats/${ID}`]: () => reply(200, detail()) })
+    render(<Chat />)
+    await screen.findByText('What is your name?')
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledWith(expect.objectContaining({ block: 'end' })))
+  })
+
+  it('scrolls down again when the assistant replies', async () => {
+    route({
+      'POST /api/chats': () => reply(201, { id: ID }),
+      [`POST /api/chats/${ID}/messages`]: () =>
+        reply(200, { reply: { id: 'r1', role: 'assistant', text: 'A reply', createdAt: '2026-10-20T10:02:00.000Z' }, status: 'intake', progress: { collected: 1, total: 20 } }),
+    })
+    render(<Chat />)
+    await sendMessage('Hello')
+    await screen.findByText('A reply')
+    const before = scrollIntoView.mock.calls.length
+    await sendMessage('Another')
+    await waitFor(() => expect(scrollIntoView.mock.calls.length).toBeGreaterThan(before))
+    expect(scrollIntoView).toHaveBeenLastCalledWith(expect.objectContaining({ block: 'end', behavior: 'smooth' }))
+  })
+
+  it('jumps without animation when a chat is first opened', async () => {
+    mockParams = new URLSearchParams({ id: ID })
+    route({ [`GET /api/chats/${ID}`]: () => reply(200, detail()) })
+    render(<Chat />)
+    await screen.findByText('What is your name?')
+    expect(scrollIntoView).toHaveBeenLastCalledWith(expect.objectContaining({ behavior: 'auto' }))
+  })
+
+  it('reserves room below the last message for the composer', () => {
+    const { container } = render(<Chat />)
+    const end = container.querySelector('[role="log"] > div:last-child') as HTMLElement
+    expect(end.style.scrollMarginBottom).toMatch(/px$/)
+  })
+
+  it('keeps what was typed while a failed send comes back, instead of overwriting it', async () => {
+    let fail: (value: unknown) => void = () => {}
+    mockParams = new URLSearchParams({ id: ID })
+    route({
+      [`GET /api/chats/${ID}`]: () => reply(200, detail()),
+      [`POST /api/chats/${ID}/messages`]: () => new Promise((resolve) => (fail = resolve)),
+    })
+    render(<Chat />)
+    await screen.findByText('What is your name?')
+    await sendMessage('First try')
+    const user = userEvent.setup()
+    await user.type(screen.getByLabelText('Message'), 'Second draft')
+    fail(reply(500, { error: 'boom' }))
+    await screen.findByRole('alert')
+    expect((screen.getByLabelText('Message') as HTMLTextAreaElement).value).toBe('Second draft')
   })
 })

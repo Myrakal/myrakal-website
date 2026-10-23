@@ -1,7 +1,7 @@
 'use client'
 
 import { ArrowUp } from 'lucide-react'
-import { useId, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 
@@ -15,16 +15,18 @@ export function ChatComposer({ onSend, busy = false }: Props) {
 
   const send = async () => {
     if (!canSend) return
-    if ((await onSend(text.trim())) === false) return
+    const message = text.trim()
     setText('')
-    if (box.current) box.current.style.height = ''
     box.current?.focus()
+    if ((await onSend(message)) === false) setText((current) => current || message)
   }
 
-  const grow = (el: HTMLTextAreaElement) => {
+  useEffect(() => {
+    const el = box.current
+    if (!el) return
     el.style.height = 'auto'
     el.style.height = `${el.scrollHeight}px`
-  }
+  }, [text])
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -43,10 +45,7 @@ export function ChatComposer({ onSend, busy = false }: Props) {
         ref={box}
         rows={1}
         value={text}
-        onChange={(e) => {
-          setText(e.target.value)
-          grow(e.target)
-        }}
+        onChange={(e) => setText(e.target.value)}
         onKeyDown={onKeyDown}
         placeholder="Type your message"
         className="max-h-40 min-h-12 flex-1 resize-none bg-transparent px-4 py-3 text-base text-card-foreground placeholder:text-card-foreground/60 focus:outline-none"
