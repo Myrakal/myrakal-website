@@ -49,6 +49,33 @@ const copy = [
   ['booked', /We have emailed you everything\./],
 ] as const
 
+const planStatuses = ['plan_ready', 'clarification_review', 'awaiting_payment', 'reservations', 'booked']
+const noPlanStatuses = ['intake', 'doctor_review']
+
+describe('ChatPortal plan viewer', () => {
+  beforeEach(() => {
+    fetchMock.mockImplementation(async (url: string) =>
+      url.endsWith('/plan')
+        ? { ok: true, status: 200, json: async () => ({ url: 'https://files.test/plan.pdf' }) }
+        : { ok: true, status: 200, json: async () => detail(currentStatus) },
+    )
+  })
+  let currentStatus = 'plan_ready'
+
+  it.each(planStatuses)('shows the plan in %s', async (status) => {
+    currentStatus = status
+    render(<ChatPortal />)
+    expect(await screen.findByTitle('Plan PDF preview')).toBeTruthy()
+  })
+
+  it.each(noPlanStatuses)('does not request the plan in %s', async (status) => {
+    currentStatus = status
+    render(<ChatPortal />)
+    await screen.findByRole('region', { name: 'Conversation' })
+    expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith('/plan'))).toBe(false)
+  })
+})
+
 describe('ChatPortal', () => {
   it.each(copy)('shows the %s status message', async (status, text) => {
     respond(200, detail(status))

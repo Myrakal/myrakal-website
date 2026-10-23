@@ -7,3 +7,5 @@ export const STATUS_COPY: Record<string, string> = {
   reservations: 'Reservations are being made. We will reach out once they are done.',
   booked: 'We have emailed you everything.',
 }
+
+export const PLAN_STATUSES = ['plan_ready', 'clarification_review', 'awaiting_payment', 'reservations', 'booked']
