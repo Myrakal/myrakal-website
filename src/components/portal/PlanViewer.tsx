@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 
 type State = { phase: 'loading' } | { phase: 'missing' } | { phase: 'error' } | { phase: 'ready'; url: string }
 
+const REFRESH_MS = 240_000
+
 export function PlanViewer({ chatId }: { chatId: string }) {
   const [state, setState] = useState<State>({ phase: 'loading' })
 
@@ -22,6 +24,19 @@ export function PlanViewer({ chatId }: { chatId: string }) {
     return () => controller.abort()
   }, [chatId])
 
+  const [linkUrl, setLinkUrl] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (state.phase !== 'ready') return
+    const timer = setInterval(() => {
+      fetch(`/api/chats/${chatId}/plan`)
+        .then(async (res) => (res.ok ? res.json() : null))
+        .then((body) => typeof body?.url === 'string' && setLinkUrl(body.url))
+        .catch(() => undefined)
+    }, REFRESH_MS)
+    return () => clearInterval(timer)
+  }, [chatId, state.phase])
+
   if (state.phase === 'loading') return <p role="status" className="mt-6 text-sm">Loading your plan…</p>
   if (state.phase === 'missing') return <p role="status" className="mt-6 text-sm">Your plan is not available yet.</p>
   if (state.phase === 'error') {
@@ -34,9 +49,9 @@ export function PlanViewer({ chatId }: { chatId: string }) {
   return (
     <section aria-label="Your plan" className="mt-8">
       <h2 className="text-xl">Your plan</h2>
-      <iframe title="Your plan" src={state.url} className="mt-4 h-[70vh] w-full rounded-2xl border border-border bg-card" />
-      <a href={state.url} download="myrakal-plan.pdf" className="mt-3 inline-block text-sm font-medium underline underline-offset-4">
-        Download your plan (PDF)
+      <iframe title="Plan PDF preview" src={state.url} className="mt-4 h-[70vh] w-full rounded-2xl border border-border bg-card" />
+      <a href={linkUrl ?? state.url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm font-medium underline underline-offset-4">
+        Open or download your plan (PDF)
       </a>
     </section>
   )

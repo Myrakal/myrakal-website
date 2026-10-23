@@ -65,7 +65,7 @@ describe('ChatPortal plan viewer', () => {
   it.each(planStatuses)('shows the plan in %s', async (status) => {
     currentStatus = status
     render(<ChatPortal />)
-    expect(await screen.findByTitle('Your plan')).toBeTruthy()
+    expect(await screen.findByTitle('Plan PDF preview')).toBeTruthy()
   })
 
   it.each(noPlanStatuses)('does not request the plan in %s', async (status) => {
