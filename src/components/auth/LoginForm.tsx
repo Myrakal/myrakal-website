@@ -83,6 +83,11 @@ export function LoginForm() {
           {error}
         </p>
       )}
+      {!signup && (
+        <a href="/forgot-password" className="text-sm underline underline-offset-4">
+          Forgot password?
+        </a>
+      )}
       <Button type="submit" size="lg" disabled={busy} className="h-11">
         {busy ? 'Please wait…' : signup ? 'Sign up' : 'Log in'}
       </Button>
