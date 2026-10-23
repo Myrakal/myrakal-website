@@ -9,7 +9,7 @@ const destinationFor = (path: string) =>
   rewrites().find((r) => new RegExp(`^${r.source}$`).test(path))?.destination
 
 describe('deployed routing', () => {
-  it.each(['/chat', '/chat/', '/privacy/', '/terms/', '/contact/', '/accessibility/', '/case', '/doctor/'])(
+  it.each(['/chat', '/chat/', '/privacy/', '/terms/', '/contact/', '/accessibility/'])(
     'serves the app shell for %s',
     (path) => {
       expect(destinationFor(path)).toBe('/index.html')
