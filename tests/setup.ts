@@ -14,3 +14,12 @@ globalThis.IntersectionObserver ??= class {
   disconnect() {}
   takeRecords() { return [] }
 } as unknown as typeof IntersectionObserver
+
+if (typeof window !== 'undefined') {
+  window.matchMedia ??= ((query: string) => ({
+    matches: false,
+    media: query,
+    addEventListener() {},
+    removeEventListener() {},
+  })) as unknown as typeof window.matchMedia
+}

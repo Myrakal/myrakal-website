@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { ScrollScenes } from '@/components/ScrollScenes'
 
 const renderScenes = () =>
@@ -22,10 +22,16 @@ describe('ScrollScenes', () => {
     expect(container.querySelector('.sticky')).toBeTruthy()
   })
 
-  it('shows the first slide and holds the later ones back until they slide in', () => {
+  it('keeps every slide reachable by keyboard and screen readers', () => {
+    const { container } = renderScenes()
+    expect(container.querySelector('[inert]')).toBeNull()
+  })
+
+  it('scrolls a slide into view when focus lands on it', () => {
+    const scrollTo = jest.fn()
+    window.scrollTo = scrollTo
     renderScenes()
-    expect(screen.getByText('first').parentElement?.hasAttribute('inert')).toBe(false)
-    expect(screen.getByText('second').parentElement?.hasAttribute('inert')).toBe(true)
-    expect(screen.getByText('third').parentElement?.hasAttribute('inert')).toBe(true)
+    fireEvent.focus(screen.getByText('third'))
+    expect(scrollTo).toHaveBeenCalledTimes(1)
   })
 })
