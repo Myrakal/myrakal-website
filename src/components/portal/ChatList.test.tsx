@@ -43,6 +43,15 @@ describe('ChatList', () => {
     expect(screen.getByText('In conversation')).toBeTruthy()
   })
 
+  it('shows dates in dark text that is readable on the cream card', async () => {
+    respond(200, chats)
+    const { container } = render(<ChatList />)
+    await screen.findByText('Knee replacement in Spain')
+    const dates = container.querySelectorAll('time')
+    expect(dates.length).toBe(3)
+    dates.forEach((time) => expect(time.className).toMatch(/text-card-foreground/))
+  })
+
   it('always offers a new chat', async () => {
     respond(200, chats)
     render(<ChatList />)

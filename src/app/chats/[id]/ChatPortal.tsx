@@ -59,7 +59,7 @@ export default function ChatPortal() {
       {state.phase === 'ready' && (
         <>
           <section aria-label="Case status" className="mt-6 rounded-2xl border border-border bg-card px-5 py-4 text-card-foreground">
-            <p className="mb-1 text-xs font-bold tracking-[0.15em] text-muted-foreground uppercase">Status</p>
+            <p className="mb-1 text-xs font-bold tracking-[0.15em] text-card-foreground/70 uppercase">Status</p>
             <p>{STATUS_COPY[state.chat.status] ?? 'We are working on your case.'}</p>
             {state.chat.status === 'intake' && (
               <a href={`/chat?id=${state.chat.id}`} className="mt-3 inline-block font-medium underline underline-offset-4">

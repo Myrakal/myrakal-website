@@ -117,6 +117,12 @@
   body {
     @apply bg-background text-foreground;
     }
+  input, textarea, select {
+    color: var(--card-foreground);
+    }
+  input::placeholder, textarea::placeholder {
+    color: color-mix(in oklab, var(--card-foreground) 60%, transparent);
+    }
   html {
     @apply font-sans;
     }
