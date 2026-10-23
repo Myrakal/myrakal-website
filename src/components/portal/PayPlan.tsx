@@ -23,29 +23,46 @@ export function PayPlan({ chatId, status, priceCents, returned, onStatus, onRedi
   const [error, setError] = useState<string | null>(null)
   const [blocked, setBlocked] = useState(false)
   const [gaveUp, setGaveUp] = useState(false)
+  const [retry, setRetry] = useState(false)
   const inFlight = useRef(false)
-  const waiting = status === 'awaiting_payment' && returned
+  const onStatusRef = useRef(onStatus)
+  const waiting = status === 'awaiting_payment' && returned && !retry
+
+  useEffect(() => {
+    onStatusRef.current = onStatus
+  })
+
+  useEffect(() => {
+    const reset = (event: PageTransitionEvent) => {
+      if (!event.persisted) return
+      setSending(false)
+      inFlight.current = false
+    }
+    window.addEventListener('pageshow', reset)
+    return () => window.removeEventListener('pageshow', reset)
+  }, [])
 
   useEffect(() => {
     if (!waiting) return
+    let cancelled = false
     let polls = 0
-    const timer = setInterval(async () => {
-      polls += 1
+    let timer: ReturnType<typeof setTimeout>
+    const tick = async () => {
       const body = await fetch(`/api/chats/${chatId}`)
         .then((res) => (res.ok ? res.json() : null))
         .catch(() => null)
-      if (typeof body?.status === 'string' && body.status !== 'awaiting_payment') {
-        clearInterval(timer)
-        onStatus(body.status)
-        return
-      }
-      if (polls >= MAX_POLLS) {
-        clearInterval(timer)
-        setGaveUp(true)
-      }
-    }, POLL_MS)
-    return () => clearInterval(timer)
-  }, [waiting, chatId, onStatus])
+      if (cancelled) return
+      if (typeof body?.status === 'string' && body.status !== 'awaiting_payment') return onStatusRef.current(body.status)
+      polls += 1
+      if (polls >= MAX_POLLS) return setGaveUp(true)
+      timer = setTimeout(tick, POLL_MS)
+    }
+    timer = setTimeout(tick, POLL_MS)
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [waiting, chatId])
 
   if (status !== 'awaiting_payment') return null
 
@@ -54,9 +71,14 @@ export function PayPlan({ chatId, status, priceCents, returned, onStatus, onRedi
       <section aria-label="Payment" className="mt-8">
         <p role="status" className="text-sm">
           {gaveUp
-            ? 'Your payment is taking longer than usual to confirm. Please refresh the page in a minute. You will not be charged twice.'
+            ? 'Your payment is taking longer than usual to confirm. Please check again in a few minutes before paying again.'
             : 'Thank you. We are confirming your payment…'}
         </p>
+        {gaveUp && (
+          <Button type="button" variant="outline" className="mt-4" onClick={() => setRetry(true)}>
+            I did not finish paying
+          </Button>
+        )}
       </section>
     )
   }

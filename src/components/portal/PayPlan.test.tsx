@@ -93,6 +93,20 @@ describe('PayPlan', () => {
   })
 })
 
+describe('PayPlan page restore', () => {
+  it('re-enables the button when restored from the back-forward cache', async () => {
+    respond(200, { url: 'https://checkout.stripe.com/c/pay/cs_1' })
+    setup()
+    pay()
+    await waitFor(() => expect(assign).toHaveBeenCalled())
+    expect((screen.getByRole('button', { name: /redirecting/i }) as HTMLButtonElement).disabled).toBe(true)
+    act(() => {
+      window.dispatchEvent(Object.assign(new Event('pageshow'), { persisted: true }))
+    })
+    expect((screen.getByRole('button', { name: 'Pay $150.00' }) as HTMLButtonElement).disabled).toBe(false)
+  })
+})
+
 describe('PayPlan after returning from Stripe', () => {
   beforeEach(() => jest.useFakeTimers())
   afterEach(() => jest.useRealTimers())
@@ -142,8 +156,38 @@ describe('PayPlan after returning from Stripe', () => {
       .mockResolvedValueOnce({ ok: true, status: 200, json: async () => ({ status: 'reservations' }) })
     const { onStatus } = setup({ returned: true })
     await act(async () => {
-      jest.advanceTimersByTime(6000)
+      jest.advanceTimersByTime(3000)
+    })
+    await act(async () => {
+      jest.advanceTimersByTime(3000)
     })
     expect(onStatus).toHaveBeenCalledWith('reservations')
+  })
+
+  it('does not stack requests while one is slow and does not restart on re-render', async () => {
+    fetchMock.mockReturnValue(new Promise(() => {}))
+    const onStatus = jest.fn()
+    const view = render(<PayPlan chatId="c1" status="awaiting_payment" priceCents={1} returned onStatus={onStatus} />)
+    await act(async () => {
+      jest.advanceTimersByTime(30000)
+    })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    view.rerender(<PayPlan chatId="c1" status="awaiting_payment" priceCents={1} returned onStatus={() => undefined} />)
+    await act(async () => {
+      jest.advanceTimersByTime(30000)
+    })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('offers a way back to the pay button after giving up', async () => {
+    fetchMock.mockResolvedValue({ ok: true, status: 200, json: async () => ({ status: 'awaiting_payment' }) })
+    setup({ returned: true })
+    for (let i = 0; i < 25; i++) {
+      await act(async () => {
+        jest.advanceTimersByTime(3000)
+      })
+    }
+    fireEvent.click(screen.getByRole('button', { name: /did not finish paying/i }))
+    expect(screen.getByRole('button', { name: /^pay/i })).toBeTruthy()
   })
 })
