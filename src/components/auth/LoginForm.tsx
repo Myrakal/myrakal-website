@@ -8,7 +8,8 @@ import { useSession } from '@/hooks/useSession'
 import { getSupabase } from '@/lib/supabase'
 
 const inputClass =
-  'h-11 w-full rounded-xl border border-border bg-card px-4 text-base text-card-foreground outline-none focus-visible:ring-2 focus-visible:ring-foreground/40'
+  'h-11 w-full rounded-xl border border-border bg-card px-4 text-base text-card-foreground outline-none focus-visible:ring-2 focus-visible:ring-champagne'
+const labelClass = 'font-grotesk text-[11px] tracking-[0.2em] text-champagne uppercase'
 
 export function LoginForm() {
   const router = useRouter()
@@ -54,16 +55,16 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={submit} className="mt-8 flex max-w-sm flex-col gap-4">
-      <h2 className="text-xl">{signup ? 'Create your account' : 'Welcome back'}</h2>
+    <form onSubmit={submit} className="mt-8 flex max-w-md flex-col gap-4 rounded-3xl border border-champagne/25 bg-velvet-deep/50 p-6 shadow-2xl shadow-black/30 backdrop-blur-sm sm:p-8">
+      <h2 className="font-display text-2xl">{signup ? 'Create your account' : 'Welcome back'}</h2>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={emailId} className="text-sm font-medium">
+        <label htmlFor={emailId} className={labelClass}>
           Email
         </label>
         <input id={emailId} type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={passwordId} className="text-sm font-medium">
+        <label htmlFor={passwordId} className={labelClass}>
           Password
         </label>
         <input
@@ -84,7 +85,7 @@ export function LoginForm() {
         </p>
       )}
       {!signup && (
-        <a href="/forgot-password" className="text-sm underline underline-offset-4">
+        <a href="/forgot-password" className="text-sm text-champagne underline underline-offset-4">
           Forgot password?
         </a>
       )}
