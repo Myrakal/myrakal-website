@@ -20,13 +20,12 @@ function useAuthRequest(request: (auth: NonNullable<ReturnType<typeof getSupabas
     setError('')
     try {
       const { error: failure } = await request(supabase.auth)
-      if (failure) return setError(failure.message)
-      onDone()
+      if (!failure) return onDone()
+      setError(failure.message)
     } catch {
       setError('Something went wrong. Please try again.')
-    } finally {
-      setBusy(false)
     }
+    setBusy(false)
   }
 
   return { error, busy, submit }
@@ -44,7 +43,10 @@ export function ForgotPasswordForm() {
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
   const { error, busy, submit } = useAuthRequest(
-    (auth) => auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/reset-password` }),
+    (auth) => {
+      setSent(false)
+      return auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/reset-password` })
+    },
     () => setSent(true),
   )
 
@@ -52,7 +54,9 @@ export function ForgotPasswordForm() {
     <form onSubmit={submit} className="mt-8 flex max-w-sm flex-col gap-4">
       <AuthField label="Email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <ErrorText error={error} />
-      {sent && <p role="status" className="text-sm">Check your email for a link to reset your password.</p>}
+      <p role="status" className="text-sm">
+        {sent && 'Check your email for a link to reset your password.'}
+      </p>
       <Button type="submit" size="lg" disabled={busy} className="h-11">
         Send reset link
       </Button>

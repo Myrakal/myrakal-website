@@ -51,6 +51,19 @@ describe('ForgotPasswordForm', () => {
   })
 })
 
+describe('ForgotPasswordForm retries', () => {
+  it('stays disabled after a successful request', async () => {
+    mockReset.mockResolvedValue({ error: null })
+    render(<ForgotPasswordForm />)
+    const user = userEvent.setup()
+    await user.type(screen.getByLabelText('Email'), 'a@b.co')
+    await user.click(screen.getByRole('button', { name: 'Send reset link' }))
+    await screen.findByText(/Check your email/)
+    expect((screen.getByRole('button', { name: 'Send reset link' }) as HTMLButtonElement).disabled).toBe(true)
+    expect(mockReset).toHaveBeenCalledTimes(1)
+  })
+})
+
 describe('ResetPasswordForm', () => {
   it('sets the new password and goes to the dashboard', async () => {
     mockUpdate.mockResolvedValue({ error: null })
