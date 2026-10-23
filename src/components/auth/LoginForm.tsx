@@ -3,13 +3,10 @@
 import { useRouter } from 'next/navigation'
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 
+import { authInputClass, authLabelClass, authPanelClass } from '@/components/auth/AuthField'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/hooks/useSession'
 import { getSupabase } from '@/lib/supabase'
-
-const inputClass =
-  'h-11 w-full rounded-xl border border-border bg-card px-4 text-base text-card-foreground outline-none focus-visible:ring-2 focus-visible:ring-champagne'
-const labelClass = 'font-grotesk text-[11px] tracking-[0.2em] text-champagne uppercase'
 
 export function LoginForm() {
   const router = useRouter()
@@ -55,16 +52,16 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={submit} className="mt-8 flex max-w-md flex-col gap-4 rounded-3xl border border-champagne/25 bg-velvet-deep/50 p-6 shadow-2xl shadow-black/30 backdrop-blur-sm sm:p-8">
+    <form onSubmit={submit} className={authPanelClass}>
       <h2 className="font-display text-2xl">{signup ? 'Create your account' : 'Welcome back'}</h2>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={emailId} className={labelClass}>
+        <label htmlFor={emailId} className={authLabelClass}>
           Email
         </label>
-        <input id={emailId} type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
+        <input id={emailId} type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={authInputClass} />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={passwordId} className={labelClass}>
+        <label htmlFor={passwordId} className={authLabelClass}>
           Password
         </label>
         <input
@@ -75,7 +72,7 @@ export function LoginForm() {
           autoComplete={signup ? 'new-password' : 'current-password'}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className={inputClass}
+          className={authInputClass}
         />
       </div>
       {notice && <p role="status" className="text-sm">{notice}</p>}

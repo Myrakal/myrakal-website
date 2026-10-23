@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState, type FormEvent } from 'react'
 
-import { AuthField } from '@/components/auth/AuthField'
+import { AuthField, authPanelClass } from '@/components/auth/AuthField'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/hooks/useSession'
 import { getSupabase } from '@/lib/supabase'
@@ -51,7 +51,7 @@ export function ForgotPasswordForm() {
   )
 
   return (
-    <form onSubmit={submit} className="mt-8 flex max-w-sm flex-col gap-4">
+    <form onSubmit={submit} className={authPanelClass}>
       <AuthField label="Email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <ErrorText error={error} />
       <p role="status" className="text-sm">
@@ -60,7 +60,7 @@ export function ForgotPasswordForm() {
       <Button type="submit" size="lg" disabled={busy} className="h-11">
         Send reset link
       </Button>
-      <a href="/login" className="text-center text-sm underline underline-offset-4">
+      <a href="/login" className="text-center text-sm text-champagne underline underline-offset-4">
         Back to log in
       </a>
     </form>
@@ -84,14 +84,14 @@ export function ResetPasswordForm() {
     return (
       <p className="mt-8 text-sm">
         This reset link is invalid or has expired.{' '}
-        <a href="/forgot-password" className="underline underline-offset-4">
+        <a href="/forgot-password" className="text-champagne underline underline-offset-4">
           Request a new reset link
         </a>
       </p>
     )
 
   return (
-    <form onSubmit={submit} className="mt-8 flex max-w-sm flex-col gap-4">
+    <form onSubmit={submit} className={authPanelClass}>
       <AuthField label="New password" type="password" minLength={8} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
       <ErrorText error={error} />
       <Button type="submit" size="lg" disabled={busy} className="h-11">
