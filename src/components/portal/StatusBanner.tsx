@@ -34,7 +34,7 @@ export function StatusBanner({ chatId, status }: { chatId: string; status: strin
                 <span className={`h-1 rounded-full ${state === 'todo' ? 'bg-border' : 'bg-champagne'}`} />
                 <span className={`text-xs leading-tight max-sm:sr-only ${state === 'current' ? 'font-medium text-foreground' : 'text-muted-foreground'}`}>
                   {name}
-                  <span className="sr-only">{state === 'done' ? 'Completed' : state === 'current' ? 'Current step' : 'Upcoming'}</span>
+                  <span className="sr-only">{state === 'done' ? 'Completed' : state === 'todo' ? 'Upcoming' : null}</span>
                 </span>
               </li>
             )
