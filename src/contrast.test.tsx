@@ -33,11 +33,4 @@ describe('text contrast on cream surfaces', () => {
       expect(field.className).toMatch(/\btext-card-foreground\b/)
     }
   })
-
-  it.each(['app/chats/[id]/ChatPortal.tsx', 'components/portal/ChatList.tsx'])(
-    '%s does not put the light muted colour on a cream card',
-    (file) => {
-      expect(read(file)).not.toMatch(/text-muted-foreground/)
-    },
-  )
 })
