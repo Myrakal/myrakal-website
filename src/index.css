@@ -49,6 +49,7 @@
     --color-charcoal: var(--charcoal);
     --color-greige: var(--greige);
     --color-pearl: var(--pearl);
+    --color-alabaster: var(--alabaster);
     --color-gold: var(--gold);
     --color-champagne: var(--champagne);
     --radius-sm: calc(var(--radius) * 0.6);
@@ -73,14 +74,7 @@
     --pearl: #ebd3da;
     --gold: #c9a36b;
     --champagne: #f2d38a;
-    --pearl-gradient: linear-gradient(
-      120deg,
-      #e3d3f0 0%,
-      #f3d9e4 25%,
-      #d6ecf2 50%,
-      #dcf0e2 70%,
-      #f2e4c8 100%
-    );
+    --alabaster: #fbf8f3;
 
     --background: var(--velvet);
     --foreground: var(--cream);
@@ -88,7 +82,7 @@
     --card-foreground: var(--velvet-deep);
     --popover: var(--cream);
     --popover-foreground: var(--velvet-deep);
-    --primary: var(--pearl);
+    --primary: var(--alabaster);
     --primary-foreground: var(--velvet-deep);
     --secondary: var(--velvet-light);
     --secondary-foreground: var(--cream);
@@ -100,7 +94,7 @@
     --border: rgba(246, 238, 228, 0.16);
     --input: rgba(246, 238, 228, 0.2);
     --ring: var(--gold);
-    --chart-1: var(--pearl);
+    --chart-1: var(--alabaster);
     --chart-2: var(--velvet-light);
     --chart-3: var(--greige);
     --chart-4: var(--velvet-deep);
@@ -108,7 +102,7 @@
     --radius: 0.625rem;
     --sidebar: var(--velvet-deep);
     --sidebar-foreground: var(--cream);
-    --sidebar-primary: var(--pearl);
+    --sidebar-primary: var(--alabaster);
     --sidebar-primary-foreground: var(--velvet-deep);
     --sidebar-accent: var(--velvet-light);
     --sidebar-accent-foreground: var(--cream);

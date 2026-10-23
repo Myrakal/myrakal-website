@@ -15,7 +15,7 @@ export function Hero() {
       />
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-linear-to-b from-charcoal/60 via-transparent via-30% to-charcoal/80"
+        className="absolute inset-0 -z-10 bg-charcoal/50"
       />
       <div className="flex w-full flex-1 items-center justify-center py-6">
         <img
@@ -30,7 +30,7 @@ export function Hero() {
       </p>
       <a
         href="/chat/"
-        className="mt-8 bg-champagne px-7 py-3.5 font-grotesk text-xs tracking-[0.25em] text-charcoal uppercase transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
+        className="mt-8 bg-alabaster px-7 py-3.5 font-grotesk text-xs tracking-[0.25em] text-charcoal uppercase transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
       >
         Talk with us
       </a>

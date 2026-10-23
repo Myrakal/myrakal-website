@@ -22,7 +22,7 @@ export function Scene({ image, imageSmall, alt, textSide, numeral, title, childr
       />
       <div
         aria-hidden="true"
-        className={`absolute inset-0 -z-10 hidden from-charcoal/85 via-charcoal/60 via-35% to-transparent to-60% lg:block ${left ? 'bg-linear-to-r' : 'bg-linear-to-l'}`}
+        className="absolute inset-0 -z-10 hidden bg-charcoal/45 lg:block"
       />
       <div className={`mx-auto flex w-full max-w-7xl px-6 pt-10 pb-16 sm:px-12 lg:py-16 ${left ? 'justify-start' : 'justify-end'}`}>
         <div>

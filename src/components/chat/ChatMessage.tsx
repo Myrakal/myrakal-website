@@ -10,7 +10,7 @@ export function ChatMessage({ message }: { message: Message }) {
       <p
         className={`max-w-[85%] rounded-3xl px-5 py-3 text-base leading-7 break-words whitespace-pre-wrap sm:max-w-[75%] ${
           mine
-            ? 'rounded-br-md bg-(image:--pearl-gradient) text-primary-foreground'
+            ? 'rounded-br-md bg-primary text-primary-foreground'
             : 'rounded-bl-md bg-card text-card-foreground'
         }`}
       >
