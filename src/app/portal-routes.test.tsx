@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 
 jest.mock('next/navigation', () => ({
   useParams: () => ({ id: '3f1c2b4a-0000-4000-8000-000000000001' }),
+  useRouter: () => ({ push: jest.fn(), refresh: jest.fn() }),
 }))
 
 const routes = [
