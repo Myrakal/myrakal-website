@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
+import { ApprovePlan } from '@/components/portal/ApprovePlan'
 import { CommentSection, type PlanComment } from '@/components/portal/CommentSection'
 import { PlanViewer } from '@/components/portal/PlanViewer'
 import { PortalShell } from '@/components/portal/PortalShell'
@@ -39,6 +40,9 @@ export default function ChatPortal() {
       prev.phase === 'ready' ? { phase: 'ready', chat: { ...prev.chat, status, comments: [...(prev.chat.comments ?? []), comment] } } : prev,
     )
 
+  const setStatus = (status: string) =>
+    setState((prev) => (prev.phase === 'ready' ? { phase: 'ready', chat: { ...prev.chat, status } } : prev))
+
   return (
     <PortalShell title="Your case">
       <a href="/dashboard" className="mt-2 inline-block text-sm underline underline-offset-4">
@@ -65,6 +69,7 @@ export default function ChatPortal() {
             <>
               <PlanViewer chatId={state.chat.id} />
               <CommentSection chatId={state.chat.id} status={state.chat.status} comments={state.chat.comments ?? []} onPosted={addComment} />
+              <ApprovePlan chatId={state.chat.id} status={state.chat.status} onApproved={setStatus} />
             </>
           )}
           <section aria-label="Conversation" className="mt-8 flex flex-col gap-4">
