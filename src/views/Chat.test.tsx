@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 const mockReplace = jest.fn()
@@ -156,7 +156,7 @@ describe('Chat', () => {
     await screen.findByText('What is your name?')
     await sendMessage('Sam')
     expect((await screen.findByRole('alert')).textContent).toMatch(/not sent/i)
-    expect(screen.queryByText('Sam')).toBeNull()
+    expect(within(screen.getByRole('log')).queryByText('Sam')).toBeNull()
   })
 
   it('explains the limit when the server answers 429', async () => {
@@ -171,6 +171,48 @@ describe('Chat', () => {
     route({ [`GET /api/chats/${ID}`]: () => reply(401, { error: 'unauthorized' }) })
     render(<Chat />)
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/login'))
+  })
+
+  it('keeps the typed text in the composer when sending fails', async () => {
+    mockParams = new URLSearchParams({ id: ID })
+    route({
+      [`GET /api/chats/${ID}`]: () => reply(200, detail()),
+      [`POST /api/chats/${ID}/messages`]: () => reply(500, { error: 'boom' }),
+    })
+    render(<Chat />)
+    await screen.findByText('What is your name?')
+    await sendMessage('A long medical history')
+    await screen.findByRole('alert')
+    expect((screen.getByLabelText('Message') as HTMLTextAreaElement).value).toBe('A long medical history')
+  })
+
+  it('does not leave an undelivered message in the transcript on 409', async () => {
+    mockParams = new URLSearchParams({ id: ID })
+    route({
+      [`GET /api/chats/${ID}`]: () => reply(200, detail()),
+      [`POST /api/chats/${ID}/messages`]: () => reply(409, { error: 'conflict' }),
+    })
+    render(<Chat />)
+    await screen.findByText('What is your name?')
+    await sendMessage('Sam')
+    await waitFor(() => expect(mockPush).toHaveBeenCalled())
+    expect(within(screen.getByRole('log')).queryByText('Sam')).toBeNull()
+  })
+
+  it('shows a loading note while restoring and ignores a malformed id', async () => {
+    mockParams = new URLSearchParams({ id: '../other' })
+    render(<Chat />)
+    expect(fetchMock).not.toHaveBeenCalled()
+    expect(screen.queryByText(/loading your conversation/i)).toBeNull()
+  })
+
+  it('blocks sending when the chat could not be loaded', async () => {
+    mockParams = new URLSearchParams({ id: ID })
+    route({ [`GET /api/chats/${ID}`]: () => reply(500, {}) })
+    render(<Chat />)
+    await screen.findByRole('alert')
+    await userEvent.setup().type(screen.getByLabelText('Message'), 'hi')
+    expect((screen.getByRole('button', { name: 'Send message' }) as HTMLButtonElement).disabled).toBe(true)
   })
 
   it('shows an error for a chat that cannot be loaded', async () => {

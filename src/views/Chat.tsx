@@ -19,6 +19,8 @@ type Progress = { collected: number; total: number }
 type Reply = { reply: Message; status: string; progress: Progress }
 type Detail = { status: string; progress: Progress; messages: Message[] }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 class RateLimited extends Error {}
 
 const post = (url: string, body?: object) =>
@@ -26,13 +28,18 @@ const post = (url: string, body?: object) =>
 
 export default function Chat() {
   const router = useRouter()
-  const [initialId] = useState(useSearchParams().get('id'))
+  const searchParams = useSearchParams()
+  const [initialId] = useState(() => {
+    const id = searchParams.get('id')
+    return id && UUID.test(id) ? id : null
+  })
   const [chatId, setChatId] = useState(initialId)
   const [messages, setMessages] = useState<Message[]>([])
   const [progress, setProgress] = useState<Progress | null>(null)
   const [busy, setBusy] = useState(false)
   const [loading, setLoading] = useState(initialId !== null)
   const [error, setError] = useState('')
+  const [loadFailed, setLoadFailed] = useState(false)
   const end = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -51,6 +58,7 @@ export default function Chat() {
       .catch(() => {
         if (controller.signal.aborted) return
         setError('We could not load this chat. Please refresh the page.')
+        setLoadFailed(true)
         setLoading(false)
       })
     return () => controller.abort()
@@ -62,6 +70,7 @@ export default function Chat() {
 
   const send = async (text: string) => {
     const pending: Message = { id: `pending-${Date.now()}`, role: 'user', text }
+    const drop = () => setMessages((all) => all.filter((m) => m.id !== pending.id))
     setError('')
     setBusy(true)
     setMessages((all) => [...all, pending])
@@ -76,17 +85,23 @@ export default function Chat() {
         window.history.replaceState(null, '', `/chat?id=${id}`)
       }
       const res = await post(`/api/chats/${id}/messages`, { text })
-      if (res.status === 401) return router.replace('/login')
-      if (res.status === 409) return router.push(`/chats/${id}`)
+      if (res.status === 401 || res.status === 409) {
+        drop()
+        if (res.status === 401) router.replace('/login')
+        else router.push(`/chats/${id}`)
+        return true
+      }
       if (res.status === 429) throw new RateLimited()
       if (!res.ok) throw new Error()
       const data: Reply = await res.json()
       setMessages((all) => [...all, data.reply])
       setProgress(data.progress)
       if (data.status !== 'intake') router.push(`/chats/${id}`)
+      return true
     } catch (e) {
-      setMessages((all) => all.filter((m) => m.id !== pending.id))
+      drop()
       setError(e instanceof RateLimited ? 'You have reached the limit for this chat. Please contact us to continue.' : 'Your message was not sent. Please try again.')
+      return false
     } finally {
       setBusy(false)
     }
@@ -110,6 +125,7 @@ export default function Chat() {
           {messages.map((m) => (
             <ChatMessage key={m.id} message={m} />
           ))}
+          {loading && <p role="status" className="text-center text-sm">Loading your conversation…</p>}
           {busy && <TypingIndicator />}
           <div ref={end} />
         </div>
@@ -121,7 +137,7 @@ export default function Chat() {
             </p>
           )}
           {progress && <IntakeProgress {...progress} />}
-          <ChatComposer onSend={send} busy={busy || loading} />
+          <ChatComposer onSend={send} busy={busy || loading || loadFailed} />
           <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">
             See our{' '}
             <a className="underline underline-offset-4 hover:text-foreground" href="/privacy/">

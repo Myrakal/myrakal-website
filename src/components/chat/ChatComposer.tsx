@@ -5,7 +5,7 @@ import { useId, useRef, useState, type KeyboardEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 
-type Props = { onSend: (text: string) => void; busy?: boolean }
+type Props = { onSend: (text: string) => void | boolean | Promise<boolean | void>; busy?: boolean }
 
 export function ChatComposer({ onSend, busy = false }: Props) {
   const [text, setText] = useState('')
@@ -13,9 +13,9 @@ export function ChatComposer({ onSend, busy = false }: Props) {
   const box = useRef<HTMLTextAreaElement>(null)
   const canSend = text.trim().length > 0 && !busy
 
-  const send = () => {
+  const send = async () => {
     if (!canSend) return
-    onSend(text.trim())
+    if ((await onSend(text.trim())) === false) return
     setText('')
     if (box.current) box.current.style.height = ''
     box.current?.focus()
