@@ -154,6 +154,8 @@ describe('POST /api/chats/:id/messages', () => {
     )
     const body = await res.json()
     expect(body.status).toBe('doctor_review')
+    expect(body.reply.text).toMatch(/doctor will review/)
+    expect(messageCreate.mock.calls[1][0].data.text).toMatch(/doctor will review/)
     expect(body.progress.collected).toBe(body.progress.total)
   })
 
@@ -163,10 +165,11 @@ describe('POST /api/chats/:id/messages', () => {
     expect((await res.json()).status).toBe('intake')
   })
 
-  it('does not complete when consent is the only thing missing', async () => {
-    const { all } = missingOne()
-    findFirst.mockResolvedValue({ status: 'intake', intake: { ...all, consent: undefined } })
-    runTurn.mockResolvedValue({ reply: 'ok', updates: {} })
-    expect((await (await route.POST(post({ text: 'x' }), params())).json()).status).toBe('intake')
+  it('does not complete when consent is declined', async () => {
+    const { rest } = missingOne()
+    findFirst.mockResolvedValue({ status: 'intake', intake: rest })
+    runTurn.mockResolvedValue({ reply: 'ok', updates: { consent: false } })
+    const res = await route.POST(post({ text: 'no' }), params())
+    expect((await res.json()).status).toBe('intake')
   })
 })

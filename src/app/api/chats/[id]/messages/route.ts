@@ -5,6 +5,8 @@ import { json, sameHost, UUID } from '@/server/http'
 import { intakeProgress } from '@/server/intake'
 
 const FALLBACK_REPLY = 'Sorry, I had trouble answering that. Could you try again or repeat it?'
+const CLOSING_REPLY =
+  'Thank you, that is everything we need. A doctor will review your transcript and we will email your plan to you.'
 const HISTORY_LIMIT = 200
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -45,7 +47,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const sentAt = Date.now()
     await tx.message.create({ data: { chatId: id, role: 'user', text, createdAt: new Date(sentAt) } })
     return tx.message.create({
-      data: { chatId: id, role: 'assistant', text: turn.reply || FALLBACK_REPLY, createdAt: new Date(sentAt + 1) },
+      data: { chatId: id, role: 'assistant', text: status === 'doctor_review' ? CLOSING_REPLY : turn.reply || FALLBACK_REPLY, createdAt: new Date(sentAt + 1) },
     })
   })
   if (!reply) return json({ error: 'conflict' }, 409)
