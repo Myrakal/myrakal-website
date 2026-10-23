@@ -44,6 +44,17 @@ export function Navbar() {
         )}
       </motion.a>
       <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-4 sm:right-12 sm:gap-6">
+        <nav aria-label="Primary" className="hidden items-center gap-6 sm:flex">
+          {['Care', 'Individual', 'Business'].map((label) => (
+            <button
+              key={label}
+              type="button"
+              className="font-grotesk text-[11px] tracking-[0.2em] text-foreground uppercase transition-colors hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
         <a
           href="/chat/"
           className="rounded-full border border-champagne/60 px-4 py-2 font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-champagne uppercase transition-colors hover:bg-champagne/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:px-5"

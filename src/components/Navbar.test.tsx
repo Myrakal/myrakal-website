@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { Navbar } from '@/components/Navbar'
 
 const scrollTo = (y: number) =>
@@ -28,5 +28,22 @@ describe('Navbar', () => {
     const { container } = render(<Navbar />)
     scrollTo(200)
     expect(container.querySelector('header')!.className).toMatch(/bg-background/)
+  })
+
+  it('shows Care, Individual and Business before Talk with us', () => {
+    render(<Navbar />)
+    const nav = screen.getByRole('navigation', { name: 'Primary' })
+    const items = within(nav).getAllByRole('button').map((el) => el.textContent)
+    expect(items).toEqual(['Care', 'Individual', 'Business'])
+    const order = [...nav.parentElement!.querySelectorAll('nav, a[href="/chat/"]')]
+    expect(order[0]).toBe(nav)
+    expect(screen.getByRole('link', { name: 'Talk with us' })).toBeTruthy()
+  })
+
+  it('does nothing when the new items are clicked', () => {
+    render(<Navbar />)
+    const before = window.location.href
+    for (const name of ['Care', 'Individual', 'Business']) fireEvent.click(screen.getByRole('button', { name }))
+    expect(window.location.href).toBe(before)
   })
 })
