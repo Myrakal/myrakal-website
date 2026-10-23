@@ -6,8 +6,8 @@ jest.mock('posthog-js', () => ({
 const load = async () => {
   jest.resetModules()
   const { default: posthog } = await import('posthog-js')
-  const { initAnalytics } = await import('@/lib/analytics')
-  return { posthog, initAnalytics }
+  await import('@/instrumentation-client')
+  return { posthog }
 }
 
 const originalEnv = { ...process.env }
@@ -20,8 +20,7 @@ describe('analytics', () => {
 
   it('inits posthog with the configured key', async () => {
     process.env['NEXT_PUBLIC_POSTHOG_KEY'] = 'phc_test'
-    const { initAnalytics, posthog } = await load()
-    initAnalytics()
+    const { posthog } = await load()
     expect(posthog.init).toHaveBeenCalledWith(
       'phc_test',
       expect.objectContaining({ capture_pageview: true, autocapture: false }),
@@ -31,8 +30,7 @@ describe('analytics', () => {
   it('falls back to the default host when the host var is empty', async () => {
     process.env['NEXT_PUBLIC_POSTHOG_KEY'] = 'phc_test'
     process.env['NEXT_PUBLIC_POSTHOG_HOST'] = ''
-    const { initAnalytics, posthog } = await load()
-    initAnalytics()
+    const { posthog } = await load()
     expect(posthog.init).toHaveBeenCalledWith(
       'phc_test',
       expect.objectContaining({ api_host: 'https://us.i.posthog.com' }),
@@ -41,8 +39,7 @@ describe('analytics', () => {
 
   it('does nothing without a key', async () => {
     process.env['NEXT_PUBLIC_POSTHOG_KEY'] = ''
-    const { initAnalytics, posthog } = await load()
-    initAnalytics()
+    const { posthog } = await load()
     expect(posthog.init).not.toHaveBeenCalled()
   })
 })
