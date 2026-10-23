@@ -16,10 +16,11 @@ Medical-travel concierge. A patient signs up, talks to Claude, which collects a 
 ```sh
 pnpm install
 cp .env.example .env
+pnpm db:deploy
 pnpm dev
 ```
 
-The app runs on http://localhost:3000. Fill `.env` with real values; every variable is listed in `.env.example`.
+`pnpm db:deploy` applies the migrations to the database in `DATABASE_URL` and `DIRECT_URL`; do it only against a database you mean to change. The app runs on http://localhost:3000. Fill `.env` with real values; every variable is listed in `.env.example`.
 
 ## Scripts
 
