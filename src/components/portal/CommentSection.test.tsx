@@ -117,4 +117,32 @@ describe('CommentSection', () => {
     fireEvent.click(screen.getByRole('button', { name: /send comments/i }))
     await waitFor(() => expect((screen.getByLabelText(/your comments/i) as HTMLTextAreaElement).value).toBe(''))
   })
+
+  it('still succeeds when the 201 body cannot be read', async () => {
+    fetchMock.mockResolvedValue({ ok: true, status: 201, json: async () => { throw new SyntaxError() } })
+    const { onPosted } = setup()
+    type('hi')
+    fireEvent.click(screen.getByRole('button', { name: /send comments/i }))
+    await waitFor(() => expect(onPosted).toHaveBeenCalledWith('clarification_review', expect.objectContaining({ text: 'hi' })))
+    expect(screen.queryByRole('alert')).toBeNull()
+  })
+
+  it('asks the patient to sign in again on 401', async () => {
+    respond(401, { error: 'unauthorized' })
+    setup()
+    type('hi')
+    fireEvent.click(screen.getByRole('button', { name: /send comments/i }))
+    expect((await screen.findByRole('alert')).textContent).toMatch(/sign in again/i)
+  })
+
+  it('links the error to the textarea', async () => {
+    respond(500)
+    setup()
+    type('hi')
+    fireEvent.click(screen.getByRole('button', { name: /send comments/i }))
+    const alert = await screen.findByRole('alert')
+    const box = screen.getByLabelText(/your comments/i)
+    expect(box.getAttribute('aria-describedby')).toBe(alert.id)
+    expect(box.getAttribute('aria-invalid')).toBe('true')
+  })
 })

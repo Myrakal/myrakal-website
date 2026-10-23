@@ -30,25 +30,29 @@ export function CommentSection({ chatId, status, comments, onPosted }: Props) {
     if (!trimmed || sending) return
     setSending(true)
     setError(null)
+    let res: Response
     try {
-      const res = await fetch(`/api/chats/${chatId}/comments`, {
+      res = await fetch(`/api/chats/${chatId}/comments`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ text: trimmed }),
       })
-      if (res.status === 409) {
-        setError('Your plan can no longer be commented on. Please refresh the page.')
-        return
-      }
-      const body = await res.json()
-      if (!res.ok || typeof body?.status !== 'string') throw new Error()
-      setText('')
-      onPosted(body.status, { id: crypto.randomUUID(), text: trimmed, createdAt: new Date().toISOString() })
     } catch {
       setError('We could not send your comments. Please try again.')
-    } finally {
       setSending(false)
+      return
     }
+    setSending(false)
+    if (res.status === 409) return setError('Your plan can no longer be commented on. Please refresh the page.')
+    if (res.status === 401) return setError('Your session has ended. Please sign in again.')
+    if (!res.ok) return setError('We could not send your comments. Please try again.')
+    const body = await res.json().catch(() => null)
+    setText('')
+    onPosted(typeof body?.status === 'string' ? body.status : 'clarification_review', {
+      id: `local-${Date.now()}`,
+      text: trimmed,
+      createdAt: new Date().toISOString(),
+    })
   }
 
   return (
@@ -76,11 +80,13 @@ export function CommentSection({ chatId, status, comments, onPosted }: Props) {
             value={text}
             onChange={(e) => setText(e.target.value)}
             maxLength={MAX_LENGTH}
+            aria-invalid={error ? true : undefined}
+            aria-describedby={error ? `${id}-error` : undefined}
             rows={4}
             className="w-full rounded-2xl border border-border bg-card p-3 text-card-foreground focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:outline-none"
           />
           {error && (
-            <p role="alert" className="text-sm text-destructive">
+            <p id={`${id}-error`} role="alert" className="text-sm text-destructive">
               {error}
             </p>
           )}
