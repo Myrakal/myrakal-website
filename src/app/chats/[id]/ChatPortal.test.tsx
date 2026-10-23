@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 
 const ID = '3f1c2b4a-0000-4000-8000-000000000001'
 const mockReplace = jest.fn()
@@ -73,6 +73,50 @@ describe('ChatPortal plan viewer', () => {
     render(<ChatPortal />)
     await screen.findByRole('region', { name: 'Conversation' })
     expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith('/plan'))).toBe(false)
+  })
+})
+
+describe('ChatPortal comments', () => {
+  const withComments = (status: string) => ({
+    ...detail(status),
+    comments: [{ id: 'k1', text: 'Move the date please', createdAt: '2026-10-21T09:30:00.000Z' }],
+  })
+  const mockApi = (status: string) =>
+    fetchMock.mockImplementation(async (url: string, init?: { method?: string }) => {
+      if (url.endsWith('/plan')) return { ok: true, status: 200, json: async () => ({ url: 'https://files.test/p.pdf' }) }
+      if (url.endsWith('/comments') && init?.method === 'POST') return { ok: true, status: 201, json: async () => ({ status: 'clarification_review' }) }
+      return { ok: true, status: 200, json: async () => withComments(status) }
+    })
+
+  it('shows earlier comments and the form in plan_ready', async () => {
+    mockApi('plan_ready')
+    render(<ChatPortal />)
+    expect(await screen.findByText('Move the date please')).toBeTruthy()
+    expect(screen.getByLabelText(/your comments/i)).toBeTruthy()
+  })
+
+  it('shows earlier comments but no form after sending', async () => {
+    mockApi('clarification_review')
+    render(<ChatPortal />)
+    expect(await screen.findByText('Move the date please')).toBeTruthy()
+    expect(screen.queryByLabelText(/your comments/i)).toBeNull()
+  })
+
+  it('moves to the review status and appends the comment after posting', async () => {
+    mockApi('plan_ready')
+    render(<ChatPortal />)
+    fireEvent.change(await screen.findByLabelText(/your comments/i), { target: { value: 'One more thing' } })
+    fireEvent.click(screen.getByRole('button', { name: /send comments/i }))
+    await waitFor(() => expect(screen.queryByLabelText(/your comments/i)).toBeNull())
+    expect(screen.getByRole('region', { name: 'Case status' }).textContent).toMatch(/Your comments are being reviewed/)
+    expect(screen.getByText('One more thing')).toBeTruthy()
+  })
+
+  it('shows no comment section in doctor_review', async () => {
+    mockApi('doctor_review')
+    render(<ChatPortal />)
+    await screen.findByRole('region', { name: 'Conversation' })
+    expect(screen.queryByText('Move the date please')).toBeNull()
   })
 })
 
