@@ -32,9 +32,9 @@ describe('portal route skeletons', () => {
     expect(screen.getByRole('heading', { level: 1, name: heading })).toBeTruthy()
   })
 
-  it('chat shell reads the id from the route params', async () => {
+  it('chat portal fetches the chat named in the route params', async () => {
     const { default: Page } = await import('./chats/[id]/page')
     render(<Page />)
-    expect(screen.getByText(/3f1c2b4a-0000-4000-8000-000000000001/)).toBeTruthy()
+    expect(globalThis.fetch).toHaveBeenCalledWith('/api/chats/3f1c2b4a-0000-4000-8000-000000000001', expect.anything())
   })
 })
