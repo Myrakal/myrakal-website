@@ -1,6 +1,5 @@
-
-const mockCreateClient = jest.fn(() => ({}))
-jest.mock('@supabase/supabase-js', () => ({ createClient: mockCreateClient }))
+const mockCreateBrowserClient = jest.fn(() => ({}))
+jest.mock('@supabase/ssr', () => ({ createBrowserClient: mockCreateBrowserClient }))
 
 const load = async () => {
   jest.resetModules()
@@ -20,15 +19,15 @@ describe('supabase browser client', () => {
     process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'] = ''
     const { getSupabase } = await load()
     expect(getSupabase()).toBeNull()
-    expect(mockCreateClient).not.toHaveBeenCalled()
+    expect(mockCreateBrowserClient).not.toHaveBeenCalled()
   })
 
-  it('creates one client from the public url and anon key', async () => {
+  it('creates one cookie-session client from the public url and anon key', async () => {
     process.env['NEXT_PUBLIC_SUPABASE_URL'] = 'https://x.supabase.co'
     process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'] = 'anon'
     const { getSupabase } = await load()
     expect(getSupabase()).toBe(getSupabase())
-    expect(mockCreateClient).toHaveBeenCalledTimes(1)
-    expect(mockCreateClient).toHaveBeenCalledWith('https://x.supabase.co', 'anon')
+    expect(mockCreateBrowserClient).toHaveBeenCalledTimes(1)
+    expect(mockCreateBrowserClient).toHaveBeenCalledWith('https://x.supabase.co', 'anon')
   })
 })
