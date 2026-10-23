@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 import { ChatList } from '@/components/portal/ChatList'
 
@@ -50,37 +50,19 @@ describe('ChatList', () => {
     expect((await screen.findByRole('link', { name: 'New chat' })).getAttribute('href')).toBe('/chat')
   })
 
-  it('starts a chat and opens it for someone with no chats yet', async () => {
-    fetchMock.mockImplementation(async (_url: string, init?: { method?: string }) =>
-      init?.method === 'POST'
-        ? { ok: true, status: 201, json: async () => ({ id: 'new-chat-id' }) }
-        : { ok: true, status: 200, json: async () => [] },
-    )
+  it('sends someone with no chats straight to a new chat', async () => {
+    const fetchSpy = respond(200, [])
     render(<ChatList />)
     expect(await screen.findByText(/starting your chat/i)).toBeTruthy()
-    await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/chat?id=new-chat-id'))
-    const posts = fetchMock.mock.calls.filter(([, init]) => init?.method === 'POST')
-    expect(posts).toHaveLength(1)
-    expect(posts[0][0]).toBe('/api/chats')
+    expect(mockReplace).toHaveBeenCalledWith('/chat')
+    expect(screen.queryByRole('link', { name: 'New chat' })).toBeNull()
+    expect(fetchSpy.mock.calls.filter(([, init]) => init?.method === 'POST')).toHaveLength(0)
   })
 
-  it('does not create a chat for someone who already has chats', async () => {
-    const fetchSpy = respond(200, chats)
+  it('keeps showing the chats for someone who already has some', async () => {
+    respond(200, chats)
     render(<ChatList />)
     await screen.findByText('Knee replacement in Spain')
-    expect(fetchSpy.mock.calls.filter(([, init]) => init?.method === 'POST')).toHaveLength(0)
-    expect(mockReplace).not.toHaveBeenCalled()
-  })
-
-  it('falls back to the empty state when the new chat cannot be created', async () => {
-    fetchMock.mockImplementation(async (_url: string, init?: { method?: string }) =>
-      init?.method === 'POST'
-        ? { ok: false, status: 429, json: async () => ({}) }
-        : { ok: true, status: 200, json: async () => [] },
-    )
-    render(<ChatList />)
-    expect(await screen.findByText(/no chats yet/i)).toBeTruthy()
-    expect(screen.getByRole('link', { name: 'New chat' })).toBeTruthy()
     expect(mockReplace).not.toHaveBeenCalled()
   })
 

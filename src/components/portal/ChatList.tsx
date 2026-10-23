@@ -36,12 +36,9 @@ export function ChatList() {
         if (!res.ok) throw new Error()
         const body = await res.json()
         if (!Array.isArray(body)) throw new Error()
-        if (controller.signal.aborted) return
         if (body.length === 0) {
           setState('starting')
-          const created = await fetch('/api/chats', { method: 'POST', signal: controller.signal })
-          const { id } = created.ok ? await created.json() : { id: null }
-          if (typeof id === 'string') return router.replace(`/chat?id=${id}`)
+          return router.replace('/chat')
         }
         setChats(body)
         setState('ready')
@@ -54,9 +51,11 @@ export function ChatList() {
 
   return (
     <div className="mt-8">
-      <a href="/chat" className={buttonVariants({ size: 'lg', className: 'h-11 px-5' })}>
-        New chat
-      </a>
+      {state !== 'starting' && (
+        <a href="/chat" className={buttonVariants({ size: 'lg', className: 'h-11 px-5' })}>
+          New chat
+        </a>
+      )}
       {state === 'loading' && <p role="status" className="mt-6 text-sm">Loading your chats…</p>}
       {state === 'starting' && <p role="status" className="mt-6 text-sm">Starting your chat…</p>}
       {state === 'signed-out' && <p role="status" className="mt-6 text-sm">Redirecting to log in…</p>}
