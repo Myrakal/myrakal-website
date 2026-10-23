@@ -8,17 +8,51 @@ datasource db {
   provider = "postgresql"
 }
 
-model Intake {
-  id              String    @id @default(uuid()) @db.Uuid
-  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  name            String?
-  email           String
-  transcript      Json
-  consultStatus   String    @default("awaiting_payment") @map("consult_status")
-  paidAt          DateTime? @map("paid_at") @db.Timestamptz(6)
-  stripeSessionId String?   @unique @map("stripe_session_id")
-  consultNote     String?   @map("consult_note")
-  reviewedAt      DateTime? @map("reviewed_at") @db.Timestamptz(6)
+enum ChatStatus {
+  intake
+  doctor_review
+  plan_ready
+  clarification_review
+  awaiting_payment
+  reservations
+  booked
+}
 
-  @@map("intakes")
+model Chat {
+  id              String     @id @default(uuid()) @db.Uuid
+  userId          String     @map("user_id") @db.Uuid
+  status          ChatStatus @default(intake)
+  intake          Json       @default("{}")
+  priceCents      Int?       @map("price_cents")
+  stripeSessionId String?    @unique @map("stripe_session_id")
+  paidAt          DateTime?  @map("paid_at") @db.Timestamptz(6)
+  createdAt       DateTime   @default(now()) @map("created_at") @db.Timestamptz(6)
+  messages        Message[]
+  comments        Comment[]
+
+  @@index([userId, createdAt])
+  @@map("chats")
+}
+
+model Message {
+  id        String   @id @default(uuid()) @db.Uuid
+  chatId    String   @map("chat_id") @db.Uuid
+  role      String
+  text      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@index([chatId, createdAt])
+  @@map("messages")
+}
+
+model Comment {
+  id        String   @id @default(uuid()) @db.Uuid
+  chatId    String   @map("chat_id") @db.Uuid
+  text      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@index([chatId, createdAt])
+  @@map("comments")
 }
