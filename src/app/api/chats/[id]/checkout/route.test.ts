@@ -1,9 +1,9 @@
 const findFirst = jest.fn()
-const update = jest.fn()
+const updateMany = jest.fn()
 const requireUser = jest.fn()
 const sessionsCreate = jest.fn()
 const sessionsRetrieve = jest.fn()
-jest.mock('@/server/db', () => ({ db: () => ({ chat: { findFirst, update } }) }))
+jest.mock('@/server/db', () => ({ db: () => ({ chat: { findFirst, updateMany } }) }))
 jest.mock('@/server/auth', () => ({ requireUser: () => requireUser() }))
 jest.mock('@/server/stripe', () => ({ stripe: () => ({ checkout: { sessions: { create: sessionsCreate, retrieve: sessionsRetrieve } } }) }))
 
@@ -66,8 +66,10 @@ describe('POST /api/chats/:id/checkout', () => {
         cancel_url: `https://myrakal.com/chats/${ID}`,
         line_items: [expect.objectContaining({ quantity: 1, price_data: expect.objectContaining({ currency: 'usd', unit_amount: 15000 }) })],
       }),
+      expect.any(Object),
     )
-    expect(update).toHaveBeenCalledWith({ where: { id: ID }, data: { stripeSessionId: 'cs_new' } })
+    expect(updateMany).toHaveBeenCalledWith({ where: { id: ID, status: 'awaiting_payment' }, data: { stripeSessionId: 'cs_new' } })
+    expect(sessionsCreate).toHaveBeenCalledWith(expect.anything(), { idempotencyKey: `checkout-${ID}-first` })
   })
 
   it('prefers the chat price over PLAN_PRICE_CENTS, which beats the default', async () => {
@@ -91,7 +93,32 @@ describe('POST /api/chats/:id/checkout', () => {
     findFirst.mockResolvedValue({ status: 'awaiting_payment', priceCents: null, stripeSessionId: 'cs_old' })
     sessionsRetrieve.mockResolvedValue({ id: 'cs_old', status: 'expired', url: null })
     expect((await (await call()).json()).url).toBe('https://checkout.stripe.com/new')
-    sessionsRetrieve.mockRejectedValue(new Error('No such session'))
+    sessionsRetrieve.mockRejectedValue(Object.assign(new Error('No such session'), { code: 'resource_missing' }))
     expect((await (await call()).json()).url).toBe('https://checkout.stripe.com/new')
+  })
+
+  it('keys the idempotency on the previous session so retries after expiry get a new one', async () => {
+    findFirst.mockResolvedValue({ status: 'awaiting_payment', priceCents: null, stripeSessionId: 'cs_old' })
+    sessionsRetrieve.mockResolvedValue({ id: 'cs_old', status: 'expired', url: null })
+    await call()
+    expect(sessionsCreate).toHaveBeenCalledWith(expect.anything(), { idempotencyKey: `checkout-${ID}-cs_old` })
+  })
+
+  it('throws on stripe errors other than a missing session instead of orphaning the old one', async () => {
+    findFirst.mockResolvedValue({ status: 'awaiting_payment', priceCents: null, stripeSessionId: 'cs_old' })
+    sessionsRetrieve.mockRejectedValue(Object.assign(new Error('rate limited'), { code: 'rate_limit' }))
+    await expect(call()).rejects.toThrow(/rate limited/)
+    expect(sessionsCreate).not.toHaveBeenCalled()
+  })
+
+  it('throws when stripe returns no url', async () => {
+    sessionsCreate.mockResolvedValue({ id: 'cs_new', url: null })
+    await expect(call()).rejects.toThrow(/url/)
+  })
+
+  it('ignores an invalid PLAN_PRICE_CENTS', async () => {
+    process.env.PLAN_PRICE_CENTS = '150.5'
+    await call()
+    expect(sessionsCreate.mock.calls[0][0].line_items[0].price_data.unit_amount).toBe(15000)
   })
 })
