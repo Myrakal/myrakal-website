@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8')
 const css = read('./index.css')
@@ -27,8 +27,8 @@ describe('Velvet + Pearl palette', () => {
 
   it('uses no gradients in styles or components', () => {
     expect(css).not.toMatch(/gradient/)
-    for (const file of ['ui/button', 'chat/ChatMessage', 'chat/ChatComposer', 'Hero', 'Closing', 'Scene', 'Navbar'])
-      expect(read(`./components/${file}.tsx`)).not.toMatch(/gradient|bg-none|bg-linear|\bvia-|\bfrom-charcoal/)
+    for (const file of readdirSync(new URL('./components', import.meta.url), { recursive: true }).map(String).filter((f) => /\.tsx$/.test(f) && !/\.test\./.test(f)))
+      expect(read(`./components/${file}`)).not.toMatch(/gradient|bg-none|bg-linear|\bvia-|\bfrom-charcoal/)
   })
 
   it('draws every call to action in alabaster instead of gold', () => {
