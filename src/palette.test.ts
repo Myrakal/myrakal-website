@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 
 const read = (path: string) => readFileSync(new URL(path, import.meta.url), 'utf8')
 const css = read('./index.css')
@@ -20,8 +20,23 @@ describe('Velvet + Pearl palette', () => {
     expect(token('foreground')).toBe('var(--cream)')
   })
 
-  it('defines an iridescent pearl gradient', () => {
-    expect(token('pearl-gradient')).toMatch(/^linear-gradient\(/)
+  it('uses a solid alabaster white as the primary color', () => {
+    expect(token('alabaster')?.toLowerCase()).toBe('#fbf8f3')
+    expect(token('primary')).toBe('var(--alabaster)')
+  })
+
+  it('uses no gradients in styles or components', () => {
+    expect(css).not.toMatch(/gradient/)
+    for (const file of readdirSync(new URL('./components', import.meta.url), { recursive: true }).map(String).filter((f) => /\.tsx$/.test(f) && !/\.test\./.test(f)))
+      expect(read(`./components/${file}`)).not.toMatch(/gradient|bg-none|bg-linear|\bvia-|\bfrom-charcoal/)
+  })
+
+  it('draws every call to action in alabaster instead of gold', () => {
+    for (const file of ['Hero', 'Closing', 'Navbar']) {
+      const source = read(`./components/${file}.tsx`)
+      expect(source).toMatch(/alabaster/)
+      expect(source).not.toMatch(/bg-champagne|border-champagne/)
+    }
   })
 
   it('leaves no legacy hardcoded white/black in components', () => {
