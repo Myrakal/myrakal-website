@@ -22,6 +22,14 @@
       "rules": {
         "react/only-export-components": "off"
       }
+    },
+    {
+      "files": [
+        "src/components/ui/**"
+      ],
+      "rules": {
+        "react/only-export-components": "off"
+      }
     }
   ]
 }
