@@ -4,6 +4,8 @@ const updateMany = jest.fn()
 const messageCreate = jest.fn()
 const requireUser = jest.fn()
 const runTurn = jest.fn()
+const limitReached = jest.fn()
+jest.mock('@/server/limits', () => ({ messageLimitReached: (...a: unknown[]) => limitReached(...a) }))
 const tx = { chat: { updateMany }, message: { create: messageCreate } }
 jest.mock('@/server/db', () => ({
   db: () => ({
@@ -35,6 +37,7 @@ const createdAt = new Date('2026-10-22T10:00:00Z')
 
 beforeEach(() => {
   jest.resetAllMocks()
+  limitReached.mockResolvedValue(false)
   requireUser.mockResolvedValue({ id: 'u1' })
   findFirst.mockResolvedValue({ status: 'intake', intake: { name: 'Ada' } })
   findMany.mockResolvedValue([{ role: 'assistant', text: 'hello' }, { role: 'user', text: 'hi' }])
@@ -87,6 +90,14 @@ describe('POST /api/chats/:id/messages', () => {
     await route.POST(post({ text: 'x' }), params())
     expect(findMany).toHaveBeenCalledWith(expect.objectContaining({ orderBy: { createdAt: 'desc' } }))
     expect(runTurn.mock.calls[0][0].history.map((m: { text: string }) => m.text)).toEqual(['hi', 'hello', 'x'])
+  })
+
+  it('returns 429 before calling Claude when the chat message cap is reached', async () => {
+    limitReached.mockResolvedValue(true)
+    const res = await route.POST(post({ text: 'x' }), params())
+    expect(res.status).toBe(429)
+    expect(limitReached).toHaveBeenCalledWith(ID)
+    expect(runTurn).not.toHaveBeenCalled()
   })
 
   it('runs the turn with history plus the new text and stored intake', async () => {
