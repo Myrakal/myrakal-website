@@ -1,7 +1,7 @@
 import { requireUser } from '@/server/auth'
 import { db } from '@/server/db'
 import { json, UUID } from '@/server/http'
-import { intakeProgress } from '@/server/intake-progress'
+import { intakeProgress } from '@/server/intake'
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser()
