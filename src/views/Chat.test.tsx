@@ -159,6 +159,13 @@ describe('Chat', () => {
     expect(screen.queryByText('Sam')).toBeNull()
   })
 
+  it('explains the limit when the server answers 429', async () => {
+    route({ 'POST /api/chats': () => reply(429, { error: 'too many chats' }) })
+    render(<Chat />)
+    await sendMessage('Hello')
+    expect((await screen.findByRole('alert')).textContent).toMatch(/reached the limit/i)
+  })
+
   it('goes to log in when the session has expired', async () => {
     mockParams = new URLSearchParams({ id: ID })
     route({ [`GET /api/chats/${ID}`]: () => reply(401, { error: 'unauthorized' }) })

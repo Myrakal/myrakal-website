@@ -19,6 +19,8 @@ type Progress = { collected: number; total: number }
 type Reply = { reply: Message; status: string; progress: Progress }
 type Detail = { status: string; progress: Progress; messages: Message[] }
 
+class RateLimited extends Error {}
+
 const post = (url: string, body?: object) =>
   fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: body && JSON.stringify(body) })
 
@@ -67,6 +69,7 @@ export default function Chat() {
       let id = chatId
       if (!id) {
         const created = await post('/api/chats')
+        if (created.status === 429) throw new RateLimited()
         if (!created.ok) throw new Error()
         id = (await created.json()).id as string
         setChatId(id)
@@ -75,14 +78,15 @@ export default function Chat() {
       const res = await post(`/api/chats/${id}/messages`, { text })
       if (res.status === 401) return router.replace('/login')
       if (res.status === 409) return router.push(`/chats/${id}`)
+      if (res.status === 429) throw new RateLimited()
       if (!res.ok) throw new Error()
       const data: Reply = await res.json()
       setMessages((all) => [...all, data.reply])
       setProgress(data.progress)
       if (data.status !== 'intake') router.push(`/chats/${id}`)
-    } catch {
+    } catch (e) {
       setMessages((all) => all.filter((m) => m.id !== pending.id))
-      setError('Your message was not sent. Please try again.')
+      setError(e instanceof RateLimited ? 'You have reached the limit for this chat. Please contact us to continue.' : 'Your message was not sent. Please try again.')
     } finally {
       setBusy(false)
     }
