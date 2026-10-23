@@ -7,6 +7,8 @@ jest.mock('next/navigation', () => ({
 
 const routes = [
   ['login/page', 'Log in: Myrakal', 'Log in'],
+  ['forgot-password/page', 'Forgot password: Myrakal', 'Forgot your password?'],
+  ['reset-password/page', 'Reset password: Myrakal', 'Choose a new password'],
   ['dashboard/page', 'Your chats: Myrakal', 'Your chats'],
   ['chats/[id]/page', 'Your case: Myrakal', 'Your case'],
 ] as const

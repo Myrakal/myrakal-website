@@ -106,4 +106,9 @@ describe('LoginForm', () => {
     render(<LoginForm />)
     await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/dashboard'))
   })
+
+  it('links to the forgot password page', () => {
+    render(<LoginForm />)
+    expect(screen.getByRole('link', { name: 'Forgot password?' }).getAttribute('href')).toBe('/forgot-password')
+  })
 })
