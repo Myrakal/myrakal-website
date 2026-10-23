@@ -1,5 +1,10 @@
 import { render, screen } from '@testing-library/react'
 
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
+  useSearchParams: () => new URLSearchParams(),
+}))
+
 const routes = [
   ['privacy', 'Privacy Policy: Myrakal'],
   ['terms', 'Terms of Service: Myrakal'],
