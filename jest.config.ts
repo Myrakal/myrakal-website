@@ -12,14 +12,14 @@ const client = createJestConfig({
   displayName: 'client',
   testEnvironment: 'jsdom',
   testMatch: ['<rootDir>/src/**/*.test.{ts,tsx}'],
-  testPathIgnorePatterns: ['<rootDir>/src/server/'],
+  testPathIgnorePatterns: ['<rootDir>/src/server/', '<rootDir>/src/app/api/'],
 })
 
 const server = createJestConfig({
   ...shared,
   displayName: 'server',
   testEnvironment: 'node',
-  testMatch: ['<rootDir>/src/server/**/*.test.ts'],
+  testMatch: ['<rootDir>/src/server/**/*.test.ts', '<rootDir>/src/app/api/**/*.test.ts'],
 })
 
 const withAssetStubs = async () => {
