@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react'
-import Contact from '@/pages/Contact'
-import Privacy from '@/pages/Privacy'
-import Terms from '@/pages/Terms'
+import Contact from '@/views/Contact'
+import Privacy from '@/views/Privacy'
+import Terms from '@/views/Terms'
 
 const text = (el: import('react').ReactElement) => render(el).container.textContent ?? ''
 

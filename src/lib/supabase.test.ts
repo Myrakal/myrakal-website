@@ -1,33 +1,34 @@
-import { vi } from 'vitest'
 
-const createClient = vi.fn(() => ({}))
-vi.mock('@supabase/supabase-js', () => ({ createClient }))
+const mockCreateClient = jest.fn(() => ({}))
+jest.mock('@supabase/supabase-js', () => ({ createClient: mockCreateClient }))
 
 const load = async () => {
-  vi.resetModules()
+  jest.resetModules()
   return import('@/lib/supabase')
 }
 
+const originalEnv = { ...process.env }
+
 describe('supabase browser client', () => {
   afterEach(() => {
-    vi.unstubAllEnvs()
-    vi.clearAllMocks()
+    process.env = { ...originalEnv }
+    jest.clearAllMocks()
   })
 
   it('returns null when the public env vars are not set', async () => {
-    vi.stubEnv('VITE_SUPABASE_URL', '')
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY', '')
+    process.env['NEXT_PUBLIC_SUPABASE_URL'] = ''
+    process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'] = ''
     const { getSupabase } = await load()
     expect(getSupabase()).toBeNull()
-    expect(createClient).not.toHaveBeenCalled()
+    expect(mockCreateClient).not.toHaveBeenCalled()
   })
 
   it('creates one client from the public url and anon key', async () => {
-    vi.stubEnv('VITE_SUPABASE_URL', 'https://x.supabase.co')
-    vi.stubEnv('VITE_SUPABASE_ANON_KEY', 'anon')
+    process.env['NEXT_PUBLIC_SUPABASE_URL'] = 'https://x.supabase.co'
+    process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'] = 'anon'
     const { getSupabase } = await load()
     expect(getSupabase()).toBe(getSupabase())
-    expect(createClient).toHaveBeenCalledTimes(1)
-    expect(createClient).toHaveBeenCalledWith('https://x.supabase.co', 'anon')
+    expect(mockCreateClient).toHaveBeenCalledTimes(1)
+    expect(mockCreateClient).toHaveBeenCalledWith('https://x.supabase.co', 'anon')
   })
 })

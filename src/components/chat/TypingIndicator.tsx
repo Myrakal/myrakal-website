@@ -1,3 +1,5 @@
+'use client'
+
 export function TypingIndicator() {
   return (
     <div role="status" className="flex justify-start">

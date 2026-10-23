@@ -12,6 +12,6 @@ describe('stripe', () => {
 
   it('returns a client when the key is set', () => {
     process.env.STRIPE_SECRET_KEY = 'sk_test_123'
-    expect(stripe().checkout.sessions.create).toBeTypeOf('function')
+    expect(typeof stripe().checkout.sessions.create).toBe('function')
   })
 })

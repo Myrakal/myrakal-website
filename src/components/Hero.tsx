@@ -6,8 +6,8 @@ export function Hero() {
   return (
     <section className="relative isolate flex min-h-svh flex-col items-center overflow-hidden bg-charcoal px-4 pt-24 pb-12 text-center sm:px-8 sm:pb-16">
       <img
-        src={ampoule}
-        srcSet={`${ampouleSmall} 960w, ${ampoule} 1672w`}
+        src={ampoule.src}
+        srcSet={`${ampouleSmall.src} 960w, ${ampoule.src} 1672w`}
         sizes="100vw"
         alt="A sealed glass ampoule of claret liquid with an engraved gold band, resting on red linen"
         fetchPriority="high"
@@ -19,7 +19,7 @@ export function Hero() {
       />
       <div className="flex w-full flex-1 items-center justify-center py-6">
         <img
-          src={wordmark}
+          src={wordmark.src}
           alt=""
           className="pointer-events-none w-[min(92vw,1080px,120svh)] opacity-95"
         />
