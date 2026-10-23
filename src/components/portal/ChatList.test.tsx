@@ -9,7 +9,8 @@ const chats = [
 ]
 
 const mockReplace = jest.fn()
-jest.mock('next/navigation', () => ({ useRouter: () => ({ replace: mockReplace }) }))
+const mockRouter = { replace: mockReplace }
+jest.mock('next/navigation', () => ({ useRouter: () => mockRouter }))
 
 const fetchMock = jest.fn()
 globalThis.fetch = fetchMock
