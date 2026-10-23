@@ -38,3 +38,10 @@ describe('createDb', () => {
     expect(mockPrismaClient).toHaveBeenCalledTimes(1)
   })
 })
+
+describe('chat status enum', () => {
+  it('exposes the seven chat statuses', () => {
+    const { ChatStatus } = jest.requireActual('../../generated/prisma/enums.ts')
+    expect(Object.values(ChatStatus)).toEqual(['intake', 'doctor_review', 'plan_ready', 'clarification_review', 'awaiting_payment', 'reservations', 'booked'])
+  })
+})
