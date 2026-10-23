@@ -120,6 +120,37 @@ describe('ChatPortal comments', () => {
   })
 })
 
+describe('ChatPortal approve', () => {
+  const mockApi = (status: string) =>
+    fetchMock.mockImplementation(async (url: string, init?: { method?: string }) => {
+      if (url.endsWith('/plan')) return { ok: true, status: 200, json: async () => ({ url: 'https://files.test/p.pdf' }) }
+      if (url.endsWith('/approve') && init?.method === 'POST') return { ok: true, status: 200, json: async () => ({ status: 'awaiting_payment' }) }
+      return { ok: true, status: 200, json: async () => detail(status) }
+    })
+
+  it('offers approval in plan_ready', async () => {
+    mockApi('plan_ready')
+    render(<ChatPortal />)
+    expect(await screen.findByRole('button', { name: /^approve plan$/i })).toBeTruthy()
+  })
+
+  it('does not offer approval after the plan was sent back for review', async () => {
+    mockApi('clarification_review')
+    render(<ChatPortal />)
+    await screen.findByRole('region', { name: 'Conversation' })
+    expect(screen.queryByRole('button', { name: /approve/i })).toBeNull()
+  })
+
+  it('moves to the payment status after approving', async () => {
+    mockApi('plan_ready')
+    render(<ChatPortal />)
+    fireEvent.click(await screen.findByRole('button', { name: /^approve plan$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /confirm approval/i }))
+    await waitFor(() => expect(screen.getByRole('region', { name: 'Case status' }).textContent).toMatch(/Payment is the next step/))
+    expect(screen.queryByRole('button', { name: /approve/i })).toBeNull()
+  })
+})
+
 describe('ChatPortal', () => {
   it.each(copy)('shows the %s status message', async (status, text) => {
     respond(200, detail(status))
