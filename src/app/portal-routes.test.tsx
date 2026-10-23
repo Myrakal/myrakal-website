@@ -13,6 +13,12 @@ const routes = [
   ['chats/[id]/page', 'Your case: Myrakal', 'Your case'],
 ] as const
 
+const realFetch = globalThis.fetch
+
+afterAll(() => {
+  globalThis.fetch = realFetch
+})
+
 beforeEach(() => {
   globalThis.fetch = jest.fn(() => new Promise(() => {})) as unknown as typeof fetch
 })

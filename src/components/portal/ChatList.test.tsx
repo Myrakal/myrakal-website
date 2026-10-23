@@ -68,6 +68,18 @@ describe('ChatList', () => {
     expect((await screen.findByRole('alert')).textContent).toMatch(/could not load/i)
   })
 
+  it('shows an error when the body is not a list', async () => {
+    respond(200, { error: 'nope' })
+    render(<ChatList />)
+    expect((await screen.findByRole('alert')).textContent).toMatch(/could not load/i)
+  })
+
+  it('titles finished chats without a summary as your case', async () => {
+    respond(200, [{ id: 'z9', status: 'booked', createdAt: '2026-10-01T10:00:00.000Z', summary: '' }])
+    render(<ChatList />)
+    expect(await screen.findByText('Your case')).toBeTruthy()
+  })
+
   it('goes to log in when the session has expired', async () => {
     respond(401, { error: 'unauthorized' })
     render(<ChatList />)

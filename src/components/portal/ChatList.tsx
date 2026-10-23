@@ -34,7 +34,9 @@ export function ChatList() {
           return
         }
         if (!res.ok) throw new Error()
-        setChats(await res.json())
+        const body = await res.json()
+        if (!Array.isArray(body)) throw new Error()
+        setChats(body)
         setState('ready')
       })
       .catch(() => {
@@ -62,7 +64,7 @@ export function ChatList() {
             <li key={chat.id}>
               <a href={href(chat)} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border bg-card px-5 py-4 text-card-foreground no-underline hover:bg-muted">
                 <span className="flex min-w-0 flex-col">
-                  <span className="truncate font-medium">{chat.summary ?? 'New conversation'}</span>
+                  <span className="truncate font-medium">{chat.summary || (chat.status === 'intake' ? 'New conversation' : 'Your case')}</span>
                   <time dateTime={chat.createdAt} className="text-xs text-muted-foreground">
                     {new Date(chat.createdAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}
                   </time>
