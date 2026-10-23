@@ -151,6 +151,36 @@ describe('ChatPortal approve', () => {
   })
 })
 
+describe('ChatPortal payment', () => {
+  const mockApi = (status: string) =>
+    fetchMock.mockImplementation(async (url: string) => {
+      if (url.endsWith('/plan')) return { ok: true, status: 200, json: async () => ({ url: 'https://files.test/p.pdf' }) }
+      return { ok: true, status: 200, json: async () => ({ ...detail(status), priceCents: 15000 }) }
+    })
+  afterEach(() => window.history.replaceState(null, '', '/'))
+
+  it('shows the pay button in awaiting_payment', async () => {
+    mockApi('awaiting_payment')
+    render(<ChatPortal />)
+    expect(await screen.findByRole('button', { name: 'Pay $150.00' })).toBeTruthy()
+  })
+
+  it('does not show the pay button in other statuses', async () => {
+    mockApi('plan_ready')
+    render(<ChatPortal />)
+    await screen.findByRole('region', { name: 'Conversation' })
+    expect(screen.queryByRole('button', { name: /^pay/i })).toBeNull()
+  })
+
+  it('confirms the payment after the Stripe return', async () => {
+    window.history.replaceState(null, '', `/chats/${ID}?paid=1`)
+    mockApi('awaiting_payment')
+    render(<ChatPortal />)
+    expect((await screen.findByText(/confirming your payment/i)).textContent).toBeTruthy()
+    expect(screen.queryByRole('button', { name: /^pay/i })).toBeNull()
+  })
+})
+
 describe('ChatPortal', () => {
   it.each(copy)('shows the %s status message', async (status, text) => {
     respond(200, detail(status))
