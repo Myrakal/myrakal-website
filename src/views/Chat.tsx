@@ -65,8 +65,8 @@ export default function Chat() {
   }, [initialId, router])
 
   useEffect(() => {
-    end.current?.scrollIntoView?.({ block: 'end' })
-  }, [messages, busy])
+    end.current?.scrollIntoView?.({ block: 'end', behavior: 'smooth' })
+  }, [messages, busy, loading])
 
   const send = async (text: string) => {
     const pending: Message = { id: `pending-${Date.now()}`, role: 'user', text }
@@ -127,7 +127,7 @@ export default function Chat() {
           ))}
           {loading && <p role="status" className="text-center text-sm">Loading your conversation…</p>}
           {busy && <TypingIndicator />}
-          <div ref={end} />
+          <div ref={end} className="scroll-mb-72" />
         </div>
 
         <div className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">

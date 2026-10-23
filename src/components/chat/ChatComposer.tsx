@@ -15,10 +15,11 @@ export function ChatComposer({ onSend, busy = false }: Props) {
 
   const send = async () => {
     if (!canSend) return
-    if ((await onSend(text.trim())) === false) return
+    const message = text.trim()
     setText('')
     if (box.current) box.current.style.height = ''
     box.current?.focus()
+    if ((await onSend(message)) === false) setText(message)
   }
 
   const grow = (el: HTMLTextAreaElement) => {
