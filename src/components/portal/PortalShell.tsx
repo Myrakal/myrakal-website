@@ -3,8 +3,8 @@ import type { ReactNode } from 'react'
 export function PortalShell({ title, children }: { title: string; children?: ReactNode }) {
   return (
     <div className="min-h-dvh bg-background text-foreground">
-      <header className="px-6 py-4">
-        <div className="mx-auto flex w-full max-w-3xl items-center justify-between">
+      <header className="py-4">
+        <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-6">
           <a href="/" className="font-heading text-2xl text-foreground no-underline">
             Myrakal
           </a>
