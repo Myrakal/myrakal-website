@@ -13,7 +13,7 @@ export function AuthField({ label, ...props }: { label: string } & ComponentProp
         id={id}
         required
         {...props}
-        className="h-11 w-full rounded-xl border border-border bg-card px-4 text-base outline-none focus-visible:ring-2 focus-visible:ring-foreground/40"
+        className="h-11 w-full rounded-xl border border-border bg-card px-4 text-base text-card-foreground outline-none focus-visible:ring-2 focus-visible:ring-foreground/40"
       />
     </div>
   )
