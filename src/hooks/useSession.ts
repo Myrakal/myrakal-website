@@ -15,9 +15,13 @@ export function useSession() {
   useEffect(() => {
     if (!supabase) return
     let active = true
-    supabase.auth.getSession().then(({ data }: { data: { session: Session | null } }) => {
-      if (active) setState({ user: data.session?.user ?? null, loading: false })
-    })
+    supabase.auth
+      .getSession()
+      .then(({ data }: { data: { session: Session | null } }) => data.session?.user ?? null)
+      .catch(() => null)
+      .then((user: User | null) => {
+        if (active) setState({ user, loading: false })
+      })
     const { data } = supabase.auth.onAuthStateChange((_event: string, session: Session | null) => {
       setState({ user: session?.user ?? null, loading: false })
     })

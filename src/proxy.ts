@@ -19,16 +19,18 @@ export async function proxy(request: NextRequest) {
   const supabase = createServerClient(url, anonKey, {
     cookies: {
       getAll: () => request.cookies.getAll(),
-      setAll: (cookies) => {
+      setAll: (cookies, headers) => {
         cookies.forEach(({ name, value }) => request.cookies.set(name, value))
         response = NextResponse.next({ request })
         cookies.forEach(({ name, value, options }) => response.cookies.set(name, value, options))
+        Object.entries(headers ?? {}).forEach(([name, value]) => response.headers.set(name, value))
       },
     },
   })
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  const user = await supabase.auth
+    .getUser()
+    .then(({ data }) => data.user)
+    .catch(() => null)
 
   return !user && isProtected ? redirectToLogin() : response
 }

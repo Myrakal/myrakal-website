@@ -54,3 +54,12 @@ describe('useSession', () => {
     expect(result.current.user).toBeNull()
   })
 })
+
+describe('useSession failures', () => {
+  it('stops loading when getSession rejects', async () => {
+    mockGetSession.mockRejectedValue(new Error('storage'))
+    const { result } = renderHook(() => useSession())
+    await waitFor(() => expect(result.current.loading).toBe(false))
+    expect(result.current.user).toBeNull()
+  })
+})

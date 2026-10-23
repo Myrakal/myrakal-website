@@ -77,3 +77,26 @@ describe('proxy', () => {
     expect(re.test('/api/chats')).toBe(true)
   })
 })
+
+describe('proxy failure handling', () => {
+  it('serves public pages when supabase throws', async () => {
+    mockGetUser.mockRejectedValue(new Error('down'))
+    const res = await proxy(req('/'))
+    expect(res.status).toBe(200)
+  })
+
+  it('redirects protected pages to /login when supabase throws', async () => {
+    mockGetUser.mockRejectedValue(new Error('down'))
+    const res = await proxy(req('/dashboard'))
+    expect(res.status).toBe(307)
+  })
+
+  it('forwards cache headers from setAll', async () => {
+    mockGetUser.mockImplementation(async () => {
+      ;(cookieHandlers.setAll as (c: object[], h: Record<string, string>) => void)([], { 'cache-control': 'private, no-store' })
+      return { data: { user: { id: 'u1' } } }
+    })
+    const res = await proxy(req('/'))
+    expect(res.headers.get('cache-control')).toBe('private, no-store')
+  })
+})
