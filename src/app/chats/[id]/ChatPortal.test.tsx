@@ -53,13 +53,13 @@ describe('ChatPortal', () => {
   it.each(copy)('shows the %s status message', async (status, text) => {
     respond(200, detail(status))
     render(<ChatPortal />)
-    expect((await screen.findByRole('status', { name: 'Case status' })).textContent).toMatch(text)
+    expect((await screen.findByRole('region', { name: 'Case status' })).textContent).toMatch(text)
   })
 
   it('loads the chat by its route id and shows the transcript', async () => {
     respond(200, detail('doctor_review'))
     render(<ChatPortal />)
-    const log = await screen.findByRole('log', { name: 'Conversation' })
+    const log = await screen.findByRole('region', { name: 'Conversation' })
     expect(fetchMock).toHaveBeenCalledWith(`/api/chats/${ID}`, expect.anything())
     expect(within(log).getByText('I need a knee replacement')).toBeTruthy()
     expect(within(log).getByText('What is your name?')).toBeTruthy()
@@ -68,7 +68,7 @@ describe('ChatPortal', () => {
   it('links back to the dashboard', async () => {
     respond(200, detail('booked'))
     render(<ChatPortal />)
-    await screen.findByRole('log')
+    await screen.findByRole('region', { name: 'Conversation' })
     expect(screen.getByRole('link', { name: /your chats/i }).getAttribute('href')).toBe('/dashboard')
   })
 
@@ -76,6 +76,18 @@ describe('ChatPortal', () => {
     respond(200, detail('intake'))
     render(<ChatPortal />)
     expect((await screen.findByRole('link', { name: 'Continue your conversation' })).getAttribute('href')).toBe(`/chat?id=${ID}`)
+  })
+
+  it('falls back to a generic message for an unknown status', async () => {
+    respond(200, detail('some_future_status'))
+    render(<ChatPortal />)
+    expect((await screen.findByRole('region', { name: 'Case status' })).textContent).toMatch(/working on your case/i)
+  })
+
+  it('shows a load error when a 500 has a non-JSON body', async () => {
+    fetchMock.mockResolvedValue({ ok: false, status: 500, json: async () => { throw new SyntaxError() } })
+    render(<ChatPortal />)
+    expect((await screen.findByRole('alert')).textContent).toMatch(/could not load/i)
   })
 
   it('shows a loading note first', () => {

@@ -21,8 +21,9 @@ export default function ChatPortal() {
       .then(async (res) => {
         if (res.status === 401) return router.replace('/login')
         if (res.status === 404) return setState({ phase: 'error', text: 'We could not find this case.' })
+        if (!res.ok) throw new Error()
         const chat: Detail = await res.json()
-        if (!res.ok || !Array.isArray(chat.messages)) throw new Error()
+        if (!Array.isArray(chat.messages) || typeof chat.status !== 'string') throw new Error()
         setState({ phase: 'ready', chat })
       })
       .catch(() => {
@@ -44,20 +45,20 @@ export default function ChatPortal() {
       )}
       {state.phase === 'ready' && (
         <>
-          <section role="status" aria-label="Case status" className="mt-6 rounded-2xl border border-border bg-card px-5 py-4 text-card-foreground">
+          <section aria-label="Case status" className="mt-6 rounded-2xl border border-border bg-card px-5 py-4 text-card-foreground">
             <p className="mb-1 text-xs font-bold tracking-[0.15em] text-muted-foreground uppercase">Status</p>
-            <p>{STATUS_COPY[state.chat.status]}</p>
+            <p>{STATUS_COPY[state.chat.status] ?? 'We are working on your case.'}</p>
             {state.chat.status === 'intake' && (
               <a href={`/chat?id=${state.chat.id}`} className="mt-3 inline-block font-medium underline underline-offset-4">
                 Continue your conversation
               </a>
             )}
           </section>
-          <div role="log" aria-label="Conversation" className="mt-8 flex flex-col gap-4">
+          <section aria-label="Conversation" className="mt-8 flex flex-col gap-4">
             {state.chat.messages.map((m) => (
               <ChatMessage key={m.id} message={m} />
             ))}
-          </div>
+          </section>
         </>
       )}
     </PortalShell>
