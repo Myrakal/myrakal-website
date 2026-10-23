@@ -3,9 +3,16 @@
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import logo from '@/assets/myrakal-logo.svg'
+import { useSession } from '@/hooks/useSession'
+import { getSupabase } from '@/lib/supabase'
+
+const authLink =
+  'font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-foreground uppercase underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne'
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const { user, loading } = useSession()
+  const authClass = `${authLink} ${scrolled ? 'inline' : 'hidden sm:inline'}`
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80)
@@ -17,7 +24,7 @@ export function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 flex px-4 py-3 transition-colors sm:px-12 sm:py-5 ${
-        scrolled ? 'justify-start bg-background pr-36 sm:pr-[30rem]' : 'justify-center bg-transparent'
+        scrolled ? 'justify-start bg-background pr-56 sm:pr-[34rem]' : 'justify-center bg-transparent'
       }`}
     >
       <motion.a
@@ -55,6 +62,20 @@ export function Navbar() {
             </button>
           ))}
         </nav>
+        {loading ? null : user ? (
+          <>
+            <a href="/dashboard" className={`${authLink} hidden sm:inline`}>
+              Dashboard
+            </a>
+            <button type="button" onClick={() => void getSupabase()?.auth.signOut().catch(() => {})} className={authClass}>
+              Log out
+            </button>
+          </>
+        ) : (
+          <a href="/login" className={authClass}>
+            Log in
+          </a>
+        )}
         <a
           href="/chat/"
           className="rounded-full border border-alabaster/60 px-4 py-2 font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-alabaster uppercase transition-colors hover:bg-alabaster/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-alabaster sm:px-5"

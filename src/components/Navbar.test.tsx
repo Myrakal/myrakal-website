@@ -1,4 +1,10 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
+
+const mockSignOut = jest.fn(() => Promise.resolve({ error: null }))
+const mockUseSession = jest.fn(() => ({ user: null, loading: false }))
+jest.mock('@/hooks/useSession', () => ({ useSession: () => mockUseSession() }))
+jest.mock('@/lib/supabase', () => ({ getSupabase: () => ({ auth: { signOut: mockSignOut } }) }))
+
 import { Navbar } from '@/components/Navbar'
 
 const scrollTo = (y: number) =>
@@ -8,7 +14,39 @@ const scrollTo = (y: number) =>
   })
 
 describe('Navbar', () => {
-  afterEach(() => scrollTo(0))
+  afterEach(() => {
+    scrollTo(0)
+    jest.clearAllMocks()
+    mockSignOut.mockResolvedValue({ error: null })
+    mockUseSession.mockReturnValue({ user: null, loading: false })
+  })
+
+  it('offers log in to signed-out visitors', () => {
+    render(<Navbar />)
+    expect(screen.getByRole('link', { name: 'Log in' }).getAttribute('href')).toBe('/login')
+    expect(screen.queryByRole('button', { name: 'Log out' })).toBeNull()
+  })
+
+  it('offers the dashboard and log out to signed-in users', () => {
+    mockUseSession.mockReturnValue({ user: { id: 'u1' } as never, loading: false })
+    render(<Navbar />)
+    expect(screen.getByRole('link', { name: 'Dashboard' }).getAttribute('href')).toBe('/dashboard')
+    expect(screen.queryByRole('link', { name: 'Log in' })).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Log out' }))
+    expect(mockSignOut).toHaveBeenCalled()
+  })
+
+  it('shows no auth link while the session is loading', () => {
+    mockUseSession.mockReturnValue({ user: null, loading: true })
+    render(<Navbar />)
+    expect(screen.queryByRole('link', { name: 'Log in' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Log out' })).toBeNull()
+  })
+
+  it('keeps Talk with us pointed at the chat', () => {
+    render(<Navbar />)
+    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/chat/')
+  })
 
   it('shows the new tagline after scrolling', () => {
     render(<Navbar />)
