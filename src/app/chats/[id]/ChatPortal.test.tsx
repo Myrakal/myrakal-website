@@ -71,7 +71,7 @@ describe('ChatPortal plan viewer', () => {
   it.each(noPlanStatuses)('does not request the plan in %s', async (status) => {
     currentStatus = status
     render(<ChatPortal />)
-    await screen.findByRole('log', { name: 'Conversation' })
+    await screen.findByRole('region', { name: 'Conversation' })
     expect(fetchMock.mock.calls.some(([url]) => String(url).endsWith('/plan'))).toBe(false)
   })
 })
