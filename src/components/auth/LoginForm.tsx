@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useId, useState, type FormEvent } from 'react'
+import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/hooks/useSession'
@@ -18,12 +18,17 @@ export function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [notice, setNotice] = useState('')
+  const leaving = useRef(false)
   const emailId = useId()
   const passwordId = useId()
   const signup = mode === 'signup'
 
   useEffect(() => {
-    if (user) router.push('/dashboard')
+    if (user && !leaving.current) {
+      leaving.current = true
+      router.push('/dashboard')
+    }
   }, [user, router])
 
   const submit = async (e: FormEvent) => {
@@ -32,16 +37,20 @@ export function LoginForm() {
     if (!supabase) return setError('Sign in is unavailable right now. Please try again later.')
     setBusy(true)
     setError('')
+    setNotice('')
     const credentials = { email: email.trim(), password }
-    let result = signup ? await supabase.auth.signUp(credentials) : await supabase.auth.signInWithPassword(credentials)
-    if (signup && !result.error && !result.data.session) result = await supabase.auth.signInWithPassword(credentials)
-    if (result.error) {
-      setError(result.error.message)
+    try {
+      const result = signup ? await supabase.auth.signUp(credentials) : await supabase.auth.signInWithPassword(credentials)
+      if (result.error) return setError(result.error.message)
+      if (!result.data.session) return setNotice('Check your email to confirm your account, then log in.')
+      leaving.current = true
+      router.push('/dashboard')
+      router.refresh()
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
       setBusy(false)
-      return
     }
-    router.push('/dashboard')
-    router.refresh()
   }
 
   return (
@@ -68,6 +77,7 @@ export function LoginForm() {
           className={inputClass}
         />
       </div>
+      {notice && <p role="status" className="text-sm">{notice}</p>}
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}
@@ -76,7 +86,7 @@ export function LoginForm() {
       <Button type="submit" size="lg" disabled={busy} className="h-11">
         {busy ? 'Please wait…' : signup ? 'Sign up' : 'Log in'}
       </Button>
-      <Button type="button" variant="link" onClick={() => { setMode(signup ? 'login' : 'signup'); setError('') }}>
+      <Button type="button" variant="link" disabled={busy} onClick={() => { setMode(signup ? 'login' : 'signup'); setError(''); setNotice('') }}>
         {signup ? 'I already have an account' : 'Create an account'}
       </Button>
     </form>

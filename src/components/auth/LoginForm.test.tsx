@@ -58,15 +58,34 @@ describe('LoginForm', () => {
     await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/dashboard'))
   })
 
-  it('signs in after sign up when no session is returned', async () => {
+  it('asks the user to confirm their email when sign up returns no session', async () => {
     mockSignUp.mockResolvedValue({ data: { session: null }, error: null })
-    mockSignIn.mockResolvedValue({ data: { session: {} }, error: null })
     render(<LoginForm />)
     await userEvent.setup().click(screen.getByRole('button', { name: 'Create an account' }))
     const user = await fill()
     await user.click(screen.getByRole('button', { name: 'Sign up' }))
-    await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/dashboard'))
-    expect(mockSignIn).toHaveBeenCalledTimes(1)
+    expect((await screen.findByRole('status')).textContent).toContain('Check your email')
+    expect(mockSignIn).not.toHaveBeenCalled()
+    expect(mockPush).not.toHaveBeenCalled()
+  })
+
+  it('re-enables the form and shows an error when the request throws', async () => {
+    mockSignIn.mockRejectedValue(new Error('network'))
+    render(<LoginForm />)
+    const user = await fill()
+    await user.click(screen.getByRole('button', { name: 'Log in' }))
+    expect((await screen.findByRole('alert')).textContent).toContain('Something went wrong')
+    expect((screen.getByRole('button', { name: 'Log in' }) as HTMLButtonElement).disabled).toBe(false)
+  })
+
+  it('navigates once when sign in also updates the session', async () => {
+    mockSignIn.mockResolvedValue({ data: { session: {} }, error: null })
+    const { rerender } = render(<LoginForm />)
+    const user = await fill()
+    await user.click(screen.getByRole('button', { name: 'Log in' }))
+    mockUseSession.mockReturnValue({ user: { id: 'u1' } as never, loading: false })
+    rerender(<LoginForm />)
+    await waitFor(() => expect(mockPush).toHaveBeenCalledTimes(1))
   })
 
   it('disables the submit button while the request is in flight', async () => {
