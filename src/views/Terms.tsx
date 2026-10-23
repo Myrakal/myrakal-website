@@ -4,8 +4,6 @@ export default function Terms() {
   return (
     <LegalLayout
       title="Terms of Service"
-      documentTitle="Terms of Service: Myrakal"
-      description="Terms governing use of the Myrakal website and intake and consult services."
       eyebrow="Legal / Terms"
       lede="These terms govern your use of the public Myrakal website and the intake and consult services offered through it."
     >

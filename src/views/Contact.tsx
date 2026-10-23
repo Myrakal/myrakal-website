@@ -4,8 +4,6 @@ export default function Contact() {
   return (
     <LegalLayout
       title="Contact Myrakal"
-      documentTitle="Contact: Myrakal"
-      description="Contact Myrakal for general, privacy, security, and accessibility questions."
       eyebrow="Company / Contact"
       lede="Myrakal Inc. is based in Chicago, Illinois, United States."
     >

@@ -1,3 +1,5 @@
+'use client'
+
 import wordmark from '@/assets/myrakal-wordmark.svg'
 import { ChatComposer } from '@/components/chat/ChatComposer'
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'

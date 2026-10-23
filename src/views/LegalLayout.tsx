@@ -1,14 +1,10 @@
-'use client'
-
-import { useEffect, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Footer } from '@/components/Footer'
 
 const LAST_UPDATED = 'September 24, 2026'
 
 type LegalLayoutProps = {
   title: string
-  documentTitle: string
-  description: string
   eyebrow: string
   lede: string
   children: ReactNode
@@ -16,31 +12,10 @@ type LegalLayoutProps = {
 
 export function LegalLayout({
   title,
-  documentTitle,
-  description,
   eyebrow,
   lede,
   children,
 }: LegalLayoutProps) {
-  useEffect(() => {
-    const previousTitle = document.title
-    const existing = document.querySelector('meta[name="description"]')
-    const meta = existing ?? document.createElement('meta')
-    const previousDescription = meta.getAttribute('content')
-
-    document.title = documentTitle
-    meta.setAttribute('name', 'description')
-    meta.setAttribute('content', description)
-    if (!existing) document.head.appendChild(meta)
-    window.scrollTo(0, 0)
-
-    return () => {
-      document.title = previousTitle
-      if (!existing) meta.remove()
-      else if (previousDescription !== null) meta.setAttribute('content', previousDescription)
-    }
-  }, [documentTitle, description])
-
   return (
     <>
       <header className="bg-background px-6 py-4">
