@@ -1,5 +1,7 @@
 const create = jest.fn()
 const findMany = jest.fn()
+const limitReached = jest.fn()
+jest.mock('@/server/limits', () => ({ chatLimitReached: (...a: unknown[]) => limitReached(...a) }))
 const requireUser = jest.fn()
 jest.mock('@/server/db', () => ({ db: () => ({ chat: { create, findMany } }) }))
 jest.mock('@/server/auth', () => ({ requireUser: () => requireUser() }))
@@ -12,6 +14,7 @@ const post = (headers: Record<string, string> = { host: 'myrakal.com', origin: '
 beforeEach(() => {
   jest.clearAllMocks()
   requireUser.mockResolvedValue({ id: 'u1' })
+  limitReached.mockResolvedValue(false)
 })
 
 describe('POST /api/chats', () => {
@@ -25,6 +28,14 @@ describe('POST /api/chats', () => {
     requireUser.mockResolvedValue(null)
     const res = await route.POST(post())
     expect(res.status).toBe(401)
+    expect(create).not.toHaveBeenCalled()
+  })
+
+  it('returns 429 when the daily chat cap is reached', async () => {
+    limitReached.mockResolvedValue(true)
+    const res = await route.POST(post())
+    expect(res.status).toBe(429)
+    expect(limitReached).toHaveBeenCalledWith('u1')
     expect(create).not.toHaveBeenCalled()
   })
 

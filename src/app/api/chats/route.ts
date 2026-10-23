@@ -1,11 +1,13 @@
 import { requireUser } from '@/server/auth'
 import { db } from '@/server/db'
 import { json, sameHost } from '@/server/http'
+import { chatLimitReached } from '@/server/limits'
 
 export async function POST(request: Request) {
   if (!sameHost(request)) return json({ error: 'forbidden' }, 403)
   const user = await requireUser()
   if (!user) return json({ error: 'unauthorized' }, 401)
+  if (await chatLimitReached(user.id)) return json({ error: 'too many chats' }, 429)
   const chat = await db().chat.create({ data: { userId: user.id }, select: { id: true } })
   return json({ id: chat.id }, 201)
 }

@@ -3,6 +3,7 @@ import { ClaudeNotConfigured, runTurn } from '@/server/claude'
 import { db } from '@/server/db'
 import { json, sameHost, UUID } from '@/server/http'
 import { intakeProgress } from '@/server/intake'
+import { messageLimitReached } from '@/server/limits'
 
 const FALLBACK_REPLY = 'Sorry, I had trouble answering that. Could you try again or repeat it?'
 const CLOSING_REPLY =
@@ -22,6 +23,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const chat = await db().chat.findFirst({ where: { id, userId: user.id }, select: { status: true, intake: true } })
   if (!chat) return json({ error: 'not found' }, 404)
   if (chat.status !== 'intake') return json({ error: 'conflict' }, 409)
+  if (await messageLimitReached(id)) return json({ error: 'too many messages' }, 429)
 
   const stored = await db().message.findMany({
     where: { chatId: id },
