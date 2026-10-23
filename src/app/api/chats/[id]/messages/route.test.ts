@@ -19,7 +19,7 @@ jest.mock('@/server/claude', () => ({
 }))
 
 import { ClaudeNotConfigured } from '@/server/claude'
-import { REQUIRED_KEYS } from '@/server/intake'
+import { INTAKE_FIELDS, REQUIRED_KEYS } from '@/server/intake'
 import * as route from './route'
 
 const ID = '11111111-1111-4111-8111-111111111111'
@@ -42,6 +42,11 @@ beforeEach(() => {
   updateMany.mockResolvedValue({ count: 1 })
   messageCreate.mockImplementation(({ data }) => Promise.resolve({ ...data, id: `m-${data.role}`, createdAt }))
 })
+
+const missingOne = () => {
+  const entries = INTAKE_FIELDS.filter((f) => f.required).map((f) => [f.key, f.type === 'boolean' ? true : 'x'] as const)
+  return { all: Object.fromEntries(entries), last: entries[entries.length - 1][0], rest: Object.fromEntries(entries.slice(0, -1)) }
+}
 
 describe('POST /api/chats/:id/messages', () => {
   it('returns 403 on a cross-site request', async () => {
@@ -137,5 +142,34 @@ describe('POST /api/chats/:id/messages', () => {
     runTurn.mockRejectedValue(new Error('upstream'))
     expect((await route.POST(post({ text: 'x' }), params())).status).toBe(502)
     expect(messageCreate).not.toHaveBeenCalled()
+  })
+
+  it('moves to doctor_review in the same write when the last required field arrives', async () => {
+    const { rest, last } = missingOne()
+    findFirst.mockResolvedValue({ status: 'intake', intake: rest })
+    runTurn.mockResolvedValue({ reply: 'Thank you, a doctor will review.', updates: { [last]: true } })
+    const res = await route.POST(post({ text: 'x' }), params())
+    expect(updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: expect.objectContaining({ status: 'intake' }), data: expect.objectContaining({ status: 'doctor_review' }) }),
+    )
+    const body = await res.json()
+    expect(body.status).toBe('doctor_review')
+    expect(body.reply.text).toMatch(/doctor will review/)
+    expect(messageCreate.mock.calls[1][0].data.text).toMatch(/doctor will review/)
+    expect(body.progress.collected).toBe(body.progress.total)
+  })
+
+  it('stays in intake while a required field is missing', async () => {
+    const res = await route.POST(post({ text: 'x' }), params())
+    expect(updateMany.mock.calls[0][0].data.status).toBeUndefined()
+    expect((await res.json()).status).toBe('intake')
+  })
+
+  it('does not complete when consent is declined', async () => {
+    const { rest } = missingOne()
+    findFirst.mockResolvedValue({ status: 'intake', intake: rest })
+    runTurn.mockResolvedValue({ reply: 'ok', updates: { consent: false } })
+    const res = await route.POST(post({ text: 'no' }), params())
+    expect((await res.json()).status).toBe('intake')
   })
 })
