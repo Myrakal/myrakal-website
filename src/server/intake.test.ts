@@ -25,6 +25,7 @@ describe('intakeProgress', () => {
 
   it('ignores blank strings, false booleans and unknown keys', () => {
     expect(intakeProgress({ name: '   ', consent: false, nope: 'x' }).collected).toBe(0)
+    expect(intakeProgress({ passportValid: false }).collected).toBe(1)
   })
 
   it('reaches total when every required field is filled', () => {
@@ -45,6 +46,14 @@ describe('pickIntakeFields', () => {
 
   it('drops unknown keys, wrong types and empty values', () => {
     expect(pickIntakeFields({ name: 5, consent: 'yes', phone: '', hack: 'x' })).toEqual({})
+  })
+
+  it('keeps passportValid false but drops consent false', () => {
+    expect(pickIntakeFields({ passportValid: false, consent: false })).toEqual({ passportValid: false })
+  })
+
+  it('caps string length', () => {
+    expect(String(pickIntakeFields({ name: 'a'.repeat(5000) }).name)).toHaveLength(2000)
   })
 
   it('returns an empty object for non-objects', () => {

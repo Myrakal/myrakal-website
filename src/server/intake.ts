@@ -1,9 +1,11 @@
 type FieldType = 'string' | 'boolean'
 
-type IntakeField = { key: string; type: FieldType; required: boolean; description: string }
+type IntakeField = { key: string; type: FieldType; required: boolean; description: string; mustBeTrue?: boolean }
+
+const MAX_TEXT = 2000
 
 const text = (key: string, description: string, required = true): IntakeField => ({ key, type: 'string', required, description })
-const flag = (key: string, description: string): IntakeField => ({ key, type: 'boolean', required: true, description })
+const flag = (key: string, description: string, mustBeTrue = false): IntakeField => ({ key, type: 'boolean', required: true, description, mustBeTrue })
 
 export const INTAKE_FIELDS: IntakeField[] = [
   text('name', 'Full legal name'),
@@ -31,8 +33,8 @@ export const INTAKE_FIELDS: IntakeField[] = [
   text('budget', 'Budget range'),
   text('insurance', 'Insurance plan, or none'),
   text('visas', 'Visas held'),
-  flag('passportValid', 'True if the passport is valid for at least 6 more months'),
-  flag('consent', 'True once the patient agrees the AI is not medical advice and a doctor will review the case'),
+  flag('passportValid', 'True if the passport is valid for at least 6 more months, false if not'),
+  flag('consent', 'True once the patient agrees the AI is not medical advice and a doctor will review the case', true),
   text('existingRecords', 'Existing medical records', false),
   text('existingDoctors', 'Doctors already seen', false),
 ]
@@ -44,11 +46,14 @@ const FIELD_BY_KEY = new Map(INTAKE_FIELDS.map((f) => [f.key, f]))
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
-const isFilled = (value: unknown) => (typeof value === 'string' ? value.trim() !== '' : value === true)
+const isFilled = (value: unknown, field?: IntakeField) => {
+  if (typeof value === 'string') return value.trim() !== ''
+  return typeof value === 'boolean' && (value || !field?.mustBeTrue)
+}
 
 export function intakeProgress(intake: unknown) {
   const data = isRecord(intake) ? intake : {}
-  return { collected: REQUIRED_KEYS.filter((key) => isFilled(data[key])).length, total: REQUIRED_KEYS.length }
+  return { collected: REQUIRED_KEYS.filter((key) => isFilled(data[key], FIELD_BY_KEY.get(key))).length, total: REQUIRED_KEYS.length }
 }
 
 export function pickIntakeFields(input: unknown) {
@@ -56,8 +61,8 @@ export function pickIntakeFields(input: unknown) {
   if (!isRecord(input)) return picked
   for (const [key, value] of Object.entries(input)) {
     const field = FIELD_BY_KEY.get(key)
-    if (!field || typeof value !== field.type || !isFilled(value)) continue
-    picked[key] = typeof value === 'string' ? value.trim() : true
+    if (!field || typeof value !== field.type || !isFilled(value, field)) continue
+    picked[key] = typeof value === 'string' ? value.trim().slice(0, MAX_TEXT) : (value as boolean)
   }
   return picked
 }
