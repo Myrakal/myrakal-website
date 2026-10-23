@@ -41,6 +41,8 @@ export default function Chat() {
   const [error, setError] = useState('')
   const [loadFailed, setLoadFailed] = useState(false)
   const end = useRef<HTMLDivElement>(null)
+  const dock = useRef<HTMLDivElement>(null)
+  const opened = useRef(false)
 
   useEffect(() => {
     if (!initialId) return
@@ -65,8 +67,23 @@ export default function Chat() {
   }, [initialId, router])
 
   useEffect(() => {
-    end.current?.scrollIntoView?.({ block: 'end', behavior: 'smooth' })
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    end.current?.scrollIntoView?.({ block: 'end', behavior: opened.current && !reduced ? 'smooth' : 'auto' })
+    if (messages.length > 0) opened.current = true
   }, [messages, busy, loading])
+
+  useEffect(() => {
+    const composer = dock.current
+    const target = end.current
+    if (!composer || !target) return
+    const measure = () => {
+      target.style.scrollMarginBottom = `${composer.offsetHeight}px`
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(composer)
+    return () => observer.disconnect()
+  }, [])
 
   const send = async (text: string) => {
     const pending: Message = { id: `pending-${Date.now()}`, role: 'user', text }
@@ -127,10 +144,10 @@ export default function Chat() {
           ))}
           {loading && <p role="status" className="text-center text-sm">Loading your conversation…</p>}
           {busy && <TypingIndicator />}
-          <div ref={end} className="scroll-mb-72" />
+          <div ref={end} />
         </div>
 
-        <div className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">
+        <div ref={dock} className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">
           {error && (
             <p role="alert" className="px-2 pb-2 text-center text-sm text-destructive">
               {error}

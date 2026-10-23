@@ -256,14 +256,40 @@ describe('Chat', () => {
     render(<Chat />)
     await sendMessage('Hello')
     await screen.findByText('A reply')
-    scrollIntoView.mockClear()
-    await waitFor(() => expect(scrollIntoView).not.toHaveBeenCalled())
+    const before = scrollIntoView.mock.calls.length
     await sendMessage('Another')
-    await waitFor(() => expect(scrollIntoView).toHaveBeenCalled())
+    await waitFor(() => expect(scrollIntoView.mock.calls.length).toBeGreaterThan(before))
+    expect(scrollIntoView).toHaveBeenLastCalledWith(expect.objectContaining({ block: 'end', behavior: 'smooth' }))
   })
 
-  it('keeps the last message clear of the pinned composer', async () => {
+  it('jumps without animation when a chat is first opened', async () => {
+    mockParams = new URLSearchParams({ id: ID })
+    route({ [`GET /api/chats/${ID}`]: () => reply(200, detail()) })
+    render(<Chat />)
+    await screen.findByText('What is your name?')
+    expect(scrollIntoView).toHaveBeenLastCalledWith(expect.objectContaining({ behavior: 'auto' }))
+  })
+
+  it('reserves room below the last message for the composer', () => {
     const { container } = render(<Chat />)
-    expect(container.querySelector('[role="log"] > div:last-child')?.className).toMatch(/scroll-mb-/)
+    const end = container.querySelector('[role="log"] > div:last-child') as HTMLElement
+    expect(end.style.scrollMarginBottom).toMatch(/px$/)
+  })
+
+  it('keeps what was typed while a failed send comes back, instead of overwriting it', async () => {
+    let fail: (value: unknown) => void = () => {}
+    mockParams = new URLSearchParams({ id: ID })
+    route({
+      [`GET /api/chats/${ID}`]: () => reply(200, detail()),
+      [`POST /api/chats/${ID}/messages`]: () => new Promise((resolve) => (fail = resolve)),
+    })
+    render(<Chat />)
+    await screen.findByText('What is your name?')
+    await sendMessage('First try')
+    const user = userEvent.setup()
+    await user.type(screen.getByLabelText('Message'), 'Second draft')
+    fail(reply(500, { error: 'boom' }))
+    await screen.findByRole('alert')
+    expect((screen.getByLabelText('Message') as HTMLTextAreaElement).value).toBe('Second draft')
   })
 })
