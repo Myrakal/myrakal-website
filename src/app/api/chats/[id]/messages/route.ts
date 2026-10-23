@@ -37,8 +37,10 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   const intake = { ...(chat.intake as Record<string, string | boolean>), ...turn.updates }
+  const progress = intakeProgress(intake)
+  const status = progress.collected === progress.total ? 'doctor_review' : 'intake'
   const reply = await db().$transaction(async (tx) => {
-    const moved = await tx.chat.updateMany({ where: { id, userId: user.id, status: 'intake', intake: { equals: chat.intake as object } }, data: { intake } })
+    const moved = await tx.chat.updateMany({ where: { id, userId: user.id, status: 'intake', intake: { equals: chat.intake as object } }, data: status === 'intake' ? { intake } : { intake, status } })
     if (moved.count === 0) return null
     const sentAt = Date.now()
     await tx.message.create({ data: { chatId: id, role: 'user', text, createdAt: new Date(sentAt) } })
@@ -50,7 +52,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   return json({
     reply: { id: reply.id, role: 'assistant', text: reply.text, createdAt: reply.createdAt },
-    status: 'intake',
-    progress: intakeProgress(intake),
+    status,
+    progress,
   })
 }
