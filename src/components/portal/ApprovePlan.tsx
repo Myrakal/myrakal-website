@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 
@@ -10,10 +10,22 @@ export function ApprovePlan({ chatId, status, onApproved }: Props) {
   const [confirming, setConfirming] = useState(false)
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [blocked, setBlocked] = useState(false)
+  const [moved, setMoved] = useState(false)
+  const inFlight = useRef(false)
+  const approveButton = useRef<HTMLButtonElement>(null)
+  const confirmButton = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!moved) return
+    ;(confirming ? confirmButton : approveButton).current?.focus()
+  }, [confirming, moved])
 
   if (status !== 'plan_ready') return null
 
   const approve = async () => {
+    if (inFlight.current) return
+    inFlight.current = true
     setSending(true)
     setError(null)
     let res: Response
@@ -22,11 +34,17 @@ export function ApprovePlan({ chatId, status, onApproved }: Props) {
     } catch {
       setError('We could not approve your plan. Please try again.')
       setSending(false)
+      inFlight.current = false
       return
     }
     setSending(false)
-    if (res.status === 409) return setError('Your plan can no longer be approved. Please refresh the page.')
-    if (res.status === 401) return setError('Your session has ended. Please sign in again.')
+    inFlight.current = false
+    if (res.status === 409 || res.status === 401) {
+      setBlocked(true)
+      return setError(
+        res.status === 409 ? 'Your plan can no longer be approved. Please refresh the page.' : 'Your session has ended. Please sign in again.',
+      )
+    }
     if (!res.ok) return setError('We could not approve your plan. Please try again.')
     const body = await res.json().catch(() => null)
     onApproved(typeof body?.status === 'string' ? body.status : 'awaiting_payment')
@@ -44,7 +62,7 @@ export function ApprovePlan({ chatId, status, onApproved }: Props) {
       <div className="mt-4 flex flex-wrap gap-3">
         {confirming ? (
           <>
-            <Button type="button" onClick={approve} disabled={sending}>
+            <Button type="button" onClick={approve} disabled={sending || blocked} ref={confirmButton}>
               {sending ? 'Approving…' : 'Confirm approval'}
             </Button>
             <Button type="button" variant="outline" onClick={() => setConfirming(false)} disabled={sending}>
@@ -52,7 +70,14 @@ export function ApprovePlan({ chatId, status, onApproved }: Props) {
             </Button>
           </>
         ) : (
-          <Button type="button" onClick={() => setConfirming(true)}>
+          <Button
+            type="button"
+            ref={approveButton}
+            onClick={() => {
+              setMoved(true)
+              setConfirming(true)
+            }}
+          >
             Approve plan
           </Button>
         )}

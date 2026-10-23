@@ -105,4 +105,36 @@ describe('ApprovePlan', () => {
     confirm()
     await waitFor(() => expect(onApproved).toHaveBeenCalledWith('awaiting_payment'))
   })
+
+  it('moves focus to the confirm button', () => {
+    setup()
+    open()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: /confirm approval/i }))
+  })
+
+  it('returns focus to the approve button on cancel', () => {
+    setup()
+    open()
+    fireEvent.click(screen.getByRole('button', { name: /cancel/i }))
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: /^approve plan$/i }))
+  })
+
+  it('sends only one request for rapid double clicks', async () => {
+    fetchMock.mockReturnValue(new Promise(() => {}))
+    setup()
+    open()
+    const button = screen.getByRole('button', { name: /confirm approval/i })
+    fireEvent.click(button)
+    fireEvent.click(button)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('stops offering the confirm button after a 409', async () => {
+    respond(409, {})
+    setup()
+    open()
+    confirm()
+    await screen.findByRole('alert')
+    expect((screen.getByRole('button', { name: /confirm approval/i }) as HTMLButtonElement).disabled).toBe(true)
+  })
 })
