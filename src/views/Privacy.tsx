@@ -4,8 +4,6 @@ export default function Privacy() {
   return (
     <LegalLayout
       title="Privacy Policy"
-      documentTitle="Privacy Policy: Myrakal"
-      description="How Myrakal collects, uses, and protects information submitted through its website and services."
       eyebrow="Legal / Privacy"
       lede="This policy explains how Myrakal handles information collected through this public website and our intake and consult services."
     >

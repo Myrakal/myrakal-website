@@ -4,8 +4,6 @@ export default function Accessibility() {
   return (
     <LegalLayout
       title="Accessibility"
-      documentTitle="Accessibility: Myrakal"
-      description="Myrakal’s accessibility approach and contact information for access issues."
       eyebrow="Company / Accessibility"
       lede="We want the Myrakal website to be usable across devices, input methods, and assistive technologies."
     >
