@@ -53,16 +53,20 @@ describe('POST /api/stripe-webhook', () => {
     expect((await call()).status).toBe(200)
   })
 
-  it('ignores unpaid sessions, other events and missing or malformed chat ids', async () => {
-    constructEvent.mockReturnValue(completed({ payment_status: 'unpaid' }))
+  it('also handles delayed payment success', async () => {
+    constructEvent.mockReturnValue({ ...completed(), type: 'checkout.session.async_payment_succeeded' })
     await call()
-    constructEvent.mockReturnValue({ type: 'charge.refunded', data: { object: {} } })
-    await call()
-    constructEvent.mockReturnValue(completed({ metadata: {} }))
-    await call()
-    constructEvent.mockReturnValue(completed({ metadata: { chatId: 'nope' } }))
-    const res = await call()
-    expect(res.status).toBe(200)
+    expect(updateMany).toHaveBeenCalledTimes(1)
+  })
+
+  it.each([
+    ['an unpaid session', completed({ payment_status: 'unpaid' })],
+    ['another event type', { type: 'charge.refunded', data: { object: {} } }],
+    ['a missing chat id', completed({ metadata: {} })],
+    ['a malformed chat id', completed({ metadata: { chatId: 'nope' } })],
+  ])('acknowledges %s without updating', async (_name, event) => {
+    constructEvent.mockReturnValue(event)
+    expect((await call()).status).toBe(200)
     expect(updateMany).not.toHaveBeenCalled()
   })
 

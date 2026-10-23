@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   } catch {
     return json({ error: 'invalid signature' }, 400)
   }
-  if (event.type === 'checkout.session.completed') {
+  if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
     const session = event.data.object
     const chatId = session.metadata?.chatId
     if (session.payment_status === 'paid' && chatId && UUID.test(chatId)) {
