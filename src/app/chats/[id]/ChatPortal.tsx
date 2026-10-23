@@ -4,11 +4,12 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
+import { CommentSection, type PlanComment } from '@/components/portal/CommentSection'
 import { PlanViewer } from '@/components/portal/PlanViewer'
 import { PortalShell } from '@/components/portal/PortalShell'
 import { PLAN_STATUSES, STATUS_COPY } from '@/components/portal/statusCopy'
 
-type Detail = { id: string; status: string; messages: Message[] }
+type Detail = { id: string; status: string; messages: Message[]; comments?: PlanComment[] }
 type State = { phase: 'loading' } | { phase: 'error'; text: string } | { phase: 'ready'; chat: Detail }
 
 export default function ChatPortal() {
@@ -33,6 +34,11 @@ export default function ChatPortal() {
     return () => controller.abort()
   }, [id, router])
 
+  const addComment = (status: string, comment: PlanComment) =>
+    setState((prev) =>
+      prev.phase === 'ready' ? { phase: 'ready', chat: { ...prev.chat, status, comments: [...(prev.chat.comments ?? []), comment] } } : prev,
+    )
+
   return (
     <PortalShell title="Your case">
       <a href="/dashboard" className="mt-2 inline-block text-sm underline underline-offset-4">
@@ -55,7 +61,12 @@ export default function ChatPortal() {
               </a>
             )}
           </section>
-          {PLAN_STATUSES.includes(state.chat.status) && <PlanViewer chatId={state.chat.id} />}
+          {PLAN_STATUSES.includes(state.chat.status) && (
+            <>
+              <PlanViewer chatId={state.chat.id} />
+              <CommentSection chatId={state.chat.id} status={state.chat.status} comments={state.chat.comments ?? []} onPosted={addComment} />
+            </>
+          )}
           <section aria-label="Conversation" className="mt-8 flex flex-col gap-4">
             {state.chat.messages.map((m) => (
               <ChatMessage key={m.id} message={m} />
