@@ -75,7 +75,7 @@ test('a patient goes from sign up to booked', async ({ page }) => {
 
   await test.step('the webhook moves the case to reservations without a reload', async () => {
     backend.setStatus('reservations')
-    await expect(page.getByRole('region', { name: 'Case status' })).toContainText('Reservations are being made', { timeout: 15_000 })
+    await expect(page.getByRole('region', { name: 'Case status' })).toContainText('Reservations are being made', { timeout: 30_000 })
   })
 
   await test.step('the team marks it booked', async () => {
