@@ -70,9 +70,10 @@ describe('HowItWorks', () => {
     for (const n of numerals) expect(n.getAttribute('aria-hidden')).toBe('true')
   })
 
-  it('separates the scenes with quiet space, not repeated ornaments', () => {
+  it('slides the scenes in over one pinned stage instead of stacking them with gaps', () => {
     const { container } = render(<HowItWorks />)
-    expect(container.querySelectorAll('[data-scene-gap]')).toHaveLength(3)
+    expect(container.querySelector('[data-scene-gap]')).toBeNull()
+    expect(container.querySelector('.sticky')).toBeTruthy()
     expect(container.querySelector('img[src*="myrakal-logo"]')).toBeNull()
   })
 
