@@ -4,8 +4,9 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
+import { PlanViewer } from '@/components/portal/PlanViewer'
 import { PortalShell } from '@/components/portal/PortalShell'
-import { STATUS_COPY } from '@/components/portal/statusCopy'
+import { PLAN_STATUSES, STATUS_COPY } from '@/components/portal/statusCopy'
 
 type Detail = { id: string; status: string; messages: Message[] }
 type State = { phase: 'loading' } | { phase: 'error'; text: string } | { phase: 'ready'; chat: Detail }
@@ -54,6 +55,7 @@ export default function ChatPortal() {
               </a>
             )}
           </section>
+          {PLAN_STATUSES.includes(state.chat.status) && <PlanViewer chatId={state.chat.id} />}
           <section aria-label="Conversation" className="mt-8 flex flex-col gap-4">
             {state.chat.messages.map((m) => (
               <ChatMessage key={m.id} message={m} />
