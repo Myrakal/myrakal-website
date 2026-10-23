@@ -54,7 +54,7 @@ describe('GET /api/chats', () => {
       { id: 'c', status: 'booked', createdAt, intake: { condition: 42 } },
     ])
     const res = await get()
-    expect(findMany).toHaveBeenCalledWith(expect.objectContaining({ where: { userId: 'u1' }, orderBy: { createdAt: 'desc' } }))
+    expect(findMany).toHaveBeenCalledWith(expect.objectContaining({ where: { userId: 'u1' }, orderBy: { createdAt: 'desc' }, take: 100 }))
     expect(await res.json()).toEqual([
       { id: 'a', status: 'intake', createdAt: createdAt.toISOString(), summary: 'knee replacement' },
       { id: 'b', status: 'booked', createdAt: createdAt.toISOString(), summary: null },

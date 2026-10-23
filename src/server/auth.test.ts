@@ -20,13 +20,25 @@ describe('requireUser', () => {
   })
 
   it('returns null without a session', async () => {
-    getUser.mockResolvedValue({ data: { user: null }, error: { message: 'no session' } })
+    getUser.mockResolvedValue({ data: { user: null }, error: { name: 'AuthSessionMissingError', message: 'no session' } })
     expect(await requireUser()).toBeNull()
   })
 
-  it('returns null when supabase is not configured', async () => {
-    delete process.env.NEXT_PUBLIC_SUPABASE_URL
+  it('returns null when the token is rejected', async () => {
+    getUser.mockResolvedValue({ data: { user: null }, error: { name: 'AuthApiError', status: 401, message: 'jwt expired' } })
     expect(await requireUser()).toBeNull()
+  })
+
+  it('throws on a supabase outage instead of reporting signed out', async () => {
+    getUser.mockResolvedValue({ data: { user: null }, error: { name: 'AuthRetryableFetchError', status: 0, message: 'fetch failed' } })
+    await expect(requireUser()).rejects.toBeDefined()
+    getUser.mockResolvedValue({ data: { user: null }, error: { name: 'AuthApiError', status: 503, message: 'down' } })
+    await expect(requireUser()).rejects.toBeDefined()
+  })
+
+  it('throws when supabase is not configured', async () => {
+    delete process.env.NEXT_PUBLIC_SUPABASE_URL
+    await expect(requireUser()).rejects.toThrow(/SUPABASE/)
     expect(getUser).not.toHaveBeenCalled()
   })
 

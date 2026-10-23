@@ -16,6 +16,7 @@ export async function GET() {
   const chats = await db().chat.findMany({
     where: { userId: user.id },
     orderBy: { createdAt: 'desc' },
+    take: 100,
     select: { id: true, status: true, createdAt: true, intake: true },
   })
   return json(
