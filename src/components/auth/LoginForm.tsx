@@ -3,12 +3,10 @@
 import { useRouter } from 'next/navigation'
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 
+import { authInputClass, authLabelClass, authPanelClass } from '@/components/auth/AuthField'
 import { Button } from '@/components/ui/button'
 import { useSession } from '@/hooks/useSession'
 import { getSupabase } from '@/lib/supabase'
-
-const inputClass =
-  'h-11 w-full rounded-xl border border-border bg-card px-4 text-base text-card-foreground outline-none focus-visible:ring-2 focus-visible:ring-foreground/40'
 
 export function LoginForm() {
   const router = useRouter()
@@ -54,16 +52,16 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={submit} className="mt-8 flex max-w-sm flex-col gap-4">
-      <h2 className="text-xl">{signup ? 'Create your account' : 'Welcome back'}</h2>
+    <form onSubmit={submit} className={authPanelClass}>
+      <h2 className="font-display text-2xl">{signup ? 'Create your account' : 'Welcome back'}</h2>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={emailId} className="text-sm font-medium">
+        <label htmlFor={emailId} className={authLabelClass}>
           Email
         </label>
-        <input id={emailId} type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
+        <input id={emailId} type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={authInputClass} />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={passwordId} className="text-sm font-medium">
+        <label htmlFor={passwordId} className={authLabelClass}>
           Password
         </label>
         <input
@@ -74,7 +72,7 @@ export function LoginForm() {
           autoComplete={signup ? 'new-password' : 'current-password'}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className={inputClass}
+          className={authInputClass}
         />
       </div>
       {notice && <p role="status" className="text-sm">{notice}</p>}
@@ -84,7 +82,7 @@ export function LoginForm() {
         </p>
       )}
       {!signup && (
-        <a href="/forgot-password" className="text-sm underline underline-offset-4">
+        <a href="/forgot-password" className="text-sm text-champagne underline underline-offset-4">
           Forgot password?
         </a>
       )}
