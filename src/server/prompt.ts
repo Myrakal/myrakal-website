@@ -2,7 +2,7 @@ import { INTAKE_FIELDS, pickIntakeFields } from './intake'
 
 export function buildSystemPrompt(intake: unknown) {
   const collected = pickIntakeFields(intake)
-  const collectedLines = Object.entries(collected).map(([key, value]) => `- ${key}: ${value}`)
+  const collectedLines = Object.entries(collected).map(([key, value]) => `- ${key}: ${String(value).replace(/\s+/g, ' ')}`)
   const missing = INTAKE_FIELDS.filter((f) => f.required && !(f.key in collected))
   const fieldLines = INTAKE_FIELDS.map((f) => `- ${f.key}${f.required ? '' : ' (optional)'}: ${f.description}`)
   const missingLines = missing.map((f) => `- ${f.key}`)
