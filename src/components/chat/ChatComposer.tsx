@@ -1,27 +1,21 @@
 'use client'
 
 import { ArrowUp } from 'lucide-react'
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
+import { useId, useRef, useState, type KeyboardEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 
-type Props = { onSend: (text: string) => void; busy?: boolean; locked?: boolean }
+type Props = { onSend: (text: string) => void | boolean | Promise<boolean | void>; busy?: boolean }
 
-export function ChatComposer({ onSend, busy = false, locked = false }: Props) {
+export function ChatComposer({ onSend, busy = false }: Props) {
   const [text, setText] = useState('')
   const id = useId()
   const box = useRef<HTMLTextAreaElement>(null)
-  const canSend = text.trim().length > 0 && !busy && !locked
+  const canSend = text.trim().length > 0 && !busy
 
-  useEffect(() => {
-    if (!locked) return
-    setText('')
-    if (box.current) box.current.style.height = ''
-  }, [locked])
-
-  const send = () => {
+  const send = async () => {
     if (!canSend) return
-    onSend(text.trim())
+    if ((await onSend(text.trim())) === false) return
     setText('')
     if (box.current) box.current.style.height = ''
     box.current?.focus()
@@ -48,15 +42,13 @@ export function ChatComposer({ onSend, busy = false, locked = false }: Props) {
         id={id}
         ref={box}
         rows={1}
-        value={locked ? '' : text}
+        value={text}
         onChange={(e) => {
           setText(e.target.value)
           grow(e.target)
         }}
         onKeyDown={onKeyDown}
         placeholder="Type your message"
-        readOnly={locked}
-        aria-readonly={locked}
         className="max-h-40 min-h-12 flex-1 resize-none bg-transparent px-4 py-3 text-base text-card-foreground placeholder:text-card-foreground/60 focus:outline-none"
       />
       <Button
