@@ -17,7 +17,7 @@ export default function Chat() {
           aria-label="Myrakal home"
           className="focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
         >
-          <img src={wordmark} alt="" className="h-7 w-auto sm:h-9" />
+          <img src={wordmark.src} alt="" className="h-7 w-auto sm:h-9" />
         </a>
       </header>
 

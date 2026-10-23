@@ -1,3 +1,5 @@
+'use client'
+
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import logo from '@/assets/myrakal-logo.svg'
@@ -26,7 +28,7 @@ export function Navbar() {
         className="flex min-w-0 items-center gap-2 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground sm:gap-4"
       >
         <img
-          src={logo}
+          src={logo.src}
           alt=""
           className="h-8 w-auto shrink-0 sm:h-12 lg:h-16"
         />

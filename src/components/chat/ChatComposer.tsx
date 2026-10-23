@@ -1,3 +1,5 @@
+'use client'
+
 import { ArrowUp } from 'lucide-react'
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react'
 

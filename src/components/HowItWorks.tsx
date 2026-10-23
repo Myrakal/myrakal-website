@@ -20,8 +20,8 @@ export function HowItWorks() {
         </h2>
       </div>
       <Scene
-        image={pen}
-        imageSmall={penSmall}
+        image={pen.src}
+        imageSmall={penSmall.src}
         alt="A claret fountain pen with a gold band and clip resting on a cream correspondence card"
         textSide="left"
         numeral="I"
@@ -31,8 +31,8 @@ export function HowItWorks() {
       </Scene>
       <Gap />
       <Scene
-        image={glasses}
-        imageSmall={glassesSmall}
+        image={glasses.src}
+        imageSmall={glassesSmall.src}
         alt="Gold-rimmed reading glasses resting on a closed claret leather folder"
         textSide="right"
         numeral="II"
@@ -42,8 +42,8 @@ export function HowItWorks() {
       </Scene>
       <Gap />
       <Scene
-        image={watch}
-        imageSmall={watchSmall}
+        image={watch.src}
+        imageSmall={watchSmall.src}
         alt="A slim gold dress watch with a blank cream dial lying on its side"
         textSide="left"
         numeral="III"
@@ -54,8 +54,8 @@ export function HowItWorks() {
       </Scene>
       <Gap />
       <Scene
-        image={glass}
-        imageSmall={glassSmall}
+        image={glass.src}
+        imageSmall={glassSmall.src}
         alt="A cut crystal glass of water with a slice of blood orange, casting warm light across the linen"
         textSide="right"
         numeral="IV"

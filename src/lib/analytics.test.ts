@@ -1,24 +1,26 @@
-import posthog from 'posthog-js'
-import { vi } from 'vitest'
-
-vi.mock('posthog-js', () => ({
-  default: { init: vi.fn(), capture: vi.fn() },
+jest.mock('posthog-js', () => ({
+  __esModule: true,
+  default: { init: jest.fn(), capture: jest.fn() },
 }))
 
-const load = () => {
-  vi.resetModules()
-  return import('@/lib/analytics')
+const load = async () => {
+  jest.resetModules()
+  const { default: posthog } = await import('posthog-js')
+  const { initAnalytics } = await import('@/lib/analytics')
+  return { posthog, initAnalytics }
 }
+
+const originalEnv = { ...process.env }
 
 describe('analytics', () => {
   afterEach(() => {
-    vi.unstubAllEnvs()
-    vi.clearAllMocks()
+    process.env = { ...originalEnv }
+    jest.clearAllMocks()
   })
 
   it('inits posthog with the configured key', async () => {
-    vi.stubEnv('VITE_POSTHOG_KEY', 'phc_test')
-    const { initAnalytics } = await load()
+    process.env['NEXT_PUBLIC_POSTHOG_KEY'] = 'phc_test'
+    const { initAnalytics, posthog } = await load()
     initAnalytics()
     expect(posthog.init).toHaveBeenCalledWith(
       'phc_test',
@@ -27,9 +29,9 @@ describe('analytics', () => {
   })
 
   it('falls back to the default host when the host var is empty', async () => {
-    vi.stubEnv('VITE_POSTHOG_KEY', 'phc_test')
-    vi.stubEnv('VITE_POSTHOG_HOST', '')
-    const { initAnalytics } = await load()
+    process.env['NEXT_PUBLIC_POSTHOG_KEY'] = 'phc_test'
+    process.env['NEXT_PUBLIC_POSTHOG_HOST'] = ''
+    const { initAnalytics, posthog } = await load()
     initAnalytics()
     expect(posthog.init).toHaveBeenCalledWith(
       'phc_test',
@@ -38,8 +40,8 @@ describe('analytics', () => {
   })
 
   it('does nothing without a key', async () => {
-    vi.stubEnv('VITE_POSTHOG_KEY', '')
-    const { initAnalytics } = await load()
+    process.env['NEXT_PUBLIC_POSTHOG_KEY'] = ''
+    const { initAnalytics, posthog } = await load()
     initAnalytics()
     expect(posthog.init).not.toHaveBeenCalled()
   })

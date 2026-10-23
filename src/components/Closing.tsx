@@ -5,8 +5,8 @@ export function Closing() {
   return (
     <section className="relative isolate flex min-h-[90svh] flex-col items-center justify-end overflow-hidden bg-charcoal px-4 pt-24 pb-16 text-center">
       <img
-        src={ampoule}
-        srcSet={`${ampouleSmall} 960w, ${ampoule} 1672w`}
+        src={ampoule.src}
+        srcSet={`${ampouleSmall.src} 960w, ${ampoule.src} 1672w`}
         sizes="100vw"
         alt="The same ampoule, now opened, its glass tip snapped off and resting beside it"
         loading="lazy"
