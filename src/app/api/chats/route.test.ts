@@ -39,7 +39,7 @@ describe('POST /api/chats', () => {
 })
 
 describe('GET /api/chats', () => {
-  const get = () => route.GET(new Request('https://myrakal.com/api/chats'))
+  const get = () => route.GET()
 
   it('returns 401 without a session', async () => {
     requireUser.mockResolvedValue(null)
