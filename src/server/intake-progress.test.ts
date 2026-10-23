@@ -15,6 +15,11 @@ describe('intakeProgress', () => {
     })
   })
 
+  it('does not count false or empty objects as filled', () => {
+    expect(intakeProgress({ consent: false, passportValid: false, medications: {} }).collected).toBe(0)
+    expect(intakeProgress({ consent: true, travelers: 0 }).collected).toBe(2)
+  })
+
   it('reaches total when everything is filled', () => {
     const full = Object.fromEntries(REQUIRED_INTAKE_FIELDS.map((key) => [key, 'x']))
     const { collected, total } = intakeProgress(full)
