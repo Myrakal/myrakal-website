@@ -23,11 +23,11 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const stored = await db().message.findMany({
     where: { chatId: id },
-    orderBy: { createdAt: 'asc' },
+    orderBy: { createdAt: 'desc' },
     take: HISTORY_LIMIT,
     select: { role: true, text: true },
   })
-  const history = [...stored.map((m) => ({ role: m.role as 'user' | 'assistant', text: m.text })), { role: 'user' as const, text }]
+  const history = [...stored.reverse().map((m) => ({ role: m.role as 'user' | 'assistant', text: m.text })), { role: 'user' as const, text }]
 
   let turn
   try {
@@ -38,10 +38,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const intake = { ...(chat.intake as Record<string, string | boolean>), ...turn.updates }
   const reply = await db().$transaction(async (tx) => {
-    const moved = await tx.chat.updateMany({ where: { id, userId: user.id, status: 'intake' }, data: { intake } })
+    const moved = await tx.chat.updateMany({ where: { id, userId: user.id, status: 'intake', intake: { equals: chat.intake as object } }, data: { intake } })
     if (moved.count === 0) return null
-    await tx.message.create({ data: { chatId: id, role: 'user', text } })
-    return tx.message.create({ data: { chatId: id, role: 'assistant', text: turn.reply || FALLBACK_REPLY } })
+    const sentAt = Date.now()
+    await tx.message.create({ data: { chatId: id, role: 'user', text, createdAt: new Date(sentAt) } })
+    return tx.message.create({
+      data: { chatId: id, role: 'assistant', text: turn.reply || FALLBACK_REPLY, createdAt: new Date(sentAt + 1) },
+    })
   })
   if (!reply) return json({ error: 'conflict' }, 409)
 

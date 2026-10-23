@@ -37,10 +37,10 @@ beforeEach(() => {
   jest.resetAllMocks()
   requireUser.mockResolvedValue({ id: 'u1' })
   findFirst.mockResolvedValue({ status: 'intake', intake: { name: 'Ada' } })
-  findMany.mockResolvedValue([{ role: 'user', text: 'hi' }, { role: 'assistant', text: 'hello' }])
+  findMany.mockResolvedValue([{ role: 'assistant', text: 'hello' }, { role: 'user', text: 'hi' }])
   runTurn.mockResolvedValue({ reply: 'When were you born?', updates: { dob: '1990-01-01' } })
   updateMany.mockResolvedValue({ count: 1 })
-  messageCreate.mockImplementation(({ data }) => Promise.resolve({ id: `m-${data.role}`, createdAt, ...data }))
+  messageCreate.mockImplementation(({ data }) => Promise.resolve({ ...data, id: `m-${data.role}`, createdAt }))
 })
 
 describe('POST /api/chats/:id/messages', () => {
@@ -77,6 +77,13 @@ describe('POST /api/chats/:id/messages', () => {
     expect(runTurn).not.toHaveBeenCalled()
   })
 
+  it('loads the newest messages and replays them oldest first', async () => {
+    findMany.mockResolvedValue([{ role: 'assistant', text: 'hello' }, { role: 'user', text: 'hi' }])
+    await route.POST(post({ text: 'x' }), params())
+    expect(findMany).toHaveBeenCalledWith(expect.objectContaining({ orderBy: { createdAt: 'desc' } }))
+    expect(runTurn.mock.calls[0][0].history.map((m: { text: string }) => m.text)).toEqual(['hi', 'hello', 'x'])
+  })
+
   it('runs the turn with history plus the new text and stored intake', async () => {
     await route.POST(post({ text: '  born in 1990 ' }), params())
     expect(runTurn).toHaveBeenCalledWith({
@@ -92,10 +99,12 @@ describe('POST /api/chats/:id/messages', () => {
   it('persists both messages, merges intake conditionally and returns reply with progress', async () => {
     const res = await route.POST(post({ text: 'born in 1990' }), params())
     expect(res.status).toBe(200)
-    expect(messageCreate).toHaveBeenCalledWith({ data: { chatId: ID, role: 'user', text: 'born in 1990' } })
-    expect(messageCreate).toHaveBeenCalledWith({ data: { chatId: ID, role: 'assistant', text: 'When were you born?' } })
+    const [user, assistant] = messageCreate.mock.calls.map(([arg]) => arg.data)
+    expect(user).toMatchObject({ chatId: ID, role: 'user', text: 'born in 1990' })
+    expect(assistant.createdAt.getTime()).toBeGreaterThan(user.createdAt.getTime())
+    expect(assistant).toMatchObject({ role: 'assistant', text: 'When were you born?' })
     expect(updateMany).toHaveBeenCalledWith({
-      where: { id: ID, userId: 'u1', status: 'intake' },
+      where: { id: ID, userId: 'u1', status: 'intake', intake: { equals: { name: 'Ada' } } },
       data: { intake: { name: 'Ada', dob: '1990-01-01' } },
     })
     expect(await res.json()).toEqual({
