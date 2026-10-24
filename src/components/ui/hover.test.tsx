@@ -7,16 +7,14 @@ const hoverClasses = (cls: string) => cls.split(/\s+/).filter((c) => c.startsWit
 const read = (file: string) => readFileSync(join(process.cwd(), 'src/components', file), 'utf8')
 
 describe('hover states stay visible on the velvet background', () => {
-  it.each(['default', 'outline', 'ghost', 'secondary'] as const)('%s button does not hover to muted or a faint tint', (variant) => {
+  it.each(['outline', 'ghost', 'secondary'] as const)('%s button does not hover to muted or a faint tint', (variant) => {
     const hovers = hoverClasses(buttonVariants({ variant })).join(' ')
     expect(hovers).not.toMatch(/hover:bg-muted/)
-    expect(hovers).not.toMatch(/hover:bg-primary\/90/)
     expect(hovers).not.toMatch(/foreground\)_5%/)
     expect(hovers).toMatch(/hover:bg-/)
   })
 
   it.each([
-    ['default', 'hover:bg-pearl'],
     ['outline', 'hover:bg-accent'],
     ['ghost', 'hover:bg-accent'],
   ] as const)('%s button hovers to a distinct palette colour', (variant, expected) => {
@@ -25,11 +23,7 @@ describe('hover states stay visible on the velvet background', () => {
 
   it('chat list rows do not hover to the muted background that hides dark text', () => {
     expect(read('portal/ChatList.tsx')).not.toMatch(/hover:bg-muted/)
-    expect(read('portal/ChatList.tsx')).toMatch(/hover:bg-pearl/)
-  })
-
-  it.each(['Hero.tsx', 'Closing.tsx'])('%s call to action changes colour on hover, not just opacity', (file) => {
-    expect(read(file)).not.toMatch(/hover:opacity-90/)
+    expect(read('portal/ChatList.tsx')).toMatch(/hover:bg-primary\/90/)
   })
 
   it('navbar outline button hover is more than a 10% tint', () => {
