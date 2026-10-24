@@ -78,7 +78,7 @@ export function Navbar() {
         )}
         <a
           href="/chat/"
-          className="rounded-full border border-alabaster/60 px-4 py-2 font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-alabaster uppercase transition-colors hover:bg-alabaster/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-alabaster sm:px-5"
+          className="rounded-full border border-alabaster/60 px-4 py-2 font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-alabaster uppercase transition-colors hover:bg-alabaster/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-alabaster sm:px-5"
         >
           Talk with us
         </a>
