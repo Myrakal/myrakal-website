@@ -69,7 +69,7 @@ export function ChatList() {
         <ul className="mt-6 flex flex-col gap-3">
           {chats.map((chat) => (
             <li key={chat.id}>
-              <a href={href(chat)} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border bg-card px-5 py-4 text-card-foreground no-underline hover:bg-muted">
+              <a href={href(chat)} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-border bg-card px-5 py-4 text-card-foreground no-underline transition-colors hover:bg-primary/90">
                 <span className="flex min-w-0 flex-col">
                   <span className="truncate font-medium">{chat.summary || (chat.status === 'intake' ? 'New conversation' : 'Your case')}</span>
                   <time dateTime={chat.createdAt} className="text-xs text-card-foreground/70">
