@@ -43,7 +43,7 @@ const copy = [
   ['intake', /conversation is not finished/i],
   ['doctor_review', /A doctor will review your transcript\. Your plan will be emailed to you\./],
   ['plan_ready', /Your plan is ready/],
-  ['clarification_review', /Your comments are being reviewed\. We will email you the updated plan\./],
+  ['clarification_review', /A doctor will review your transcript\. Your plan will be emailed to you\./],
   ['awaiting_payment', /Payment is the next step/],
   ['reservations', /Reservations are being made\. We will reach out once they are done\./],
   ['booked', /We have emailed you everything\./],
@@ -108,7 +108,7 @@ describe('ChatPortal comments', () => {
     fireEvent.change(await screen.findByLabelText(/your comments/i), { target: { value: 'One more thing' } })
     fireEvent.click(screen.getByRole('button', { name: /send comments/i }))
     await waitFor(() => expect(screen.queryByLabelText(/your comments/i)).toBeNull())
-    expect(screen.getByRole('region', { name: 'Case status' }).textContent).toMatch(/Your comments are being reviewed/)
+    expect(screen.getByRole('region', { name: 'Case status' }).textContent).toMatch(/A doctor will review your transcript/)
     expect(screen.getByText('One more thing')).toBeTruthy()
   })
 
