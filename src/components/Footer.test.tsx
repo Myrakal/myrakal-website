@@ -24,6 +24,11 @@ describe('Footer', () => {
       expect(screen.getByRole('link', { name }).getAttribute('href')).toBe(href)
   })
 
+  it('links to the care page so phones can reach it', () => {
+    render(<Footer />)
+    expect(screen.getByRole('link', { name: 'Care' }).getAttribute('href')).toBe('/care')
+  })
+
   it('keeps the contact email, copyright and location', () => {
     const { container } = render(<Footer />)
     expect(screen.getByRole('link', { name: 'eshaansood@myrakal.com' }).getAttribute('href')).toBe(

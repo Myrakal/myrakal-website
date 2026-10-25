@@ -1,8 +1,12 @@
 import { render, screen } from '@testing-library/react'
 
+jest.mock('@/hooks/useSession', () => ({ useSession: () => ({ user: null, loading: false }) }))
+jest.mock('@/lib/supabase', () => ({ getSupabase: () => null }))
+
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
   useSearchParams: () => new URLSearchParams(),
+  usePathname: () => '/',
 }))
 
 const routes = [
@@ -11,6 +15,7 @@ const routes = [
   ['contact', 'Contact: Myrakal'],
   ['accessibility', 'Accessibility: Myrakal'],
   ['chat', 'Chat: Myrakal'],
+  ['care', 'Care: Myrakal'],
 ] as const
 
 describe('app routes', () => {

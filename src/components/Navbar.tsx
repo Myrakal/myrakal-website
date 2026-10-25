@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'motion/react'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import logo from '@/assets/myrakal-logo.svg'
 import { useSession } from '@/hooks/useSession'
@@ -9,9 +10,13 @@ import { getSupabase } from '@/lib/supabase'
 const authLink =
   'font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-foreground uppercase underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne'
 
+const navItem =
+  'font-grotesk text-[11px] tracking-[0.2em] text-foreground uppercase transition-colors hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const { user, loading } = useSession()
+  const pathname = usePathname()
   const authClass = `${authLink} ${scrolled ? 'inline' : 'hidden sm:inline'}`
 
   useEffect(() => {
@@ -52,12 +57,11 @@ export function Navbar() {
       </motion.a>
       <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-4 sm:right-12 sm:gap-6">
         <nav aria-label="Primary" className="hidden items-center gap-6 sm:flex">
-          {['Care', 'Individual', 'Business'].map((label) => (
-            <button
-              key={label}
-              type="button"
-              className="font-grotesk text-[11px] tracking-[0.2em] text-foreground uppercase transition-colors hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
-            >
+          <a href="/care" aria-current={pathname === '/care' ? 'page' : undefined} className={navItem}>
+            Care
+          </a>
+          {['Individual', 'Business'].map((label) => (
+            <button key={label} type="button" className={navItem}>
               {label}
             </button>
           ))}
