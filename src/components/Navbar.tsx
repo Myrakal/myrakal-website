@@ -10,6 +10,12 @@ import { getSupabase } from '@/lib/supabase'
 const authLink =
   'font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-foreground uppercase underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne'
 
+const SECTIONS = [
+  ['Care', '/care'],
+  ['Individual', '/individual'],
+  ['Business', '/business'],
+]
+
 const navItem =
   'font-grotesk text-[11px] tracking-[0.2em] text-foreground uppercase transition-colors hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
 
@@ -57,13 +63,10 @@ export function Navbar() {
       </motion.a>
       <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-4 sm:right-12 sm:gap-6">
         <nav aria-label="Primary" className="hidden items-center gap-6 sm:flex">
-          <a href="/care" aria-current={pathname === '/care' ? 'page' : undefined} className={navItem}>
-            Care
-          </a>
-          {['Individual', 'Business'].map((label) => (
-            <button key={label} type="button" className={navItem}>
+          {SECTIONS.map(([label, href]) => (
+            <a key={href} href={href} aria-current={pathname === href ? 'page' : undefined} className={navItem}>
               {label}
-            </button>
+            </a>
           ))}
         </nav>
         {loading ? null : user ? (

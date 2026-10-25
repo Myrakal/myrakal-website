@@ -2,9 +2,9 @@ import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 
 const SERVICES = [
-  { title: 'Find your doctor', body: 'We find the right doctor for your treatment, matched to your needs and budget.' },
+  { title: 'Find your doctor', body: 'We find the right doctor for your treatment, matched to your needs, your schedule and your budget.' },
   { title: 'Insurance and financing', body: 'We work with your insurance to cover what it can, and offer financing for the rest.' },
-  { title: 'Everything arranged', body: 'We compare prices, fill out the paperwork, and book your hotel and transport.' },
+  { title: 'Everything arranged', body: 'We compare prices, fill out the paperwork, and book your appointments, and your hotel and transport when you travel.' },
   { title: 'Aftercare', body: 'We follow up after treatment and coordinate the care that comes next.' },
   { title: 'Prescriptions, handled', body: 'We find the best price on your medications and have them delivered.' },
   { title: 'With you at every step', body: 'One team guides you from your first question to your last follow-up.' },
@@ -36,8 +36,8 @@ const STANDARDS = [
 ]
 
 const PATHS = [
-  { label: 'For yourself', href: '/chat/', note: 'Start with a doctor’s review' },
-  { label: 'For your team', href: '/contact', note: 'Care as a benefit for your people' },
+  { label: 'For yourself', href: '/individual', note: 'Start with a doctor’s review' },
+  { label: 'For your team', href: '/business', note: 'Care as a benefit for your people' },
 ]
 
 const label = 'font-grotesk text-[11px] font-light tracking-[0.28em] text-champagne uppercase'
@@ -54,7 +54,7 @@ export default function Care() {
             Every kind of care, <i className="text-champagne">arranged.</i>
           </h1>
           <p className="mt-8 max-w-xl text-lg font-light text-muted-foreground">
-            Tell us what you need. We find the right doctor and price, then handle every detail along the way.
+            Tell us what you need. We find the right doctor and the right price, then handle every detail along the way.
           </p>
         </header>
 

@@ -45,6 +45,13 @@ describe('Care page', () => {
     expect(screen.queryAllByRole('button', { expanded: false })).toHaveLength(0)
   })
 
+  it('matches the approved copy', () => {
+    render(<Care />)
+    expect(screen.getByText(/we find the right doctor and the right price/i)).toBeTruthy()
+    expect(screen.getByText(/matched to your needs, your schedule and your budget/i)).toBeTruthy()
+    expect(screen.getByText(/book your appointments, and your hotel and transport when you travel/i)).toBeTruthy()
+  })
+
   it('never tags care with a location', () => {
     render(<Care />)
     expect(screen.queryByText(/abroad/i)).toBeNull()
@@ -66,8 +73,8 @@ describe('Care page', () => {
   it('splits visitors toward individual and business paths with visible focus', () => {
     render(<Care />)
     const self = screen.getByRole('link', { name: /for yourself/i })
-    expect(self.getAttribute('href')).toBe('/chat/')
+    expect(self.getAttribute('href')).toBe('/individual')
     expect(self.className).toMatch(/focus-visible:outline-alabaster/)
-    expect(screen.getByRole('link', { name: /for your team/i }).getAttribute('href')).toBe('/contact')
+    expect(screen.getByRole('link', { name: /for your team/i }).getAttribute('href')).toBe('/business')
   })
 })
