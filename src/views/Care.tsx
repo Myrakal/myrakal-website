@@ -2,11 +2,11 @@ import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 
 const SERVICES = [
-  { title: 'Find your doctor', body: 'We match you with the right doctor for your treatment, and a licensed doctor reviews every plan.' },
+  { title: 'Find your doctor', body: 'We find the right doctor for your treatment, matched to your needs and budget.' },
   { title: 'Insurance and financing', body: 'We work with your insurance to cover what it can, and offer financing for the rest.' },
   { title: 'Everything arranged', body: 'We compare prices, fill out the paperwork, and book your hotel and transport.' },
   { title: 'Aftercare', body: 'We follow up after treatment and coordinate the care that comes next.' },
-  { title: 'Prescriptions for less', body: 'We find better prices on your medications and have them delivered.' },
+  { title: 'Prescriptions, handled', body: 'We find the best price on your medications and have them delivered.' },
   { title: 'With you at every step', body: 'One team guides you from your first question to your last follow-up.' },
 ]
 
@@ -54,7 +54,7 @@ export default function Care() {
             Every kind of care, <i className="text-champagne">arranged.</i>
           </h1>
           <p className="mt-8 max-w-xl text-lg font-light text-muted-foreground">
-            Tell us what you need. We find the right doctor and price, then handle everything until you’re home.
+            Tell us what you need. We find the right doctor and price, then handle every detail along the way.
           </p>
         </header>
 
@@ -113,9 +113,9 @@ export default function Care() {
             <a
               key={name}
               href={href}
-              className="group border border-champagne/30 p-10 transition-colors hover:bg-champagne/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
+              className="group border border-alabaster/40 p-10 transition-colors hover:bg-alabaster/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-alabaster"
             >
-              <span className="block font-display text-4xl">{name} <span aria-hidden="true" className="text-champagne">→</span></span>
+              <span className="block font-display text-4xl">{name} <span aria-hidden="true">→</span></span>
               <span className="mt-3 block font-light text-muted-foreground">{note}</span>
             </a>
           ))}

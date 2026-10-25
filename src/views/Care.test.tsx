@@ -67,7 +67,7 @@ describe('Care page', () => {
     render(<Care />)
     const self = screen.getByRole('link', { name: /for yourself/i })
     expect(self.getAttribute('href')).toBe('/chat/')
-    expect(self.className).toMatch(/focus-visible:outline-champagne/)
+    expect(self.className).toMatch(/focus-visible:outline-alabaster/)
     expect(screen.getByRole('link', { name: /for your team/i }).getAttribute('href')).toBe('/contact')
   })
 })
