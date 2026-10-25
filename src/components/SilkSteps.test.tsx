@@ -1,18 +1,8 @@
 import { render, screen, within } from '@testing-library/react'
 
-const mockReduced = jest.fn(() => false)
-Object.defineProperty(window, 'matchMedia', {
-  configurable: true,
-  value: (query: string) => ({
-    matches: query.includes('reduced-motion') && mockReduced(),
-    addEventListener: () => {},
-    removeEventListener: () => {},
-  }),
-})
-
 import { SilkSteps } from '@/components/SilkSteps'
 
-const steps = [
+const steps: Parameters<typeof SilkSteps>[0]['steps'] = [
   { title: 'Find your doctor', body: 'One' },
   { title: 'Insurance and financing', body: 'Two' },
   { title: 'Everything arranged', body: 'Three' },
@@ -20,8 +10,6 @@ const steps = [
 ]
 
 describe('SilkSteps', () => {
-  afterEach(() => mockReduced.mockReturnValue(false))
-
   it('lists the workflow as an ordered sequence', () => {
     render(<SilkSteps steps={steps} />)
     const items = within(screen.getByRole('list')).getAllByRole('listitem')
@@ -43,9 +31,15 @@ describe('SilkSteps', () => {
     expect(sides).toEqual(['left', 'right', 'left', 'right'])
   })
 
-  it('shows the whole silk without animation for reduced motion', () => {
-    mockReduced.mockReturnValue(true)
+  it('turns the unfurl off in CSS for reduced motion so nothing flashes', () => {
     const { container } = render(<SilkSteps steps={steps} />)
-    expect(container.querySelector('img')!.getAttribute('style') ?? '').not.toMatch(/clip-path/)
+    expect(container.querySelector('img')!.className).toContain('motion-reduce:[clip-path:none]!')
+  })
+
+  it('reserves the silk size before it loads so steps never collapse', () => {
+    const { container } = render(<SilkSteps steps={steps} />)
+    const img = container.querySelector('img')!
+    expect(Number(img.getAttribute('width'))).toBeGreaterThan(0)
+    expect(Number(img.getAttribute('height'))).toBeGreaterThan(0)
   })
 })

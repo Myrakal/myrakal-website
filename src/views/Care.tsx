@@ -2,11 +2,14 @@ import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 import { SilkSteps } from '@/components/SilkSteps'
 
-const SERVICES = [
+const WORKFLOW: Parameters<typeof SilkSteps>[0]['steps'] = [
   { title: 'Find your doctor', body: 'We find the right doctor for your treatment, matched to your needs and budget.' },
   { title: 'Insurance and financing', body: 'We work with your insurance to cover what it can, and offer financing for the rest.' },
   { title: 'Everything arranged', body: 'We compare prices, fill out the paperwork, and book your hotel and transport.' },
   { title: 'Aftercare', body: 'We follow up after treatment and coordinate the care that comes next.' },
+]
+
+const ALONGSIDE = [
   { title: 'Prescriptions, handled', body: 'We find the best price on your medications and have them delivered.' },
   { title: 'With you at every step', body: 'One team guides you from your first question to your last follow-up.' },
 ]
@@ -61,9 +64,9 @@ export default function Care() {
 
         <section aria-labelledby="what-we-do" className={`${band} pb-28`}>
           <h2 id="what-we-do" className="text-center font-display text-4xl font-normal sm:text-5xl">What we do</h2>
-          <SilkSteps steps={SERVICES.slice(0, 4)} />
+          <SilkSteps steps={WORKFLOW} />
           <div className="mt-20 grid gap-12 border-t border-champagne/20 pt-12 sm:grid-cols-2">
-            {SERVICES.slice(4).map(({ title, body }) => (
+            {ALONGSIDE.map(({ title, body }) => (
               <div key={title}>
                 <h3 className="font-display text-2xl font-normal sm:text-3xl">{title}</h3>
                 <p className="mt-3 font-light text-muted-foreground">{body}</p>
