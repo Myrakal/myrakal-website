@@ -50,6 +50,8 @@ describe('Care page', () => {
     expect(screen.getByText(/we find the right doctor and the right price/i)).toBeTruthy()
     expect(screen.getByText(/matched to your needs, your schedule and your budget/i)).toBeTruthy()
     expect(screen.getByText(/book your appointments, and your hotel and transport when you travel/i)).toBeTruthy()
+    expect(screen.getByText(/help you arrange financing for the rest/i)).toBeTruthy()
+    expect(screen.queryByText(/offer financing/i)).toBeNull()
   })
 
   it('never tags care with a location', () => {

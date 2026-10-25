@@ -3,7 +3,7 @@ import { Navbar } from '@/components/Navbar'
 
 const SERVICES = [
   { title: 'Find your doctor', body: 'We find the right doctor for your treatment, matched to your needs, your schedule and your budget.' },
-  { title: 'Insurance and financing', body: 'We work with your insurance to cover what it can, and offer financing for the rest.' },
+  { title: 'Insurance and financing', body: 'We work with your insurance to cover what it can, and help you arrange financing for the rest.' },
   { title: 'Everything arranged', body: 'We compare prices, fill out the paperwork, and book your appointments, and your hotel and transport when you travel.' },
   { title: 'Aftercare', body: 'We follow up after treatment and coordinate the care that comes next.' },
   { title: 'Prescriptions, handled', body: 'We find the best price on your medications and have them delivered.' },
