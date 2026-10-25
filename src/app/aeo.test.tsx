@@ -39,6 +39,14 @@ describe('answer engine markup', () => {
     faq.mainEntity.forEach((q: { acceptedAnswer: { text: string } }) => expect(page.textContent).toContain(q.acceptedAnswer.text))
   })
 
+  it('says Myrakal handles insurance, travel and documents today, never as future plans', () => {
+    const faq = graph(render(<Home />).container).find((i) => i['@type'] === 'FAQPage')
+    const all = JSON.stringify(faq)
+    expect(all).not.toMatch(/building out|what’s next|what's next/i)
+    const handles = faq.mainEntity.find((q: { name: string }) => q.name === 'What does Myrakal handle?')
+    for (const word of [/insurance/i, /flights/i, /hotels/i, /documents/i, /aftercare/i]) expect(handles.acceptedAnswer.text).toMatch(word)
+  })
+
   it('describes care as a coordination service, never a medical provider', () => {
     const items = graph(render(<Care />).container)
     const service = items.find((i) => i['@type'] === 'Service')
