@@ -51,9 +51,9 @@ const FAQS: FaqItem[] = [
       'Every doctor is licensed and credential-verified, and every hospital we work with is internationally accredited. We hold every partner to the same standard we’d want for our own family.',
   },
   {
-    question: "What's next?",
+    question: 'What does Myrakal handle?',
     answer:
-      "Intake and consult are just the start. We're building out flight and hotel booking, ground transportation, insurance support, and a doctor portal for sending documents. Your entire trip is handled in one place.",
+      'Everything around your care, in one place: finding your doctor, working with your insurance and financing, booking appointments, flights, hotels and ground transportation, sending your documents to your doctors, and coordinating aftercare and prescriptions.',
   },
 ]
 
