@@ -1,35 +1,32 @@
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 
-type Outcome = { name: string; detail: string }
+const SERVICES = [
+  { title: 'Find your doctor', body: 'We match you with the right doctor for your treatment, and a licensed doctor reviews every plan.' },
+  { title: 'Insurance and financing', body: 'We work with your insurance to cover what it can, and offer financing for the rest.' },
+  { title: 'Everything arranged', body: 'We compare prices, fill out the paperwork, and book your hotel and transport.' },
+  { title: 'Aftercare', body: 'We follow up after treatment and coordinate the care that comes next.' },
+  { title: 'Prescriptions for less', body: 'We find better prices on your medications and have them delivered.' },
+  { title: 'With you at every step', body: 'One team guides you from your first question to your last follow-up.' },
+]
 
-const TIERS: { tier: string; outcomes: Outcome[] }[] = [
-  {
-    tier: 'Everyday',
-    outcomes: [
-      { name: 'Know your numbers', detail: 'Lab tests and bloodwork, ordered and read with you.' },
-      { name: 'Your everyday medicine', detail: 'Prescriptions, sourced for the best price and delivered.' },
-      { name: 'A doctor’s opinion', detail: 'Consults and second opinions from licensed doctors.' },
-      { name: 'See clearly', detail: 'Imaging, including MRI, CT and ultrasound.' },
-    ],
-  },
-  {
-    tier: 'Ongoing',
-    outcomes: [
-      { name: 'Your smile', detail: 'Dental care, from cleanings to full restorations.' },
-      { name: 'Starting a family', detail: 'IVF, clinics and fertility medication.' },
-      { name: 'Staying on track', detail: 'Recurring care and follow-ups, kept in one place.' },
-    ],
-  },
-  {
-    tier: 'Major',
-    outcomes: [
-      { name: 'Your face and body', detail: 'Rhinoplasty, eyelid surgery and facelifts.' },
-      { name: 'Your hair', detail: 'Hair transplants and aftercare.' },
-      { name: 'Back on your feet', detail: 'Joint and orthopedic surgery.' },
-    ],
-  },
+const TIERS = [
+  { tier: 'Everyday', outcomes: [
+    ['Know your numbers', 'Lab tests and bloodwork'],
+    ['Your everyday medicine', 'Prescriptions, sourced and delivered'],
+    ['A doctor’s opinion', 'Consults and second opinions'],
+    ['See clearly', 'Imaging, including MRI, CT and ultrasound'],
+  ] },
+  { tier: 'Ongoing', outcomes: [
+    ['Your smile', 'Cleanings through full restorations'],
+    ['Starting a family', 'IVF, clinics and medication'],
+    ['Staying on track', 'Recurring care and follow-ups'],
+  ] },
+  { tier: 'Major', outcomes: [
+    ['Your face and body', 'Rhinoplasty, eyelids and facelifts'],
+    ['Your hair', 'Transplants and aftercare'],
+    ['Back on your feet', 'Joint and orthopedic surgery'],
+  ] },
 ]
 
 const STANDARDS = [
@@ -39,64 +36,87 @@ const STANDARDS = [
 ]
 
 const PATHS = [
-  { label: 'For yourself', href: '/chat/', note: 'Start with a doctor’s review.' },
-  { label: 'For your team', href: '/contact', note: 'Care as a benefit for your people.' },
+  { label: 'For yourself', href: '/chat/', note: 'Start with a doctor’s review' },
+  { label: 'For your team', href: '/contact', note: 'Care as a benefit for your people' },
 ]
+
+const label = 'font-grotesk text-[11px] font-light tracking-[0.28em] text-champagne uppercase'
+const band = 'mx-auto max-w-6xl px-6 sm:px-12'
 
 export default function Care() {
   return (
     <>
       <Navbar />
-      <main className="bg-cream text-velvet-deep">
-        <header className="bg-background text-foreground">
-          <div className="mx-auto max-w-4xl px-6 pt-40 pb-20 sm:px-12">
-            <h1 className="font-display text-5xl font-normal sm:text-7xl">Every kind of care, arranged.</h1>
-            <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-              Tell us what you need. We find where it should happen and handle the rest.
-            </p>
-          </div>
+      <main className="bg-velvet-deep text-cream">
+        <header className={`${band} pt-40 pb-28 sm:pt-52`}>
+          <p className={label}>Care</p>
+          <h1 className="mt-6 max-w-4xl font-display text-5xl leading-[1.05] font-normal text-balance sm:text-7xl">
+            Every kind of care, <i className="text-champagne">arranged.</i>
+          </h1>
+          <p className="mt-8 max-w-xl text-lg font-light text-muted-foreground">
+            Tell us what you need. We find the right doctor and price, then handle everything until you’re home.
+          </p>
         </header>
 
-        <div className="mx-auto max-w-4xl space-y-16 px-6 pt-20 sm:px-12">
-          {TIERS.map(({ tier, outcomes }) => (
-            <section key={tier} aria-labelledby={`tier-${tier}`}>
-              <h2 id={`tier-${tier}`} className="font-grotesk text-xs font-normal tracking-[0.28em] text-velvet uppercase">
-                {tier}
-              </h2>
-              <Accordion className="mt-4">
-                {outcomes.map(({ name, detail }) => (
-                  <AccordionItem key={name} value={name} className="border-velvet/20">
-                    <AccordionTrigger className="py-5 focus-visible:ring-velvet font-display text-3xl font-normal text-velvet-deep hover:no-underline sm:text-4xl">
-                      {name}
-                    </AccordionTrigger>
-                    <AccordionContent className="pb-6 text-base text-velvet">{detail}</AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </section>
-          ))}
-          <p className="font-display text-2xl text-velvet italic">
-            Don’t see it? If it can be planned, we can arrange it.
-          </p>
-        </div>
-
-        <section aria-labelledby="standards" className="mx-auto mt-32 max-w-4xl px-6 sm:px-12">
-          <h2 id="standards" className="font-display text-4xl font-normal">Our standards</h2>
-          <div className="mt-10 grid gap-10 sm:grid-cols-3">
-            {STANDARDS.map(({ title, body }) => (
-              <div key={title}>
-                <h3 className="font-grotesk text-xs font-normal tracking-[0.28em] text-velvet uppercase">{title}</h3>
-                <p className="mt-3 text-velvet">{body}</p>
-              </div>
-            ))}
+        <section aria-labelledby="what-we-do" className="border-t border-champagne/20 bg-velvet">
+          <div className={`${band} grid gap-12 py-28 lg:grid-cols-[1fr_2fr]`}>
+            <h2 id="what-we-do" className="font-display text-4xl font-normal sm:text-5xl">What we do</h2>
+            <div className="grid gap-x-12 gap-y-14 sm:grid-cols-2">
+              {SERVICES.map(({ title, body }) => (
+                <div key={title} className="border-t border-champagne/30 pt-6">
+                  <h3 className="font-display text-2xl font-normal sm:text-3xl">{title}</h3>
+                  <p className="mt-3 font-light text-muted-foreground">{body}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
-        <nav aria-label="Get started" className="mx-auto grid max-w-4xl gap-px px-6 py-32 sm:grid-cols-2 sm:px-12">
-          {PATHS.map(({ label, href, note }) => (
-            <a key={label} href={href} className="group border-t border-velvet/20 py-8 focus-visible:outline-2 focus-visible:outline-velvet">
-              <span className="block font-display text-4xl group-hover:italic">{label}</span>
-              <span className="mt-2 block text-velvet">{note}</span>
+        <section aria-labelledby="what-we-cover" className={`${band} py-28`}>
+          <h2 id="what-we-cover" className="font-display text-4xl font-normal sm:text-5xl">What we cover</h2>
+          <div className="mt-16 grid gap-14 md:grid-cols-3">
+            {TIERS.map(({ tier, outcomes }) => (
+              <div key={tier}>
+                <h3 className={label}>{tier}</h3>
+                <ul className="mt-6 space-y-6">
+                  {outcomes.map(([name, detail]) => (
+                    <li key={name}>
+                      <p className="font-display text-2xl">{name}</p>
+                      <p className="mt-1 text-sm font-light text-muted-foreground">{detail}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p className="mt-20 font-display text-2xl text-champagne italic sm:text-3xl">
+            Don’t see it? If it can be planned, we can arrange it.
+          </p>
+        </section>
+
+        <section aria-labelledby="standards" className="border-t border-champagne/20 bg-velvet">
+          <div className={`${band} py-28`}>
+            <h2 id="standards" className="font-display text-4xl font-normal sm:text-5xl">Our standards</h2>
+            <div className="mt-14 grid gap-12 md:grid-cols-3">
+              {STANDARDS.map(({ title, body }) => (
+                <div key={title}>
+                  <h3 className={label}>{title}</h3>
+                  <p className="mt-4 font-light text-muted-foreground">{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <nav aria-label="Get started" className={`${band} grid gap-6 py-28 md:grid-cols-2`}>
+          {PATHS.map(({ label: name, href, note }) => (
+            <a
+              key={name}
+              href={href}
+              className="group border border-champagne/30 p-10 transition-colors hover:bg-champagne/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
+            >
+              <span className="block font-display text-4xl">{name} <span aria-hidden="true" className="text-champagne">→</span></span>
+              <span className="mt-3 block font-light text-muted-foreground">{note}</span>
             </a>
           ))}
         </nav>

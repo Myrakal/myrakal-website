@@ -1,47 +1,53 @@
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 
 jest.mock('@/hooks/useSession', () => ({ useSession: () => ({ user: null, loading: false }) }))
 jest.mock('@/lib/supabase', () => ({ getSupabase: () => null }))
+jest.mock('next/navigation', () => ({ usePathname: () => '/care' }))
 
 import Care from '@/views/Care'
 
 describe('Care page', () => {
   it('has a single page heading', () => {
     render(<Care />)
-    expect(screen.getByRole('heading', { level: 1, name: /every kind of care, arranged/i })).toBeTruthy()
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/every kind of care, arranged/i)
   })
 
-  it('groups care into everyday, ongoing and major tiers in that order', () => {
+  it('explains everything Myrakal does for a patient', () => {
     render(<Care />)
-    const tiers = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
-    expect(tiers.slice(0, 3)).toEqual(['Everyday', 'Ongoing', 'Major'])
-  })
-
-  it('lists outcomes from lab tests through surgery', () => {
-    render(<Care />)
-    for (const name of ['Know your numbers', 'Your everyday medicine', 'Starting a family', 'Back on your feet']) {
-      expect(screen.getByRole('button', { name: new RegExp(name, 'i') })).toBeTruthy()
+    const services = screen.getByRole('region', { name: /what we do/i })
+    for (const name of [
+      /find your doctor/i,
+      /insurance and financing/i,
+      /everything arranged/i,
+      /aftercare/i,
+      /prescriptions/i,
+      /every step/i,
+    ]) {
+      expect(within(services).getByRole('heading', { level: 3, name })).toBeTruthy()
     }
+    expect(within(services).getByText(/paperwork/i)).toBeTruthy()
+    expect(within(services).getByText(/hotel/i)).toBeTruthy()
   })
 
-  it('reveals the clinical detail when an outcome is opened', () => {
+  it('shows what we cover in everyday, ongoing and major tiers', () => {
     render(<Care />)
-    const trigger = screen.getByRole('button', { name: /know your numbers/i })
-    expect(trigger.getAttribute('aria-expanded')).toBe('false')
-    fireEvent.click(trigger)
-    expect(trigger.getAttribute('aria-expanded')).toBe('true')
+    const cover = screen.getByRole('region', { name: /what we cover/i })
+    const tiers = within(cover).getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
+    expect(tiers).toEqual(['Everyday', 'Ongoing', 'Major'])
+  })
+
+  it('shows clinical detail without hiding it behind a click', () => {
+    render(<Care />)
+    expect(screen.getByText('Know your numbers')).toBeTruthy()
     expect(screen.getByText(/lab tests and bloodwork/i)).toBeTruthy()
+    expect(screen.getByText('Back on your feet')).toBeTruthy()
+    expect(screen.queryAllByRole('button', { expanded: false })).toHaveLength(0)
   })
 
   it('never tags care with a location', () => {
     render(<Care />)
     expect(screen.queryByText(/abroad/i)).toBeNull()
-  })
-
-  it('gives every control on cream a visible velvet focus ring', () => {
-    render(<Care />)
-    expect(screen.getByRole('button', { name: /your smile/i }).className).toMatch(/focus-visible:ring-velvet/)
-    expect(screen.getByRole('link', { name: /for yourself/i }).className).toMatch(/focus-visible:outline-velvet/)
   })
 
   it('invites requests that are not listed', () => {
@@ -57,9 +63,11 @@ describe('Care page', () => {
     }
   })
 
-  it('splits visitors toward individual and business paths', () => {
+  it('splits visitors toward individual and business paths with visible focus', () => {
     render(<Care />)
-    expect(screen.getByRole('link', { name: /for yourself/i }).getAttribute('href')).toBe('/chat/')
+    const self = screen.getByRole('link', { name: /for yourself/i })
+    expect(self.getAttribute('href')).toBe('/chat/')
+    expect(self.className).toMatch(/focus-visible:outline-champagne/)
     expect(screen.getByRole('link', { name: /for your team/i }).getAttribute('href')).toBe('/contact')
   })
 })
