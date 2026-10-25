@@ -4,17 +4,20 @@ type Role = 'user' | 'assistant'
 type Message = { id: string; role: Role; text: string; createdAt: string }
 type Comment = { id: string; text: string; createdAt: string }
 
-const TOTAL = 27
-const COLLECTED = [9, 18, 27]
+const TOTAL = 7
+const COLLECTED = [2, 4, 7]
 
 export class FakeBackend {
   readonly id = '3f1c2b4a-0000-4000-8000-000000000001'
   readonly patientLines = [
-    'I need a knee replacement. My name is Ada Lovelace and I live in the US.',
-    'The pain started two years ago. I take no medication and have no allergies.',
-    'I can travel in March, my budget is 15000 dollars and I agree to the doctor review.',
+    'I need a knee replacement. The pain started two years ago.',
+    'Nothing feels like an emergency. Call me Ada, and my date of birth is December 10, 1815.',
+    'I have not had treatment yet. I take no medication, have no allergies or other conditions, and I have recent X-rays.',
   ]
-  readonly assistantLines = ['Thank you Ada. How long have you had the pain?', 'Understood. When could you travel and what is your budget?']
+  readonly assistantLines = [
+    'Before we continue, does anything feel like an emergency right now?',
+    'Have you already tried any treatments, procedures, or surgery for this?',
+  ]
 
   private created = false
   private status = 'intake'

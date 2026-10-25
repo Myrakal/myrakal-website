@@ -12,7 +12,7 @@ import { TypingIndicator } from '@/components/chat/TypingIndicator'
 const GREETING: Message = {
   id: 'greeting',
   role: 'assistant',
-  text: "Hi, and welcome to Myrakal. Thank you for reaching out. I'm here to gather a few details so one of our licensed doctors can review your case. To start, do you already have a diagnosis, or are you still figuring things out? Either is perfectly fine.",
+  text: 'Hi—I’m glad you reached out. I’ll ask a few short questions so a licensed doctor can understand what’s going on. What would you like help with? If you already have a diagnosis, you can share it. If not, just tell me what has been bothering you.',
 }
 
 type Progress = { collected: number; total: number }

@@ -1,5 +1,5 @@
 import { ClaudeNotConfigured, runTurn } from './claude'
-import { INTAKE_FIELDS } from './intake'
+import { INTAKE_FIELDS, INTAKE_QUESTIONS } from './intake'
 import { buildSystemPrompt } from './prompt'
 
 const create = jest.fn()
@@ -68,10 +68,10 @@ describe('runTurn', () => {
   it('merges updates across tool rounds, later values winning', async () => {
     create
       .mockResolvedValueOnce(toolReply({ name: 'Ada' }))
-      .mockResolvedValueOnce(toolReply({ name: 'Ada L', phone: '123' }))
+      .mockResolvedValueOnce(toolReply({ name: 'Ada L', dob: '1990-01-01' }))
       .mockResolvedValueOnce(textReply('ok'))
     const result = await runTurn({ history: [{ role: 'user', text: 'x' }], intake: {} })
-    expect(result.updates).toEqual({ name: 'Ada L', phone: '123' })
+    expect(result.updates).toEqual({ name: 'Ada L', dob: '1990-01-01' })
   })
 
   it('stops after a bounded number of tool rounds', async () => {
@@ -82,8 +82,8 @@ describe('runTurn', () => {
   })
 
   it('keeps the last non-empty reply across rounds', async () => {
-    create.mockResolvedValueOnce(toolReply({ name: 'Ada' }, 'Got it.')).mockResolvedValueOnce(toolReply({ phone: '1' }))
-    create.mockResolvedValue(toolReply({ phone: '1' }))
+    create.mockResolvedValueOnce(toolReply({ name: 'Ada' }, 'Got it.')).mockResolvedValueOnce(toolReply({ dob: '1990-01-01' }))
+    create.mockResolvedValue(toolReply({ dob: '1990-01-01' }))
     const result = await runTurn({ history: [{ role: 'user', text: 'x' }], intake: {} })
     expect(result.reply).toBe('Got it.')
   })
@@ -96,9 +96,9 @@ describe('runTurn', () => {
   })
 
   it('tells the model which fields were not saved', async () => {
-    create.mockResolvedValueOnce(toolReply({ consent: false, name: 'Ada' })).mockResolvedValueOnce(textReply('ok'))
+    create.mockResolvedValueOnce(toolReply({ emergency: 'no', name: 'Ada' })).mockResolvedValueOnce(textReply('ok'))
     await runTurn({ history: [{ role: 'user', text: 'x' }], intake: {} })
-    expect(create.mock.calls[1][0].messages[2].content[0].content).toContain('consent')
+    expect(create.mock.calls[1][0].messages[2].content[0].content).toContain('emergency')
   })
 
   it('drops blank messages and leading assistant turns', async () => {
@@ -129,10 +129,15 @@ describe('runTurn', () => {
 })
 
 describe('buildSystemPrompt', () => {
-  it('forbids diagnosis, mentions 911 and lists every field', () => {
+  it('forbids diagnosis, mentions 911 and lists all seven friendly questions', () => {
     const prompt = buildSystemPrompt({})
     expect(prompt).toMatch(/diagnos/i)
     expect(prompt).toContain('911')
+    expect(prompt).toContain('What would you like help with?')
+    expect(prompt).toContain('It’s completely okay if the answer is no.')
+    expect(prompt).toContain('No problem if you don’t.')
+    expect(prompt).toMatch(/one question at a time/i)
+    for (const q of INTAKE_QUESTIONS) expect(prompt).toContain(q.text)
     for (const f of INTAKE_FIELDS) expect(prompt).toContain(f.key)
   })
 
@@ -146,5 +151,7 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toContain('Collected')
     expect(prompt).toContain('Ada')
     expect(prompt).toContain('Still needed')
+    expect(prompt).toContain('- dob')
+    expect(prompt).not.toContain('- name, dob')
   })
 })

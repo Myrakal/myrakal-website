@@ -17,7 +17,7 @@ test('a patient goes from sign up to booked', async ({ page }) => {
     await page.getByLabel('Password').fill('correct-horse-9')
     await page.getByRole('button', { name: 'Sign up' }).click()
     await expect(page).toHaveURL(/\/chat$/)
-    await expect(page.getByRole('log', { name: 'Conversation' })).toContainText('welcome to Myrakal')
+    await expect(page.getByRole('log', { name: 'Conversation' })).toContainText('I’m glad you reached out')
   })
 
   await test.step('talk to the AI until intake completes', async () => {
