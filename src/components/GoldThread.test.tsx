@@ -26,21 +26,45 @@ describe('GoldThread', () => {
     expect(screen.getByRole('heading', { name: 'Inside' })).toBeTruthy()
   })
 
-  it('draws one decorative path through every stop in page order', () => {
+  it('draws a decorative bundle of strands that gather at every stop', () => {
     const { container } = render(
       <GoldThread>
-        <ThreadStop data-at="100,0" />
-        <ThreadStop marked data-at="100,400" />
-        <ThreadStop data-at="100,900" />
+        <div data-at="200,0">
+          <ThreadStop data-at="100,0" />
+        </div>
+        <div data-at="200,400">
+          <ThreadStop marked data-at="100,400" />
+        </div>
+        <div data-at="200,900">
+          <ThreadStop data-at="100,900" />
+        </div>
       </GoldThread>,
     )
     act(() => window.dispatchEvent(new Event('resize')))
     const svg = container.querySelector('svg')!
     expect(svg.getAttribute('aria-hidden')).toBe('true')
-    const d = svg.querySelector('path')!.getAttribute('d')!
-    expect(d.startsWith('M100 0')).toBe(true)
-    expect(d).toMatch(/100 400 C/)
-    expect(d.endsWith('100 900')).toBe(true)
+    const strands = [...svg.querySelectorAll('path[data-strand]')].map((p) => p.getAttribute('d')!)
+    expect(strands.length).toBeGreaterThanOrEqual(4)
+    expect(new Set(strands).size).toBe(strands.length)
+    for (const d of strands) {
+      expect(d.startsWith('M100 0')).toBe(true)
+      expect(d).toMatch(/100 400 C/)
+      expect(d.endsWith('100 900')).toBe(true)
+    }
+  })
+
+  it('gives each strand a soft glow behind it', () => {
+    const { container } = render(
+      <GoldThread>
+        <ThreadStop data-at="100,0" />
+        <ThreadStop data-at="100,600" />
+      </GoldThread>,
+    )
+    act(() => window.dispatchEvent(new Event('resize')))
+    const glows = container.querySelectorAll('path[data-glow]')
+    expect(glows.length).toBeGreaterThanOrEqual(4)
+    expect(glows.length).toBe(container.querySelectorAll('path[data-strand]').length)
+    glows.forEach((g) => expect(Number(g.getAttribute('stroke-width'))).toBeGreaterThan(1))
   })
 
   it('sways between stops instead of running straight', () => {
@@ -72,9 +96,15 @@ describe('GoldThread', () => {
       </GoldThread>,
     )
     act(() => window.dispatchEvent(new Event('resize')))
-    const d = container.querySelector('path')!.getAttribute('d')!
-    const xs = [...d.matchAll(/(-?[\d.]+) (-?[\d.]+)/g)].map((m) => Number(m[1]))
-    expect(Math.max(...xs) * 0.75 + 36 * 0.25).toBeLessThan(48)
+    const strands = container.querySelectorAll('path[data-strand]')
+    expect(strands.length).toBeGreaterThan(0)
+    for (const p of strands) {
+      const [a, b] = [...p.getAttribute('d')!.matchAll(/C(-?[\d.]+) -?[\d.]+ (-?[\d.]+)/g)][0].slice(1).map(Number)
+      for (let t = 0; t <= 1; t += 0.05) {
+        const x = 36 * (1 - t) ** 3 + 3 * a * t * (1 - t) ** 2 + 3 * b * t ** 2 * (1 - t) + 36 * t ** 3
+        expect(x + 3).toBeLessThan(48)
+      }
+    }
   })
 
   it('shows gold marks only where a stop is marked', () => {
