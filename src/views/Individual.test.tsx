@@ -23,7 +23,7 @@ describe('Individual page', () => {
       'Tell us what you need.',
       'A licensed doctor reviews your case.',
       'You get one plan and one price.',
-      'We arrange everything.',
+      'We book everything and pay your providers.',
       'We stay with you.',
     ])
   })
@@ -40,7 +40,7 @@ describe('Individual page', () => {
       'Insurance',
     ])
     expect(within(table).getByText('$150')).toBeTruthy()
-    expect(within(table).getByText('Through your provider')).toBeTruthy()
+    expect(within(table).getByText('On request')).toBeTruthy()
     expect(screen.queryByText(/prices shown/i)).toBeNull()
   })
 
@@ -97,16 +97,16 @@ describe('Individual page', () => {
     expect(container.textContent).not.toMatch(/\[[^\]]*\]/)
   })
 
-  it('makes no claim about who collects payment until that is decided', () => {
+  it('says patients pay Myrakal after approving their plan and Myrakal pays each provider', () => {
     const { container } = render(<Individual />)
-    expect(screen.getByText('Appointments, paperwork, and travel and stays when needed.')).toBeTruthy()
-    expect(container.textContent).not.toMatch(/one bill|on your behalf|pay providers directly|complication coverage/i)
+    expect(screen.getByText('Appointments, paperwork, and travel and stays when needed. Once you approve your plan, you pay us, and we pay each provider.')).toBeTruthy()
+    expect(container.textContent).not.toMatch(/pay us once|pay for everything|pay providers directly|through your provider|complication coverage/i)
+    expect(screen.getByText('Ask your coordinator about paying over time')).toBeTruthy()
   })
 
   it('commits to a review turnaround and explains what happens if something goes wrong', () => {
     render(<Individual />)
     expect(screen.getByText('Within 2 business days of completing intake.')).toBeTruthy()
     expect(screen.getByText(/Your coordinator stays with you and works directly with your providers to resolve it\./)).toBeTruthy()
-    expect(screen.getByText(/Available through many of our providers; we’ll help you apply/)).toBeTruthy()
   })
 })

@@ -28,7 +28,7 @@ describe('app routes', () => {
     expect(screen.getAllByRole('link').length).toBeGreaterThan(0)
   })
 
-  it('keeps the individual page out of search until the payment wording is settled', async () => {
+  it('keeps the individual page out of search until the terms match the payment model', async () => {
     const page = await import('./individual/page')
     expect(page.metadata.robots).toEqual({ index: false })
   })

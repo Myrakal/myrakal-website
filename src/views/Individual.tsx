@@ -12,14 +12,14 @@ const STEPS = [
   ['Tell us what you need.', 'Start a conversation, with or without a diagnosis. Share any records, results and insurance details you have. Our intake only gathers information; it never gives advice.'],
   ['A licensed doctor reviews your case.', 'They confirm what you need and approve your options. Nothing is recommended before that review.'],
   ['You get one plan and one price.', 'We lay out your options, close to home or abroad, each with its full cost. You choose; nothing is booked until you say yes.'],
-  ['We arrange everything.', 'Appointments, paperwork, and travel and stays when needed.'],
+  ['We book everything and pay your providers.', 'Appointments, paperwork, and travel and stays when needed. Once you approve your plan, you pay us, and we pay each provider.'],
   ['We stay with you.', 'We follow up after treatment, coordinate aftercare, and keep your prescriptions coming at the best price.'],
 ]
 
 const PRICES = [
   ['Doctor review', '$150', 'Credited toward any care you book through Myrakal'],
   ['Your plan', 'One all-in price', 'Quoted in full before you commit; covers everything listed in your plan'],
-  ['Financing', 'Through your provider', 'Available through many of our providers; we’ll help you apply'],
+  ['Financing', 'On request', 'Ask your coordinator about paying over time'],
   ['Insurance', 'Your plan’s terms', 'We use your coverage wherever it lowers what you pay'],
 ]
 
