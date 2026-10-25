@@ -29,7 +29,7 @@ const BENEFITS = [
 const FAQS = [
   ['Do we have to change our health plan?', 'No. Myrakal works alongside your current plan and carrier.'],
   ['Do employees have to travel for care?', 'Never. Most of what we arrange happens close to home. Travel is offered only when it’s clearly better, and the employee always decides.'],
-  ['How is employee health data protected?', '[Describe your safeguards once confirmed with counsel.] Employers see aggregate reports only, never individual health details.'],
+  ['How is employee health data protected?', '[Describe your safeguards once confirmed with counsel.] [Employers see aggregate reports only; confirm with counsel.]'],
   ['How do you measure savings?', '[Method: e.g., price of the option chosen versus the employee’s default option.]'],
   ['How fast can we launch?', '[X weeks from signing.]'],
 ]
@@ -87,7 +87,7 @@ export default function Business() {
             {BENEFITS.map(({ id, title, items }) => (
               <section key={id} aria-labelledby={id}>
                 <h2 id={id} className="font-display text-3xl font-normal sm:text-4xl">{title}</h2>
-                <ul aria-labelledby={id} className="mt-10 space-y-4">
+                <ul className="mt-10 space-y-4">
                   {items.map((item) => (
                     <li key={item} className={`border-t border-champagne/30 pt-4 ${body}`}>{item}</li>
                   ))}

@@ -28,6 +28,11 @@ describe('app routes', () => {
     expect(screen.getAllByRole('link').length).toBeGreaterThan(0)
   })
 
+  it('keeps the draft business page out of search results', async () => {
+    const page = await import('./business/page')
+    expect(page.metadata.robots).toEqual({ index: false })
+  })
+
   it('not-found renders a heading and a way home', async () => {
     const { default: NotFound } = await import('./not-found')
     render(<NotFound />)

@@ -34,12 +34,23 @@ describe('Business page', () => {
 
   it('shows what employees and the company get', () => {
     render(<Business />)
-    const employees = screen.getByRole('list', { name: /what your employees get/i })
+    const employees = within(screen.getByRole('region', { name: /what your employees get/i })).getByRole('list')
     expect(within(employees).getAllByRole('listitem')).toHaveLength(6)
     expect(within(employees).getByText('A licensed doctor reviewing their case')).toBeTruthy()
-    const company = screen.getByRole('list', { name: /what your company gets/i })
+    const company = within(screen.getByRole('region', { name: /what your company gets/i })).getByRole('list')
     expect(within(company).getAllByRole('listitem')).toHaveLength(4)
     expect(within(company).getByText('No plan redesign and no new network to manage')).toBeTruthy()
+  })
+
+  it('names each benefit list once for screen readers', () => {
+    const { container } = render(<Business />)
+    container.querySelectorAll('ul').forEach((ul) => expect(ul.hasAttribute('aria-labelledby')).toBe(false))
+  })
+
+  it('makes no privacy promise until counsel confirms it', () => {
+    render(<Business />)
+    expect(screen.queryByText(/^.*\] Employers see aggregate reports only, never individual health details\.$/)).toBeNull()
+    expect(screen.getByText(/\[Employers see aggregate reports only; confirm with counsel\.\]/)).toBeTruthy()
   })
 
   it('answers the employer questions', () => {
