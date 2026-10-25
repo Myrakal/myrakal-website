@@ -12,7 +12,7 @@ const STEPS = [
   ['Tell us what you need.', 'Start a conversation, with or without a diagnosis. Share any records, results and insurance details you have. Our intake only gathers information; it never gives advice.'],
   ['A licensed doctor reviews your case.', 'They confirm what you need and approve your options. Nothing is recommended before that review.'],
   ['You get one plan and one price.', 'We lay out your options, close to home or abroad, each with its full cost. You choose; nothing is booked until you say yes.'],
-  ['We arrange and pay for everything.', 'Appointments, paperwork, and travel and stays when needed. We pay providers on your behalf, so you deal with one bill: ours.'],
+  ['We arrange and pay for everything.', 'Appointments, paperwork, and travel and stays when needed. [We pay providers on your behalf, so you deal with one bill: ours; confirm with counsel.]'],
   ['We stay with you.', 'We follow up after treatment, coordinate aftercare, and keep your prescriptions coming at the best price.'],
 ]
 
@@ -57,12 +57,8 @@ export default function Individual() {
       <main className="bg-velvet-deep text-cream">
         <header className={`${band} pt-40 pb-28 sm:pt-52`}>
           <p className={label}>For yourself</p>
-          <h1 className="mt-6 max-w-4xl font-display text-5xl leading-[1.05] font-normal text-balance sm:text-7xl">
-            One team for all of your care.
-          </h1>
-          <p className={`mt-8 mb-12 max-w-xl text-lg ${body}`}>
-            Bring us anything, from a lab test to a surgery. We find the best doctor and the best price, handle every detail, and stay with you until you’re well.
-          </p>
+          <h1 className="mt-6 max-w-4xl font-display text-5xl leading-[1.05] font-normal text-balance sm:text-7xl">One team for all of your care.</h1>
+          <p className={`mt-8 mb-12 max-w-xl text-lg ${body}`}>Bring us anything, from a lab test to a surgery. We find the best doctor and the best price, handle every detail, and stay with you until you’re well.</p>
           <TalkWithUs />
         </header>
 
@@ -92,18 +88,20 @@ export default function Individual() {
           <div className={`${band} py-28`}>
             <h2 id="what-you-pay" className={h2}>What you pay</h2>
             <p className={`mt-4 text-sm ${body}`}>Prices shown are a template and will change.</p>
-            <table className="mt-14 w-full text-left text-sm sm:text-base">
+            <div className="mt-14 overflow-x-auto">
+              <table aria-labelledby="what-you-pay" className="w-full text-left text-sm sm:text-base">
                 <thead><tr>{['Item', 'Price', 'Notes'].map((h) => <th key={h} scope="col" className={`${label} border-b border-champagne/20 pr-6 pb-4`}>{h}</th>)}</tr></thead>
                 <tbody>
                   {PRICES.map(([item, price, note]) => (
                     <tr key={item}>
-                      <td className={`${cell} font-display text-lg sm:text-2xl`}>{item}</td>
+                      <th scope="row" className={`${cell} font-display text-lg font-normal sm:text-2xl`}>{item}</th>
                       <td className={`${cell} text-cream`}>{price}</td>
                       <td className={`${cell} ${body}`}>{note}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+            </div>
           </div>
         </section>
 

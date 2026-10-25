@@ -33,7 +33,7 @@ describe('Individual page', () => {
     const table = screen.getByRole('table')
     const rows = within(table).getAllByRole('row')
     expect(within(rows[0]).getAllByRole('columnheader').map((c) => c.textContent)).toEqual(['Item', 'Price', 'Notes'])
-    expect(rows.slice(1).map((r) => within(r).getAllByRole('cell')[0].textContent)).toEqual([
+    expect(rows.slice(1).map((r) => within(r).getByRole('rowheader').textContent)).toEqual([
       'Doctor review',
       'Your plan',
       'Financing',
@@ -77,5 +77,22 @@ describe('Individual page', () => {
   it('never calls care cheap', () => {
     const { container } = render(<Individual />)
     expect(container.textContent).not.toMatch(/cheap/i)
+  })
+
+  it('names the pricing table and heads each row for screen readers', () => {
+    render(<Individual />)
+    const table = screen.getByRole('table', { name: /what you pay/i })
+    for (const item of ['Doctor review', 'Your plan', 'Financing', 'Insurance'])
+      expect(within(table).getByRole('rowheader', { name: item })).toBeTruthy()
+  })
+
+  it('lets the pricing table scroll on its own at narrow widths', () => {
+    render(<Individual />)
+    expect(screen.getByRole('table', { name: /what you pay/i }).parentElement!.className).toMatch(/overflow-x-auto/)
+  })
+
+  it('marks paying providers on the patient\'s behalf as unconfirmed', () => {
+    render(<Individual />)
+    expect(screen.getByText(/\[We pay providers on your behalf, so you deal with one bill: ours; confirm with counsel\.\]/)).toBeTruthy()
   })
 })
