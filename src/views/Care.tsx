@@ -1,5 +1,7 @@
 import { Footer } from '@/components/Footer'
+import { JsonLd } from '@/components/JsonLd'
 import { Navbar } from '@/components/Navbar'
+import { CARE_SERVICE, ORGANIZATION } from '@/lib/structured-data'
 
 const SERVICES = [
   { title: 'Find your doctor', body: 'We find the right doctor for your treatment, matched to your needs and budget.' },
@@ -46,6 +48,7 @@ const band = 'mx-auto max-w-6xl px-6 sm:px-12'
 export default function Care() {
   return (
     <>
+      <JsonLd data={[ORGANIZATION, CARE_SERVICE]} />
       <Navbar />
       <main className="bg-velvet-deep text-cream">
         <header className={`${band} pt-40 pb-28 sm:pt-52`}>

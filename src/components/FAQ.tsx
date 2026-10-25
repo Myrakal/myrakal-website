@@ -4,6 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
+import { JsonLd } from '@/components/JsonLd'
+import { faqPage } from '@/lib/structured-data'
 
 export type FaqItem = { question: string; answer: string }
 
@@ -64,12 +66,13 @@ export function FAQ({
 }) {
   return (
     <section className={`flex flex-col gap-12 px-6 py-24 sm:px-12 ${className}`}>
+      <JsonLd data={faqPage(faqs)} />
       <div className="mx-auto w-full max-w-2xl text-center">
         <h2 className="text-4xl text-foreground sm:text-5xl">
           Frequently asked questions
         </h2>
       </div>
-      <Accordion className="mx-auto w-full max-w-2xl">
+      <Accordion hiddenUntilFound className="mx-auto w-full max-w-2xl">
         {faqs.map((faq) => (
           <AccordionItem key={faq.question} value={faq.question}>
             <AccordionTrigger className="py-6 text-lg font-medium text-foreground no-underline hover:no-underline">
