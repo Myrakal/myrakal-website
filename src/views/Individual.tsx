@@ -12,14 +12,14 @@ const STEPS = [
   ['Tell us what you need.', 'Start a conversation, with or without a diagnosis. Share any records, results and insurance details you have. Our intake only gathers information; it never gives advice.'],
   ['A licensed doctor reviews your case.', 'They confirm what you need and approve your options. Nothing is recommended before that review.'],
   ['You get one plan and one price.', 'We lay out your options, close to home or abroad, each with its full cost. You choose; nothing is booked until you say yes.'],
-  ['We arrange and pay for everything.', 'Appointments, paperwork, and travel and stays when needed. [We pay providers on your behalf, so you deal with one bill: ours; confirm with counsel.]'],
+  ['We arrange everything.', 'Appointments, paperwork, and travel and stays when needed.'],
   ['We stay with you.', 'We follow up after treatment, coordinate aftercare, and keep your prescriptions coming at the best price.'],
 ]
 
 const PRICES = [
-  ['Doctor review', '[$150]', 'Credited toward any care you book through Myrakal'],
+  ['Doctor review', '$150', 'Credited toward any care you book through Myrakal'],
   ['Your plan', 'One all-in price', 'Quoted in full before you commit; covers everything listed in your plan'],
-  ['Financing', '[Terms]', 'Available on plans over [$X], through [partner]'],
+  ['Financing', 'Through your provider', 'Available through many of our providers; we’ll help you apply'],
   ['Insurance', 'Your plan’s terms', 'We use your coverage wherever it lowers what you pay'],
 ]
 
@@ -29,15 +29,14 @@ const INCLUDES = [
   'Appointment booking and every form',
   'Flights, hotel and local transport, when care is away from home',
   'Aftercare and follow-up visits',
-  '[Complication coverage: terms to confirm]',
 ]
 
 const FAQS: [string, React.ReactNode][] = [
   ['Do I need insurance?', 'No. We work with or without it. If you have coverage, we use it wherever it lowers your cost.'],
   ['Will I have to travel?', 'Only if it’s the better option for you. Much of what we arrange happens close to home.'],
   ['Does AI make medical decisions?', 'No. AI only gathers your information. A licensed doctor reviews and approves every plan.'],
-  ['How quickly will I hear back?', '[Doctor review within X business days.]'],
-  ['What if something goes wrong?', 'Your plan states, before you commit, exactly what is covered and who to call.'],
+  ['How quickly will I hear back?', 'Within 2 business days of completing intake.'],
+  ['What if something goes wrong?', 'Your coordinator stays with you and works directly with your providers to resolve it. We’ll also tell you, before you commit, what your provider’s own policies cover.'],
   ['Is my information private?', <>Yes. Health details are shared only through Myrakal intake, as described in our <a href="/privacy/" className="underline underline-offset-4 hover:text-cream">Privacy Policy</a>.</>],
 ]
 
@@ -87,7 +86,6 @@ export default function Individual() {
         <section aria-labelledby="what-you-pay" className="border-t border-champagne/20 bg-velvet">
           <div className={`${band} py-28`}>
             <h2 id="what-you-pay" className={h2}>What you pay</h2>
-            <p className={`mt-4 text-sm ${body}`}>Prices shown are a template and will change.</p>
             <div className="mt-14 overflow-x-auto">
               <table aria-labelledby="what-you-pay" className="w-full text-left text-sm sm:text-base">
                 <thead><tr>{['Item', 'Price', 'Notes'].map((h) => <th key={h} scope="col" className={`${label} border-b border-champagne/20 pr-6 pb-4`}>{h}</th>)}</tr></thead>

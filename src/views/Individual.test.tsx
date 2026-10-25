@@ -23,7 +23,7 @@ describe('Individual page', () => {
       'Tell us what you need.',
       'A licensed doctor reviews your case.',
       'You get one plan and one price.',
-      'We arrange and pay for everything.',
+      'We arrange everything.',
       'We stay with you.',
     ])
   })
@@ -39,8 +39,9 @@ describe('Individual page', () => {
       'Financing',
       'Insurance',
     ])
-    expect(within(table).getByText('[$150]')).toBeTruthy()
-    expect(screen.getByText('Prices shown are a template and will change.')).toBeTruthy()
+    expect(within(table).getByText('$150')).toBeTruthy()
+    expect(within(table).getByText('Through your provider')).toBeTruthy()
+    expect(screen.queryByText(/prices shown/i)).toBeNull()
   })
 
   it('answers the common questions', () => {
@@ -91,8 +92,21 @@ describe('Individual page', () => {
     expect(screen.getByRole('table', { name: /what you pay/i }).parentElement!.className).toMatch(/overflow-x-auto/)
   })
 
-  it('marks paying providers on the patient\'s behalf as unconfirmed', () => {
+  it('has no placeholders left', () => {
+    const { container } = render(<Individual />)
+    expect(container.textContent).not.toMatch(/\[[^\]]*\]/)
+  })
+
+  it('makes no claim about who collects payment until that is decided', () => {
+    const { container } = render(<Individual />)
+    expect(screen.getByText('Appointments, paperwork, and travel and stays when needed.')).toBeTruthy()
+    expect(container.textContent).not.toMatch(/one bill|on your behalf|pay providers directly|complication coverage/i)
+  })
+
+  it('commits to a review turnaround and explains what happens if something goes wrong', () => {
     render(<Individual />)
-    expect(screen.getByText(/\[We pay providers on your behalf, so you deal with one bill: ours; confirm with counsel\.\]/)).toBeTruthy()
+    expect(screen.getByText('Within 2 business days of completing intake.')).toBeTruthy()
+    expect(screen.getByText(/Your coordinator stays with you and works directly with your providers to resolve it\./)).toBeTruthy()
+    expect(screen.getByText(/Available through many of our providers; we’ll help you apply/)).toBeTruthy()
   })
 })
