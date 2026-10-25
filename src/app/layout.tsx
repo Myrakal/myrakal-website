@@ -1,10 +1,16 @@
 import type { Metadata } from 'next'
 
+import { DESCRIPTION, SITE } from '@/lib/site'
+
 import '../index.css'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE),
   title: 'Myrakal',
+  description: DESCRIPTION,
   icons: { icon: '/favicon.svg' },
+  openGraph: { siteName: 'Myrakal', type: 'website', locale: 'en_US' },
+  twitter: { card: 'summary_large_image' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
