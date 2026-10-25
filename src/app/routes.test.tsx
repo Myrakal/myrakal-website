@@ -16,6 +16,7 @@ const routes = [
   ['accessibility', 'Accessibility: Myrakal'],
   ['chat', 'Chat: Myrakal'],
   ['care', 'Care: Myrakal'],
+  ['individual', 'Individual: Myrakal'],
 ] as const
 
 describe('app routes', () => {
