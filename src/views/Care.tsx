@@ -1,5 +1,6 @@
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
+import { SilkSteps } from '@/components/SilkSteps'
 
 const SERVICES = [
   { title: 'Find your doctor', body: 'We find the right doctor for your treatment, matched to your needs and budget.' },
@@ -58,21 +59,20 @@ export default function Care() {
           </p>
         </header>
 
-        <section aria-labelledby="what-we-do" className="border-t border-champagne/20 bg-velvet">
-          <div className={`${band} grid gap-12 py-28 lg:grid-cols-[1fr_2fr]`}>
-            <h2 id="what-we-do" className="font-display text-4xl font-normal sm:text-5xl">What we do</h2>
-            <div className="grid gap-x-12 gap-y-14 sm:grid-cols-2">
-              {SERVICES.map(({ title, body }) => (
-                <div key={title} className="border-t border-champagne/30 pt-6">
-                  <h3 className="font-display text-2xl font-normal sm:text-3xl">{title}</h3>
-                  <p className="mt-3 font-light text-muted-foreground">{body}</p>
-                </div>
-              ))}
-            </div>
+        <section aria-labelledby="what-we-do" className={`${band} pb-28`}>
+          <h2 id="what-we-do" className="text-center font-display text-4xl font-normal sm:text-5xl">What we do</h2>
+          <SilkSteps steps={SERVICES.slice(0, 4)} />
+          <div className="mt-20 grid gap-12 border-t border-champagne/20 pt-12 sm:grid-cols-2">
+            {SERVICES.slice(4).map(({ title, body }) => (
+              <div key={title}>
+                <h3 className="font-display text-2xl font-normal sm:text-3xl">{title}</h3>
+                <p className="mt-3 font-light text-muted-foreground">{body}</p>
+              </div>
+            ))}
           </div>
         </section>
 
-        <section aria-labelledby="what-we-cover" className={`${band} py-28`}>
+        <section aria-labelledby="what-we-cover" className={`${band} border-t border-champagne/20 py-28`}>
           <h2 id="what-we-cover" className="font-display text-4xl font-normal sm:text-5xl">What we cover</h2>
           <div className="mt-16 grid gap-14 md:grid-cols-3">
             {TIERS.map(({ tier, outcomes }) => (

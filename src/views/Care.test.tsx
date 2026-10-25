@@ -30,6 +30,13 @@ describe('Care page', () => {
     expect(within(services).getByText(/hotel/i)).toBeTruthy()
   })
 
+  it('walks through the workflow in order along the silk', () => {
+    render(<Care />)
+    const services = screen.getByRole('region', { name: /what we do/i })
+    const steps = within(within(services).getByRole('list')).getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
+    expect(steps).toEqual(['Find your doctor', 'Insurance and financing', 'Everything arranged', 'Aftercare'])
+  })
+
   it('shows what we cover in everyday, ongoing and major tiers', () => {
     render(<Care />)
     const cover = screen.getByRole('region', { name: /what we cover/i })
