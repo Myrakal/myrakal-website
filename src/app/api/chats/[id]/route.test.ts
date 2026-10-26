@@ -55,6 +55,7 @@ describe('GET /api/chats/:id', () => {
       paid: false,
       progress: { collected: 1, total: expect.any(Number) },
       attachmentRequest: null,
+      intake: { condition: 'knee pain' },
       messages: [{ id: 'm1', role: 'user', text: 'hi', createdAt: t.toISOString() }],
       comments: [{ id: 'k1', text: 'note', createdAt: t.toISOString() }],
     })
@@ -82,5 +83,10 @@ describe('GET /api/chats/:id', () => {
     expect((await (await call()).json()).attachmentRequest).toBeNull()
     findFirst.mockResolvedValue({ ...base, status: 'intake', intake: {} })
     expect((await (await call()).json()).attachmentRequest).toBeNull()
+  })
+
+  it('never leaks internal intake keys', async () => {
+    findFirst.mockResolvedValue({ id: ID, status: 'intake', createdAt: t, priceCents: null, paidAt: null, intake: { condition: 'x', attachmentRequest: 'scans', secret: 'y' }, messages: [], comments: [] })
+    expect((await (await call()).json()).intake).toEqual({ condition: 'x' })
   })
 })

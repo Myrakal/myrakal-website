@@ -1,7 +1,7 @@
 import { requireUser } from '@/server/auth'
 import { db } from '@/server/db'
 import { json, UUID } from '@/server/http'
-import { intakeProgress } from '@/server/intake'
+import { intakeProgress, publicIntake } from '@/server/intake'
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await requireUser()
@@ -26,6 +26,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     paid: chat.paidAt !== null,
     progress: intakeProgress(chat.intake),
     attachmentRequest: chat.status === 'intake' && typeof label === 'string' && label ? { label } : null,
+    intake: publicIntake(chat.intake),
     messages: chat.messages.map(({ id, role, text, createdAt }) => ({ id, role, text, createdAt })),
     comments: chat.comments.map(({ id, text, createdAt }) => ({ id, text, createdAt })),
   })

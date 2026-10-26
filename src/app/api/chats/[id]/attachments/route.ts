@@ -1,7 +1,29 @@
 import { requireUser } from '@/server/auth'
-import { ALLOWED_TYPES, attachmentBucket, bucketName, fileType, MAX_BYTES, MAX_FILES, safeName } from '@/server/attachments'
+import { ALLOWED_TYPES, attachmentBucket, bucketName, chatFiles, fileType, MAX_BYTES, MAX_FILES, safeName } from '@/server/attachments'
 import { db } from '@/server/db'
 import { json, sameHost, UUID } from '@/server/http'
+
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const user = await requireUser()
+  if (!user) return json({ error: 'unauthorized' }, 401)
+  const { id } = await params
+  if (!UUID.test(id)) return json({ error: 'not found' }, 404)
+  const chat = await db().chat.findFirst({ where: { id, userId: user.id }, select: { id: true } })
+  if (!chat) return json({ error: 'not found' }, 404)
+  const bucket = attachmentBucket()
+  const listed = await bucket.list(id, { limit: 100 })
+  if (listed.error) {
+    const { status, message } = listed.error as { status?: number | string; message: string }
+    if (Number(status) === 404 || /not found/i.test(message)) return json([])
+    throw listed.error
+  }
+  const files = chatFiles(id, listed.data ?? [])
+  if (files.length === 0) return json([])
+  const signed = await bucket.createSignedUrls(files.map((file) => file.path), 300)
+  if (signed.error) throw signed.error
+  const urls = new Map(signed.data.map((entry) => [entry.path, entry.signedUrl]))
+  return json(files.map((file) => ({ ...file, url: urls.get(file.path) ?? null })))
+}
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   if (!sameHost(request)) return json({ error: 'forbidden' }, 403)

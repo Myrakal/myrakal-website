@@ -1,4 +1,4 @@
-import { INTAKE_FIELDS, INTAKE_QUESTIONS, REQUIRED_KEYS, UPDATE_INTAKE_TOOL, intakeProgress, pickIntakeFields } from './intake'
+import { INTAKE_FIELDS, INTAKE_QUESTIONS, REQUIRED_KEYS, UPDATE_INTAKE_TOOL, intakeProgress, pickIntakeFields, publicIntake } from './intake'
 
 const fullIntake = () =>
   Object.fromEntries(
@@ -65,5 +65,18 @@ describe('UPDATE_INTAKE_TOOL', () => {
     expect(Object.keys(UPDATE_INTAKE_TOOL.input_schema.properties)).toEqual(INTAKE_FIELDS.map((f) => f.key))
     expect(UPDATE_INTAKE_TOOL.input_schema.type).toBe('object')
     expect(UPDATE_INTAKE_TOOL.input_schema.additionalProperties).toBe(false)
+  })
+})
+
+describe('publicIntake', () => {
+  it('keeps only filled whitelisted fields', () => {
+    expect(
+      publicIntake({ condition: 'knee', emergency: false, name: '  ', dob: 3, attachmentRequest: 'scans', other: 'x' }),
+    ).toEqual({ condition: 'knee', emergency: false })
+  })
+
+  it('returns an empty object for non-objects', () => {
+    expect(publicIntake(null)).toEqual({})
+    expect(publicIntake([1])).toEqual({})
   })
 })
