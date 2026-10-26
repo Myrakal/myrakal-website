@@ -1,6 +1,7 @@
 type FieldType = 'string' | 'boolean'
 
 type IntakeField = { key: string; type: FieldType; required: boolean; description: string; mustBeTrue?: boolean }
+type IntakeQuestion = { text: string; keys: string[] }
 
 const MAX_TEXT = 2000
 
@@ -8,35 +9,26 @@ const text = (key: string, description: string, required = true): IntakeField =>
 const flag = (key: string, description: string, mustBeTrue = false): IntakeField => ({ key, type: 'boolean', required: true, description, mustBeTrue })
 
 export const INTAKE_FIELDS: IntakeField[] = [
-  text('name', 'Full legal name'),
-  text('dob', 'Date of birth'),
-  text('countryOfResidence', 'Country of residence'),
-  text('passportNationality', 'Passport nationality'),
-  text('phone', 'Phone number'),
-  text('preferredLanguage', 'Preferred language'),
-  text('condition', 'Condition or treatment goal'),
+  text('condition', 'What the patient wants help with, including a diagnosis if known'),
   text('symptomsDuration', 'Symptoms and how long they have lasted'),
-  text('pastTreatments', 'Past treatments and surgeries'),
-  text('medications', 'Current medications'),
-  text('allergies', 'Allergies'),
-  text('otherConditions', 'Other medical conditions'),
-  text('urgency', 'How urgent the care is'),
-  text('destinations', 'Preferred destinations, or open to any'),
-  text('doctorGender', 'Preferred doctor gender, or no preference'),
-  text('doctorLanguage', 'Preferred doctor language'),
-  text('priority', 'Top priority: cost, wait time or reputation'),
-  text('departureCity', 'Departure city'),
-  text('dateFlexibility', 'Flexibility on travel dates'),
-  text('travelers', 'Number of travelers and companions'),
-  text('mobilityNeeds', 'Mobility needs'),
-  text('recoveryLength', 'Expected recovery length'),
-  text('budget', 'Budget range'),
-  text('insurance', 'Insurance plan, or none'),
-  text('visas', 'Visas held'),
-  flag('passportValid', 'True if the passport is valid for at least 6 more months, false if not'),
-  flag('consent', 'True once the patient agrees the AI is not medical advice and a doctor will review the case', true),
-  text('existingRecords', 'Existing medical records', false),
-  text('existingDoctors', 'Doctors already seen', false),
+  flag('emergency', 'True if the patient reports an emergency now; false if they explicitly say no'),
+  text('name', 'Name the patient wants to be called'),
+  text('dob', 'Date of birth'),
+  text('pastTreatments', 'Past treatments, procedures or surgery, including explicit none'),
+  text('medications', 'Current medications, including explicit none'),
+  text('allergies', 'Allergies, including explicit none'),
+  text('otherConditions', 'Other health conditions, including explicit none'),
+  text('existingRecords', 'Recent test results, scans or doctor notes, including explicit none'),
+]
+
+export const INTAKE_QUESTIONS: IntakeQuestion[] = [
+  { text: 'What would you like help with? If you already have a diagnosis, you can share it. If not, just tell me what has been bothering you.', keys: ['condition'] },
+  { text: 'What symptoms or changes have you noticed, and how long have they been going on?', keys: ['symptomsDuration'] },
+  { text: 'Before we continue, does anything feel like an emergency right now—such as chest pain, trouble breathing, signs of a stroke, severe bleeding, or thoughts of harming yourself?', keys: ['emergency'] },
+  { text: 'What should we call you, and what’s your date of birth?', keys: ['name', 'dob'] },
+  { text: 'Have you already tried any treatments, procedures, or surgery for this? It’s completely okay if the answer is no.', keys: ['pastTreatments'] },
+  { text: 'To help the doctor review this safely, are you taking any medications, and do you have any allergies or other health conditions?', keys: ['medications', 'allergies', 'otherConditions'] },
+  { text: 'Do you have any recent test results, scans, or doctor’s notes that you could share later? No problem if you don’t.', keys: ['existingRecords'] },
 ]
 
 export const REQUIRED_KEYS = INTAKE_FIELDS.filter((f) => f.required).map((f) => f.key)
@@ -53,7 +45,10 @@ const isFilled = (value: unknown, field?: IntakeField) => {
 
 export function intakeProgress(intake: unknown) {
   const data = isRecord(intake) ? intake : {}
-  return { collected: REQUIRED_KEYS.filter((key) => isFilled(data[key], FIELD_BY_KEY.get(key))).length, total: REQUIRED_KEYS.length }
+  const collected = INTAKE_QUESTIONS.filter((question) =>
+    question.keys.every((key) => isFilled(data[key], FIELD_BY_KEY.get(key))),
+  ).length
+  return { collected, total: INTAKE_QUESTIONS.length }
 }
 
 export function pickIntakeFields(input: unknown) {
