@@ -4,11 +4,12 @@ import { useId, useState, type ChangeEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 
-type Props = { label: string; onUpload: (file: File) => Promise<boolean>; onSkip: () => void }
+type Props = { label: string; onUpload: (file: File) => Promise<boolean>; onSkip: () => void; busy?: boolean }
 
-export function AttachmentUpload({ label, onUpload, onSkip }: Props) {
+export function AttachmentUpload({ label, onUpload, onSkip, busy = false }: Props) {
   const id = useId()
   const [uploading, setUploading] = useState(false)
+  const locked = uploading || busy
 
   const choose = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? [])
@@ -30,17 +31,17 @@ export function AttachmentUpload({ label, onUpload, onSkip }: Props) {
           type="file"
           multiple
           accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.heif,application/pdf,image/*"
-          disabled={uploading}
+          disabled={locked}
           onChange={choose}
           className="peer sr-only"
         />
         <label
           htmlFor={id}
-          className={`inline-flex min-h-10 cursor-pointer items-center rounded-full bg-background px-4 text-sm font-medium text-foreground peer-focus-visible:ring-2 peer-focus-visible:ring-card-foreground ${uploading ? 'pointer-events-none opacity-60' : ''}`}
+          className={`inline-flex min-h-10 cursor-pointer items-center rounded-full bg-background px-4 text-sm font-medium text-foreground peer-focus-visible:ring-2 peer-focus-visible:ring-card-foreground ${locked ? 'pointer-events-none opacity-60' : ''}`}
         >
           {uploading ? 'Uploading…' : 'Choose files'}
         </label>
-        <Button type="button" variant="ghost" disabled={uploading} onClick={onSkip} className="cursor-pointer">
+        <Button type="button" variant="ghost" disabled={locked} onClick={onSkip} className="cursor-pointer">
           Skip, I don&apos;t have this
         </Button>
       </div>

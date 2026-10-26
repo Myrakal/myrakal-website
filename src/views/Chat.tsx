@@ -134,7 +134,10 @@ export default function Chat() {
     setError('')
     try {
       const res = await fetch(`/api/chats/${chatId}/attachments`, { method: 'POST', body: form })
-      if (res.status === 401) router.replace('/login')
+      if (res.status === 401 || res.status === 409) {
+        router.push(res.status === 401 ? '/login' : `/chats/${chatId}`)
+        return false
+      }
       if (!res.ok) throw new Error()
       const { message } = (await res.json()) as { message: Message }
       setMessages((all) => [...all, message])
@@ -179,7 +182,7 @@ export default function Chat() {
               {error}
             </p>
           )}
-          {attachmentRequest && chatId && <AttachmentUpload label={attachmentRequest.label} onUpload={upload} onSkip={skip} />}
+          {attachmentRequest && chatId && <AttachmentUpload label={attachmentRequest.label} onUpload={upload} onSkip={skip} busy={busy} />}
           {progress && <IntakeProgress {...progress} />}
           <ChatComposer onSend={send} busy={busy || loading || loadFailed} />
           <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">

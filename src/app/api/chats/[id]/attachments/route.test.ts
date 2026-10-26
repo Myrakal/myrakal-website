@@ -90,4 +90,16 @@ describe('POST /api/chats/:id/attachments', () => {
     expect((await route.POST(send(pdf()), params())).status).toBe(502)
     expect(messageCreate).not.toHaveBeenCalled()
   })
+
+  it('accepts a heic file whose browser type is empty', async () => {
+    const res = await route.POST(send(pdf('scan.HEIC', 10, '')), params())
+    expect(res.status).toBe(200)
+    expect(upload.mock.calls[0][2]).toEqual({ contentType: 'image/heic' })
+  })
+
+  it('rejects an oversized body from content-length before parsing it', async () => {
+    const res = await route.POST(send(pdf(), { ...headers, 'content-length': String(11 * 1024 * 1024 + 1024) }), params())
+    expect(res.status).toBe(413)
+    expect(upload).not.toHaveBeenCalled()
+  })
 })
