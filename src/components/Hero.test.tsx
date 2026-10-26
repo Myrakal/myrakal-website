@@ -7,9 +7,9 @@ describe('Hero', () => {
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Healthcare, as it should be')
   })
 
-  it('has a short call to action linking to the chat', () => {
+  it('has a short call to action linking to the dashboard', () => {
     render(<Hero />)
-    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/chat/')
+    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/dashboard')
   })
 
   it('shows the ampoule photograph with a description', () => {

@@ -248,3 +248,31 @@ describe('CaseDetails', () => {
     expect((await screen.findByRole('alert')).textContent).toMatch(/could not load/i)
   })
 })
+
+describe('CaseDetails workspace mode', () => {
+  it('omits the transcript when showTranscript is false and reports messages', async () => {
+    respond(200, detail('doctor_review'))
+    const onLoaded = jest.fn()
+    render(<CaseDetails chatId={ID} showTranscript={false} onLoaded={onLoaded} />)
+    await waitFor(() => expect(onLoaded).toHaveBeenCalled())
+    expect(screen.queryByRole('region', { name: 'Conversation' })).toBeNull()
+    expect(onLoaded.mock.calls[0][0]).toHaveLength(2)
+  })
+
+  it('refetches in place on refreshKey change without losing comment text', async () => {
+    respond(200, detail('plan_ready'))
+    fetchMock.mockImplementation(async (url: string) =>
+      url.endsWith('/plan')
+        ? { ok: true, status: 200, json: async () => ({ url: 'https://files.test/plan.pdf' }) }
+        : { ok: true, status: 200, json: async () => detail('plan_ready') },
+    )
+    const { rerender } = render(<CaseDetails chatId={ID} refreshKey={0} />)
+    const box = (await screen.findByRole('textbox')) as HTMLTextAreaElement
+    fireEvent.change(box, { target: { value: 'my draft' } })
+    const calls = fetchMock.mock.calls.length
+    rerender(<CaseDetails chatId={ID} refreshKey={1} />)
+    await waitFor(() => expect(fetchMock.mock.calls.length).toBeGreaterThan(calls))
+    expect(screen.queryByText('Loading your case…')).toBeNull()
+    expect((screen.getByRole('textbox') as HTMLTextAreaElement).value).toBe('my draft')
+  })
+})

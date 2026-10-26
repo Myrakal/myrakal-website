@@ -63,7 +63,7 @@ describe('Individual page', () => {
     const ctas = screen.getAllByRole('link', { name: /talk with us/i })
     expect(ctas.length).toBeGreaterThanOrEqual(2)
     for (const cta of ctas) {
-      expect(cta.getAttribute('href')).toBe('/chat/')
+      expect(cta.getAttribute('href')).toBe('/dashboard')
       expect(cta.className).toMatch(/alabaster/)
       expect(cta.className).not.toMatch(/champagne/)
     }
