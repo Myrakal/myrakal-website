@@ -62,9 +62,9 @@ describe('Navbar', () => {
     mockPathname = '/'
   })
 
-  it('keeps Talk with us pointed at the chat', () => {
+  it('keeps Talk with us pointed at the dashboard', () => {
     render(<Navbar />)
-    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/chat/')
+    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/dashboard')
   })
 
   it('shows the new tagline after scrolling', () => {
@@ -92,7 +92,7 @@ describe('Navbar', () => {
     const nav = screen.getByRole('navigation', { name: 'Primary' })
     const items = [...nav.querySelectorAll('a, button')].map((el) => el.textContent)
     expect(items).toEqual(['Care', 'Individual', 'Business'])
-    const order = [...nav.parentElement!.querySelectorAll('nav, a[href="/chat/"]')]
+    const order = [...nav.parentElement!.querySelectorAll('nav, a[href="/dashboard"]')]
     expect(order[0]).toBe(nav)
     expect(screen.getByRole('link', { name: 'Talk with us' })).toBeTruthy()
   })

@@ -29,7 +29,7 @@ export function Hero() {
         The best care, at the best price. Anywhere.
       </p>
       <a
-        href="/chat/"
+        href="/dashboard"
         className="mt-8 bg-alabaster px-7 py-3.5 font-grotesk text-xs tracking-[0.25em] text-charcoal uppercase transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
       >
         Talk with us

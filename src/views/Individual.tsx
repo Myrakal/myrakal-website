@@ -47,7 +47,7 @@ const body = 'font-light text-muted-foreground'
 const cta = 'inline-block border border-alabaster/40 px-8 py-4 font-display text-2xl transition-colors hover:bg-alabaster/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-alabaster'
 const cell = 'border-b border-champagne/20 py-5 pr-4 align-top sm:pr-6'
 
-const TalkWithUs = () => <a href="/chat/" className={cta}>Talk with us <span aria-hidden="true">→</span></a>
+const TalkWithUs = () => <a href="/dashboard" className={cta}>Talk with us <span aria-hidden="true">→</span></a>
 
 export default function Individual() {
   return (

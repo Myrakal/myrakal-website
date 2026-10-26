@@ -35,7 +35,7 @@ test('a patient goes from sign up to booked', async ({ page }) => {
     }
     await expect(page).toHaveURL(new RegExp(`/dashboard/${backend.id}$`))
     await expect(page.getByRole('region', { name: 'Case status' })).toContainText('A doctor will review your transcript')
-    await expect(page.getByRole('region', { name: 'Conversation' })).toContainText(backend.patientLines[0])
+    await expect(page.getByRole('log', { name: 'Conversation' })).toContainText(backend.patientLines[0])
   })
 
   await test.step('the plan appears once the team marks it ready', async () => {

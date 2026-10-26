@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 
 let panelProps: { chatId: string | null; onCreated?: (id: string) => void; onStatusChange?: (s: string, id: string, replace: boolean) => void; onLocked?: (id: string) => void }
 let mounts = { details: 0, panel: 0 }
@@ -7,12 +7,15 @@ jest.mock('@/components/portal/ChatSidebar', () => ({
   ChatSidebar: ({ activeId }: { activeId?: string | null }) => <nav aria-label="Your chats" data-active={activeId ?? ''} />,
 }))
 jest.mock('@/components/portal/CaseDetails', () => {
-  const { useEffect } = jest.requireActual('react')
+  const { useEffect, useRef } = jest.requireActual('react')
   return {
-    CaseDetails: ({ chatId }: { chatId: string }) => {
+    CaseDetails: ({ chatId, refreshKey, onLoaded }: { chatId: string; refreshKey?: number; onLoaded?: (m: unknown[]) => void }) => {
+      const cb = useRef(onLoaded)
+      cb.current = onLoaded
       useEffect(() => {
         mounts.details += 1
-      }, [])
+        cb.current?.([{ id: 'm1', role: 'user', text: 'hello there' }])
+      }, [refreshKey])
       return <section aria-label="Case details">{chatId}</section>
     },
   }
@@ -69,7 +72,7 @@ describe('Workspace', () => {
     act(() => panelProps.onStatusChange?.('doctor_review', ID, false))
     expect(mounts.details).toBe(2)
     expect(screen.getByText(/conversation is closed/)).toBeTruthy()
-    expect(screen.queryByRole('log', { name: 'Conversation' })).toBeNull()
+    expect(within(screen.getByRole('log', { name: 'Conversation' })).getByText('hello there')).toBeTruthy()
   })
 
   it('refreshes the case details when the chat is locked', () => {
@@ -84,6 +87,12 @@ describe('Workspace', () => {
     act(() => panelProps.onStatusChange?.('plan_ready', ID, true))
     expect(mounts.details).toBe(1)
     expect(screen.getByText(/conversation is closed/)).toBeTruthy()
+    expect(screen.getByRole('log', { name: 'Conversation' })).toBeTruthy()
+  })
+
+  it('names the page with a heading', () => {
+    render(<Workspace chatId={ID} />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Your case' })).toBeTruthy()
   })
 
   it('resets the panels when switching to another chat', () => {
