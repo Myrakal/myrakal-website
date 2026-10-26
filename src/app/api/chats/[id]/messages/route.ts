@@ -58,5 +58,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     reply: { id: reply.id, role: 'assistant', text: reply.text, createdAt: reply.createdAt },
     status,
     progress,
+    attachmentRequest: turn.attachmentRequest ?? null,
   })
 }

@@ -127,6 +127,7 @@ describe('POST /api/chats/:id/messages', () => {
       reply: { id: 'm-assistant', role: 'assistant', text: 'When were you born?', createdAt: createdAt.toISOString() },
       status: 'intake',
       progress: { collected: 2, total: REQUIRED_KEYS.length },
+      attachmentRequest: null,
     })
     expect(res.headers.get('cache-control')).toBe('no-store')
   })
@@ -182,5 +183,16 @@ describe('POST /api/chats/:id/messages', () => {
     runTurn.mockResolvedValue({ reply: 'ok', updates: { consent: false } })
     const res = await route.POST(post({ text: 'no' }), params())
     expect((await res.json()).status).toBe('intake')
+  })
+
+  it('returns the attachment request when Claude asks for one', async () => {
+    runTurn.mockResolvedValue({ reply: 'Upload please', updates: {}, attachmentRequest: { label: 'scans' } })
+    const res = await route.POST(post({ text: 'x' }), params())
+    expect((await res.json()).attachmentRequest).toEqual({ label: 'scans' })
+  })
+
+  it('returns a null attachment request otherwise', async () => {
+    const res = await route.POST(post({ text: 'x' }), params())
+    expect((await res.json()).attachmentRequest).toBeNull()
   })
 })

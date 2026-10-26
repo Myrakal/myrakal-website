@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 import wordmark from '@/assets/myrakal-wordmark.svg'
+import { AttachmentUpload } from '@/components/chat/AttachmentUpload'
 import { ChatComposer } from '@/components/chat/ChatComposer'
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
 import { IntakeProgress } from '@/components/chat/IntakeProgress'
@@ -16,7 +17,8 @@ const GREETING: Message = {
 }
 
 type Progress = { collected: number; total: number }
-type Reply = { reply: Message; status: string; progress: Progress }
+type AttachmentRequest = { label: string }
+type Reply = { reply: Message; status: string; progress: Progress; attachmentRequest: AttachmentRequest | null }
 type Detail = { status: string; progress: Progress; messages: Message[] }
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -36,6 +38,7 @@ export default function Chat() {
   const [chatId, setChatId] = useState(initialId)
   const [messages, setMessages] = useState<Message[]>([])
   const [progress, setProgress] = useState<Progress | null>(null)
+  const [attachmentRequest, setAttachmentRequest] = useState<AttachmentRequest | null>(null)
   const [busy, setBusy] = useState(false)
   const [loading, setLoading] = useState(initialId !== null)
   const [error, setError] = useState('')
@@ -113,6 +116,7 @@ export default function Chat() {
       const data: Reply = await res.json()
       setMessages((all) => [...all, data.reply])
       setProgress(data.progress)
+      setAttachmentRequest(data.attachmentRequest ?? null)
       if (data.status !== 'intake') router.push(`/chats/${id}`)
       return true
     } catch (e) {
@@ -122,6 +126,28 @@ export default function Chat() {
     } finally {
       setBusy(false)
     }
+  }
+
+  const upload = async (file: File) => {
+    const form = new FormData()
+    form.set('file', file)
+    setError('')
+    try {
+      const res = await fetch(`/api/chats/${chatId}/attachments`, { method: 'POST', body: form })
+      if (res.status === 401) router.replace('/login')
+      if (!res.ok) throw new Error()
+      const { message } = (await res.json()) as { message: Message }
+      setMessages((all) => [...all, message])
+      return true
+    } catch {
+      setError(`${file.name} could not be uploaded. Check the file type and size (10 MB max) and try again.`)
+      return false
+    }
+  }
+
+  const skip = () => {
+    setAttachmentRequest(null)
+    send("I don't have this right now.")
   }
 
   return (
@@ -153,6 +179,7 @@ export default function Chat() {
               {error}
             </p>
           )}
+          {attachmentRequest && chatId && <AttachmentUpload label={attachmentRequest.label} onUpload={upload} onSkip={skip} />}
           {progress && <IntakeProgress {...progress} />}
           <ChatComposer onSend={send} busy={busy || loading || loadFailed} />
           <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">

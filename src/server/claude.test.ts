@@ -114,6 +114,19 @@ describe('runTurn', () => {
     expect(create.mock.calls[0][0].messages).toEqual([{ role: 'user', content: 'a' }])
   })
 
+  it('captures an attachment request and acknowledges the tool call', async () => {
+    create
+      .mockResolvedValueOnce({
+        stop_reason: 'tool_use',
+        content: [{ type: 'tool_use', id: 'tu_2', name: 'request_attachment', input: { label: 'lab results' } }],
+      })
+      .mockResolvedValueOnce(textReply('Please upload them.'))
+    const result = await runTurn({ history: [{ role: 'user', text: 'hi' }], intake: {} })
+    expect(result).toEqual({ reply: 'Please upload them.', updates: {}, attachmentRequest: { label: 'lab results' } })
+    expect(create.mock.calls[0][0].tools.map((t: { name: string }) => t.name)).toEqual(['update_intake', 'request_attachment'])
+    expect(create.mock.calls[1][0].messages[2].content[0]).toEqual(expect.objectContaining({ tool_use_id: 'tu_2', content: 'shown' }))
+  })
+
   it('maps assistant history to assistant messages', async () => {
     create.mockResolvedValueOnce(textReply('ok'))
     await runTurn({

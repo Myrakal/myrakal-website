@@ -92,3 +92,10 @@ update chats set status = 'reservations', paid_at = now() where id = '<chat id>'
 2. Name: `plans` (or whatever `PLAN_BUCKET` is set to).
 3. Leave "Public bucket" off. The server reads it with the service role key and hands out short-lived signed links.
 4. Add no storage policies for anon or authenticated users.
+
+## Attachments bucket setup
+
+1. Supabase -> Storage -> New bucket.
+2. Name: `attachments` (or whatever `ATTACHMENT_BUCKET` is set to).
+3. Leave "Public bucket" off and add no storage policies for anon or authenticated users. Uploads go through the server with the service role key.
+4. Patient files land in `{chat id}/{random id}-{file name}` inside the bucket. Open the chat folder in Storage to view them.
