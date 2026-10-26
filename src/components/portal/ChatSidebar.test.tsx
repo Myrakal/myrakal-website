@@ -108,4 +108,10 @@ describe('ChatSidebar', () => {
     fireEvent.click(expand)
     expect(screen.getByText('Dental implants')).toBeTruthy()
   })
+
+  it('hides the collapse toggle below lg', async () => {
+    respond(200, chats)
+    render(<ChatSidebar />)
+    expect((await screen.findByRole('button', { name: 'Collapse chat list' })).className).toContain('max-lg:hidden')
+  })
 })
