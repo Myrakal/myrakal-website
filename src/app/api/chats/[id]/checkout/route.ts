@@ -41,8 +41,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         },
       },
     ],
-    success_url: `${origin}/chats/${id}?paid=1`,
-    cancel_url: `${origin}/chats/${id}`,
+    success_url: `${origin}/dashboard/${id}?paid=1`,
+    cancel_url: `${origin}/dashboard/${id}`,
   }, { idempotencyKey: `checkout-${id}-${chat.stripeSessionId ?? 'first'}` })
   if (!session.url) throw new Error('Stripe returned a session without a url')
   await db().chat.updateMany({ where: { id, status: 'awaiting_payment' }, data: { stripeSessionId: session.id } })

@@ -19,7 +19,7 @@ The whole app is Next.js (latest stable, App Router, `src/` directory), TypeScri
 - API routes are Route Handlers at `src/app/api/**/route.ts`, exporting `GET`/`POST` on the Web `Request`/`Response`. `params` is a Promise: `{ params }: { params: Promise<{ id: string }> }`. Unsupported methods return 405 with `allow`.
 - Server code lives in `src/server/` (imported as `@/server/...`). Prisma stays server-side only.
 - Env: client vars are `NEXT_PUBLIC_*`. Analytics is initialised in `src/instrumentation-client.ts`.
-- Auth uses `@supabase/ssr` cookie sessions, not bearer tokens. `src/proxy.ts` runs on every path except static assets and `/api/stripe-webhook`: it refreshes the session everywhere (API routes included) and redirects signed-out visitors from `/dashboard`, `/chat` and `/chats/*` to `/login`. Cookie sessions are CSRF-exposed, so every non-GET route except the webhook calls `sameHost` and returns 403 on mismatch, besides `requireUser`.
+- Auth uses `@supabase/ssr` cookie sessions, not bearer tokens. `src/proxy.ts` runs on every path except static assets and `/api/stripe-webhook`: it refreshes the session everywhere (API routes included) and redirects signed-out visitors from `/dashboard`, `/chat` and `/chats/*` (the last two only redirect to the workspace) to `/login`. Cookie sessions are CSRF-exposed, so every non-GET route except the webhook calls `sameHost` and returns 403 on mismatch, besides `requireUser`.
 
 ## Status enum (`ChatStatus`)
 

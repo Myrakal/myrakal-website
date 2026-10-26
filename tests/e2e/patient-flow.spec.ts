@@ -73,6 +73,16 @@ test('a patient goes from sign up to booked', async ({ page }) => {
     await expect(page.getByRole('button', { name: /^Pay/ })).toHaveCount(0)
   })
 
+  await test.step('legacy chat URLs redirect into the workspace', async () => {
+    await page.goto(`/chats/${backend.id}`)
+    await expect(page).toHaveURL(new RegExp(`/dashboard/${backend.id}$`))
+    await page.goto(`/chat?id=${backend.id}`)
+    await expect(page).toHaveURL(new RegExp(`/dashboard/${backend.id}(\\?id=${backend.id})?$`))
+    await page.goto('/chat')
+    await expect(page).toHaveURL(/\/dashboard$/)
+    await page.goto(`/dashboard/${backend.id}?paid=1`)
+  })
+
   await test.step('the webhook moves the case to reservations without a reload', async () => {
     backend.setStatus('reservations')
     await expect(page.getByRole('region', { name: 'Case status' })).toContainText('Reservations are being made', { timeout: 30_000 })

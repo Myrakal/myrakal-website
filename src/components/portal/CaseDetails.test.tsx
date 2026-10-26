@@ -172,7 +172,7 @@ describe('CaseDetails payment', () => {
   })
 
   it('confirms the payment after the Stripe return', async () => {
-    window.history.replaceState(null, '', `/chats/${ID}?paid=1`)
+    window.history.replaceState(null, '', `/dashboard/${ID}?paid=1`)
     mockApi('awaiting_payment')
     render(<CaseDetails chatId={ID} />)
     expect((await screen.findByText(/confirming your payment/i)).textContent).toBeTruthy()
