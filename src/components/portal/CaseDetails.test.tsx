@@ -196,10 +196,18 @@ describe('CaseDetails', () => {
     expect(within(log).getByText('What is your name?')).toBeTruthy()
   })
 
+  it('shows the case header and journey', async () => {
+    respond(200, detail('doctor_review'))
+    render(<CaseDetails chatId={ID} />)
+    expect(await screen.findByText('Your care · Case 3F1C')).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'I need a knee replacement' })).toBeTruthy()
+    expect(screen.getByText('Step 2 of 6')).toBeTruthy()
+  })
+
   it('offers to continue an unfinished intake', async () => {
     respond(200, detail('intake'))
     render(<CaseDetails chatId={ID} />)
-    expect((await screen.findByRole('link', { name: 'Continue your conversation' })).getAttribute('href')).toBe(`/dashboard/${ID}`)
+    expect((await screen.findByRole('link', { name: 'Continue conversation' })).getAttribute('href')).toBe(`/dashboard/${ID}`)
   })
 
   it('falls back to a generic message for an unknown status', async () => {
