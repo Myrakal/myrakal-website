@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 
 let panelProps: { chatId: string | null; onCreated?: (id: string) => void; onStatusChange?: (s: string, id: string, replace: boolean) => void; onLocked?: (id: string) => void }
 let mounts = { details: 0, panel: 0 }
@@ -99,5 +99,21 @@ describe('Workspace', () => {
     const { rerender } = render(<Workspace chatId={ID} />)
     rerender(<Workspace chatId="other" />)
     expect(mounts.panel).toBe(2)
+  })
+  it('opens on the Chat tab for a new chat', () => {
+    render(<Workspace chatId={null} />)
+    expect(screen.getByRole('tab', { name: 'Chat' }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('opens on the Case tab for an existing chat', () => {
+    render(<Workspace chatId={ID} />)
+    expect(screen.getByRole('tab', { name: 'Case' }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('keeps the chat panel mounted while another tab is active', () => {
+    render(<Workspace chatId={ID} />)
+    fireEvent.click(screen.getByRole('tab', { name: 'Chats' }))
+    fireEvent.click(screen.getByRole('tab', { name: 'Chat' }))
+    expect(mounts.panel).toBe(1)
   })
 })
