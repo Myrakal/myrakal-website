@@ -127,6 +127,7 @@ describe('POST /api/chats/:id/messages', () => {
       reply: { id: 'm-assistant', role: 'assistant', text: 'When were you born?', createdAt: createdAt.toISOString() },
       status: 'intake',
       progress: { collected: 1, total: 7 },
+      attachmentRequest: null,
     })
     expect(res.headers.get('cache-control')).toBe('no-store')
   })
@@ -176,4 +177,26 @@ describe('POST /api/chats/:id/messages', () => {
     expect((await res.json()).status).toBe('intake')
   })
 
+  it('returns the attachment request when Claude asks for one', async () => {
+    runTurn.mockResolvedValue({ reply: 'Upload please', updates: {}, attachmentRequest: { label: 'scans' } })
+    const res = await route.POST(post({ text: 'x' }), params())
+    expect((await res.json()).attachmentRequest).toEqual({ label: 'scans' })
+  })
+
+  it('returns a null attachment request otherwise', async () => {
+    const res = await route.POST(post({ text: 'x' }), params())
+    expect((await res.json()).attachmentRequest).toBeNull()
+  })
+
+  it('stores the requested attachment label in the intake', async () => {
+    runTurn.mockResolvedValue({ reply: 'Upload please', updates: {}, attachmentRequest: { label: 'scans' } })
+    await route.POST(post({ text: 'x' }), params())
+    expect(updateMany.mock.calls[0][0].data.intake.attachmentRequest).toBe('scans')
+  })
+
+  it('clears a stored attachment request when Claude does not ask again', async () => {
+    findFirst.mockResolvedValue({ status: 'intake', intake: { attachmentRequest: 'scans' } })
+    await route.POST(post({ text: 'x' }), params())
+    expect(updateMany.mock.calls[0][0].data.intake).not.toHaveProperty('attachmentRequest')
+  })
 })

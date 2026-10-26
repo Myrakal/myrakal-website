@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
+import { REQUEST_ATTACHMENT_TOOL } from './attachments'
 import { UPDATE_INTAKE_TOOL, pickIntakeFields } from './intake'
 import { buildSystemPrompt } from './prompt'
 
@@ -40,13 +41,14 @@ export async function runTurn({ history, intake }: { history: HistoryMessage[]; 
   }))
   const updates: Record<string, string | boolean> = {}
   let reply = ''
+  let attachmentRequest: { label: string } | undefined
 
   for (let round = 0; round <= MAX_ROUNDS; round++) {
     const response = await client.messages.create({
       model,
       max_tokens: MAX_TOKENS,
       system,
-      tools: [UPDATE_INTAKE_TOOL],
+      tools: [UPDATE_INTAKE_TOOL, REQUEST_ATTACHMENT_TOOL],
       messages,
     })
     const text = response.content
@@ -56,6 +58,11 @@ export async function runTurn({ history, intake }: { history: HistoryMessage[]; 
     if (text) reply = text
     const calls = response.content.filter((block) => block.type === 'tool_use')
     const results = calls.map((call) => {
+      if (call.name === REQUEST_ATTACHMENT_TOOL.name) {
+        const label = isRecord(call.input) && typeof call.input.label === 'string' ? call.input.label.trim().slice(0, 200) : ''
+        attachmentRequest = { label: label || 'a file' }
+        return { type: 'tool_result' as const, tool_use_id: call.id, content: 'shown' }
+      }
       const accepted = pickIntakeFields(call.input)
       Object.assign(updates, accepted)
       const rejected = Object.keys(isRecord(call.input) ? call.input : {}).filter((key) => !(key in accepted))
@@ -64,10 +71,10 @@ export async function runTurn({ history, intake }: { history: HistoryMessage[]; 
         : 'saved'
       return { type: 'tool_result' as const, tool_use_id: call.id, content }
     })
-    if (response.stop_reason !== 'tool_use' || calls.length === 0) return { reply, updates }
+    if (response.stop_reason !== 'tool_use' || calls.length === 0) return { reply, updates, attachmentRequest }
 
     messages.push({ role: 'assistant', content: response.content })
     messages.push({ role: 'user', content: results })
   }
-  return { reply, updates }
+  return { reply, updates, attachmentRequest }
 }

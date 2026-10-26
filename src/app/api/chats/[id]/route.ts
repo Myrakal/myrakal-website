@@ -16,6 +16,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     },
   })
   if (!chat) return json({ error: 'not found' }, 404)
+  const label = (chat.intake as Record<string, unknown> | null)?.attachmentRequest
   const fallback = Number(process.env.PLAN_PRICE_CENTS) || 15000
   return json({
     id: chat.id,
@@ -24,6 +25,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     priceCents: chat.priceCents ?? fallback,
     paid: chat.paidAt !== null,
     progress: intakeProgress(chat.intake),
+    attachmentRequest: chat.status === 'intake' && typeof label === 'string' && label ? { label } : null,
     messages: chat.messages.map(({ id, role, text, createdAt }) => ({ id, role, text, createdAt })),
     comments: chat.comments.map(({ id, text, createdAt }) => ({ id, text, createdAt })),
   })

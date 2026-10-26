@@ -40,7 +40,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     return error instanceof ClaudeNotConfigured ? json({ error: 'unavailable' }, 503) : json({ error: 'upstream failure' }, 502)
   }
 
-  const intake = { ...(chat.intake as Record<string, string | boolean>), ...turn.updates }
+  const { attachmentRequest: _stale, ...kept } = chat.intake as Record<string, string | boolean>
+  const intake = { ...kept, ...turn.updates, ...(turn.attachmentRequest && { attachmentRequest: turn.attachmentRequest.label }) }
   const progress = intakeProgress(intake)
   const status = progress.collected === progress.total ? 'doctor_review' : 'intake'
   const reply = await db().$transaction(async (tx) => {
@@ -58,5 +59,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     reply: { id: reply.id, role: 'assistant', text: reply.text, createdAt: reply.createdAt },
     status,
     progress,
+    attachmentRequest: turn.attachmentRequest ?? null,
   })
 }

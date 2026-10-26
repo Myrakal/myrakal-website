@@ -4,10 +4,12 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 import type { Message } from '@/components/chat/ChatMessage'
+import { uploadAttachment, UploadError } from '@/lib/uploadAttachment'
 
 export type Progress = { collected: number; total: number }
-type Reply = { reply: Message; status: string; progress: Progress }
-type Detail = { status: string; progress: Progress; messages: Message[] }
+type AttachmentRequest = { label: string }
+type Reply = { reply: Message; status: string; progress: Progress; attachmentRequest?: AttachmentRequest | null }
+type Detail = { status: string; progress: Progress; messages: Message[]; attachmentRequest?: AttachmentRequest | null }
 
 type Options = {
   onCreated?: (id: string) => void
@@ -30,6 +32,7 @@ export function useChat(chatId: string | null, options: Options = {}) {
   const [messages, setMessages] = useState<Message[]>([])
   const [progress, setProgress] = useState<Progress | null>(null)
   const [status, setStatus] = useState('intake')
+  const [attachmentRequest, setAttachmentRequest] = useState<AttachmentRequest | null>(null)
   const [busy, setBusy] = useState(false)
   const [loading, setLoading] = useState(chatId !== null)
   const [error, setError] = useState('')
@@ -47,6 +50,7 @@ export function useChat(chatId: string | null, options: Options = {}) {
         if (detail.status !== 'intake') return callbacks.current.onStatusChange?.(detail.status, chatId, true)
         setMessages(detail.messages)
         setProgress(detail.progress)
+        setAttachmentRequest(detail.attachmentRequest ?? null)
         setLoading(false)
       })
       .catch(() => {
@@ -87,6 +91,7 @@ export function useChat(chatId: string | null, options: Options = {}) {
       setMessages((all) => [...all, data.reply])
       setProgress(data.progress)
       setStatus(data.status)
+      setAttachmentRequest(data.attachmentRequest ?? null)
       if (data.status !== 'intake') callbacks.current.onStatusChange?.(data.status, current, false)
       return true
     } catch (e) {
@@ -98,5 +103,23 @@ export function useChat(chatId: string | null, options: Options = {}) {
     }
   }
 
-  return { messages, progress, status, busy, loading, error, loadFailed, send }
+  const upload = async (file: File) => {
+    if (!id) return false
+    setError('')
+    try {
+      const message = await uploadAttachment(id, file)
+      setMessages((all) => [...all, message])
+      return true
+    } catch (e) {
+      const code = e instanceof UploadError ? e.status : 0
+      if (code === 401) router.replace('/login')
+      else if (code === 409) callbacks.current.onLocked?.(id)
+      else setError(code === 429 ? 'This chat has reached its limit of 10 files.' : `${file.name} could not be uploaded. Check the file type and size (10 MB max) and try again.`)
+      return false
+    }
+  }
+
+  const skip = (uploaded: boolean) => send(uploaded ? "I've uploaded what I have." : "I don't have this right now.")
+
+  return { messages, progress, status, busy, loading, error, loadFailed, attachmentRequest, send, upload, skip }
 }

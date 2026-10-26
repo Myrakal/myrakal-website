@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 
+import { AttachmentUpload } from '@/components/chat/AttachmentUpload'
 import { ChatComposer } from '@/components/chat/ChatComposer'
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
 import { IntakeProgress } from '@/components/chat/IntakeProgress'
@@ -22,7 +23,7 @@ type Props = {
 }
 
 export function ChatPanel({ chatId, onCreated, onStatusChange, onLocked }: Props) {
-  const { messages, progress, busy, loading, error, loadFailed, send } = useChat(chatId, { onCreated, onStatusChange, onLocked })
+  const { messages, progress, busy, loading, error, loadFailed, attachmentRequest, send, upload, skip } = useChat(chatId, { onCreated, onStatusChange, onLocked })
   const end = useRef<HTMLDivElement>(null)
   const dock = useRef<HTMLDivElement>(null)
   const opened = useRef(false)
@@ -59,6 +60,7 @@ export function ChatPanel({ chatId, onCreated, onStatusChange, onLocked }: Props
       </div>
 
       <div ref={dock} className="sticky bottom-0 bg-background pt-2 pb-4 sm:pb-6">
+        {attachmentRequest && <AttachmentUpload label={attachmentRequest.label} onUpload={upload} onSkip={skip} busy={busy} />}
         {error && (
           <p role="alert" className="px-2 pb-2 text-center text-sm text-destructive">
             {error}

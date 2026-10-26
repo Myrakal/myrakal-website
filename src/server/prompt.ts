@@ -19,6 +19,7 @@ export function buildSystemPrompt(intake: unknown) {
     '- The first question is already visible in the chat. Treat the patient’s first message as its answer and do not repeat answered questions.',
     '- If the patient answers more than one question at once, record everything they shared and continue with the earliest unanswered question.',
     '- Whenever the patient shares information, call update_intake with only the fields learned this turn, then continue the conversation.',
+    '- When a document or image would help (records, lab results, scans), ask for it and call request_attachment. You cannot read uploaded files, so never ask about their contents; tell the patient only a doctor will see them, and continue if they have none.',
     '- Record explicit no or none answers rather than asking again. For the emergency question, record an explicit no as false.',
     '- When every required field is collected, thank the patient and say a doctor will review their transcript and the plan will be emailed.',
     'Question sequence:',
