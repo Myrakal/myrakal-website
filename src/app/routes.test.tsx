@@ -1,8 +1,12 @@
 import { render, screen } from '@testing-library/react'
 
+jest.mock('@/hooks/useSession', () => ({ useSession: () => ({ user: null, loading: false }) }))
+jest.mock('@/lib/supabase', () => ({ getSupabase: () => null }))
+
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
   useSearchParams: () => new URLSearchParams(),
+  usePathname: () => '/',
 }))
 
 const routes = [
@@ -11,6 +15,8 @@ const routes = [
   ['contact', 'Contact: Myrakal'],
   ['accessibility', 'Accessibility: Myrakal'],
   ['chat', 'Chat: Myrakal'],
+  ['care', 'Care: Myrakal'],
+  ['business', 'Business: Myrakal'],
 ] as const
 
 describe('app routes', () => {
@@ -20,6 +26,11 @@ describe('app routes', () => {
     const Page = page.default
     render(<Page />)
     expect(screen.getAllByRole('link').length).toBeGreaterThan(0)
+  })
+
+  it('keeps the draft business page out of search results', async () => {
+    const page = await import('./business/page')
+    expect(page.metadata.robots).toEqual({ index: false })
   })
 
   it('not-found renders a heading and a way home', async () => {

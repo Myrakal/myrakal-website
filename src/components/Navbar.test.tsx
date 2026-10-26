@@ -1,9 +1,12 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 
 const mockSignOut = jest.fn(() => Promise.resolve({ error: null }))
 const mockUseSession = jest.fn(() => ({ user: null, loading: false }))
 jest.mock('@/hooks/useSession', () => ({ useSession: () => mockUseSession() }))
 jest.mock('@/lib/supabase', () => ({ getSupabase: () => ({ auth: { signOut: mockSignOut } }) }))
+
+let mockPathname = '/'
+jest.mock('next/navigation', () => ({ usePathname: () => mockPathname }))
 
 import { Navbar } from '@/components/Navbar'
 
@@ -19,6 +22,7 @@ describe('Navbar', () => {
     jest.clearAllMocks()
     mockSignOut.mockResolvedValue({ error: null })
     mockUseSession.mockReturnValue({ user: null, loading: false })
+    mockPathname = '/'
   })
 
   it('offers log in to signed-out visitors', () => {
@@ -41,6 +45,21 @@ describe('Navbar', () => {
     render(<Navbar />)
     expect(screen.queryByRole('link', { name: 'Log in' })).toBeNull()
     expect(screen.queryByRole('button', { name: 'Log out' })).toBeNull()
+  })
+
+  it('links Care to the care page', () => {
+    render(<Navbar />)
+    expect(screen.getByRole('link', { name: 'Care' }).getAttribute('href')).toBe('/care')
+  })
+
+  it('marks Care as the current page only on the care page', () => {
+    const { unmount } = render(<Navbar />)
+    expect(screen.getByRole('link', { name: 'Care' }).getAttribute('aria-current')).toBeNull()
+    unmount()
+    mockPathname = '/care'
+    render(<Navbar />)
+    expect(screen.getByRole('link', { name: 'Care' }).getAttribute('aria-current')).toBe('page')
+    mockPathname = '/'
   })
 
   it('keeps Talk with us pointed at the chat', () => {
@@ -71,17 +90,25 @@ describe('Navbar', () => {
   it('shows Care, Individual and Business before Talk with us', () => {
     render(<Navbar />)
     const nav = screen.getByRole('navigation', { name: 'Primary' })
-    const items = within(nav).getAllByRole('button').map((el) => el.textContent)
+    const items = [...nav.querySelectorAll('a, button')].map((el) => el.textContent)
     expect(items).toEqual(['Care', 'Individual', 'Business'])
     const order = [...nav.parentElement!.querySelectorAll('nav, a[href="/chat/"]')]
     expect(order[0]).toBe(nav)
     expect(screen.getByRole('link', { name: 'Talk with us' })).toBeTruthy()
   })
 
-  it('does nothing when the new items are clicked', () => {
+  it.each([
+    ['Care', '/care'],
+    ['Individual', '/individual'],
+    ['Business', '/business'],
+  ])('links %s to its page and marks it current only there', (name, href) => {
+    const { unmount } = render(<Navbar />)
+    expect(screen.getByRole('link', { name }).getAttribute('href')).toBe(href)
+    expect(screen.getByRole('link', { name }).getAttribute('aria-current')).toBeNull()
+    unmount()
+    mockPathname = href
     render(<Navbar />)
-    const before = window.location.href
-    for (const name of ['Care', 'Individual', 'Business']) fireEvent.click(screen.getByRole('button', { name }))
-    expect(window.location.href).toBe(before)
+    expect(screen.getByRole('link', { name }).getAttribute('aria-current')).toBe('page')
+    mockPathname = '/'
   })
 })
