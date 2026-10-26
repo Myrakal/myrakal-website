@@ -20,7 +20,7 @@ export function StatusBanner({ chatId, status }: { chatId: string; status: strin
       {stage && <p className="mt-1 font-display text-2xl sm:text-3xl">{stage.label}</p>}
       <p className="mt-2 text-muted-foreground">{STATUS_COPY[status] ?? 'We are working on your case.'}</p>
       {status === 'intake' && (
-        <a href={`/chat?id=${chatId}`} className="mt-3 inline-block font-medium text-champagne underline underline-offset-4">
+        <a href={`/dashboard/${chatId}`} className="mt-3 inline-block font-medium text-champagne underline underline-offset-4">
           Continue your conversation
         </a>
       )}

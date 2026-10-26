@@ -1,14 +1,9 @@
 import type { Metadata } from 'next'
 
-import { ChatList } from '@/components/portal/ChatList'
-import { PortalShell } from '@/components/portal/PortalShell'
+import { Workspace } from '@/components/portal/Workspace'
 
-export const metadata: Metadata = { title: 'Your chats: Myrakal', robots: { index: false } }
+export const metadata: Metadata = { title: 'Your workspace: Myrakal', robots: { index: false } }
 
 export default function DashboardPage() {
-  return (
-    <PortalShell title="Your chats">
-      <ChatList />
-    </PortalShell>
-  )
+  return <Workspace chatId={null} />
 }

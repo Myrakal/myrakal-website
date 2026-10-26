@@ -50,7 +50,7 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
           {collapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
         </button>
         <a
-          href="/chat"
+          href="/dashboard"
           aria-label="New chat"
           className={buttonVariants({ size: collapsed ? 'icon' : 'lg', className: collapsed ? '' : 'px-4' })}
         >

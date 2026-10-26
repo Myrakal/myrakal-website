@@ -58,7 +58,7 @@ describe('ChatSidebar', () => {
     respond(200, chats)
     render(<ChatSidebar />)
     await screen.findByText('Dental implants')
-    expect(screen.getByRole('link', { name: 'New chat' }).getAttribute('href')).toBe('/chat')
+    expect(screen.getByRole('link', { name: 'New chat' }).getAttribute('href')).toBe('/dashboard')
   })
 
   it('shows an empty state without redirecting', async () => {
