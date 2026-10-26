@@ -1,7 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react'
 
+const mockRouter = { replace: jest.fn(), push: jest.fn() }
 jest.mock('next/navigation', () => ({
-  useRouter: () => ({ replace: jest.fn(), push: jest.fn() }),
+  useRouter: () => mockRouter,
 }))
 
 import { ChatPanel } from '@/components/chat/ChatPanel'

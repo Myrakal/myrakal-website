@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import type { Message } from '@/components/chat/ChatMessage'
 
@@ -22,7 +22,10 @@ const post = (url: string, body?: object) =>
 
 export function useChat(chatId: string | null, options: Options = {}) {
   const router = useRouter()
-  const { onCreated, onStatusChange, onLocked } = options
+  const callbacks = useRef(options)
+  useEffect(() => {
+    callbacks.current = options
+  })
   const [id, setId] = useState(chatId)
   const [messages, setMessages] = useState<Message[]>([])
   const [progress, setProgress] = useState<Progress | null>(null)
@@ -41,7 +44,7 @@ export function useChat(chatId: string | null, options: Options = {}) {
         if (!res.ok) throw new Error()
         const detail: Detail = await res.json()
         setStatus(detail.status)
-        if (detail.status !== 'intake') return onStatusChange?.(detail.status, chatId, true)
+        if (detail.status !== 'intake') return callbacks.current.onStatusChange?.(detail.status, chatId, true)
         setMessages(detail.messages)
         setProgress(detail.progress)
         setLoading(false)
@@ -53,7 +56,7 @@ export function useChat(chatId: string | null, options: Options = {}) {
         setLoading(false)
       })
     return () => controller.abort()
-  }, [chatId, router, onStatusChange])
+  }, [chatId, router])
 
   const send = async (text: string) => {
     const pending: Message = { id: `pending-${Date.now()}`, role: 'user', text }
@@ -69,13 +72,13 @@ export function useChat(chatId: string | null, options: Options = {}) {
         if (!created.ok) throw new Error()
         current = (await created.json()).id as string
         setId(current)
-        onCreated?.(current)
+        callbacks.current.onCreated?.(current)
       }
       const res = await post(`/api/chats/${current}/messages`, { text })
       if (res.status === 401 || res.status === 409) {
         drop()
         if (res.status === 401) router.replace('/login')
-        else onLocked?.(current)
+        else callbacks.current.onLocked?.(current)
         return true
       }
       if (res.status === 429) throw new RateLimited()
@@ -84,7 +87,7 @@ export function useChat(chatId: string | null, options: Options = {}) {
       setMessages((all) => [...all, data.reply])
       setProgress(data.progress)
       setStatus(data.status)
-      if (data.status !== 'intake') onStatusChange?.(data.status, current, false)
+      if (data.status !== 'intake') callbacks.current.onStatusChange?.(data.status, current, false)
       return true
     } catch (e) {
       drop()
