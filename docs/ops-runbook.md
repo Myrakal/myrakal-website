@@ -97,5 +97,6 @@ update chats set status = 'reservations', paid_at = now() where id = '<chat id>'
 
 1. Supabase -> Storage -> New bucket.
 2. Name: `attachments` (or whatever `ATTACHMENT_BUCKET` is set to).
-3. Leave "Public bucket" off and add no storage policies for anon or authenticated users. Uploads go through the server with the service role key.
-4. Patient files land in `{chat id}/{random id}-{file name}` inside the bucket. Open the chat folder in Storage to view them.
+3. Leave "Public bucket" off and add no storage policies for anon or authenticated users. The server only signs one-time upload links with the service role key; the browser uploads straight to Supabase.
+4. Turn on "Restrict file size" and set 10 MB, and turn on "Restrict MIME types" with `application/pdf, image/jpeg, image/png, image/webp, image/heic, image/heif`. Signed links skip our server, so the bucket enforces these limits (the server also deletes any file over 10 MB when the upload is confirmed).
+5. Patient files land in `{chat id}/{random id}-{file name}` inside the bucket. Open the chat folder in Storage to view them.

@@ -5,15 +5,17 @@ export const MAX_FILES = 10
 export const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif']
 
 const TYPE_BY_EXT: Record<string, string> = { heic: 'image/heic', heif: 'image/heif' }
-export const fileType = (file: File) => TYPE_BY_EXT[file.name.split('.').pop()?.toLowerCase() ?? ''] ?? file.type
+export const fileType = (name: string, type: string) => TYPE_BY_EXT[name.split('.').pop()?.toLowerCase() ?? ''] ?? type
 export const safeName = (name: string) =>
   (name.split(/[\\/]/).pop() ?? '').replace(/[^A-Za-z0-9._-]+/g, '_').replace(/^\.+/, '').slice(0, 100) || 'file'
+
+export const bucketName = () => process.env.ATTACHMENT_BUCKET || 'attachments'
 
 export function attachmentBucket() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
   if (!url || !serviceKey) throw new Error('NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY is not set')
-  return createClient(url, serviceKey, { auth: { persistSession: false } }).storage.from(process.env.ATTACHMENT_BUCKET || 'attachments')
+  return createClient(url, serviceKey, { auth: { persistSession: false } }).storage.from(bucketName())
 }
 
 export const REQUEST_ATTACHMENT_TOOL = {

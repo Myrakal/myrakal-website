@@ -54,6 +54,7 @@ describe('GET /api/chats/:id', () => {
       priceCents: 15000,
       paid: false,
       progress: { collected: 1, total: expect.any(Number) },
+      attachmentRequest: null,
       messages: [{ id: 'm1', role: 'user', text: 'hi', createdAt: t.toISOString() }],
       comments: [{ id: 'k1', text: 'note', createdAt: t.toISOString() }],
     })
@@ -71,5 +72,15 @@ describe('GET /api/chats/:id', () => {
     const body = await (await call()).json()
     expect(body.paid).toBe(true)
     expect(body.priceCents).toBe(9900)
+  })
+
+  it('returns the pending attachment request only while in intake', async () => {
+    const base = { id: ID, createdAt: t, priceCents: null, paidAt: null, messages: [], comments: [] }
+    findFirst.mockResolvedValue({ ...base, status: 'intake', intake: { attachmentRequest: 'scans' } })
+    expect((await (await call()).json()).attachmentRequest).toEqual({ label: 'scans' })
+    findFirst.mockResolvedValue({ ...base, status: 'doctor_review', intake: { attachmentRequest: 'scans' } })
+    expect((await (await call()).json()).attachmentRequest).toBeNull()
+    findFirst.mockResolvedValue({ ...base, status: 'intake', intake: {} })
+    expect((await (await call()).json()).attachmentRequest).toBeNull()
   })
 })

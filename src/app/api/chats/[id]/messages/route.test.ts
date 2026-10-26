@@ -187,4 +187,16 @@ describe('POST /api/chats/:id/messages', () => {
     const res = await route.POST(post({ text: 'x' }), params())
     expect((await res.json()).attachmentRequest).toBeNull()
   })
+
+  it('stores the requested attachment label in the intake', async () => {
+    runTurn.mockResolvedValue({ reply: 'Upload please', updates: {}, attachmentRequest: { label: 'scans' } })
+    await route.POST(post({ text: 'x' }), params())
+    expect(updateMany.mock.calls[0][0].data.intake.attachmentRequest).toBe('scans')
+  })
+
+  it('clears a stored attachment request when Claude does not ask again', async () => {
+    findFirst.mockResolvedValue({ status: 'intake', intake: { attachmentRequest: 'scans' } })
+    await route.POST(post({ text: 'x' }), params())
+    expect(updateMany.mock.calls[0][0].data.intake).not.toHaveProperty('attachmentRequest')
+  })
 })

@@ -34,4 +34,26 @@ describe('ChatPanel', () => {
     await waitFor(() => expect(screen.getByText('knee')).toBeTruthy())
     expect(screen.getByRole('progressbar')).toBeTruthy()
   })
+
+  it('shows the upload box when the chat has a pending request and says the AI cannot read files', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ status: 'intake', progress: { collected: 1, total: 7 }, messages: [], attachmentRequest: { label: 'your lab results' } }),
+    })
+    render(<ChatPanel chatId={ID} />)
+    await waitFor(() => expect(screen.getByText(/upload your lab results/i)).toBeTruthy())
+    expect(screen.getByText(/does not read your files/i)).toBeTruthy()
+  })
+
+  it('does not show the upload box without a pending request', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ status: 'intake', progress: { collected: 1, total: 7 }, messages: [], attachmentRequest: null }),
+    })
+    render(<ChatPanel chatId={ID} />)
+    await waitFor(() => expect(screen.getByRole('progressbar')).toBeTruthy())
+    expect(screen.queryByText(/does not read your files/i)).toBeNull()
+  })
 })
