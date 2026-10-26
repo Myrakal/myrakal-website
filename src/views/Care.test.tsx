@@ -30,6 +30,20 @@ describe('Care page', () => {
     expect(within(services).getByText(/hotel/i)).toBeTruthy()
   })
 
+  it('walks through the workflow in order, each step marked on the gold thread', () => {
+    const { container } = render(<Care />)
+    const services = screen.getByRole('region', { name: /what we do/i })
+    const steps = within(services).getAllByRole('listitem')
+    expect(steps.map((li) => within(li).getByRole('heading', { level: 3 }).textContent)).toEqual([
+      'Find your doctor',
+      'Insurance and financing',
+      'Everything arranged',
+      'Aftercare',
+    ])
+    steps.forEach((li) => expect(li.querySelector('[data-thread-stop].bg-champagne')).toBeTruthy())
+    expect(container.querySelector('main svg path')).toBeTruthy()
+  })
+
   it('shows what we cover in everyday, ongoing and major tiers', () => {
     render(<Care />)
     const cover = screen.getByRole('region', { name: /what we cover/i })
