@@ -9,3 +9,13 @@ export const STATUS_COPY: Record<string, string> = {
 }
 
 export const PLAN_STATUSES = ['plan_ready', 'clarification_review', 'awaiting_payment', 'reservations', 'booked']
+
+export const STATUS_LABELS: Record<string, string> = {
+  intake: 'In conversation',
+  doctor_review: 'With a doctor',
+  plan_ready: 'Plan ready',
+  clarification_review: 'Reviewing your comments',
+  awaiting_payment: 'Awaiting payment',
+  reservations: 'Making reservations',
+  booked: 'Booked',
+}
