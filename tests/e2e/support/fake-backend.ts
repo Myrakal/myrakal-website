@@ -78,12 +78,19 @@ export class FakeBackend {
         createdAt: new Date().toISOString(),
         priceCents: 15000,
         paid: ['reservations', 'booked'].includes(this.status),
+        intake: { condition: 'Knee replacement', symptomsDuration: 'Two years', name: 'Ada', dob: 'December 10, 1815', allergies: 'None', insurance: false, passportValid: true },
         progress: this.progress(),
         messages: this.messages,
         comments: this.comments,
       })
     }
     if (path === `/${this.id}/messages` && method === 'POST') return this.reply(route, request.postDataJSON().text)
+    if (path === `/${this.id}/attachments` && method === 'GET') {
+      return this.json(route, [
+        { name: 'knee-xray.pdf', path: 'x/knee-xray.pdf', size: 482113, createdAt: new Date().toISOString(), url: `${origin}/mock-plan.html` },
+        { name: 'referral-notes.txt', path: 'x/referral-notes.txt', size: 1820, createdAt: new Date().toISOString(), url: null },
+      ])
+    }
     if (path === `/${this.id}/plan`) return this.json(route, { url: `${origin}/mock-plan.html` })
     if (path === `/${this.id}/comments` && method === 'POST') {
       this.comments.push({ id: `k${this.comments.length + 1}`, text: request.postDataJSON().text, createdAt: new Date().toISOString() })

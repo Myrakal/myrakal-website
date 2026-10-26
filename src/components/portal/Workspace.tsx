@@ -48,7 +48,7 @@ export function Workspace({ chatId }: { chatId: string | null }) {
         </div>
         <main className="min-w-0 px-4 pb-8 sm:px-6 lg:flex-1 lg:overflow-y-auto">
           {caseId ? (
-            <CaseDetails key={`${caseId}:${refresh}`} chatId={caseId} />
+            <CaseDetails key={`${caseId}:${refresh}`} chatId={caseId} overview />
           ) : (
             <p className="mt-10 text-center font-display text-2xl text-champagne italic">Start a conversation to open your case</p>
           )}

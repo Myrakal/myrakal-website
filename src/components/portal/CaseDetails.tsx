@@ -5,16 +5,17 @@ import { type ReactNode, useEffect, useState } from 'react'
 
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
 import { ApprovePlan } from './ApprovePlan'
+import { CaseOverview } from './CaseOverview'
 import { CommentSection, type PlanComment } from './CommentSection'
 import { PayPlan } from './PayPlan'
 import { PlanViewer } from './PlanViewer'
 import { StatusBanner } from './StatusBanner'
 import { PLAN_STATUSES } from './statusCopy'
 
-type Detail = { id: string; status: string; messages: Message[]; comments?: PlanComment[]; priceCents?: number | null }
+type Detail = { id: string; status: string; messages: Message[]; comments?: PlanComment[]; priceCents?: number | null; paid?: boolean; intake?: Record<string, string | boolean>; progress?: { collected: number; total: number } }
 type State = { phase: 'loading' } | { phase: 'error'; text: string } | { phase: 'ready'; chat: Detail }
 
-export function CaseDetails({ chatId, children }: { chatId: string; children?: ReactNode }) {
+export function CaseDetails({ chatId, children, overview }: { chatId: string; children?: ReactNode; overview?: boolean }) {
   const router = useRouter()
   const [state, setState] = useState<State>({ phase: 'loading' })
   const [returned] = useState(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('paid') === '1')
@@ -48,6 +49,7 @@ export function CaseDetails({ chatId, children }: { chatId: string; children?: R
     <>
       {state.phase === 'ready' && <StatusBanner chatId={state.chat.id} status={state.chat.status} />}
       {children}
+      {overview && state.phase === 'ready' && <CaseOverview chatId={state.chat.id} {...state.chat} />}
       {state.phase === 'loading' && <p role="status" className="mt-6 text-sm">Loading your case…</p>}
       {state.phase === 'error' && (
         <p role="alert" className="mt-6 text-sm text-destructive">
