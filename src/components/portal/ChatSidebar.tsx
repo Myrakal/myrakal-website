@@ -38,7 +38,7 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
   }, [router])
 
   return (
-    <nav aria-label="Your chats" className={cn('flex shrink-0 flex-col gap-4 border-r border-champagne/20 bg-card/40 p-3 transition-[width]', collapsed ? 'w-16 items-center' : 'w-72')}>
+    <nav aria-label="Your chats" className={cn('flex shrink-0 flex-col gap-4 border-r border-champagne/20 bg-card/40 p-3 h-full min-h-0', collapsed ? 'w-16 items-center' : 'w-72')}>
       <div className={cn('flex items-center gap-2', collapsed ? 'flex-col' : 'justify-between')}>
         <button
           type="button"
@@ -65,7 +65,7 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
       )}
       {!collapsed && state === 'ready' && chats?.length === 0 && <p className="text-sm">No chats yet. Start one to tell us about your care.</p>}
       {!collapsed && state === 'ready' && !!chats?.length && (
-        <ul className="flex flex-col gap-2 overflow-y-auto">
+        <ul className="flex min-h-0 flex-col gap-2 overflow-y-auto">
           {chats.map((chat) => (
             <li key={chat.id}>
               <a
