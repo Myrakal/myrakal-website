@@ -72,7 +72,7 @@ Files: `src/app/api/chats/route.ts`, `src/app/api/chats/[id]/route.ts`, `src/app
 
 ## Info the AI collects (B9)
 
-Required: name, DOB, country of residence, passport nationality, phone, preferred language; condition or goal, symptoms and duration, past treatments and surgeries, current medications, allergies, other conditions, urgency; care preferences (destinations or open, doctor gender and language, priority: cost, wait time or reputation); departure city, date flexibility, travelers and companions, mobility needs, expected recovery length; budget range, insurance plan; visas held, passport valid 6+ months; consent that the AI is not medical advice and a doctor reviews the case. Optional: existing records and doctors. Claude gets an `update_intake` tool and calls it with whatever new fields it learned each turn; the server merges them into `Chat.intake` (B11). Intake completes when every required field is filled (B12). The chat page shows a simple bar filling as `progress.collected / progress.total` grows (F6).
+The first-stage intake asks seven friendly questions: what the patient wants help with; symptoms and duration; whether anything feels like an emergency; preferred name and DOB; past treatments, procedures or surgery; medications, allergies and other conditions; and whether records are available. Travel, payment and booking details are deferred until they are relevant. Claude gets an `update_intake` tool and calls it with whatever new fields it learned each turn; the server merges them into `Chat.intake` (B11). Intake completes when all seven questions have an answer, including explicit “no” or “none” responses. The chat page shows a simple bar filling as `progress.collected / progress.total` grows (F6).
 
 ## Rules for every agent
 

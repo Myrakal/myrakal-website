@@ -69,7 +69,8 @@ afterAll(() => {
 describe('Chat', () => {
   it('greets a new visitor without creating a chat or showing progress', () => {
     render(<Chat />)
-    expect(screen.getByText(/welcome to Myrakal/i)).toBeTruthy()
+    expect(screen.getByText(/I’m glad you reached out/i)).toBeTruthy()
+    expect(screen.getByText(/What would you like help with/i)).toBeTruthy()
     expect(fetchMock).not.toHaveBeenCalled()
     expect(screen.queryByRole('progressbar')).toBeNull()
   })

@@ -39,7 +39,7 @@ describe('GET /api/chats/:id', () => {
       createdAt: t,
       priceCents: null,
       paidAt: null,
-      intake: { name: 'Ada' },
+      intake: { condition: 'knee pain' },
       messages: [{ id: 'm1', role: 'user', text: 'hi', createdAt: t, chatId: ID }],
       comments: [{ id: 'k1', text: 'note', createdAt: t, chatId: ID }],
     })

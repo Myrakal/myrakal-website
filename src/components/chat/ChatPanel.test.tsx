@@ -20,7 +20,7 @@ afterEach(() => fetchMock.mockReset())
 describe('ChatPanel', () => {
   it('renders the greeting and composer without a chat', () => {
     render(<ChatPanel chatId={null} />)
-    expect(screen.getByText(/welcome to Myrakal/i)).toBeTruthy()
+    expect(screen.getByText(/I’m glad you reached out/i)).toBeTruthy()
     expect(screen.getByLabelText('Message')).toBeTruthy()
   })
 
