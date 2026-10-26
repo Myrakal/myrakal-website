@@ -45,7 +45,7 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
           onClick={() => setCollapsed((value) => !value)}
           aria-expanded={!collapsed}
           aria-label={collapsed ? 'Expand chat list' : 'Collapse chat list'}
-          className={buttonVariants({ variant: 'ghost', size: 'icon', className: 'text-champagne' })}
+          className={buttonVariants({ variant: 'ghost', size: 'icon', className: 'text-champagne max-lg:hidden' })}
         >
           {collapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
         </button>
