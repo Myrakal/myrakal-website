@@ -3,19 +3,10 @@
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import { STATUS_LABELS } from '@/components/portal/statusCopy'
 import { buttonVariants } from '@/components/ui/button'
 
 type Chat = { id: string; status: string; createdAt: string; summary: string | null }
-
-const LABELS: Record<string, string> = {
-  intake: 'In conversation',
-  doctor_review: 'With a doctor',
-  plan_ready: 'Plan ready',
-  clarification_review: 'Reviewing your comments',
-  awaiting_payment: 'Awaiting payment',
-  reservations: 'Making reservations',
-  booked: 'Booked',
-}
 
 const href = (chat: Chat) => (chat.status === 'intake' ? `/chat?id=${chat.id}` : `/chats/${chat.id}`)
 
@@ -76,7 +67,7 @@ export function ChatList() {
                     {new Date(chat.createdAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}
                   </time>
                 </span>
-                <span className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">{LABELS[chat.status] ?? chat.status}</span>
+                <span className="rounded-full bg-secondary px-3 py-1 text-xs text-secondary-foreground">{STATUS_LABELS[chat.status] ?? chat.status}</span>
               </a>
             </li>
           ))}
