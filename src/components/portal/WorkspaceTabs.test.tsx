@@ -2,10 +2,11 @@ import { fireEvent, render, screen } from '@testing-library/react'
 
 import { WorkspaceTabs } from './WorkspaceTabs'
 
-function setup(initial: 'chats' | 'case' | 'chat' = 'case') {
+function setup(initial: 'chats' | 'case' | 'chat' = 'case', preferred?: 'chats' | 'case' | 'chat') {
   return render(
     <WorkspaceTabs
       initial={initial}
+      preferred={preferred}
       chats={<input aria-label="chats-draft" />}
       details={<p>details body</p>}
       chat={<input aria-label="chat-draft" />}
@@ -78,5 +79,31 @@ describe('WorkspaceTabs', () => {
     expect(screen.getByRole('tab', { name: 'Case' }).getAttribute('tabindex')).toBe('0')
     expect(screen.getByRole('tab', { name: 'Chat' }).getAttribute('tabindex')).toBe('-1')
     expect(screen.getByRole('tab', { name: 'Case' }).className).toContain('min-h-11')
+  })
+
+  it('switches once to the preferred tab when the user has not chosen one', () => {
+    const view = setup('case')
+    expect(screen.getByRole('tab', { name: 'Case' }).getAttribute('aria-selected')).toBe('true')
+    view.rerender(
+      <WorkspaceTabs initial="case" preferred="chat" chats={<p>c</p>} details={<p>d</p>} chat={<p>x</p>} />,
+    )
+    expect(screen.getByRole('tab', { name: 'Chat' }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('ignores the preferred tab after the user picked one', () => {
+    const view = setup('case')
+    fireEvent.click(screen.getByRole('tab', { name: 'Chats' }))
+    view.rerender(
+      <WorkspaceTabs initial="case" preferred="chat" chats={<p>c</p>} details={<p>d</p>} chat={<p>x</p>} />,
+    )
+    expect(screen.getByRole('tab', { name: 'Chats' }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('drops tabpanel semantics at lg and up', () => {
+    const original = window.matchMedia
+    window.matchMedia = ((query: string) => ({ matches: true, media: query, addEventListener: jest.fn(), removeEventListener: jest.fn() })) as unknown as typeof window.matchMedia
+    setup('case')
+    expect(screen.queryAllByRole('tabpanel', { hidden: true })).toHaveLength(0)
+    window.matchMedia = original
   })
 })

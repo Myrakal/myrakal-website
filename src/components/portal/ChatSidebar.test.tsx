@@ -103,10 +103,23 @@ describe('ChatSidebar', () => {
     fireEvent.click(toggle)
     const expand = screen.getByRole('button', { name: /expand/i })
     expect(expand.getAttribute('aria-expanded')).toBe('false')
-    expect(screen.queryByText('Dental implants')).toBeNull()
+    expect(screen.getByText('Dental implants').closest('.lg\\:hidden')).toBeTruthy()
+    expect(screen.getByRole('navigation').className).toContain('lg:w-16')
     expect(screen.getByRole('link', { name: 'New chat' })).toBeTruthy()
     fireEvent.click(expand)
-    expect(screen.getByText('Dental implants')).toBeTruthy()
+    expect(screen.getByText('Dental implants').closest('.lg\\:hidden')).toBeNull()
+  })
+
+  it('keeps the list visible below lg when collapsed', async () => {
+    respond(200, chats)
+    render(<ChatSidebar />)
+    await screen.findByText('Dental implants')
+    fireEvent.click(screen.getByRole('button', { name: /collapse/i }))
+    const nav = screen.getByRole('navigation')
+    expect(nav.className).not.toMatch(/(^|\s)w-16/)
+    expect(nav.className).not.toMatch(/(^|\s)items-center/)
+    expect(screen.getByText('Dental implants').closest('.contents')).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'New chat' }).textContent).toContain('New chat')
   })
 
   it('hides the collapse toggle below lg', async () => {

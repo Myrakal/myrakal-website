@@ -56,4 +56,30 @@ describe('ChatPanel', () => {
     await waitFor(() => expect(screen.getByRole('progressbar')).toBeTruthy())
     expect(screen.queryByText(/does not read your files/i)).toBeNull()
   })
+
+  it('scrolls to the bottom when its pane becomes visible', () => {
+    let height = 0
+    let notify: () => void = () => {}
+    const original = globalThis.ResizeObserver
+    globalThis.ResizeObserver = class {
+      constructor(cb: () => void) {
+        notify = cb
+      }
+      observe() {}
+      disconnect() {}
+      unobserve() {}
+    } as unknown as typeof ResizeObserver
+    const spy = jest.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(() => height)
+    render(<ChatPanel chatId={null} />)
+    const scroll = Element.prototype.scrollIntoView as jest.Mock
+    scroll.mockClear()
+    height = 120
+    notify()
+    expect(scroll).toHaveBeenCalledWith({ block: 'end', behavior: 'auto' })
+    scroll.mockClear()
+    notify()
+    expect(scroll).not.toHaveBeenCalled()
+    spy.mockRestore()
+    globalThis.ResizeObserver = original
+  })
 })

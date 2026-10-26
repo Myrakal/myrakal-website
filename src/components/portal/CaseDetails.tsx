@@ -22,7 +22,7 @@ type Props = {
   refreshKey?: number
   showTranscript?: boolean
   overview?: boolean
-  onLoaded?: (messages: Message[]) => void
+  onLoaded?: (messages: Message[], status: string) => void
 }
 
 export function CaseDetails({ chatId, refreshKey = 0, showTranscript = true, overview, onLoaded }: Props) {
@@ -44,7 +44,7 @@ export function CaseDetails({ chatId, refreshKey = 0, showTranscript = true, ove
         const chat: Detail = await res.json()
         if (!Array.isArray(chat.messages) || typeof chat.status !== 'string') throw new Error()
         setState({ phase: 'ready', chat })
-        onLoadedRef.current?.(chat.messages)
+        onLoadedRef.current?.(chat.messages, chat.status)
       })
       .catch(() => {
         if (!controller.signal.aborted) setState({ phase: 'error', text: 'We could not load this case. Please refresh the page.' })
