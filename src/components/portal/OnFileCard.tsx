@@ -15,7 +15,7 @@ const show = (value: Value) => (typeof value === 'boolean' ? (value ? 'Yes' : 'N
 type Props = { intake: Record<string, Value>; status: string; progress?: { collected: number; total: number } | null }
 
 export function OnFileCard({ intake, status, progress }: Props) {
-  const sections = SECTIONS.map((s) => ({ ...s, rows: s.fields.filter(([key]) => intake[key] !== undefined && intake[key] !== '') })).filter((s) => s.rows.length > 0)
+  const sections = SECTIONS.map((s) => ({ ...s, rows: s.fields.filter(([key]) => intake[key] != null && intake[key] !== '') })).filter((s) => s.rows.length > 0)
   return (
     <section aria-label="On file" className="rounded-3xl bg-velvet-deep/50 px-5 py-5 sm:px-7">
       <div className="flex items-baseline justify-between gap-3">

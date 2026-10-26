@@ -19,3 +19,8 @@ test('renders nothing outside plan statuses or without a price', () => {
   rerender(<PriceCard status="plan_ready" priceCents={null} paid={false} />)
   expect(container).toBeEmptyDOMElement()
 })
+
+test('says payment is due once the plan is approved', () => {
+  render(<PriceCard status="awaiting_payment" priceCents={15000} paid={false} />)
+  expect(screen.getByText('Payment is due')).toBeInTheDocument()
+})
