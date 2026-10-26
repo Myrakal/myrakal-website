@@ -1,6 +1,7 @@
 import wordmark from '@/assets/myrakal-wordmark.svg'
 
 const LINKS = [
+  ['Care', '/care'],
   ['Privacy Policy', '/privacy/'],
   ['Terms of Service', '/terms/'],
   ['Contact', '/contact/'],
