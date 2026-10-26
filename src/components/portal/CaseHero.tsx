@@ -3,8 +3,9 @@ import { STATUS_COPY } from './statusCopy'
 
 const ACTION_STATUSES = ['intake', 'plan_ready', 'awaiting_payment']
 
-const pill = 'rounded-full border border-champagne/40 px-4 py-2 text-sm font-medium text-champagne hover:bg-champagne/10'
-const primary = 'rounded-full bg-champagne px-4 py-2 text-sm font-medium text-velvet-deep hover:bg-champagne/90'
+const focus = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne'
+const pill = `${focus} rounded-full border border-champagne/40 px-4 py-2 text-sm font-medium text-champagne hover:bg-champagne/10`
+const primary = `${focus} rounded-full bg-champagne px-4 py-2 text-sm font-medium text-velvet-deep hover:bg-champagne/90`
 
 function actions(chatId: string, status: string) {
   if (status === 'intake') return [{ href: `/dashboard/${chatId}`, label: 'Continue conversation', primary: true }]
