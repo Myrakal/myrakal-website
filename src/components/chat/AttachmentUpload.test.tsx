@@ -25,6 +25,15 @@ describe('AttachmentUpload', () => {
   it('lets the patient skip', () => {
     const { onSkip } = setup()
     fireEvent.click(screen.getByRole('button', { name: /skip, i don't have this/i }))
-    expect(onSkip).toHaveBeenCalled()
+    expect(onSkip).toHaveBeenCalledWith(false)
+  })
+
+  it('offers a done button instead of skip once a file is uploaded', async () => {
+    const { onSkip } = setup()
+    fireEvent.change(screen.getByLabelText(/choose files/i), { target: { files: [new File(['x'], 'labs.pdf', { type: 'application/pdf' })] } })
+    const done = await screen.findByRole('button', { name: /done uploading/i })
+    expect(screen.queryByRole('button', { name: /skip/i })).toBeNull()
+    fireEvent.click(done)
+    expect(onSkip).toHaveBeenCalledWith(true)
   })
 })

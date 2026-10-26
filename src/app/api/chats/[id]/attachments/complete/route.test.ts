@@ -3,7 +3,10 @@ const messageCreate = jest.fn()
 const requireUser = jest.fn()
 const info = jest.fn()
 const remove = jest.fn()
-const from = jest.fn(() => ({ info, remove }))
+const list = jest.fn()
+const limitReached = jest.fn()
+const from = jest.fn(() => ({ info, remove, list }))
+jest.mock('@/server/limits', () => ({ messageLimitReached: (...a: unknown[]) => limitReached(...a) }))
 jest.mock('@/server/db', () => ({ db: () => ({ chat: { findFirst }, message: { create: messageCreate } }) }))
 jest.mock('@/server/auth', () => ({ requireUser: () => requireUser() }))
 jest.mock('@supabase/supabase-js', () => ({ createClient: () => ({ storage: { from } }) }))
@@ -19,7 +22,9 @@ const send = (body: object | null, h: Record<string, string> = headers) =>
 
 beforeEach(() => {
   jest.resetAllMocks()
-  from.mockImplementation(() => ({ info, remove }))
+  from.mockImplementation(() => ({ info, remove, list }))
+  list.mockResolvedValue({ data: [{ name: 'a' }], error: null })
+  limitReached.mockResolvedValue(false)
   process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://x.supabase.co'
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'svc'
   requireUser.mockResolvedValue({ id: 'u1' })
@@ -68,5 +73,18 @@ describe('POST /api/chats/:id/attachments/complete', () => {
     expect(res.status).toBe(200)
     expect(messageCreate.mock.calls[0][0].data).toEqual(expect.objectContaining({ chatId: ID, role: 'user', text: '[Attached: labs.pdf]' }))
     expect((await res.json()).message).toEqual(expect.objectContaining({ role: 'user', text: '[Attached: labs.pdf]' }))
+  })
+
+  it('429s when the chat already hit its message limit, so a path cannot be replayed forever', async () => {
+    limitReached.mockResolvedValue(true)
+    expect((await route.POST(send({ path: PATH }), params())).status).toBe(429)
+    expect(messageCreate).not.toHaveBeenCalled()
+  })
+
+  it('deletes the file and 429s when the chat holds more than ten files', async () => {
+    list.mockResolvedValue({ data: Array.from({ length: 11 }, (_, i) => ({ name: `f${i}` })), error: null })
+    expect((await route.POST(send({ path: PATH }), params())).status).toBe(429)
+    expect(remove).toHaveBeenCalledWith([PATH])
+    expect(messageCreate).not.toHaveBeenCalled()
   })
 })

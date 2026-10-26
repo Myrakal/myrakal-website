@@ -4,7 +4,15 @@ export const MAX_BYTES = 10 * 1024 * 1024
 export const MAX_FILES = 10
 export const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif']
 
-const TYPE_BY_EXT: Record<string, string> = { heic: 'image/heic', heif: 'image/heif' }
+const TYPE_BY_EXT: Record<string, string> = {
+  pdf: 'application/pdf',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  webp: 'image/webp',
+  heic: 'image/heic',
+  heif: 'image/heif',
+}
 export const fileType = (name: string, type: string) => TYPE_BY_EXT[name.split('.').pop()?.toLowerCase() ?? ''] ?? type
 export const safeName = (name: string) =>
   (name.split(/[\\/]/).pop() ?? '').replace(/[^A-Za-z0-9._-]+/g, '_').replace(/^\.+/, '').slice(0, 100) || 'file'

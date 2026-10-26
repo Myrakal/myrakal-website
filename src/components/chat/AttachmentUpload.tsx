@@ -4,18 +4,22 @@ import { useId, useState, type ChangeEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 
-type Props = { label: string; onUpload: (file: File) => Promise<boolean>; onSkip: () => void; busy?: boolean }
+type Props = { label: string; onUpload: (file: File) => Promise<boolean>; onSkip: (uploaded: boolean) => void; busy?: boolean }
 
 export function AttachmentUpload({ label, onUpload, onSkip, busy = false }: Props) {
   const id = useId()
   const [uploading, setUploading] = useState(false)
+  const [uploaded, setUploaded] = useState(false)
   const locked = uploading || busy
 
   const choose = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? [])
     e.target.value = ''
     setUploading(true)
-    for (const file of files) if (!(await onUpload(file))) break
+    for (const file of files) {
+      if (!(await onUpload(file))) break
+      setUploaded(true)
+    }
     setUploading(false)
   }
 
@@ -30,7 +34,7 @@ export function AttachmentUpload({ label, onUpload, onSkip, busy = false }: Prop
           id={id}
           type="file"
           multiple
-          accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.heif,application/pdf,image/*"
+          accept=".pdf,.jpg,.jpeg,.png,.webp,.heic,.heif"
           disabled={locked}
           onChange={choose}
           className="peer sr-only"
@@ -41,8 +45,8 @@ export function AttachmentUpload({ label, onUpload, onSkip, busy = false }: Prop
         >
           {uploading ? 'Uploading…' : 'Choose files'}
         </label>
-        <Button type="button" variant="ghost" disabled={locked} onClick={onSkip} className="cursor-pointer">
-          Skip, I don&apos;t have this
+        <Button type="button" variant="ghost" disabled={locked} onClick={() => onSkip(uploaded)} className="cursor-pointer">
+          {uploaded ? 'Done uploading' : "Skip, I don't have this"}
         </Button>
       </div>
     </div>

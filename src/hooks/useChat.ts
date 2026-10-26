@@ -119,7 +119,7 @@ export function useChat(chatId: string | null, options: Options = {}) {
     }
   }
 
-  const skip = () => send("I don't have this right now.")
+  const skip = (uploaded: boolean) => send(uploaded ? "I've uploaded what I have." : "I don't have this right now.")
 
   return { messages, progress, status, busy, loading, error, loadFailed, attachmentRequest, send, upload, skip }
 }

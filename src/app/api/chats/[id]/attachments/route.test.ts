@@ -94,4 +94,13 @@ describe('POST /api/chats/:id/attachments', () => {
     createSignedUploadUrl.mockResolvedValue({ data: null, error: new Error('boom') })
     expect((await route.POST(send(file()), params())).status).toBe(502)
   })
+
+  it('infers the type from the extension when the browser reports none', async () => {
+    const res = await route.POST(send(file('photo.JPG', 10, '')), params())
+    expect((await res.json()).contentType).toBe('image/jpeg')
+  })
+
+  it('rejects a gif', async () => {
+    expect((await route.POST(send(file('a.gif', 10, 'image/gif')), params())).status).toBe(400)
+  })
 })
