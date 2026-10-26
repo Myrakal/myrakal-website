@@ -51,7 +51,7 @@ export function ApprovePlan({ chatId, status, onApproved }: Props) {
   }
 
   return (
-    <section aria-label="Approve your plan" className="mt-8">
+    <section id="approve" aria-label="Approve your plan" className="mt-8">
       <h2 className="text-xl">Happy with the plan?</h2>
       <p className="mt-2 text-sm">Approving moves you on to payment. If you want changes first, send your comments above.</p>
       {error && (

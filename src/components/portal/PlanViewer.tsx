@@ -47,7 +47,7 @@ export function PlanViewer({ chatId }: { chatId: string }) {
     )
   }
   return (
-    <section aria-label="Your plan" className="mt-8">
+    <section id="plan" aria-label="Your plan" className="mt-8">
       <h2 className="text-xl">Your plan</h2>
       <iframe title="Plan PDF preview" src={state.url} className="mt-4 h-[70vh] w-full rounded-2xl border border-border bg-card" />
       <a href={linkUrl ?? state.url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm font-medium underline underline-offset-4">
