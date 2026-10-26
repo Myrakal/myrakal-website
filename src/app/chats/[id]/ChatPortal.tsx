@@ -9,7 +9,7 @@ export default function ChatPortal() {
   const { id } = useParams<{ id: string }>()
   return (
     <PortalShell title="Your case">
-      <CaseDetails chatId={id}>
+      <CaseDetails key={id} chatId={id}>
         <a href="/dashboard" className="mt-6 inline-block text-sm underline underline-offset-4">
           ← Your chats
         </a>
