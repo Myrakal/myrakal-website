@@ -1,6 +1,8 @@
 import { Footer } from '@/components/Footer'
 import { GoldThreadMain, ThreadStop } from '@/components/GoldThread'
+import { JsonLd } from '@/components/JsonLd'
 import { Navbar } from '@/components/Navbar'
+import { CARE_SERVICE, ORGANIZATION } from '@/lib/structured-data'
 
 const SERVICES = [
   { title: 'Find your doctor', body: 'We find the right doctor for your treatment, matched to your needs, your schedule and your budget.' },
@@ -47,6 +49,7 @@ const band = 'mx-auto max-w-6xl px-6 sm:px-12'
 export default function Care() {
   return (
     <>
+      <JsonLd data={[ORGANIZATION, CARE_SERVICE]} />
       <Navbar />
       <GoldThreadMain className="bg-velvet-deep text-cream">
         <header className={`${band} relative pt-40 pb-28 sm:pt-52`}>
