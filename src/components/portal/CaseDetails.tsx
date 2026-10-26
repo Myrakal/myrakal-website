@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { type ReactNode, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
 import { ApprovePlan } from './ApprovePlan'
@@ -19,14 +19,13 @@ type State = { phase: 'loading' } | { phase: 'error'; text: string } | { phase: 
 
 type Props = {
   chatId: string
-  children?: ReactNode
   refreshKey?: number
   showTranscript?: boolean
   overview?: boolean
   onLoaded?: (messages: Message[]) => void
 }
 
-export function CaseDetails({ chatId, children, refreshKey = 0, showTranscript = true, overview, onLoaded }: Props) {
+export function CaseDetails({ chatId, refreshKey = 0, showTranscript = true, overview, onLoaded }: Props) {
   const router = useRouter()
   const [state, setState] = useState<State>({ phase: 'loading' })
   const onLoadedRef = useRef(onLoaded)
@@ -70,7 +69,6 @@ export function CaseDetails({ chatId, children, refreshKey = 0, showTranscript =
           <CaseJourney status={state.chat.status} />
         </>
       )}
-      {children}
       {state.phase === 'loading' && <p role="status" className="mt-6 text-sm">Loading your case…</p>}
       {state.phase === 'error' && (
         <p role="alert" className="mt-6 text-sm text-destructive">

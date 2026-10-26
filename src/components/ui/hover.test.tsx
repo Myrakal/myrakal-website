@@ -21,11 +21,6 @@ describe('hover states stay visible on the velvet background', () => {
     expect(hoverClasses(buttonVariants({ variant }))).toContain(expected)
   })
 
-  it('chat list rows do not hover to the muted background that hides dark text', () => {
-    expect(read('portal/ChatList.tsx')).not.toMatch(/hover:bg-muted/)
-    expect(read('portal/ChatList.tsx')).toMatch(/hover:bg-primary\/90/)
-  })
-
   it('navbar outline button hover is more than a 10% tint', () => {
     expect(read('Navbar.tsx')).not.toMatch(/hover:bg-alabaster\/10/)
   })

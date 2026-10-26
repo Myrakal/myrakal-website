@@ -39,7 +39,6 @@ describe('search and sharing', () => {
   })
 
   it.each([
-    ['/chat', './chat/page'],
     ['/dashboard', './dashboard/page'],
     ['/login', './login/page'],
     ['/forgot-password', './forgot-password/page'],
