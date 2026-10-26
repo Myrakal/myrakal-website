@@ -1,10 +1,5 @@
 import { act, render, screen } from '@testing-library/react'
 
-const mockReplace = jest.fn()
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({ replace: mockReplace }),
-}))
-
 let panelProps: { chatId: string | null; onCreated?: (id: string) => void; onStatusChange?: (s: string, id: string, replace: boolean) => void; onLocked?: (id: string) => void }
 let mounts = { details: 0, panel: 0 }
 
@@ -40,7 +35,7 @@ import { Workspace } from './Workspace'
 const ID = '3f1c2b4a-0000-4000-8000-000000000001'
 
 beforeEach(() => {
-  mockReplace.mockReset()
+  window.history.replaceState(null, '', '/dashboard')
   mounts = { details: 0, panel: 0 }
 })
 
@@ -60,10 +55,10 @@ describe('Workspace', () => {
     expect(screen.queryByText('Start a conversation to open your case')).toBeNull()
   })
 
-  it('replaces the route when a chat is created without remounting the panel', () => {
+  it('replaces the URL when a chat is created without remounting the panel', () => {
     render(<Workspace chatId={null} />)
     act(() => panelProps.onCreated?.(ID))
-    expect(mockReplace).toHaveBeenCalledWith(`/dashboard/${ID}`)
+    expect(window.location.pathname).toBe(`/dashboard/${ID}`)
     expect(screen.getByRole('region', { name: 'Case details' }).textContent).toBe(ID)
     expect(mounts.panel).toBe(1)
   })
@@ -73,13 +68,22 @@ describe('Workspace', () => {
     expect(mounts.details).toBe(1)
     act(() => panelProps.onStatusChange?.('doctor_review', ID, false))
     expect(mounts.details).toBe(2)
-    expect(mockReplace).not.toHaveBeenCalled()
+    expect(screen.getByText(/conversation is closed/)).toBeTruthy()
+    expect(screen.queryByRole('log', { name: 'Conversation' })).toBeNull()
   })
 
   it('refreshes the case details when the chat is locked', () => {
     render(<Workspace chatId={ID} />)
     act(() => panelProps.onLocked?.(ID))
     expect(mounts.details).toBe(2)
+    expect(screen.getByText(/conversation is closed/)).toBeTruthy()
+  })
+
+  it('closes the panel instead of loading forever for a non-intake chat', () => {
+    render(<Workspace chatId={ID} />)
+    act(() => panelProps.onStatusChange?.('plan_ready', ID, true))
+    expect(mounts.details).toBe(1)
+    expect(screen.getByText(/conversation is closed/)).toBeTruthy()
   })
 
   it('resets the panels when switching to another chat', () => {

@@ -1,6 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 
 import wordmark from '@/assets/myrakal-wordmark.svg'
@@ -9,20 +8,24 @@ import { CaseDetails } from '@/components/portal/CaseDetails'
 import { ChatSidebar } from '@/components/portal/ChatSidebar'
 
 export function Workspace({ chatId }: { chatId: string | null }) {
-  const router = useRouter()
   const [createdId, setCreatedId] = useState<string | null>(null)
   const [refresh, setRefresh] = useState(0)
 
   const onCreated = useCallback(
     (id: string) => {
       setCreatedId(id)
-      router.replace(`/dashboard/${id}`)
+      window.history.replaceState(null, '', `/dashboard/${id}`)
     },
-    [router],
+    [],
   )
-  const onChange = useCallback(() => setRefresh((value) => value + 1), [])
-  const onStatusChange = useCallback((_status: string, _id: string, replace: boolean) => {
+  const [lockedId, setLockedId] = useState<string | null>(null)
+  const onStatusChange = useCallback((_status: string, id: string, replace: boolean) => {
+    setLockedId(id)
     if (!replace) setRefresh((value) => value + 1)
+  }, [])
+  const onLocked = useCallback((id: string) => {
+    setLockedId(id)
+    setRefresh((value) => value + 1)
   }, [])
 
   const live = chatId === null || chatId === createdId
@@ -54,13 +57,19 @@ export function Workspace({ chatId }: { chatId: string | null }) {
           aria-label="Chat"
           className="flex min-h-[32rem] flex-col border-t border-champagne/20 px-4 lg:min-h-0 lg:w-[26rem] lg:shrink-0 lg:overflow-y-auto lg:border-t-0 lg:border-l"
         >
-          <ChatPanel
-            key={live ? 'live' : chatId}
-            chatId={live ? null : chatId}
-            onCreated={onCreated}
-            onStatusChange={onStatusChange}
-            onLocked={onChange}
-          />
+          {caseId !== null && lockedId === caseId ? (
+            <p role="status" className="mt-10 text-center text-sm text-muted-foreground">
+              This conversation is closed. A doctor is working on your case, and updates appear on the left.
+            </p>
+          ) : (
+            <ChatPanel
+              key={live ? 'live' : chatId}
+              chatId={live ? null : chatId}
+              onCreated={onCreated}
+              onStatusChange={onStatusChange}
+              onLocked={onLocked}
+            />
+          )}
         </section>
       </div>
     </div>
