@@ -71,3 +71,13 @@ export const UPDATE_INTAKE_TOOL = {
     additionalProperties: false,
   },
 }
+
+export function publicIntake(intake: unknown) {
+  const data = isRecord(intake) ? intake : {}
+  const result: Record<string, string | boolean> = {}
+  for (const field of INTAKE_FIELDS) {
+    const value = data[field.key]
+    if (typeof value === field.type && isFilled(value, field)) result[field.key] = value as string | boolean
+  }
+  return result
+}

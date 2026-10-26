@@ -36,3 +36,19 @@ export const REQUEST_ATTACHMENT_TOOL = {
     required: ['label'],
   },
 }
+
+type StoredFile = { name: string; created_at: string | null; metadata: { size?: number } | null }
+
+const UUID_PREFIX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-/i
+
+export function chatFiles(chatId: string, entries: StoredFile[]) {
+  return entries
+    .filter((entry) => entry.metadata && !entry.name.startsWith('.'))
+    .map((entry) => ({
+      name: entry.name.replace(UUID_PREFIX, ''),
+      path: `${chatId}/${entry.name}`,
+      size: entry.metadata?.size ?? 0,
+      createdAt: entry.created_at,
+    }))
+    .sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
+}

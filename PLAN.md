@@ -60,8 +60,9 @@ All routes need a signed-in session (401 without), return JSON, and use `cache-c
 |---|---|---|
 | `POST /api/chats` | none | 201 `{ id }` |
 | `GET /api/chats` | none | `[{ id, status, createdAt, summary: string\|null }]` newest first, own chats only |
-| `GET /api/chats/:id` | none | `{ id, status, createdAt, priceCents, paid, progress, messages:[{id,role,text,createdAt}], comments:[{id,text,createdAt}] }` |
+| `GET /api/chats/:id` | none | `{ id, status, createdAt, priceCents, paid, progress, attachmentRequest, intake:{filled INTAKE_FIELDS only}, messages:[{id,role,text,createdAt}], comments:[{id,text,createdAt}] }` |
 | `POST /api/chats/:id/messages` | `{ text }` | `{ reply:{id,role:'assistant',text,createdAt}, status, progress }`; only in `intake`, else 409 |
+| `GET /api/chats/:id/attachments` | none | `[{ name, path, size, createdAt, url }]` newest first, `url` is a 300s signed download link; `[]` when none; any status |
 | `GET /api/chats/:id/plan` | none | `{ url }` or 404 |
 | `POST /api/chats/:id/comments` | `{ text }` (max 4000) | 201 `{ status:'clarification_review' }`; only from `plan_ready`, else 409 |
 | `POST /api/chats/:id/approve` | none | `{ status:'awaiting_payment' }`; only from `plan_ready`, else 409 |

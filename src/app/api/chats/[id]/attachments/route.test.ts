@@ -2,7 +2,8 @@ const findFirst = jest.fn()
 const requireUser = jest.fn()
 const createSignedUploadUrl = jest.fn()
 const list = jest.fn()
-const from = jest.fn(() => ({ createSignedUploadUrl, list }))
+const createSignedUrls = jest.fn()
+const from = jest.fn(() => ({ createSignedUploadUrl, createSignedUrls, list }))
 jest.mock('@/server/db', () => ({ db: () => ({ chat: { findFirst } }) }))
 jest.mock('@/server/auth', () => ({ requireUser: () => requireUser() }))
 jest.mock('@supabase/supabase-js', () => ({ createClient: () => ({ storage: { from } }) }))
@@ -18,7 +19,7 @@ const file = (name = 'labs.pdf', size = 10, type = 'application/pdf') => ({ name
 
 beforeEach(() => {
   jest.resetAllMocks()
-  from.mockImplementation(() => ({ createSignedUploadUrl, list }))
+  from.mockImplementation(() => ({ createSignedUploadUrl, createSignedUrls, list }))
   process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://x.supabase.co'
   process.env.SUPABASE_SERVICE_ROLE_KEY = 'svc'
   delete process.env.ATTACHMENT_BUCKET
@@ -102,5 +103,68 @@ describe('POST /api/chats/:id/attachments', () => {
 
   it('rejects a gif', async () => {
     expect((await route.POST(send(file('a.gif', 10, 'image/gif')), params())).status).toBe(400)
+  })
+})
+
+describe('GET /api/chats/:id/attachments', () => {
+  const U = '33333333-3333-4333-8333-333333333333'
+  const get = (id = ID) => route.GET(new Request(`https://myrakal.com/api/chats/${id}/attachments`), params(id))
+
+  it('requires a user', async () => {
+    requireUser.mockResolvedValue(null)
+    expect((await get()).status).toBe(401)
+  })
+
+  it('404s on a bad id without querying', async () => {
+    expect((await get('nope')).status).toBe(404)
+    expect(findFirst).not.toHaveBeenCalled()
+  })
+
+  it('404s for another user chat', async () => {
+    findFirst.mockResolvedValue(null)
+    expect((await get()).status).toBe(404)
+    expect(findFirst).toHaveBeenCalledWith(expect.objectContaining({ where: { id: ID, userId: 'u1' } }))
+    expect(list).not.toHaveBeenCalled()
+  })
+
+  it('returns an empty list for an empty folder', async () => {
+    expect(await (await get()).json()).toEqual([])
+    expect(list).toHaveBeenCalledWith(ID, expect.anything())
+    expect(createSignedUrls).not.toHaveBeenCalled()
+  })
+
+  it('returns [] when storage reports not found', async () => {
+    list.mockResolvedValue({ data: null, error: { message: 'Bucket not found', status: 404 } })
+    expect(await (await get()).json()).toEqual([])
+  })
+
+  it('throws on other storage errors', async () => {
+    list.mockResolvedValue({ data: null, error: { message: 'boom', status: 500 } })
+    await expect(get()).rejects.toBeTruthy()
+  })
+
+  it('returns shaped files with signed urls, in every status', async () => {
+    findFirst.mockResolvedValue({ status: 'doctor_review' })
+    list.mockResolvedValue({
+      data: [
+        { name: `${U}-a.pdf`, created_at: '2026-10-01T00:00:00Z', metadata: { size: 4 } },
+        { name: `${U}-b.png`, created_at: '2026-10-02T00:00:00Z', metadata: { size: 8 } },
+      ],
+      error: null,
+    })
+    createSignedUrls.mockResolvedValue({
+      data: [
+        { path: `${ID}/${U}-b.png`, signedUrl: 'https://s/b', error: null },
+        { path: `${ID}/${U}-a.pdf`, signedUrl: 'https://s/a', error: null },
+      ],
+      error: null,
+    })
+    const res = await get()
+    expect(res.headers.get('cache-control')).toBe('no-store')
+    expect(await res.json()).toEqual([
+      { name: 'b.png', path: `${ID}/${U}-b.png`, size: 8, createdAt: '2026-10-02T00:00:00Z', url: 'https://s/b' },
+      { name: 'a.pdf', path: `${ID}/${U}-a.pdf`, size: 4, createdAt: '2026-10-01T00:00:00Z', url: 'https://s/a' },
+    ])
+    expect(createSignedUrls).toHaveBeenCalledWith([`${ID}/${U}-b.png`, `${ID}/${U}-a.pdf`], 300)
   })
 })
