@@ -36,7 +36,7 @@ describe('StatusBanner', () => {
 
   it('links back into the conversation only during intake', () => {
     const { rerender } = render(<StatusBanner chatId="c1" status="intake" />)
-    expect(screen.getByRole('link', { name: 'Continue your conversation' }).getAttribute('href')).toBe('/chat?id=c1')
+    expect(screen.getByRole('link', { name: 'Continue your conversation' }).getAttribute('href')).toBe('/dashboard/c1')
     rerender(<StatusBanner chatId="c1" status="plan_ready" />)
     expect(screen.queryByRole('link', { name: 'Continue your conversation' })).toBeNull()
   })

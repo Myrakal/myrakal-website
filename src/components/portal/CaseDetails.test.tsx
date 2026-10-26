@@ -199,7 +199,7 @@ describe('CaseDetails', () => {
   it('offers to continue an unfinished intake', async () => {
     respond(200, detail('intake'))
     render(<CaseDetails chatId={ID} />)
-    expect((await screen.findByRole('link', { name: 'Continue your conversation' })).getAttribute('href')).toBe(`/chat?id=${ID}`)
+    expect((await screen.findByRole('link', { name: 'Continue your conversation' })).getAttribute('href')).toBe(`/dashboard/${ID}`)
   })
 
   it('falls back to a generic message for an unknown status', async () => {

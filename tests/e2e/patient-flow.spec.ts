@@ -16,7 +16,7 @@ test('a patient goes from sign up to booked', async ({ page }) => {
     await page.getByLabel('Email').fill('patient@example.com')
     await page.getByLabel('Password').fill('correct-horse-9')
     await page.getByRole('button', { name: 'Sign up' }).click()
-    await expect(page).toHaveURL(/\/chat$/)
+    await expect(page).toHaveURL(/\/dashboard$/)
     await expect(page.getByRole('log', { name: 'Conversation' })).toContainText('I’m glad you reached out')
   })
 
@@ -33,7 +33,7 @@ test('a patient goes from sign up to booked', async ({ page }) => {
         )
       }
     }
-    await expect(page).toHaveURL(new RegExp(`/chats/${backend.id}$`))
+    await expect(page).toHaveURL(new RegExp(`/dashboard/${backend.id}$`))
     await expect(page.getByRole('region', { name: 'Case status' })).toContainText('A doctor will review your transcript')
     await expect(page.getByRole('region', { name: 'Conversation' })).toContainText(backend.patientLines[0])
   })
@@ -68,7 +68,7 @@ test('a patient goes from sign up to booked', async ({ page }) => {
     await page.getByRole('button', { name: 'Pay $150.00' }).click()
     await expect(page).toHaveURL(/\/mock-stripe$/)
     await expect(page.getByRole('heading', { name: 'Stripe Checkout' })).toBeVisible()
-    await page.goto(`/chats/${backend.id}?paid=1`)
+    await page.goto(`/dashboard/${backend.id}?paid=1`)
     await expect(page.getByText('We are confirming your payment')).toBeVisible()
     await expect(page.getByRole('button', { name: /^Pay/ })).toHaveCount(0)
   })
