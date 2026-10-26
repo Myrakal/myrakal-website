@@ -17,6 +17,7 @@ const routes = [
   ['chat', 'Chat: Myrakal'],
   ['care', 'Care: Myrakal'],
   ['individual', 'Individual: Myrakal'],
+  ['business', 'Business: Myrakal'],
 ] as const
 
 describe('app routes', () => {
@@ -28,8 +29,8 @@ describe('app routes', () => {
     expect(screen.getAllByRole('link').length).toBeGreaterThan(0)
   })
 
-  it('keeps the individual page out of search until the terms match the payment model', async () => {
-    const page = await import('./individual/page')
+  it.each(['individual', 'business'])('keeps the draft %s page out of search results', async (route) => {
+    const page = await import(`./${route}/page`)
     expect(page.metadata.robots).toEqual({ index: false })
   })
 

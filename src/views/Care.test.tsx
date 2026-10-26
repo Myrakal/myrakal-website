@@ -30,6 +30,20 @@ describe('Care page', () => {
     expect(within(services).getByText(/hotel/i)).toBeTruthy()
   })
 
+  it('walks through the workflow in order, each step marked on the gold thread', () => {
+    const { container } = render(<Care />)
+    const services = screen.getByRole('region', { name: /what we do/i })
+    const steps = within(services).getAllByRole('listitem')
+    expect(steps.map((li) => within(li).getByRole('heading', { level: 3 }).textContent)).toEqual([
+      'Find your doctor',
+      'Insurance and financing',
+      'Everything arranged',
+      'Aftercare',
+    ])
+    steps.forEach((li) => expect(li.querySelector('[data-thread-stop].bg-champagne')).toBeTruthy())
+    expect(container.querySelector('main svg path')).toBeTruthy()
+  })
+
   it('shows what we cover in everyday, ongoing and major tiers', () => {
     render(<Care />)
     const cover = screen.getByRole('region', { name: /what we cover/i })
@@ -43,6 +57,15 @@ describe('Care page', () => {
     expect(screen.getByText(/lab tests and bloodwork/i)).toBeTruthy()
     expect(screen.getByText('Back on your feet')).toBeTruthy()
     expect(screen.queryAllByRole('button', { expanded: false })).toHaveLength(0)
+  })
+
+  it('matches the approved copy', () => {
+    render(<Care />)
+    expect(screen.getByText(/we find the right doctor and the right price/i)).toBeTruthy()
+    expect(screen.getByText(/matched to your needs, your schedule and your budget/i)).toBeTruthy()
+    expect(screen.getByText(/book your appointments, and your hotel and transport when you travel/i)).toBeTruthy()
+    expect(screen.getByText(/help you arrange financing for the rest/i)).toBeTruthy()
+    expect(screen.queryByText(/offer financing/i)).toBeNull()
   })
 
   it('never tags care with a location', () => {
@@ -66,8 +89,8 @@ describe('Care page', () => {
   it('splits visitors toward individual and business paths with visible focus', () => {
     render(<Care />)
     const self = screen.getByRole('link', { name: /for yourself/i })
-    expect(self.getAttribute('href')).toBe('/chat/')
+    expect(self.getAttribute('href')).toBe('/individual')
     expect(self.className).toMatch(/focus-visible:outline-alabaster/)
-    expect(screen.getByRole('link', { name: /for your team/i }).getAttribute('href')).toBe('/contact')
+    expect(screen.getByRole('link', { name: /for your team/i }).getAttribute('href')).toBe('/business')
   })
 })
