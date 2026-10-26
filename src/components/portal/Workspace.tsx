@@ -12,6 +12,7 @@ import { WorkspaceTabs } from '@/components/portal/WorkspaceTabs'
 export function Workspace({ chatId }: { chatId: string | null }) {
   const [createdId, setCreatedId] = useState<string | null>(null)
   const [refresh, setRefresh] = useState(0)
+  const [preferred, setPreferred] = useState<'chat' | undefined>()
   const [messages, setMessages] = useState<{ id: string; list: Message[] } | null>(null)
 
   const onCreated = useCallback(
@@ -48,6 +49,7 @@ export function Workspace({ chatId }: { chatId: string | null }) {
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
         <WorkspaceTabs
           initial={chatId === null ? 'chat' : 'case'}
+          preferred={preferred}
           chats={
             <div className="flex max-lg:min-h-0 max-lg:flex-1 max-lg:[&>nav]:w-full! max-lg:[&>nav]:border-r-0 lg:min-h-0">
               <ChatSidebar activeId={caseId} />
@@ -59,7 +61,10 @@ export function Workspace({ chatId }: { chatId: string | null }) {
                 Your case
               </h1>
               {caseId ? (
-                <CaseDetails key={caseId} chatId={caseId} refreshKey={refresh} showTranscript={false} overview onLoaded={(list) => setMessages({ id: caseId, list })} />
+                <CaseDetails key={caseId} chatId={caseId} refreshKey={refresh} showTranscript={false} overview onLoaded={(list, status) => {
+                    setMessages({ id: caseId, list })
+                    if (status === 'intake') setPreferred('chat')
+                  }} />
               ) : (
                 <p className="mt-10 text-center font-display text-2xl text-champagne italic">Start a conversation to open your case</p>
               )}

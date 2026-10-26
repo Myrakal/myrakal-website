@@ -265,6 +265,7 @@ describe('CaseDetails workspace mode', () => {
     await waitFor(() => expect(onLoaded).toHaveBeenCalled())
     expect(screen.queryByRole('region', { name: 'Conversation' })).toBeNull()
     expect(onLoaded.mock.calls[0][0]).toHaveLength(2)
+    expect(typeof onLoaded.mock.calls[0][1]).toBe('string')
   })
 
   it('refetches in place on refreshKey change without losing comment text', async () => {

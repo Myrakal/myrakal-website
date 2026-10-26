@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 
 let panelProps: { chatId: string | null; onCreated?: (id: string) => void; onStatusChange?: (s: string, id: string, replace: boolean) => void; onLocked?: (id: string) => void }
+let loadedStatus = 'plan_ready'
 let mounts = { details: 0, panel: 0 }
 
 jest.mock('@/components/portal/ChatSidebar', () => ({
@@ -9,12 +10,12 @@ jest.mock('@/components/portal/ChatSidebar', () => ({
 jest.mock('@/components/portal/CaseDetails', () => {
   const { useEffect, useRef } = jest.requireActual('react')
   return {
-    CaseDetails: ({ chatId, refreshKey, onLoaded }: { chatId: string; refreshKey?: number; onLoaded?: (m: unknown[]) => void }) => {
+    CaseDetails: ({ chatId, refreshKey, onLoaded }: { chatId: string; refreshKey?: number; onLoaded?: (m: unknown[], status?: string) => void }) => {
       const cb = useRef(onLoaded)
       cb.current = onLoaded
       useEffect(() => {
         mounts.details += 1
-        cb.current?.([{ id: 'm1', role: 'user', text: 'hello there' }])
+        cb.current?.([{ id: 'm1', role: 'user', text: 'hello there' }], loadedStatus)
       }, [refreshKey])
       return <section aria-label="Case details">{chatId}</section>
     },
@@ -40,6 +41,7 @@ const ID = '3f1c2b4a-0000-4000-8000-000000000001'
 beforeEach(() => {
   window.history.replaceState(null, '', '/dashboard')
   mounts = { details: 0, panel: 0 }
+  loadedStatus = 'plan_ready'
 })
 
 describe('Workspace', () => {
@@ -115,5 +117,16 @@ describe('Workspace', () => {
     fireEvent.click(screen.getByRole('tab', { name: 'Chats' }))
     fireEvent.click(screen.getByRole('tab', { name: 'Chat' }))
     expect(mounts.panel).toBe(1)
+  })
+
+  it('opens an existing intake chat on the Chat tab', () => {
+    loadedStatus = 'intake'
+    render(<Workspace chatId={ID} />)
+    expect(screen.getByRole('tab', { name: 'Chat' }).getAttribute('aria-selected')).toBe('true')
+  })
+
+  it('keeps an existing non-intake chat on the Case tab', () => {
+    render(<Workspace chatId={ID} />)
+    expect(screen.getByRole('tab', { name: 'Case' }).getAttribute('aria-selected')).toBe('true')
   })
 })

@@ -1,6 +1,6 @@
 'use client'
 
-import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import { useId, useRef, useState, useSyncExternalStore, type KeyboardEvent, type ReactNode } from 'react'
 
 import { cn } from 'cn'
 
@@ -12,11 +12,29 @@ const TABS: { id: WorkspaceTab; label: string }[] = [
   { id: 'chat', label: 'Chat' },
 ]
 
-type Props = { initial: WorkspaceTab; chats: ReactNode; details: ReactNode; chat: ReactNode }
+const DESKTOP = '(min-width: 1024px)'
 
-export function WorkspaceTabs({ initial, chats, details, chat }: Props) {
+function subscribe(notify: () => void) {
+  const query = window.matchMedia?.(DESKTOP)
+  query?.addEventListener('change', notify)
+  return () => query?.removeEventListener('change', notify)
+}
+
+function useDesktop() {
+  return useSyncExternalStore(
+    subscribe,
+    () => window.matchMedia?.(DESKTOP).matches ?? false,
+    () => false,
+  )
+}
+
+type Props = { initial: WorkspaceTab; preferred?: WorkspaceTab; chats: ReactNode; details: ReactNode; chat: ReactNode }
+
+export function WorkspaceTabs({ initial, preferred, chats, details, chat }: Props) {
   const base = useId()
-  const [active, setActive] = useState<WorkspaceTab>(initial)
+  const [chosen, setActive] = useState<WorkspaceTab | null>(null)
+  const active = chosen ?? preferred ?? initial
+  const desktop = useDesktop()
   const refs = useRef<Record<string, HTMLButtonElement | null>>({})
   const content = { chats, case: details, chat }
 
@@ -39,9 +57,9 @@ export function WorkspaceTabs({ initial, chats, details, chat }: Props) {
       {TABS.map((tab) => (
         <div
           key={tab.id}
-          role="tabpanel"
+          role={desktop ? undefined : 'tabpanel'}
           id={`${base}-panel-${tab.id}`}
-          aria-labelledby={`${base}-tab-${tab.id}`}
+          aria-labelledby={desktop ? undefined : `${base}-tab-${tab.id}`}
           className={cn(
             'lg:contents',
             tab.id === active ? 'max-lg:flex max-lg:min-h-0 max-lg:flex-1 max-lg:flex-col max-lg:overflow-y-auto' : 'max-lg:hidden',

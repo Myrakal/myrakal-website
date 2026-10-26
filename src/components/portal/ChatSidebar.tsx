@@ -38,8 +38,8 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
   }, [router])
 
   return (
-    <nav aria-label="Your chats" className={cn('flex shrink-0 flex-col gap-4 border-r border-champagne/20 bg-card/40 p-3 h-full min-h-0', collapsed ? 'w-16 items-center' : 'w-72')}>
-      <div className={cn('flex items-center gap-2', collapsed ? 'flex-col' : 'justify-between')}>
+    <nav aria-label="Your chats" className={cn('flex shrink-0 flex-col gap-4 border-r border-champagne/20 bg-card/40 p-3 h-full min-h-0', 'w-72', collapsed && 'lg:w-16 lg:items-center')}>
+      <div className={cn('flex items-center gap-2', 'justify-between', collapsed && 'lg:flex-col lg:justify-start')}>
         <button
           type="button"
           onClick={() => setCollapsed((value) => !value)}
@@ -52,19 +52,20 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
         <a
           href="/dashboard"
           aria-label="New chat"
-          className={buttonVariants({ size: collapsed ? 'icon' : 'lg', className: collapsed ? '' : 'px-4' })}
+          className={buttonVariants({ size: 'lg', className: collapsed ? 'px-4 lg:size-8 lg:px-0' : 'px-4' })}
         >
           <Plus aria-hidden="true" />
-          {!collapsed && 'New chat'}
+          <span className={cn(collapsed && 'lg:hidden')}>New chat</span>
         </a>
       </div>
-      {!collapsed && state === 'loading' && <p role="status" className="text-sm">Loading your chats…</p>}
-      {!collapsed && state === 'signed-out' && <p role="status" className="text-sm">Redirecting to log in…</p>}
-      {!collapsed && state === 'error' && (
+      <div className={cn('contents', collapsed && 'lg:hidden')}>
+      {state === 'loading' && <p role="status" className="text-sm">Loading your chats…</p>}
+      {state === 'signed-out' && <p role="status" className="text-sm">Redirecting to log in…</p>}
+      {state === 'error' && (
         <p role="alert" className="text-sm text-destructive">We could not load your chats. Please refresh the page.</p>
       )}
-      {!collapsed && state === 'ready' && chats?.length === 0 && <p className="text-sm">No chats yet. Start one to tell us about your care.</p>}
-      {!collapsed && state === 'ready' && !!chats?.length && (
+      {state === 'ready' && chats?.length === 0 && <p className="text-sm">No chats yet. Start one to tell us about your care.</p>}
+      {state === 'ready' && !!chats?.length && (
         <ul className="flex min-h-0 flex-col gap-2 overflow-y-auto">
           {chats.map((chat) => (
             <li key={chat.id}>
@@ -88,6 +89,7 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
           ))}
         </ul>
       )}
+      </div>
     </nav>
   )
 }

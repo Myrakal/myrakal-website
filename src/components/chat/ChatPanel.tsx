@@ -38,8 +38,12 @@ export function ChatPanel({ chatId, onCreated, onStatusChange, onLocked }: Props
     const composer = dock.current
     const target = end.current
     if (!composer || !target) return
+    let shown = composer.offsetHeight > 0
     const measure = () => {
-      target.style.scrollMarginBottom = `${composer.offsetHeight}px`
+      const height = composer.offsetHeight
+      target.style.scrollMarginBottom = `${height}px`
+      if (height > 0 && !shown) target.scrollIntoView?.({ block: 'end', behavior: 'auto' })
+      shown = height > 0
     }
     measure()
     const observer = new ResizeObserver(measure)
