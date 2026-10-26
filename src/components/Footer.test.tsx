@@ -24,9 +24,10 @@ describe('Footer', () => {
       expect(screen.getByRole('link', { name }).getAttribute('href')).toBe(href)
   })
 
-  it('links to the care page so phones can reach it', () => {
+  it('links to every section page so phones can reach them', () => {
     render(<Footer />)
-    expect(screen.getByRole('link', { name: 'Care' }).getAttribute('href')).toBe('/care')
+    for (const [name, href] of [['Care', '/care'], ['Individual', '/individual'], ['Business', '/business']])
+      expect(screen.getByRole('link', { name }).getAttribute('href')).toBe(href)
   })
 
   it('keeps the contact email, copyright and location', () => {

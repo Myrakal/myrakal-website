@@ -22,6 +22,7 @@ describe('Navbar', () => {
     jest.clearAllMocks()
     mockSignOut.mockResolvedValue({ error: null })
     mockUseSession.mockReturnValue({ user: null, loading: false })
+    mockPathname = '/'
   })
 
   it('offers log in to signed-out visitors', () => {
@@ -96,10 +97,18 @@ describe('Navbar', () => {
     expect(screen.getByRole('link', { name: 'Talk with us' })).toBeTruthy()
   })
 
-  it('does nothing when the placeholder items are clicked', () => {
+  it.each([
+    ['Care', '/care'],
+    ['Individual', '/individual'],
+    ['Business', '/business'],
+  ])('links %s to its page and marks it current only there', (name, href) => {
+    const { unmount } = render(<Navbar />)
+    expect(screen.getByRole('link', { name }).getAttribute('href')).toBe(href)
+    expect(screen.getByRole('link', { name }).getAttribute('aria-current')).toBeNull()
+    unmount()
+    mockPathname = href
     render(<Navbar />)
-    const before = window.location.href
-    for (const name of ['Individual', 'Business']) fireEvent.click(screen.getByRole('button', { name }))
-    expect(window.location.href).toBe(before)
+    expect(screen.getByRole('link', { name }).getAttribute('aria-current')).toBe('page')
+    mockPathname = '/'
   })
 })

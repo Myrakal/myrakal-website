@@ -2,6 +2,8 @@ import wordmark from '@/assets/myrakal-wordmark.svg'
 
 const LINKS = [
   ['Care', '/care'],
+  ['Individual', '/individual'],
+  ['Business', '/business'],
   ['Privacy Policy', '/privacy/'],
   ['Terms of Service', '/terms/'],
   ['Contact', '/contact/'],
@@ -22,7 +24,7 @@ export function Footer() {
               eshaansood@myrakal.com
             </a>
           </div>
-          <nav aria-label="Company and legal" className="flex flex-wrap gap-x-8 gap-y-3 text-xs tracking-[0.2em] uppercase">
+          <nav aria-label="Sections, company and legal" className="flex flex-wrap gap-x-8 gap-y-3 text-xs tracking-[0.2em] uppercase">
             {LINKS.map(([name, href]) => (
               <a key={href} href={href} className={link}>
                 {name}
