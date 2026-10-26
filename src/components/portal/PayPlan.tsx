@@ -69,7 +69,7 @@ export function PayPlan({ chatId, status, priceCents, returned, onStatus, onRedi
 
   if (waiting) {
     return (
-      <section aria-label="Payment" className="mt-8">
+      <section id="payment" aria-label="Payment" className="mt-8">
         <p role="status" className="text-sm">
           {gaveUp
             ? 'Your payment is taking longer than usual to confirm. Please check again in a few minutes before paying again.'
@@ -111,7 +111,7 @@ export function PayPlan({ chatId, status, priceCents, returned, onStatus, onRedi
   const label = priceCents === null ? 'Pay now' : `Pay ${formatUsd(priceCents)}`
 
   return (
-    <section aria-label="Payment" className="mt-8">
+    <section id="payment" aria-label="Payment" className="mt-8">
       <h2 className="text-xl">Ready to book?</h2>
       <p className="mt-2 text-sm">Your payment covers all reservation costs. You will pay securely with Stripe.</p>
       {error && (

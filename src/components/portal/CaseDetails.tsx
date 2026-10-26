@@ -5,14 +5,16 @@ import { type ReactNode, useEffect, useRef, useState } from 'react'
 
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
 import { ApprovePlan } from './ApprovePlan'
+import { CaseHeader } from './CaseHeader'
+import { CaseHero } from './CaseHero'
+import { CaseJourney } from './CaseJourney'
 import { CaseOverview } from './CaseOverview'
 import { CommentSection, type PlanComment } from './CommentSection'
 import { PayPlan } from './PayPlan'
 import { PlanViewer } from './PlanViewer'
-import { StatusBanner } from './StatusBanner'
 import { PLAN_STATUSES } from './statusCopy'
 
-type Detail = { id: string; status: string; messages: Message[]; comments?: PlanComment[]; priceCents?: number | null; paid?: boolean; intake?: Record<string, string | boolean>; progress?: { collected: number; total: number } }
+type Detail = { id: string; status: string; createdAt?: string; messages: Message[]; comments?: PlanComment[]; priceCents?: number | null; paid?: boolean; intake?: Record<string, string | boolean>; progress?: { collected: number; total: number } }
 type State = { phase: 'loading' } | { phase: 'error'; text: string } | { phase: 'ready'; chat: Detail }
 
 type Props = {
@@ -61,7 +63,13 @@ export function CaseDetails({ chatId, children, refreshKey = 0, showTranscript =
 
   return (
     <>
-      {state.phase === 'ready' && <StatusBanner chatId={state.chat.id} status={state.chat.status} />}
+      {state.phase === 'ready' && (
+        <>
+          <CaseHeader id={state.chat.id} createdAt={state.chat.createdAt} messages={state.chat.messages} />
+          <CaseHero chatId={state.chat.id} status={state.chat.status} />
+          <CaseJourney status={state.chat.status} />
+        </>
+      )}
       {children}
       {state.phase === 'loading' && <p role="status" className="mt-6 text-sm">Loading your case…</p>}
       {state.phase === 'error' && (
