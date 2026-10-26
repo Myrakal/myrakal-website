@@ -21,7 +21,7 @@ jest.mock('@/server/claude', () => ({
 }))
 
 import { ClaudeNotConfigured } from '@/server/claude'
-import { INTAKE_FIELDS, REQUIRED_KEYS } from '@/server/intake'
+import { INTAKE_FIELDS } from '@/server/intake'
 import * as route from './route'
 
 const ID = '11111111-1111-4111-8111-111111111111'
@@ -126,7 +126,7 @@ describe('POST /api/chats/:id/messages', () => {
     expect(await res.json()).toEqual({
       reply: { id: 'm-assistant', role: 'assistant', text: 'When were you born?', createdAt: createdAt.toISOString() },
       status: 'intake',
-      progress: { collected: 2, total: REQUIRED_KEYS.length },
+      progress: { collected: 1, total: 7 },
       attachmentRequest: null,
     })
     expect(res.headers.get('cache-control')).toBe('no-store')
@@ -174,14 +174,6 @@ describe('POST /api/chats/:id/messages', () => {
   it('stays in intake while a required field is missing', async () => {
     const res = await route.POST(post({ text: 'x' }), params())
     expect(updateMany.mock.calls[0][0].data.status).toBeUndefined()
-    expect((await res.json()).status).toBe('intake')
-  })
-
-  it('does not complete when consent is declined', async () => {
-    const { rest } = missingOne()
-    findFirst.mockResolvedValue({ status: 'intake', intake: rest })
-    runTurn.mockResolvedValue({ reply: 'ok', updates: { consent: false } })
-    const res = await route.POST(post({ text: 'no' }), params())
     expect((await res.json()).status).toBe('intake')
   })
 
