@@ -22,7 +22,6 @@ export function OnFileCard({ intake, status, progress }: Props) {
         <h2 className="font-display text-xl text-champagne">On file</h2>
         {status === 'intake' && progress && <p className="text-xs text-muted-foreground">{progress.collected} of {progress.total} collected</p>}
       </div>
-      {sections.length === 0 && <p className="mt-4 text-sm text-muted-foreground">Nothing yet. Details appear here as you chat.</p>}
       {sections.map((s) => (
         <div key={s.title} className="mt-5">
           <h3 className="font-display text-base text-foreground">{s.title}</h3>

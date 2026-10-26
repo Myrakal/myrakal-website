@@ -1,9 +1,9 @@
 'use client'
 
-import { formatUsd } from './PriceCard'
 import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { formatUsd } from './statusCopy'
 
 type Props = {
   chatId: string

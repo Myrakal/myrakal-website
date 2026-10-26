@@ -1,10 +1,6 @@
-import { PLAN_STATUSES } from './statusCopy'
+import { PLAN_STATUSES, formatUsd } from './statusCopy'
 
 const PRE_APPROVAL = ['plan_ready', 'clarification_review']
-
-const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
-
-export const formatUsd = (cents: number) => usd.format(cents / 100)
 
 export function PriceCard({ status, priceCents, paid }: { status: string; priceCents: number | null; paid: boolean }) {
   if (!PLAN_STATUSES.includes(status) || priceCents === null) return null

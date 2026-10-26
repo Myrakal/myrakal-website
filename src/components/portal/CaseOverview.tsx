@@ -9,15 +9,14 @@ type Props = {
   priceCents?: number | null
   paid?: boolean
   progress?: { collected: number; total: number } | null
-  version?: number
 }
 
-export function CaseOverview({ chatId, status, intake, priceCents, paid, progress, version = 0 }: Props) {
+export function CaseOverview({ chatId, status, intake, priceCents, paid, progress }: Props) {
   return (
     <div className="mt-6 grid gap-4 xl:grid-cols-[3fr_2fr]">
       <OnFileCard intake={intake ?? {}} status={status} progress={progress} />
       <div className="flex flex-col gap-4">
-        <AttachmentsCard chatId={chatId} version={version} />
+        <AttachmentsCard chatId={chatId} version={0} />
         <PriceCard status={status} priceCents={priceCents ?? null} paid={paid ?? false} />
       </div>
     </div>
