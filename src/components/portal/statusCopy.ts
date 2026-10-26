@@ -19,3 +19,6 @@ export const STATUS_LABELS: Record<string, string> = {
   reservations: 'Making reservations',
   booked: 'Booked',
 }
+
+const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+export const formatUsd = (cents: number) => usd.format(cents / 100)

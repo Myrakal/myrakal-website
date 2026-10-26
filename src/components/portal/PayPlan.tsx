@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { formatUsd } from './statusCopy'
 
 type Props = {
   chatId: string
@@ -107,7 +108,7 @@ export function PayPlan({ chatId, status, priceCents, returned, onStatus, onRedi
     onRedirect(body.url)
   }
 
-  const label = priceCents === null ? 'Pay now' : `Pay $${(priceCents / 100).toFixed(2)}`
+  const label = priceCents === null ? 'Pay now' : `Pay ${formatUsd(priceCents)}`
 
   return (
     <section id="payment" aria-label="Payment" className="mt-8">

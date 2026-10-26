@@ -8,12 +8,13 @@ import { ApprovePlan } from './ApprovePlan'
 import { CaseHeader } from './CaseHeader'
 import { CaseHero } from './CaseHero'
 import { CaseJourney } from './CaseJourney'
+import { CaseOverview } from './CaseOverview'
 import { CommentSection, type PlanComment } from './CommentSection'
 import { PayPlan } from './PayPlan'
 import { PlanViewer } from './PlanViewer'
 import { PLAN_STATUSES } from './statusCopy'
 
-type Detail = { id: string; status: string; createdAt?: string; messages: Message[]; comments?: PlanComment[]; priceCents?: number | null }
+type Detail = { id: string; status: string; createdAt?: string; messages: Message[]; comments?: PlanComment[]; priceCents?: number | null; paid?: boolean; intake?: Record<string, string | boolean>; progress?: { collected: number; total: number } }
 type State = { phase: 'loading' } | { phase: 'error'; text: string } | { phase: 'ready'; chat: Detail }
 
 type Props = {
@@ -21,10 +22,11 @@ type Props = {
   children?: ReactNode
   refreshKey?: number
   showTranscript?: boolean
+  overview?: boolean
   onLoaded?: (messages: Message[]) => void
 }
 
-export function CaseDetails({ chatId, children, refreshKey = 0, showTranscript = true, onLoaded }: Props) {
+export function CaseDetails({ chatId, children, refreshKey = 0, showTranscript = true, overview, onLoaded }: Props) {
   const router = useRouter()
   const [state, setState] = useState<State>({ phase: 'loading' })
   const onLoadedRef = useRef(onLoaded)
@@ -85,6 +87,7 @@ export function CaseDetails({ chatId, children, refreshKey = 0, showTranscript =
               <PayPlan chatId={state.chat.id} status={state.chat.status} priceCents={state.chat.priceCents ?? null} returned={returned} onStatus={setStatus} />
             </>
           )}
+          {overview && <CaseOverview chatId={state.chat.id} {...state.chat} />}
           {showTranscript && (
             <section aria-label="Conversation" className="mt-8 flex flex-col gap-4">
               {state.chat.messages.map((m) => (

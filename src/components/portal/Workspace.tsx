@@ -53,7 +53,7 @@ export function Workspace({ chatId }: { chatId: string | null }) {
             Your case
           </h1>
           {caseId ? (
-            <CaseDetails key={caseId} chatId={caseId} refreshKey={refresh} showTranscript={false} onLoaded={(list) => setMessages({ id: caseId, list })} />
+            <CaseDetails key={caseId} chatId={caseId} refreshKey={refresh} showTranscript={false} overview onLoaded={(list) => setMessages({ id: caseId, list })} />
           ) : (
             <p className="mt-10 text-center font-display text-2xl text-champagne italic">Start a conversation to open your case</p>
           )}
