@@ -11,6 +11,6 @@ describe('Closing', () => {
     render(<Closing />)
     expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('The art of vitality.')
     expect(screen.getByText("We'll take it from here.")).toBeTruthy()
-    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/chat/')
+    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/dashboard')
   })
 })

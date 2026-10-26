@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useRef, useState } from 'react'
 
 import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
 import { ApprovePlan } from './ApprovePlan'
@@ -15,9 +15,22 @@ import { PLAN_STATUSES } from './statusCopy'
 type Detail = { id: string; status: string; messages: Message[]; comments?: PlanComment[]; priceCents?: number | null; paid?: boolean; intake?: Record<string, string | boolean>; progress?: { collected: number; total: number } }
 type State = { phase: 'loading' } | { phase: 'error'; text: string } | { phase: 'ready'; chat: Detail }
 
-export function CaseDetails({ chatId, children, overview }: { chatId: string; children?: ReactNode; overview?: boolean }) {
+type Props = {
+  chatId: string
+  children?: ReactNode
+  refreshKey?: number
+  showTranscript?: boolean
+  overview?: boolean
+  onLoaded?: (messages: Message[]) => void
+}
+
+export function CaseDetails({ chatId, children, refreshKey = 0, showTranscript = true, overview, onLoaded }: Props) {
   const router = useRouter()
   const [state, setState] = useState<State>({ phase: 'loading' })
+  const onLoadedRef = useRef(onLoaded)
+  useEffect(() => {
+    onLoadedRef.current = onLoaded
+  })
   const [returned] = useState(() => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('paid') === '1')
 
   useEffect(() => {
@@ -30,12 +43,13 @@ export function CaseDetails({ chatId, children, overview }: { chatId: string; ch
         const chat: Detail = await res.json()
         if (!Array.isArray(chat.messages) || typeof chat.status !== 'string') throw new Error()
         setState({ phase: 'ready', chat })
+        onLoadedRef.current?.(chat.messages)
       })
       .catch(() => {
         if (!controller.signal.aborted) setState({ phase: 'error', text: 'We could not load this case. Please refresh the page.' })
       })
     return () => controller.abort()
-  }, [chatId, router])
+  }, [chatId, refreshKey, router])
 
   const addComment = (status: string, comment: PlanComment) =>
     setState((prev) =>
@@ -49,7 +63,6 @@ export function CaseDetails({ chatId, children, overview }: { chatId: string; ch
     <>
       {state.phase === 'ready' && <StatusBanner chatId={state.chat.id} status={state.chat.status} />}
       {children}
-      {overview && state.phase === 'ready' && <CaseOverview chatId={state.chat.id} {...state.chat} />}
       {state.phase === 'loading' && <p role="status" className="mt-6 text-sm">Loading your case…</p>}
       {state.phase === 'error' && (
         <p role="alert" className="mt-6 text-sm text-destructive">
@@ -66,11 +79,14 @@ export function CaseDetails({ chatId, children, overview }: { chatId: string; ch
               <PayPlan chatId={state.chat.id} status={state.chat.status} priceCents={state.chat.priceCents ?? null} returned={returned} onStatus={setStatus} />
             </>
           )}
-          <section aria-label="Conversation" className="mt-8 flex flex-col gap-4">
-            {state.chat.messages.map((m) => (
-              <ChatMessage key={m.id} message={m} />
-            ))}
-          </section>
+          {overview && <CaseOverview chatId={state.chat.id} {...state.chat} />}
+          {showTranscript && (
+            <section aria-label="Conversation" className="mt-8 flex flex-col gap-4">
+              {state.chat.messages.map((m) => (
+                <ChatMessage key={m.id} message={m} />
+              ))}
+            </section>
+          )}
         </>
       )}
     </>

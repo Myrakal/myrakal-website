@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react'
 
 import wordmark from '@/assets/myrakal-wordmark.svg'
+import { ChatMessage, type Message } from '@/components/chat/ChatMessage'
 import { ChatPanel } from '@/components/chat/ChatPanel'
 import { CaseDetails } from '@/components/portal/CaseDetails'
 import { ChatSidebar } from '@/components/portal/ChatSidebar'
@@ -10,6 +11,7 @@ import { ChatSidebar } from '@/components/portal/ChatSidebar'
 export function Workspace({ chatId }: { chatId: string | null }) {
   const [createdId, setCreatedId] = useState<string | null>(null)
   const [refresh, setRefresh] = useState(0)
+  const [messages, setMessages] = useState<{ id: string; list: Message[] } | null>(null)
 
   const onCreated = useCallback(
     (id: string) => {
@@ -46,9 +48,12 @@ export function Workspace({ chatId }: { chatId: string | null }) {
         <div className="flex max-lg:[&>nav]:h-auto max-lg:[&>nav]:w-full! lg:min-h-0">
           <ChatSidebar activeId={caseId} />
         </div>
-        <main className="min-w-0 px-4 pb-8 sm:px-6 lg:flex-1 lg:overflow-y-auto">
+        <main aria-labelledby="workspace-title" className="min-w-0 px-4 pb-8 sm:px-6 lg:flex-1 lg:overflow-y-auto">
+          <h1 id="workspace-title" className="sr-only">
+            Your case
+          </h1>
           {caseId ? (
-            <CaseDetails key={`${caseId}:${refresh}`} chatId={caseId} overview />
+            <CaseDetails key={caseId} chatId={caseId} refreshKey={refresh} showTranscript={false} overview onLoaded={(list) => setMessages({ id: caseId, list })} />
           ) : (
             <p className="mt-10 text-center font-display text-2xl text-champagne italic">Start a conversation to open your case</p>
           )}
@@ -58,9 +63,16 @@ export function Workspace({ chatId }: { chatId: string | null }) {
           className="flex min-h-[32rem] flex-col border-t border-champagne/20 px-4 lg:min-h-0 lg:w-[26rem] lg:shrink-0 lg:overflow-y-auto lg:border-t-0 lg:border-l"
         >
           {caseId !== null && lockedId === caseId ? (
-            <p role="status" className="mt-10 text-center text-sm text-muted-foreground">
-              This conversation is closed. A doctor is working on your case, and updates appear on the left.
-            </p>
+            <>
+              <p role="status" className="my-6 text-center text-sm text-muted-foreground">
+                This conversation is closed. A doctor is working on your case, and updates appear on the left.
+              </p>
+              <div role="log" aria-label="Conversation" className="flex flex-col gap-4 pb-8">
+                {(messages?.id === caseId ? messages.list : []).map((m) => (
+                  <ChatMessage key={m.id} message={m} />
+                ))}
+              </div>
+            </>
           ) : (
             <ChatPanel
               key={live ? 'live' : chatId}
