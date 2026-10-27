@@ -20,7 +20,7 @@ describe('Individual page', () => {
     expect(list.tagName).toBe('OL')
     const steps = within(list).getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
     expect(steps).toEqual([
-      'Tell us what you need.',
+      'You tell us what you need.',
       'A licensed doctor reviews your case.',
       'You get one plan and one price.',
       'We book everything and pay your providers.',
@@ -35,11 +35,11 @@ describe('Individual page', () => {
     expect(within(rows[0]).getAllByRole('columnheader').map((c) => c.textContent)).toEqual(['Item', 'Price', 'Notes'])
     expect(rows.slice(1).map((r) => within(r).getByRole('rowheader').textContent)).toEqual([
       'Doctor review',
-      'Your plan',
+      'Plan',
       'Financing',
       'Insurance',
     ])
-    expect(within(table).getByText('$150')).toBeTruthy()
+    expect(within(table).getByText('$50')).toBeTruthy()
     expect(within(table).getByText('On request')).toBeTruthy()
     expect(screen.queryByText(/prices shown/i)).toBeNull()
   })
@@ -83,7 +83,7 @@ describe('Individual page', () => {
   it('names the pricing table and heads each row for screen readers', () => {
     render(<Individual />)
     const table = screen.getByRole('table', { name: /what you pay/i })
-    for (const item of ['Doctor review', 'Your plan', 'Financing', 'Insurance'])
+    for (const item of ['Doctor review', 'Plan', 'Financing', 'Insurance'])
       expect(within(table).getByRole('rowheader', { name: item })).toBeTruthy()
   })
 
@@ -108,5 +108,36 @@ describe('Individual page', () => {
     render(<Individual />)
     expect(screen.getByText('Within 2 business days of completing intake.')).toBeTruthy()
     expect(screen.getByText(/Your coordinator stays with you and works directly with your providers to resolve it\./)).toBeTruthy()
+  })
+
+  it('marks the steps with Roman numerals instead of numbers', () => {
+    render(<Individual />)
+    const list = within(screen.getByRole('region', { name: /how it works for you/i })).getByRole('list')
+    expect(within(list).getAllByRole('listitem').map((li) => li.firstElementChild!.textContent)).toEqual(['I', 'II', 'III', 'IV', 'V'])
+    expect(list.textContent).not.toMatch(/0[1-5]/)
+  })
+
+  it('names treatment and doctor’s fees first in what a plan can include', () => {
+    render(<Individual />)
+    const items = within(screen.getByRole('region', { name: /what a plan can include/i })).getAllByRole('listitem')
+    expect(items[0].textContent).toBe('Treatment and doctor’s fees')
+  })
+
+  it('pairs the header with the liquid sphere and closes on the liquid horizon', () => {
+    render(<Individual />)
+    expect(document.querySelector('img[src*="liquid-sphere"]')!.getAttribute('alt')).toBe('')
+    const closing = screen.getByRole('region', { name: /get started/i })
+    const horizon = closing.querySelector('img')!
+    expect(horizon.getAttribute('src')).toMatch(/liquid-horizon/)
+    expect(horizon.getAttribute('srcset')).toMatch(/liquid-horizon-960/)
+    expect(horizon.className).toMatch(/object-top/)
+    expect(within(closing).getByText('Healthcare, as it should be.')).toBeTruthy()
+  })
+
+  it('sets the page on ink in Caslon and Bodoni with no grotesk or gradients', () => {
+    const { container } = render(<Individual />)
+    expect(container.querySelector('main')!.className).toMatch(/bg-ink/)
+    expect(container.querySelectorAll('main .bg-velvet')).toHaveLength(1)
+    expect(container.innerHTML).not.toMatch(/font-grotesk|font-sans|gradient/)
   })
 })
