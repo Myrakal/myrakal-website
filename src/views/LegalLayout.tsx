@@ -45,7 +45,7 @@ export function LegalLayout({
         <div className="max-w-2xl leading-[1.7]">{children}</div>
       </main>
 
-      <Footer />
+      <Footer talk={false} />
     </>
   )
 }
