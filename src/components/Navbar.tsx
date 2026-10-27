@@ -2,7 +2,8 @@
 
 import { motion } from 'motion/react'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { Menu, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import logo from '@/assets/myrakal-logo.svg'
 import { useSession } from '@/hooks/useSession'
 import { getSupabase } from '@/lib/supabase'
@@ -19,11 +20,15 @@ const SECTIONS = [
 const navItem =
   'font-grotesk text-[11px] tracking-[0.2em] text-foreground uppercase transition-colors hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
 
+const menuItem = 'flex min-h-12 items-center border-b border-champagne/20 font-grotesk text-sm tracking-[0.2em] text-foreground uppercase focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-champagne'
+
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const { user, loading } = useSession()
   const pathname = usePathname()
-  const authClass = `${authLink} ${scrolled ? 'inline' : 'hidden sm:inline'}`
+  const [open, setOpen] = useState(false)
+  const toggle = useRef<HTMLButtonElement>(null)
+  const authClass = `${authLink} hidden sm:inline`
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80)
@@ -32,10 +37,21 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  useEffect(() => {
+    if (!open) return
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setOpen(false)
+      toggle.current?.focus()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [open])
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 flex px-4 py-3 transition-colors sm:px-12 sm:py-5 ${
-        scrolled ? 'justify-start bg-background pr-56 sm:pr-[34rem]' : 'justify-center bg-transparent'
+        scrolled ? 'justify-start bg-background pr-56 sm:pr-[34rem]' : 'justify-start bg-transparent sm:justify-center'
       }`}
     >
       <motion.a
@@ -89,7 +105,47 @@ export function Navbar() {
         >
           Talk with us
         </a>
+        <button
+          ref={toggle}
+          type="button"
+          aria-expanded={open}
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          onClick={() => setOpen((value) => !value)}
+          className="flex size-11 items-center justify-center rounded-full text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:hidden"
+        >
+          {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+        </button>
       </div>
+      {open && (
+        <nav aria-label="Mobile" className="absolute inset-x-0 top-full flex flex-col bg-background px-4 shadow-lg sm:hidden">
+          {SECTIONS.map(([label, href]) => (
+            <a key={href} href={href} aria-current={pathname === href ? 'page' : undefined} className={`${menuItem} aria-[current=page]:text-champagne`}>
+              {label}
+            </a>
+          ))}
+          {loading ? null : user ? (
+            <>
+              <a href="/dashboard" className={menuItem}>
+                Dashboard
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false)
+                  void getSupabase()?.auth.signOut().catch(() => {})
+                }}
+                className={`${menuItem} w-full`}
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <a href="/login" className={menuItem}>
+              Log in
+            </a>
+          )}
+        </nav>
+      )}
     </header>
   )
 }

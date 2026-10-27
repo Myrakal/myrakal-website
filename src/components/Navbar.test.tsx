@@ -111,4 +111,54 @@ describe('Navbar', () => {
     expect(screen.getByRole('link', { name }).getAttribute('aria-current')).toBe('page')
     mockPathname = '/'
   })
+
+  describe('mobile menu', () => {
+    const open = () => fireEvent.click(screen.getByRole('button', { name: 'Open menu' }))
+    const menu = () => screen.getByRole('navigation', { name: 'Mobile' })
+
+    it('is closed until the menu button is pressed', () => {
+      render(<Navbar />)
+      expect(screen.queryByRole('navigation', { name: 'Mobile' })).toBeNull()
+      expect(screen.getByRole('button', { name: 'Open menu' }).getAttribute('aria-expanded')).toBe('false')
+    })
+
+    it('lists every section and log in for signed-out visitors', () => {
+      render(<Navbar />)
+      open()
+      const links = [...menu().querySelectorAll('a')].map((a) => [a.textContent, a.getAttribute('href')])
+      expect(links).toEqual([
+        ['Care', '/care'],
+        ['Individual', '/individual'],
+        ['Business', '/business'],
+        ['Log in', '/login'],
+      ])
+      expect(screen.getByRole('button', { name: 'Close menu' }).getAttribute('aria-expanded')).toBe('true')
+    })
+
+    it('offers the dashboard and log out to signed-in users', () => {
+      mockUseSession.mockReturnValue({ user: { id: 'u1' } as never, loading: false })
+      render(<Navbar />)
+      open()
+      expect(menu().querySelector('a[href="/dashboard"]')!.textContent).toBe('Dashboard')
+      fireEvent.click([...menu().querySelectorAll('button')].find((b) => b.textContent === 'Log out')!)
+      expect(mockSignOut).toHaveBeenCalled()
+      expect(screen.queryByRole('navigation', { name: 'Mobile' })).toBeNull()
+    })
+
+    it('marks the current page', () => {
+      mockPathname = '/business'
+      render(<Navbar />)
+      open()
+      expect(menu().querySelector('a[href="/business"]')!.getAttribute('aria-current')).toBe('page')
+      expect(menu().querySelector('a[href="/care"]')!.getAttribute('aria-current')).toBeNull()
+    })
+
+    it('closes on Escape and returns focus to the menu button', () => {
+      render(<Navbar />)
+      open()
+      fireEvent.keyDown(document, { key: 'Escape' })
+      expect(screen.queryByRole('navigation', { name: 'Mobile' })).toBeNull()
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Open menu' }))
+    })
+  })
 })
