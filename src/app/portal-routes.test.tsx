@@ -28,4 +28,11 @@ describe('portal route skeletons', () => {
     render(<Page />)
     expect(screen.getByRole('heading', { level: 1, name: heading })).toBeTruthy()
   })
+
+  it('centers the login form', async () => {
+    const { default: Page } = await import('./login/page')
+    render(<Page />)
+    expect(screen.getByRole('main').className).toContain('items-center')
+    expect(screen.getByRole('main').querySelector('form')?.parentElement?.className).toContain('w-full')
+  })
 })

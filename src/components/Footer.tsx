@@ -1,3 +1,5 @@
+import { MailFallback } from '@/components/MailFallback'
+import { TALK_BODY, TALK_EMAIL, TALK_SUBJECT } from '@/lib/contact'
 import wordmark from '@/assets/myrakal-wordmark.svg'
 
 const LINKS = [
@@ -13,16 +15,19 @@ const LINKS = [
 const link =
   'underline-offset-4 hover:text-cream hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
 
-export function Footer() {
+export function Footer({ talk = true }: { talk?: boolean }) {
   return (
     <footer className="border-t border-cream/10 bg-charcoal px-6 pt-16 pb-10 font-grotesk text-cream/70 sm:px-12">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-5">
-            <img src={wordmark.src} alt="Myrakal" className="h-8 w-auto opacity-90 sm:h-10" />
+            <a href="/" aria-label="Myrakal home" className={`inline-block ${link}`}>
+              <img src={wordmark.src} alt="" className="h-8 w-auto opacity-90 sm:h-10" />
+            </a>
             <a href="mailto:eshaansood@myrakal.com" className={`block text-sm ${link}`}>
               eshaansood@myrakal.com
             </a>
+            {talk && <MailFallback address={TALK_EMAIL} subject={TALK_SUBJECT} body={TALK_BODY} />}
           </div>
           <nav aria-label="Sections, company and legal" className="flex flex-wrap gap-x-8 gap-y-3 text-xs tracking-[0.2em] uppercase">
             {LINKS.map(([name, href]) => (
