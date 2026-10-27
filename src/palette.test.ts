@@ -31,11 +31,11 @@ describe('Velvet + Pearl palette', () => {
       expect(read(`./components/${file}`)).not.toMatch(/gradient|bg-none|bg-linear|\bvia-|\bfrom-charcoal/)
   })
 
-  it('draws every call to action in alabaster instead of gold', () => {
+  it('draws every call to action as a gold outline instead of solid alabaster', () => {
     for (const file of ['Hero', 'Closing', 'Navbar']) {
       const source = read(`./components/${file}.tsx`)
-      expect(source).toMatch(/alabaster/)
-      expect(source).not.toMatch(/bg-champagne|border-champagne/)
+      expect(source).toMatch(/border-champagne/)
+      expect(source).not.toMatch(/\bbg-alabaster\b|border-alabaster/)
     }
   })
 

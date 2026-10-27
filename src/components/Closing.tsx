@@ -17,7 +17,7 @@ export function Closing() {
       <p className="mt-4 font-grotesk text-xs tracking-[0.3em] text-cream/80 uppercase">We&apos;ll take it from here.</p>
       <a
         href="/dashboard"
-        className="mt-8 bg-alabaster px-7 py-3.5 font-grotesk text-xs tracking-[0.25em] text-charcoal uppercase transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
+        className="mt-8 border border-champagne/85 bg-charcoal/35 px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-champagne uppercase backdrop-blur-sm transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne sm:text-[13px]"
       >
         Talk with us
       </a>

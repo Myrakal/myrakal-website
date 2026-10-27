@@ -85,7 +85,7 @@ export function Navbar() {
         )}
         <a
           href="/dashboard"
-          className="rounded-full border border-alabaster/60 px-4 py-2 font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-alabaster uppercase transition-colors hover:bg-alabaster/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-alabaster sm:px-5"
+          className="border border-champagne/85 px-4 py-2 font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-champagne uppercase transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:px-5"
         >
           Talk with us
         </a>
