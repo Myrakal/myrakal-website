@@ -1,3 +1,4 @@
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import ampoule from '@/assets/scene-ampoule-open.webp'
 import ampouleSmall from '@/assets/scene-ampoule-open-960.webp'
 
@@ -16,10 +17,10 @@ export function Closing() {
       <h2 className="font-display text-4xl text-cream italic sm:text-6xl">The art of vitality.</h2>
       <p className="mt-4 font-grotesk text-xs tracking-[0.3em] text-cream/80 uppercase">We&apos;ll take it from here.</p>
       <a
-        href="/dashboard"
+        href={TALK_WITH_US_HREF}
         className="mt-8 border border-champagne/85 bg-charcoal/35 px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-champagne uppercase backdrop-blur-sm transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne sm:text-[13px]"
       >
-        Talk with us
+        Talk with us<span className="sr-only"> (opens email)</span>
       </a>
     </section>
   )

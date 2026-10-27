@@ -1,3 +1,4 @@
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { render, screen } from '@testing-library/react'
 import { Closing } from '@/components/Closing'
 
@@ -11,6 +12,6 @@ describe('Closing', () => {
     render(<Closing />)
     expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('The art of vitality.')
     expect(screen.getByText("We'll take it from here.")).toBeTruthy()
-    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/dashboard')
+    expect(screen.getByRole('link', { name: /^Talk with us/ }).getAttribute('href')).toBe(TALK_WITH_US_HREF)
   })
 })

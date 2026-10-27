@@ -1,3 +1,4 @@
+import { TALK_EMAIL } from '@/lib/contact'
 import { render, screen } from '@testing-library/react'
 import { Footer } from '@/components/Footer'
 
@@ -45,8 +46,24 @@ describe('Footer', () => {
     expect(screen.getByRole('navigation', { name: 'Legal' })).toBeInTheDocument()
   })
 
-  it('shows the wordmark', () => {
+  it('shows the wordmark as a link home', () => {
+    const { container } = render(<Footer />)
+    const home = screen.getByRole('link', { name: 'Myrakal home' })
+    expect(home.getAttribute('href')).toBe('/')
+    expect(home.querySelector('img')?.getAttribute('src')).toMatch(/myrakal-wordmark/)
+    expect(container.querySelector('img')?.getAttribute('alt')).toBe('')
+  })
+
+  it('offers the talk-with-us address with copy and webmail fallbacks', () => {
     render(<Footer />)
-    expect(screen.getByRole('img', { name: 'Myrakal' }).getAttribute('src')).toMatch(/myrakal-wordmark/)
+    expect(screen.getByText(TALK_EMAIL)).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Copy address' })).toBeTruthy()
+    const gmail = new URL(screen.getByRole('link', { name: 'Open in Gmail' }).getAttribute('href')!)
+    expect(gmail.searchParams.get('to')).toBe(TALK_EMAIL)
+  })
+
+  it('can leave the talk-with-us fallback out', () => {
+    render(<Footer talk={false} />)
+    expect(screen.queryByRole('button', { name: 'Copy address' })).toBeNull()
   })
 })
