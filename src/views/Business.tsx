@@ -57,7 +57,7 @@ export default function Business() {
     <>
       <Navbar />
       <main className="bg-ink font-caslon text-cream">
-        <header className="grid lg:min-h-[680px] lg:grid-cols-[1.1fr_0.9fr]">
+        <header className="grid lg:h-[min(780px,100svh)] lg:min-h-[680px] lg:grid-cols-[1.1fr_0.9fr]">
           <div className="flex flex-col items-start justify-center gap-7 px-6 pt-36 pb-16 sm:px-12 lg:py-24 lg:pr-16 lg:pl-24 min-[1440px]:pl-[calc((100vw-1440px)/2+6rem)]">
             <p className={label}>For business</p>
             <h1 className="font-display text-5xl leading-[1.04] font-normal text-balance sm:text-7xl">
@@ -74,7 +74,7 @@ export default function Business() {
             sizes="(min-width: 1024px) 45vw, 100vw"
             alt="A broad wave of translucent claret liquid curling gently, its crest lit with gold"
             fetchPriority="high"
-            className="aspect-[4/3] w-full object-cover object-[50%_70%] lg:aspect-auto lg:h-full"
+            className="aspect-[4/3] w-full object-cover object-[50%_70%] lg:aspect-auto lg:h-full lg:min-h-0"
           />
         </header>
 
@@ -91,7 +91,7 @@ export default function Business() {
               <p className={`text-lg ${body}`}>
                 A brain MRI with contrast ranges from about <span className="text-champagne">$965 to over $3,000</span> depending on the hospital.
               </p>
-              <a href="https://hub.jhu.edu/2021/12/13/radiological-services-compared-to-medicare/" className="text-[13px] text-mist/70 underline-offset-4 hover:text-champagne hover:underline">
+              <a href="https://hub.jhu.edu/2021/12/13/radiological-services-compared-to-medicare/" className="text-[13px] text-mist/70 underline decoration-mist/40 underline-offset-4 hover:text-champagne">
                 Source: Bai, Jiang and Makary, Radiology, 2021. Commercial prices at about 2,000 U.S. hospitals, 10th to 90th percentile.
               </a>
             </div>
