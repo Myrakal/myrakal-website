@@ -39,8 +39,11 @@ describe('Footer', () => {
     expect(container.textContent).toMatch(/Chicago, Illinois/)
   })
 
-  it('shows the wordmark', () => {
-    render(<Footer />)
-    expect(screen.getByRole('img', { name: 'Myrakal' }).getAttribute('src')).toMatch(/myrakal-wordmark/)
+  it('shows the wordmark as a link home', () => {
+    const { container } = render(<Footer />)
+    const home = screen.getByRole('link', { name: 'Myrakal home' })
+    expect(home.getAttribute('href')).toBe('/')
+    expect(home.querySelector('img')?.getAttribute('src')).toMatch(/myrakal-wordmark/)
+    expect(container.querySelector('img')?.getAttribute('alt')).toBe('')
   })
 })

@@ -19,7 +19,9 @@ export function Footer() {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-12">
         <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
           <div className="space-y-5">
-            <img src={wordmark.src} alt="Myrakal" className="h-8 w-auto opacity-90 sm:h-10" />
+            <a href="/" aria-label="Myrakal home" className={`inline-block ${link}`}>
+              <img src={wordmark.src} alt="" className="h-8 w-auto opacity-90 sm:h-10" />
+            </a>
             <a href="mailto:eshaansood@myrakal.com" className={`block text-sm ${link}`}>
               eshaansood@myrakal.com
             </a>

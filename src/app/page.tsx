@@ -20,9 +20,11 @@ export default function Home() {
     <>
       <JsonLd data={[ORGANIZATION, WEBSITE]} />
       <Navbar />
-      <Hero />
-      <HowItWorks />
-      <FAQ />
+      <main>
+        <Hero />
+        <HowItWorks />
+        <FAQ />
+      </main>
       <Footer />
     </>
   )
