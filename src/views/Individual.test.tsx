@@ -39,7 +39,7 @@ describe('Individual page', () => {
       'Financing',
       'Insurance',
     ])
-    expect(within(table).getByText('$150')).toBeTruthy()
+    expect(within(table).getByText('$50')).toBeTruthy()
     expect(within(table).getByText('On request')).toBeTruthy()
     expect(screen.queryByText(/prices shown/i)).toBeNull()
   })

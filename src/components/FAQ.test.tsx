@@ -28,7 +28,8 @@ describe('FAQ', () => {
     render(<FAQ />)
     expect(screen.getByRole('button', { name: 'How much does it cost?' })).toBeTruthy()
     const t = await openAll()
-    expect(t).toMatch(/\$150/)
+    expect(t).toMatch(/flat \$50 fee/)
+    expect(t).not.toMatch(/\$150/)
     expect(t).toMatch(/credited toward any treatment/i)
   })
 
@@ -65,5 +66,22 @@ describe('FAQ', () => {
     const t = await openAll()
     expect(t).toMatch(/self-serve/i)
     expect(t).not.toMatch(/invite/i)
+  })
+
+  it('heads the list with a Frequently asked heading in Bodoni', () => {
+    render(<FAQ />)
+    const heading = screen.getByRole('heading', { level: 2, name: 'Frequently asked' })
+    expect(heading.className).toMatch(/font-display/)
+  })
+
+  it('sets questions in Bodoni on the ink ground with a gold plus that turns to a minus', () => {
+    const { container } = render(<FAQ />)
+    expect(container.querySelector('section')!.className).toMatch(/\bbg-ink\b/)
+    const trigger = screen.getByRole('button', { name: 'How much does it cost?' })
+    expect(trigger.className).toMatch(/font-display/)
+    const indicator = trigger.querySelector('[aria-hidden="true"].text-champagne')!
+    expect(indicator.className).toContain("before:content-['+']")
+    expect(indicator.className).toContain("group-aria-expanded/accordion-trigger:before:content-['−']")
+    expect(container.innerHTML).not.toMatch(/font-grotesk|font-sans/)
   })
 })

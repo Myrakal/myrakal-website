@@ -1,6 +1,8 @@
+type Img = { src: string; width: number }
+
 type SceneProps = {
-  image: string
-  imageSmall: string
+  image: Img
+  imageSmall: Img
   alt: string
   textSide: 'left' | 'right'
   numeral: string
@@ -9,28 +11,21 @@ type SceneProps = {
 }
 
 export function Scene({ image, imageSmall, alt, textSide, numeral, title, children }: SceneProps) {
-  const left = textSide === 'left'
   return (
-    <section className="relative isolate flex flex-col overflow-hidden bg-charcoal lg:min-h-[90svh] lg:flex-row lg:items-center">
+    <div className="grid border-t border-rule last:border-b lg:grid-cols-2">
       <img
-        src={image}
-        srcSet={`${imageSmall} 960w, ${image} 1672w`}
-        sizes="100vw"
+        src={image.src}
+        srcSet={`${imageSmall.src} ${imageSmall.width}w, ${image.src} ${image.width}w`}
+        sizes="(min-width: 1024px) 50vw, 100vw"
         alt={alt}
         loading="lazy"
-        className={`aspect-[4/3] w-full object-cover sm:aspect-video lg:absolute lg:inset-0 lg:-z-20 lg:aspect-auto lg:size-full ${left ? 'object-[75%_50%]' : 'object-[25%_50%]'}`}
+        className={`aspect-[4/3] w-full object-cover lg:aspect-auto lg:h-[520px]${textSide === 'left' ? ' lg:order-2' : ''}`}
       />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 hidden bg-charcoal/45 lg:block"
-      />
-      <div className={`mx-auto flex w-full max-w-7xl px-6 pt-10 pb-16 sm:px-12 lg:py-16 ${left ? 'justify-start' : 'justify-end'}`}>
-        <div>
-          <p aria-hidden="true" className="font-grotesk text-xs tracking-[0.3em] text-champagne uppercase">{numeral}</p>
-          <h3 className="mt-4 font-display text-[clamp(1.75rem,7vw,3rem)] leading-tight whitespace-nowrap text-cream">{title}</h3>
-          <p className="mt-5 max-w-md font-grotesk text-base leading-relaxed text-cream/85">{children}</p>
-        </div>
+      <div className="flex flex-col justify-center gap-4 px-6 py-12 sm:px-12 lg:px-24">
+        <p aria-hidden="true" className="font-caslon text-xs tracking-[0.32em] text-champagne">{numeral}</p>
+        <h3 className="font-display text-[clamp(2rem,6vw,2.75rem)] leading-tight text-cream">{title}</h3>
+        <p className="max-w-md font-caslon text-lg leading-relaxed text-mist">{children}</p>
       </div>
-    </section>
+    </div>
   )
 }

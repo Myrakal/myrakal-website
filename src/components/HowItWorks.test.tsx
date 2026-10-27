@@ -4,12 +4,12 @@ import { HowItWorks } from '@/components/HowItWorks'
 const stepTitles = () => screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
 
 describe('HowItWorks', () => {
-  it('walks through the four scenes in order', () => {
+  it('walks through the four steps in order', () => {
     render(<HowItWorks />)
     expect(stepTitles()).toEqual([
       'Tell us what you need',
-      'A licensed doctor reviews',
-      'Everything, arranged',
+      'Get a doctor’s review',
+      'Choose your care',
       'Recover beautifully',
     ])
   })
@@ -27,7 +27,7 @@ describe('HowItWorks', () => {
       /imaging/i,
       /insurance/i,
       /licensed doctor/i,
-      /\$150/,
+      /\$50\b/,
       /choose/i,
       /or both/i,
       /book/i,
@@ -51,10 +51,24 @@ describe('HowItWorks', () => {
     expect(t).toMatch(/home|domestic|local/i)
   })
 
-  it('gives every scene a described photograph', () => {
+  it('never quotes the old $150 review fee', () => {
+    const { container } = render(<HowItWorks />)
+    expect(container.textContent).not.toMatch(/\$150/)
+  })
+
+  it('illustrates each step with a described liquid image', () => {
     render(<HowItWorks />)
-    for (const name of [/fountain pen/i, /reading glasses/i, /watch/i, /crystal glass/i])
-      expect(screen.getByRole('img', { name })).toBeTruthy()
+    const steps: [RegExp, string][] = [
+      [/braiding/i, 'liquid-braid'],
+      [/sphere/i, 'liquid-sphere'],
+      [/four ribbons/i, 'liquid-ribbons'],
+      [/ripple/i, 'liquid-ripple'],
+    ]
+    for (const [name, file] of steps) {
+      const img = screen.getByRole('img', { name })
+      expect(img.getAttribute('src')).toContain(file)
+      expect(img.getAttribute('srcset')).toContain(`${file}-960`)
+    }
   })
 
   it('no longer uses the old cards, stepper or coming-soon labels', () => {
@@ -70,11 +84,22 @@ describe('HowItWorks', () => {
     for (const n of numerals) expect(n.getAttribute('aria-hidden')).toBe('true')
   })
 
-  it('slides the scenes in over one pinned stage instead of stacking them with gaps', () => {
+  it('lays the steps out as ruled rows on the ink ground instead of a pinned stage', () => {
     const { container } = render(<HowItWorks />)
-    expect(container.querySelector('[data-scene-gap]')).toBeNull()
-    expect(container.querySelector('.sticky')).toBeTruthy()
-    expect(container.querySelector('img[src*="myrakal-logo"]')).toBeNull()
+    const section = container.querySelector('section')!
+    expect(section.className).toMatch(/\bbg-ink\b/)
+    expect(container.querySelector('.sticky')).toBeNull()
+    expect(container.querySelectorAll('.border-rule').length).toBeGreaterThanOrEqual(4)
+    expect(container.textContent).not.toMatch(/The art of vitality/)
+  })
+
+  it('sets the numerals in gold and the copy in Caslon', () => {
+    const { container } = render(<HowItWorks />)
+    const numerals = [...container.querySelectorAll('p')].filter((p) => /^[IV]+$/.test(p.textContent ?? ''))
+    for (const n of numerals) expect(n.className).toMatch(/text-champagne/)
+    for (const h of container.querySelectorAll('h2, h3')) expect(h.className).toMatch(/font-display/)
+    for (const p of container.querySelectorAll('h3 + p')) expect(p.className).toMatch(/text-mist/)
+    expect(container.innerHTML).not.toMatch(/font-grotesk|font-sans/)
   })
 
   it('has the AI only gather information, never suggest', () => {

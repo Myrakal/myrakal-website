@@ -43,7 +43,7 @@ const FAQS: FaqItem[] = [
   {
     question: 'How much does it cost?',
     answer:
-      'The consult is a flat $150 fee. It is credited toward any treatment you choose through Myrakal.',
+      'The consult is a flat $50 fee. It is credited toward any treatment you choose through Myrakal.',
   },
   {
     question: 'How do you vet doctors and hospitals?',
@@ -57,28 +57,22 @@ const FAQS: FaqItem[] = [
   },
 ]
 
-export function FAQ({
-  faqs = FAQS,
-  className = 'bg-background',
-}: {
-  faqs?: FaqItem[]
-  className?: string
-}) {
+export function FAQ({ faqs = FAQS }: { faqs?: FaqItem[] }) {
   return (
-    <section className={`flex flex-col gap-12 px-6 py-24 sm:px-12 ${className}`}>
+    <section className="grid gap-12 bg-ink px-6 py-24 font-caslon sm:px-12 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-20 lg:px-24 lg:py-36">
       <JsonLd data={faqPage(faqs)} />
-      <div className="mx-auto w-full max-w-2xl text-center">
-        <h2 className="text-4xl text-foreground sm:text-5xl">
-          Frequently asked questions
-        </h2>
+      <div className="flex flex-col gap-4">
+        <p className="text-xs tracking-[0.32em] text-champagne uppercase">Questions</p>
+        <h2 className="font-display text-4xl leading-tight text-cream italic sm:text-[2.75rem]">Frequently asked</h2>
       </div>
-      <Accordion hiddenUntilFound className="mx-auto w-full max-w-2xl">
+      <Accordion hiddenUntilFound className="border-b border-rule">
         {faqs.map((faq) => (
-          <AccordionItem key={faq.question} value={faq.question}>
-            <AccordionTrigger className="py-6 text-lg font-medium text-foreground no-underline hover:no-underline">
+          <AccordionItem key={faq.question} value={faq.question} className="border-t border-rule">
+            <AccordionTrigger className="gap-6 rounded-none py-6 font-display text-xl font-normal text-cream no-underline hover:no-underline focus-visible:ring-champagne/60 sm:text-[1.625rem] **:data-[slot=accordion-trigger-icon]:hidden">
               {faq.question}
+              <span aria-hidden="true" className="font-caslon text-[22px] leading-none text-champagne before:content-['+'] group-aria-expanded/accordion-trigger:before:content-['−']" />
             </AccordionTrigger>
-            <AccordionContent className="text-base text-muted-foreground">
+            <AccordionContent className="max-w-2xl pb-7 font-caslon text-[17px] leading-relaxed text-mist">
               {faq.answer}
             </AccordionContent>
           </AccordionItem>
