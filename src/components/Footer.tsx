@@ -1,3 +1,4 @@
+import { TalkFallback } from '@/components/TalkFallback'
 import wordmark from '@/assets/myrakal-wordmark.svg'
 
 const LINKS = [
@@ -23,6 +24,7 @@ export function Footer() {
             <a href="mailto:eshaansood@myrakal.com" className={`block text-sm ${link}`}>
               eshaansood@myrakal.com
             </a>
+            <TalkFallback />
           </div>
           <nav aria-label="Sections, company and legal" className="flex flex-wrap gap-x-8 gap-y-3 text-xs tracking-[0.2em] uppercase">
             {LINKS.map(([name, href]) => (
