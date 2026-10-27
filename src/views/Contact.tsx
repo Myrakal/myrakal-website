@@ -1,3 +1,4 @@
+import { MailFallback } from '@/components/MailFallback'
 import { LegalLayout, MailLink, Section } from './LegalLayout'
 
 export default function Contact() {
@@ -14,6 +15,7 @@ export default function Contact() {
           concern, put “Privacy request”, “Accessibility support”, or “Security concern” in the subject
           line.
         </p>
+        <MailFallback subject="Myrakal inquiry" />
         <p>
           For accessibility problems, include the page address and a description of the issue. For
           security concerns, describe the concern concisely. Please do not include health information,

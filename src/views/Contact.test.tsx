@@ -16,4 +16,11 @@ describe('Contact', () => {
     render(<Contact />)
     expect(screen.getByText(/not monitored as an emergency or clinical service/i)).toBeTruthy()
   })
+
+  it('offers a copy button and webmail links beside the mailto link', () => {
+    render(<Contact />)
+    expect(screen.getByRole('button', { name: 'Copy address' }).textContent).toBe('Copy address')
+    expect(screen.getByRole('link', { name: 'Open in Gmail' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'Open in Outlook' })).toBeTruthy()
+  })
 })
