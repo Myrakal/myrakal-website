@@ -67,8 +67,8 @@ export function FAQ({ faqs = FAQS }: { faqs?: FaqItem[] }) {
       </div>
       <Accordion hiddenUntilFound className="border-b border-rule">
         {faqs.map((faq) => (
-          <AccordionItem key={faq.question} value={faq.question} className="border-t border-rule">
-            <AccordionTrigger className="gap-6 rounded-none py-6 font-display text-xl font-normal text-cream no-underline hover:no-underline focus-visible:ring-champagne/60 sm:text-[1.625rem] **:data-[slot=accordion-trigger-icon]:hidden">
+          <AccordionItem key={faq.question} value={faq.question} className="border-t border-rule not-last:border-b-0">
+            <AccordionTrigger className="gap-6 rounded-none py-6 font-display text-xl font-normal text-cream no-underline hover:no-underline focus-visible:ring-champagne/60 sm:text-[1.625rem] **:data-[slot=accordion-trigger-icon]:hidden!">
               {faq.question}
               <span aria-hidden="true" className="font-caslon text-[22px] leading-none text-champagne before:content-['+'] group-aria-expanded/accordion-trigger:before:content-['−']" />
             </AccordionTrigger>
