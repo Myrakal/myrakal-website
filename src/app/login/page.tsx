@@ -7,8 +7,10 @@ export const metadata: Metadata = { title: 'Log in: Myrakal', robots: { index: f
 
 export default function LoginPage() {
   return (
-    <PortalShell title="Log in">
-      <LoginForm />
+    <PortalShell title="Log in" centered>
+      <div className="w-full max-w-md">
+        <LoginForm />
+      </div>
     </PortalShell>
   )
 }
