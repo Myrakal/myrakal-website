@@ -39,6 +39,12 @@ describe('Footer', () => {
     expect(container.textContent).toMatch(/Chicago, Illinois/)
   })
 
+  it('splits section and legal links into separate labelled groups', () => {
+    render(<Footer />)
+    expect(screen.getByRole('navigation', { name: 'Sections' })).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: 'Company and legal' })).toBeInTheDocument()
+  })
+
   it('shows the wordmark', () => {
     render(<Footer />)
     expect(screen.getByRole('img', { name: 'Myrakal' }).getAttribute('src')).toMatch(/myrakal-wordmark/)

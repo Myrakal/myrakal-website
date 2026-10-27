@@ -44,6 +44,9 @@
     --color-foreground: var(--foreground);
     --color-background: var(--background);
     --color-velvet: var(--velvet);
+    --color-ink: var(--ink);
+    --color-mist: var(--mist);
+    --color-rule: var(--rule);
     --color-velvet-deep: var(--velvet-deep);
     --color-ivory: var(--ivory);
     --color-cream: var(--cream);
@@ -66,6 +69,9 @@
     /* Myrakal Velvet + Pearl palette */
     color-scheme: dark;
     --velvet: #4d0f1a;
+    --ink: #120709;
+    --mist: #c9b8ad;
+    --rule: #3a1419;
     --velvet-deep: #2e0810;
     --velvet-light: #6b2230;
     --ivory: var(--velvet-light);
