@@ -26,4 +26,13 @@ describe('PortalShell', () => {
     )
     expect(screen.getByRole('main').textContent).toContain('Body')
   })
+
+  it('centers its content only when asked', () => {
+    const { rerender } = render(<PortalShell title="Log in" />)
+    expect(screen.getByRole('main').className).not.toContain('items-center')
+    rerender(<PortalShell title="Log in" centered />)
+    expect(screen.getByRole('main').className).toContain('items-center')
+    expect(screen.getByRole('main').className).toContain('justify-center')
+    expect(screen.getByRole('heading', { level: 1 }).className).toContain('text-center')
+  })
 })

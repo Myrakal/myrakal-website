@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import logo from '@/assets/myrakal-logo.svg'
 
-export function PortalShell({ title, children }: { title: string; children?: ReactNode }) {
+export function PortalShell({ title, centered = false, children }: { title: string; centered?: boolean; children?: ReactNode }) {
   return (
     <div className="relative flex min-h-dvh flex-col overflow-hidden bg-background text-foreground">
       <div
@@ -21,8 +21,10 @@ export function PortalShell({ title, children }: { title: string; children?: Rea
           <p className="font-grotesk text-[11px] tracking-[0.2em] text-champagne uppercase">Member area</p>
         </div>
       </header>
-      <main className="relative mx-auto w-full max-w-3xl flex-1 px-6 py-12 sm:py-16">
-        <h1 className="font-display text-4xl text-champagne italic sm:text-5xl">{title}</h1>
+      <main
+        className={`relative mx-auto w-full max-w-3xl flex-1 px-6 py-12 sm:py-16 ${centered ? 'flex flex-col items-center justify-center' : ''}`}
+      >
+        <h1 className={`font-display text-4xl text-champagne italic sm:text-5xl ${centered ? 'text-center' : ''}`}>{title}</h1>
         <div className="mt-3 h-px w-16 bg-champagne/60" />
         {children}
       </main>
