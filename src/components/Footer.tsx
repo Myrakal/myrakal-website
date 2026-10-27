@@ -30,7 +30,7 @@ export function Footer() {
             </a>
             <p className="text-[15px]">Chicago, Illinois</p>
           </div>
-          <div className="flex gap-16 sm:gap-20">
+          <div className="flex flex-wrap gap-x-10 gap-y-8 sm:gap-x-20">
             <nav aria-label="Sections" className={group}>
               {SECTIONS.map(([name, href]) => (
                 <a key={href} href={href} className={link}>
@@ -38,7 +38,7 @@ export function Footer() {
                 </a>
               ))}
             </nav>
-            <nav aria-label="Company and legal" className={group}>
+            <nav aria-label="Legal" className={group}>
               {LEGAL.map(([name, href]) => (
                 <a key={href} href={href} className={link}>
                   {name}
