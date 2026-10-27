@@ -1,5 +1,9 @@
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
+import sphere from '@/assets/liquid-sphere.webp'
+import sphereSmall from '@/assets/liquid-sphere-960.webp'
+import horizon from '@/assets/liquid-horizon.webp'
+import horizonSmall from '@/assets/liquid-horizon-960.webp'
 
 const SCENARIOS = [
   'You’ve been quoted a price for a scan or procedure and it doesn’t feel right.',
@@ -8,8 +12,10 @@ const SCENARIOS = [
   'Your prescriptions cost more than they should.',
 ]
 
+const NUMERALS = ['I', 'II', 'III', 'IV', 'V']
+
 const STEPS = [
-  ['Tell us what you need.', 'Start a conversation, with or without a diagnosis. Share any records, results and insurance details you have. Our intake only gathers information; it never gives advice.'],
+  ['You tell us what you need.', 'Start a conversation, with or without a diagnosis. Share any records, results and insurance details you have. Our intake only gathers information; it never gives advice.'],
   ['A licensed doctor reviews your case.', 'They confirm what you need and approve your options. Nothing is recommended before that review.'],
   ['You get one plan and one price.', 'We lay out your options, close to home or abroad, each with its full cost. You choose; nothing is booked until you say yes.'],
   ['We book everything and pay your providers.', 'Appointments, paperwork, and travel and stays when needed. Once you approve your plan, you pay us, and we pay each provider.'],
@@ -17,14 +23,14 @@ const STEPS = [
 ]
 
 const PRICES = [
-  ['Doctor review', '$150', 'Credited toward any care you book through Myrakal'],
-  ['Your plan', 'One all-in price', 'Quoted in full before you commit; covers everything listed in your plan'],
+  ['Doctor review', '$50', 'Credited toward any care you book through Myrakal'],
+  ['Plan', 'One all-in price', 'Quoted in full before you commit; covers everything listed in your plan'],
   ['Financing', 'On request', 'Ask your coordinator about paying over time'],
   ['Insurance', 'Your plan’s terms', 'We use your coverage wherever it lowers what you pay'],
 ]
 
 const INCLUDES = [
-  'The procedure or treatment, and the doctor’s fees',
+  'Treatment and doctor’s fees',
   'Tests, imaging and prescriptions',
   'Appointment booking and every form',
   'Flights, hotel and local transport, when care is away from home',
@@ -40,61 +46,78 @@ const FAQS: [string, React.ReactNode][] = [
   ['Is my information private?', <>Yes. Health details are shared only through Myrakal intake, as described in our <a href="/privacy/" className="underline underline-offset-4 hover:text-cream">Privacy Policy</a>.</>],
 ]
 
-const label = 'font-grotesk text-[11px] font-light tracking-[0.28em] text-champagne uppercase'
-const band = 'mx-auto max-w-6xl px-6 sm:px-12'
-const h2 = 'font-display text-4xl font-normal sm:text-5xl'
-const body = 'font-light text-muted-foreground'
-const cta = 'inline-block border border-champagne/85 px-8 py-4 font-display text-2xl text-champagne transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
-const cell = 'border-b border-champagne/20 py-5 pr-4 align-top sm:pr-6'
+const label = 'font-caslon text-xs tracking-[0.32em] text-champagne uppercase'
+const band = 'mx-auto max-w-7xl px-6 sm:px-12 lg:px-24'
+const split = `${band} grid gap-10 py-24 sm:py-36 lg:grid-cols-[22rem_minmax(0,1fr)] lg:gap-20`
+const h2 = 'mt-4 font-display text-4xl leading-tight font-normal italic sm:text-[2.75rem]'
+const body = 'text-base leading-relaxed text-mist sm:text-[17px]'
+const gold = 'border-champagne/60'
+const cta = 'inline-block border border-champagne/85 bg-ink/35 px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne sm:text-[13px]'
+const cell = `${gold} pt-6 pr-4 align-baseline sm:border-t sm:pr-8 sm:pb-6`
 
-const TalkWithUs = () => <a href="/dashboard" className={cta}>Talk with us <span aria-hidden="true">→</span></a>
+const TalkWithUs = () => <a href="/dashboard" className={cta}>Talk with us</a>
+
+const Intro = ({ id, title, heading }: { id: string; title: string; heading?: string }) => (
+  <div>
+    <h2 id={id} className={label}>{title}</h2>
+    {heading && <p className={h2}>{heading}</p>}
+  </div>
+)
 
 export default function Individual() {
   return (
     <>
       <Navbar />
-      <main className="bg-velvet-deep text-cream">
-        <header className={`${band} pt-40 pb-28 sm:pt-52`}>
-          <p className={label}>For yourself</p>
-          <h1 className="mt-6 max-w-4xl font-display text-5xl leading-[1.05] font-normal text-balance sm:text-7xl">One team for all of your care.</h1>
-          <p className={`mt-8 mb-12 max-w-xl text-lg ${body}`}>Bring us anything, from a lab test to a surgery. We find the best doctor and the best price, handle every detail, and stay with you until you’re well.</p>
-          <TalkWithUs />
+      <main className="bg-ink font-caslon text-cream">
+        <header className="grid lg:h-[680px] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <div className="flex flex-col items-start justify-center gap-7 px-6 pt-36 pb-16 sm:px-12 lg:py-0 lg:pr-16 lg:pl-24">
+            <p className={label}>For yourself</p>
+            <h1 className="font-display text-5xl leading-[1.02] font-normal text-balance sm:text-7xl xl:text-[5rem]">One team for <i className="text-champagne">all of your care.</i></h1>
+            <p className="max-w-[500px] text-lg leading-relaxed text-mist sm:text-[19px]">Bring us anything, from a lab test to a surgery. We find the best doctor and the best price, handle every detail, and stay with you until you’re well.</p>
+            <div className="mt-2"><TalkWithUs /></div>
+          </div>
+          <div className="relative aspect-[4/3] overflow-hidden lg:aspect-auto">
+            <img src={sphere.src} srcSet={`${sphereSmall.src} 960w, ${sphere.src} 1448w`} sizes="(min-width: 1024px) 45vw, 100vw" alt="A sphere of translucent claret liquid suspended above a still surface, lit with gold" fetchPriority="high" className="size-full scale-[1.35] object-cover object-[50%_45%]" />
+          </div>
         </header>
 
-        <section aria-labelledby="for-you" className="border-t border-champagne/20 bg-velvet">
-          <div className={`${band} grid gap-12 py-28 lg:grid-cols-[1fr_2fr]`}>
-            <h2 id="for-you" className={h2}>Is this for you?</h2>
-            <ul className="grid gap-x-12 gap-y-10 sm:grid-cols-2">
-              {SCENARIOS.map((s) => <li key={s} className="border-t border-champagne/30 pt-6 font-display text-2xl">{s}</li>)}
+        <section aria-labelledby="for-you" className="border-t border-rule">
+          <div className={split}>
+            <Intro id="for-you" title="Is this for you?" heading="If any of these sound familiar" />
+            <ul className="grid gap-x-14 gap-y-10 sm:grid-cols-2">
+              {SCENARIOS.map((s) => <li key={s} className={`border-t ${gold} pt-6 font-display text-2xl leading-snug sm:text-[26px]`}>{s}</li>)}
             </ul>
           </div>
         </section>
 
-        <section aria-labelledby="how-it-works" className={`${band} py-28`}>
-          <h2 id="how-it-works" className={h2}>How it works for you</h2>
-          <ol className="mt-16 space-y-12">
-            {STEPS.map(([title, text], i) => (
-              <li key={title} className="grid gap-4 border-t border-champagne/30 pt-6 md:grid-cols-[6rem_1fr_2fr]">
-                <span className={label} aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-                <h3 className="font-display text-2xl font-normal sm:text-3xl">{title}</h3>
-                <p className={body}>{text}</p>
-              </li>
-            ))}
-          </ol>
+        <section aria-labelledby="how-it-works" className="border-t border-rule">
+          <div className={`${band} py-24 sm:py-36`}>
+            <h2 id="how-it-works" className={label}>How it works for you</h2>
+            <p className="mt-4 font-display text-5xl leading-[1.05] sm:text-6xl">Five steps, <i className="text-champagne">one team.</i></p>
+            <ol className="mt-14 border-b border-rule">
+              {STEPS.map(([title, text], i) => (
+                <li key={title} className="grid gap-3 border-t border-rule py-8 md:grid-cols-[6rem_minmax(0,1fr)_minmax(0,1.4fr)] md:gap-8">
+                  <span aria-hidden="true" className="text-[13px] tracking-[0.32em] text-champagne">{NUMERALS[i]}</span>
+                  <h3 className="font-display text-2xl font-normal sm:text-3xl">{title}</h3>
+                  <p className={body}>{text}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
         </section>
 
-        <section aria-labelledby="what-you-pay" className="border-t border-champagne/20 bg-velvet">
-          <div className={`${band} py-28`}>
-            <h2 id="what-you-pay" className={h2}>What you pay</h2>
-            <div className="mt-14 overflow-x-auto">
-              <table aria-labelledby="what-you-pay" className="w-full text-left text-sm sm:text-base">
-                <thead><tr>{['Item', 'Price', 'Notes'].map((h) => <th key={h} scope="col" className={`${label} border-b border-champagne/20 pr-6 pb-4`}>{h}</th>)}</tr></thead>
+        <section aria-labelledby="what-you-pay" className="bg-velvet">
+          <div className={split}>
+            <Intro id="what-you-pay" title="What you pay" heading="One price, quoted in full" />
+            <div className="overflow-x-auto">
+              <table aria-labelledby="what-you-pay" className={`w-full border-b ${gold} text-left`}>
+                <thead className="sr-only"><tr>{['Item', 'Price', 'Notes'].map((h) => <th key={h} scope="col">{h}</th>)}</tr></thead>
                 <tbody>
                   {PRICES.map(([item, price, note]) => (
-                    <tr key={item}>
-                      <th scope="row" className={`${cell} font-display text-lg font-normal sm:text-2xl`}>{item}</th>
-                      <td className={`${cell} text-cream`}>{price}</td>
-                      <td className={`${cell} ${body}`}>{note}</td>
+                    <tr key={item} className={`max-sm:grid max-sm:grid-cols-[1fr_auto] max-sm:border-t max-sm:pb-6 ${gold}`}>
+                      <th scope="row" className={`${cell} font-display text-xl font-normal sm:text-[26px] sm:whitespace-nowrap`}>{item}</th>
+                      <td className={`${cell} text-champagne max-sm:pr-0 sm:whitespace-nowrap ${price.startsWith('$') ? 'font-display text-2xl sm:text-3xl' : 'sm:text-[17px]'}`}>{price}</td>
+                      <td className={`${cell} max-sm:col-span-2 max-sm:pt-2 text-sm leading-relaxed text-cream/85 sm:text-base`}>{note}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -103,29 +126,29 @@ export default function Individual() {
           </div>
         </section>
 
-        <section aria-labelledby="includes" className={`${band} grid gap-12 py-28 lg:grid-cols-[1fr_2fr]`}>
-          <h2 id="includes" className={h2}>What a plan can include</h2>
-          <ul className="grid gap-x-12 gap-y-6 sm:grid-cols-2">
-            {INCLUDES.map((item) => <li key={item} className={`border-t border-champagne/30 pt-4 ${body}`}>{item}</li>)}
+        <section aria-labelledby="includes" className={split}>
+          <Intro id="includes" title="What a plan can include" heading="Everything around your care" />
+          <ul className="grid gap-x-14 gap-y-1 sm:grid-cols-2">
+            {INCLUDES.map((item) => <li key={item} className="border-t border-rule py-4 text-lg">{item}</li>)}
           </ul>
         </section>
 
-        <section aria-labelledby="questions" className="border-t border-champagne/20 bg-velvet">
-          <div className={`${band} grid gap-12 py-28 lg:grid-cols-[1fr_2fr]`}>
-            <h2 id="questions" className={h2}>Questions</h2>
-            <dl className="space-y-10">
-              {FAQS.map(([q, a]) => (
-                <div key={q} className="border-t border-champagne/30 pt-6">
-                  <dt className="font-display text-2xl">{q}</dt>
-                  <dd className={`mt-3 ${body}`}>{a}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+        <section aria-labelledby="questions" className={`${split} sm:pt-0`}>
+          <Intro id="questions" title="Questions" />
+          <dl className="border-b border-rule">
+            {FAQS.map(([q, a]) => (
+              <div key={q} className="border-t border-rule py-6">
+                <dt className="font-display text-2xl sm:text-[26px]">{q}</dt>
+                <dd className={`mt-2.5 ${body}`}>{a}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
 
-        <section aria-label="Get started" className={`${band} py-28 text-center`}>
-          <p className="mb-12 font-display text-5xl sm:text-7xl"><i>Healthcare, as it should be.</i></p>
+        <section aria-label="Get started" className="relative isolate flex h-[440px] flex-col items-center gap-7 overflow-hidden px-6 pt-16 text-center sm:h-[520px] sm:pt-20">
+          <img src={horizon.src} srcSet={`${horizonSmall.src} 960w, ${horizon.src} 1672w`} sizes="100vw" alt="" loading="lazy" className="absolute inset-0 -z-20 size-full object-cover object-top" />
+          <div aria-hidden="true" className="absolute inset-0 -z-10 bg-ink/25" />
+          <p className="font-display text-5xl italic sm:text-7xl">Healthcare, as it should be.</p>
           <TalkWithUs />
         </section>
       </main>
