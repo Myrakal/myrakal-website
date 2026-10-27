@@ -141,7 +141,7 @@ export default function Care() {
             <a
               key={name}
               href={href}
-              className="group border border-alabaster/40 p-10 transition-colors hover:bg-alabaster/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-alabaster"
+              className="group border border-champagne/85 p-10 transition-colors hover:bg-champagne/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
             >
               <span className="block font-display text-4xl">{name} <span aria-hidden="true">→</span></span>
               <span className="mt-3 block font-light text-muted-foreground">{note}</span>

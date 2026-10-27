@@ -10,7 +10,7 @@ const subscribe = (onChange: () => void) => {
   return () => media.removeEventListener('change', onChange)
 }
 
-export function HeroVideo() {
+export function HeroVideo({ poster }: { poster: string }) {
   const ref = useRef<HTMLVideoElement>(null)
   const motionAllowed = useSyncExternalStore(
     subscribe,
@@ -34,6 +34,7 @@ export function HeroVideo() {
     <video
       ref={ref}
       src="/hero-liquid.mp4"
+      poster={poster}
       autoPlay
       muted
       loop

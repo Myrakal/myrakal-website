@@ -14,12 +14,12 @@ export function Hero() {
       <img
         src={liquid.src}
         srcSet={`${liquidSmall.src} 960w, ${liquid.src} 1916w`}
-        sizes="100vw"
+        sizes="(max-aspect-ratio: 16/9) 178svh, 100vw"
         alt="A ribbon of translucent claret liquid twisting through the dark, lit with gold"
         fetchPriority="high"
         className="absolute inset-0 -z-30 size-full object-cover"
       />
-      <HeroVideo />
+      <HeroVideo poster={liquid.src} />
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-charcoal/30 max-sm:bg-charcoal/45"
