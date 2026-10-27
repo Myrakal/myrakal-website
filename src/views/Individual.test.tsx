@@ -125,7 +125,7 @@ describe('Individual page', () => {
 
   it('pairs the header with the liquid sphere and closes on the liquid horizon', () => {
     render(<Individual />)
-    expect(screen.getByRole('img', { name: /sphere/i }).getAttribute('src')).toMatch(/liquid-sphere/)
+    expect(document.querySelector('img[src*="liquid-sphere"]')!.getAttribute('alt')).toBe('')
     const closing = screen.getByRole('region', { name: /get started/i })
     const horizon = closing.querySelector('img')!
     expect(horizon.getAttribute('src')).toMatch(/liquid-horizon/)

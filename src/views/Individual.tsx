@@ -26,7 +26,7 @@ const PRICES = [
   ['Doctor review', '$50', 'Credited toward any care you book through Myrakal'],
   ['Plan', 'One all-in price', 'Quoted in full before you commit; covers everything listed in your plan'],
   ['Financing', 'On request', 'Ask your coordinator about paying over time'],
-  ['Insurance', 'Your plan’s terms', 'We use your coverage wherever it lowers what you pay'],
+  ['Insurance', 'Your coverage', 'We use your coverage wherever it lowers what you pay'],
 ]
 
 const INCLUDES = [
@@ -69,15 +69,15 @@ export default function Individual() {
     <>
       <Navbar />
       <main className="bg-ink font-caslon text-cream">
-        <header className="grid lg:h-[680px] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-          <div className="flex flex-col items-start justify-center gap-7 px-6 pt-36 pb-16 sm:px-12 lg:py-0 lg:pr-16 lg:pl-24">
+        <header className="grid lg:min-h-[680px] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+          <div className="flex flex-col items-start justify-center gap-7 px-6 pt-36 pb-16 sm:px-12 lg:pt-40 lg:pb-20 lg:pr-16 lg:pl-24">
             <p className={label}>For yourself</p>
             <h1 className="font-display text-5xl leading-[1.02] font-normal text-balance sm:text-7xl xl:text-[5rem]">One team for <i className="text-champagne">all of your care.</i></h1>
             <p className="max-w-[500px] text-lg leading-relaxed text-mist sm:text-[19px]">Bring us anything, from a lab test to a surgery. We find the best doctor and the best price, handle every detail, and stay with you until you’re well.</p>
             <div className="mt-2"><TalkWithUs /></div>
           </div>
           <div className="relative aspect-[4/3] overflow-hidden lg:aspect-auto">
-            <img src={sphere.src} srcSet={`${sphereSmall.src} 960w, ${sphere.src} 1448w`} sizes="(min-width: 1024px) 45vw, 100vw" alt="A sphere of translucent claret liquid suspended above a still surface, lit with gold" fetchPriority="high" className="size-full scale-[1.35] object-cover object-[50%_45%]" />
+            <img src={sphere.src} srcSet={`${sphereSmall.src} 960w, ${sphere.src} 1448w`} sizes="(min-width: 1024px) 45vw, 100vw" alt="" fetchPriority="high" className="size-full scale-[1.35] object-cover object-[50%_45%]" />
           </div>
         </header>
 
