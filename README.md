@@ -1,4 +1,4 @@
-# Myrakal
+# Myrakal 
 
 Medical-travel concierge. A patient signs up, talks to Claude, which collects a fixed list of intake information, and a doctor reviews the transcript. The team emails a PDF plan, the patient comments or approves and pays, and the team makes the reservations. See `PLAN.md` for the full rebuild plan, status enum and API contract.
 
