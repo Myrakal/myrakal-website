@@ -73,14 +73,14 @@ describe('Business page', () => {
     expect(screen.getByText('[Per employee per month, a share of verified savings, or both.]')).toBeTruthy()
   })
 
-  it('points every Book a call link to contact with alabaster styling', () => {
+  it('points every Book a call link to contact with gold outline styling', () => {
     render(<Business />)
     const ctas = screen.getAllByRole('link', { name: /book a call/i })
     expect(ctas).toHaveLength(2)
     for (const cta of ctas) {
       expect(cta.getAttribute('href')).toBe('/contact')
-      expect(cta.className).toMatch(/alabaster/)
-      expect(cta.className).not.toMatch(/champagne|gold/)
+      expect(cta.className).toMatch(/border-champagne/)
+      expect(cta.className).not.toMatch(/alabaster/)
     }
   })
 

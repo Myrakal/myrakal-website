@@ -59,14 +59,14 @@ describe('Individual page', () => {
     }
   })
 
-  it('points every Talk with us link to a prefilled email in alabaster', () => {
+  it('points every Talk with us link to a prefilled email in a gold outline', () => {
     render(<Individual />)
     const ctas = screen.getAllByRole('link', { name: /talk with us/i })
     expect(ctas.length).toBeGreaterThanOrEqual(2)
     for (const cta of ctas) {
       expect(cta.getAttribute('href')).toBe(TALK_WITH_US_HREF)
-      expect(cta.className).toMatch(/alabaster/)
-      expect(cta.className).not.toMatch(/champagne/)
+      expect(cta.className).toMatch(/border-champagne/)
+      expect(cta.className).not.toMatch(/alabaster/)
     }
   })
 

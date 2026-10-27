@@ -7,6 +7,7 @@
 @theme inline {
     --font-heading: 'Lora', Georgia, 'Times New Roman', serif;
     --font-display: 'Bodoni Moda', Didot, Georgia, serif;
+    --font-caslon: 'Libre Caslon Text', Caslon, Georgia, serif;
     --font-grotesk: 'Space Grotesk', system-ui, sans-serif;
     --font-sans:
       'Source Sans 3', 'Helvetica Neue', Helvetica, Arial, system-ui,

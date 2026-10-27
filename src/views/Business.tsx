@@ -38,7 +38,7 @@ const label = 'font-grotesk text-[11px] font-light tracking-[0.28em] text-champa
 const band = 'mx-auto max-w-6xl px-6 sm:px-12'
 const h2 = 'font-display text-4xl font-normal sm:text-5xl'
 const body = 'font-light text-muted-foreground'
-const cta = 'inline-block border border-alabaster/40 px-8 py-4 font-display text-2xl transition-colors hover:bg-alabaster/10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-alabaster'
+const cta = 'inline-block border border-champagne/85 px-8 py-4 font-display text-2xl text-champagne transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
 
 function BookCall() {
   return <a href="/contact" className={cta}>Book a call <span aria-hidden="true">→</span></a>

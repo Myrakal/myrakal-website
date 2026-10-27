@@ -90,7 +90,7 @@ describe('Care page', () => {
     render(<Care />)
     const self = screen.getByRole('link', { name: /for yourself/i })
     expect(self.getAttribute('href')).toBe('/individual')
-    expect(self.className).toMatch(/focus-visible:outline-alabaster/)
+    expect(self.className).toMatch(/focus-visible:outline-champagne/)
     expect(screen.getByRole('link', { name: /for your team/i }).getAttribute('href')).toBe('/business')
   })
 })
