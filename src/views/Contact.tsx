@@ -7,33 +7,18 @@ export default function Contact() {
       eyebrow="Company / Contact"
       lede="Myrakal Inc. is based in Chicago, Illinois, United States."
     >
-      <Section title="General inquiries">
+      <Section title="Email us">
         <p>
           Email <MailLink subject="Myrakal inquiry" /> for questions about Myrakal, our services,
-          partnerships, or this website.
+          partnerships, or this website. For a privacy request, accessibility problem, or security
+          concern, put “Privacy request”, “Accessibility support”, or “Security concern” in the subject
+          line.
         </p>
-      </Section>
-
-      <Section title="Privacy and data requests">
         <p>
-          Email <MailLink subject="Privacy request" /> with “Privacy request” in the subject line. Please
-          do not include health information in this email; we will tell you how to share anything needed
-          for your request securely.
-        </p>
-      </Section>
-
-      <Section title="Accessibility support">
-        <p>
-          If something prevents you from using this website, email <MailLink subject="Accessibility support" />{' '}
-          with the page address and a description of the issue. We will work with you to provide the
-          information in another format where reasonably possible.
-        </p>
-      </Section>
-
-      <Section title="Security concerns">
-        <p>
-          Email <MailLink subject="Security concern" /> with a concise description of the concern. Do not
-          include passwords, medical information, or exploit code in an initial message.
+          For accessibility problems, include the page address and a description of the issue. For
+          security concerns, describe the concern concisely. Please do not include health information,
+          passwords, or exploit code in a first message; we will tell you how to share anything needed
+          securely.
         </p>
       </Section>
 
