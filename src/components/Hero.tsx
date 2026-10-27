@@ -1,3 +1,4 @@
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import ampoule from '@/assets/hero-ampoule.webp'
 import ampouleSmall from '@/assets/hero-ampoule-960.webp'
 import wordmark from '@/assets/myrakal-wordmark.svg'
@@ -29,10 +30,10 @@ export function Hero() {
         The best care, at the best price. Anywhere.
       </p>
       <a
-        href="/dashboard"
+        href={TALK_WITH_US_HREF}
         className="mt-8 bg-alabaster px-7 py-3.5 font-grotesk text-xs tracking-[0.25em] text-charcoal uppercase transition-opacity hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
       >
-        Talk with us
+        Talk with us<span className="sr-only"> (opens email)</span>
       </a>
     </section>
   )

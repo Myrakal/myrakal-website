@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import logo from '@/assets/myrakal-logo.svg'
 import { useSession } from '@/hooks/useSession'
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { getSupabase } from '@/lib/supabase'
 
 const authLink =
@@ -84,10 +85,10 @@ export function Navbar() {
           </a>
         )}
         <a
-          href="/dashboard"
+          href={TALK_WITH_US_HREF}
           className="rounded-full border border-alabaster/60 px-4 py-2 font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-alabaster uppercase transition-colors hover:bg-alabaster/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-alabaster sm:px-5"
         >
-          Talk with us
+          Talk with us<span className="sr-only"> (opens email)</span>
         </a>
       </div>
     </header>

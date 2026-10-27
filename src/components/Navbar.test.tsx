@@ -1,3 +1,4 @@
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { act, fireEvent, render, screen } from '@testing-library/react'
 
 const mockSignOut = jest.fn(() => Promise.resolve({ error: null }))
@@ -62,9 +63,9 @@ describe('Navbar', () => {
     mockPathname = '/'
   })
 
-  it('keeps Talk with us pointed at the dashboard', () => {
+  it('points Talk with us at a prefilled email', () => {
     render(<Navbar />)
-    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/dashboard')
+    expect(screen.getByRole('link', { name: /^Talk with us/ }).getAttribute('href')).toBe(TALK_WITH_US_HREF)
   })
 
   it('shows the new tagline after scrolling', () => {
@@ -92,9 +93,9 @@ describe('Navbar', () => {
     const nav = screen.getByRole('navigation', { name: 'Primary' })
     const items = [...nav.querySelectorAll('a, button')].map((el) => el.textContent)
     expect(items).toEqual(['Care', 'Individual', 'Business'])
-    const order = [...nav.parentElement!.querySelectorAll('nav, a[href="/dashboard"]')]
+    const order = [...nav.parentElement!.querySelectorAll('nav, a[href^="mailto:"]')]
     expect(order[0]).toBe(nav)
-    expect(screen.getByRole('link', { name: 'Talk with us' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: /^Talk with us/ })).toBeTruthy()
   })
 
   it.each([

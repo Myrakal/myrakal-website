@@ -1,3 +1,4 @@
+import { TALK_EMAIL } from '@/lib/contact'
 import { render, screen } from '@testing-library/react'
 import { Footer } from '@/components/Footer'
 
@@ -42,5 +43,18 @@ describe('Footer', () => {
   it('shows the wordmark', () => {
     render(<Footer />)
     expect(screen.getByRole('img', { name: 'Myrakal' }).getAttribute('src')).toMatch(/myrakal-wordmark/)
+  })
+
+  it('offers the talk-with-us address with copy and webmail fallbacks', () => {
+    render(<Footer />)
+    expect(screen.getByText(TALK_EMAIL)).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Copy address' })).toBeTruthy()
+    const gmail = new URL(screen.getByRole('link', { name: 'Open in Gmail' }).getAttribute('href')!)
+    expect(gmail.searchParams.get('to')).toBe(TALK_EMAIL)
+  })
+
+  it('can leave the talk-with-us fallback out', () => {
+    render(<Footer talk={false} />)
+    expect(screen.queryByRole('button', { name: 'Copy address' })).toBeNull()
   })
 })

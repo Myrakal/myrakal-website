@@ -1,3 +1,4 @@
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { render, screen } from '@testing-library/react'
 import { Hero } from '@/components/Hero'
 
@@ -7,9 +8,9 @@ describe('Hero', () => {
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Healthcare, as it should be')
   })
 
-  it('has a short call to action linking to the dashboard', () => {
+  it('has a short call to action that emails us a prefilled message', () => {
     render(<Hero />)
-    expect(screen.getByRole('link', { name: 'Talk with us' }).getAttribute('href')).toBe('/dashboard')
+    expect(screen.getByRole('link', { name: /^Talk with us/ }).getAttribute('href')).toBe(TALK_WITH_US_HREF)
   })
 
   it('shows the ampoule photograph with a description', () => {
