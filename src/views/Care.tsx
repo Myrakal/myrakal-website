@@ -46,7 +46,7 @@ const PATHS = [
 
 const label = 'font-caslon text-xs tracking-[0.32em] text-champagne uppercase'
 const pad = 'px-6 sm:px-12 lg:px-24'
-const split = `${pad} grid gap-12 py-24 sm:py-36 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20`
+const split = `${pad} grid gap-12 py-24 sm:py-36 xl:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] xl:gap-20`
 const intro = 'flex flex-col gap-4'
 const sideHeading = 'font-display text-4xl leading-[1.1] font-normal italic sm:text-[2.75rem]'
 
@@ -56,7 +56,7 @@ export default function Care() {
       <JsonLd data={[ORGANIZATION, CARE_SERVICE]} />
       <Navbar />
       <main className="bg-ink font-caslon text-cream">
-        <header className="grid lg:grid-rows-[680px] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+        <header className="grid lg:grid-rows-[minmax(680px,auto)] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
           <div className={`${pad} flex flex-col justify-center gap-7 pt-36 pb-16 lg:py-0 lg:pr-16`}>
             <p className={label}>Care</p>
             <h1 className="font-display text-5xl leading-[1.02] font-normal text-balance sm:text-7xl xl:text-[5rem]">
@@ -68,8 +68,9 @@ export default function Care() {
           </div>
           <img
             src={sheet.src}
-            srcSet={`${sheetSmall.src} 960w, ${sheet.src} 1672w`}
+            srcSet={`${sheetSmall.src} 960w, ${sheet.src} 1122w`}
             sizes="(min-width: 1024px) 45vw, 100vw"
+            fetchPriority="high"
             alt="A thin silky sheet of translucent claret liquid folding in mid-air, edged with gold"
             className="aspect-[4/3] w-full object-cover object-[50%_65%] lg:aspect-auto lg:size-full"
           />
@@ -115,7 +116,7 @@ export default function Care() {
           </p>
         </section>
 
-        <section aria-labelledby="standards" className={`${split} bg-velvet sm:py-32`}>
+        <section aria-labelledby="standards" className={`${split} bg-velvet`}>
           <div className={intro}>
             <p className={label}>Our standards</p>
             <h2 id="standards" className={sideHeading}>What we hold every partner to</h2>
