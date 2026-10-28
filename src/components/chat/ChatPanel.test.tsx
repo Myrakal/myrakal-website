@@ -24,6 +24,27 @@ describe('ChatPanel', () => {
     expect(screen.getByLabelText('Message')).toBeTruthy()
   })
 
+  it('distinguishes user and assistant messages by more than color', async () => {
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ status: 'intake', progress: null, messages: [{ id: 'm1', role: 'user', text: 'knee' }] }),
+    })
+    render(<ChatPanel chatId={ID} />)
+    await waitFor(() => expect(screen.getByText('knee')).toBeTruthy())
+    const mine = screen.getByText('knee').closest('p')!
+    const theirs = screen.getByText(/glad you reached out/i).closest('p')!
+    expect(mine.className).toContain('border-champagne')
+    expect(theirs.className).toContain('border-l-champagne')
+    expect(mine.className).not.toContain('rounded')
+    expect(theirs.className).not.toContain('rounded')
+  })
+
+  it('renders a square send button', () => {
+    render(<ChatPanel chatId={null} />)
+    expect(screen.getByRole('button', { name: 'Send message' }).className).toContain('rounded-none!')
+  })
+
   it('loads messages and progress for a chat id', async () => {
     fetchMock.mockResolvedValue({
       ok: true,

@@ -8,11 +8,11 @@ export function IntakeProgress({ collected, total }: { collected: number; total:
         aria-valuemin={0}
         aria-valuemax={total}
         aria-valuenow={collected}
-        className="h-1.5 w-full overflow-hidden rounded-full bg-muted"
+        className="h-1.5 w-full overflow-hidden bg-rule"
       >
-        <div className="h-full rounded-full bg-primary motion-safe:transition-[width]" style={{ width: `${percent}%` }} />
+        <div className="h-full bg-champagne motion-safe:transition-[width]" style={{ width: `${percent}%` }} />
       </div>
-      <p className="mt-1.5 text-center text-xs text-muted-foreground">
+      <p className="mt-2 text-center font-caslon text-xs tracking-[0.26em] text-mist uppercase">
         {collected} of {total} details collected
       </p>
     </div>

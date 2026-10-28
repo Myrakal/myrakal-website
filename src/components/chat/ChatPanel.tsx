@@ -58,7 +58,7 @@ export function ChatPanel({ chatId, onCreated, onStatusChange, onLocked }: Props
         {messages.map((m) => (
           <ChatMessage key={m.id} message={m} />
         ))}
-        {loading && <p role="status" className="text-center text-sm">Loading your conversation…</p>}
+        {loading && <p role="status" className="text-center font-caslon text-xs tracking-[0.26em] text-mist uppercase">Loading your conversation…</p>}
         {busy && <TypingIndicator />}
         <div ref={end} />
       </div>
@@ -72,9 +72,9 @@ export function ChatPanel({ chatId, onCreated, onStatusChange, onLocked }: Props
         )}
         {progress && <IntakeProgress {...progress} />}
         <ChatComposer onSend={send} busy={busy || loading || loadFailed} />
-        <p className="mt-3 px-2 text-center text-xs leading-5 text-muted-foreground">
+        <p className="mt-3 px-2 text-center text-xs leading-5 text-mist">
           See our{' '}
-          <a className="underline underline-offset-4 hover:text-foreground" href="/privacy/">
+          <a className="underline underline-offset-4 hover:text-champagne" href="/privacy/">
             Privacy Policy
           </a>{' '}
           for how we handle what you share.

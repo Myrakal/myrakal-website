@@ -36,7 +36,7 @@ export function ChatComposer({ onSend, busy = false }: Props) {
   }
 
   return (
-    <div className="flex items-end gap-2 rounded-3xl border border-border bg-card p-2 shadow-sm focus-within:ring-2 focus-within:ring-foreground/40">
+    <div className="flex items-end gap-2 border border-rule bg-velvet-deep/40 p-2 transition-colors focus-within:border-champagne/85">
       <label className="sr-only" htmlFor={id}>
         Message
       </label>
@@ -48,7 +48,7 @@ export function ChatComposer({ onSend, busy = false }: Props) {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={onKeyDown}
         placeholder="Type your message"
-        className="max-h-40 min-h-12 flex-1 resize-none bg-transparent px-4 py-3 text-base text-card-foreground placeholder:text-card-foreground/60 focus:outline-none"
+        className="max-h-40 min-h-12 flex-1 resize-none bg-transparent px-4 py-3 text-base text-cream placeholder:text-mist focus:outline-none"
       />
       <Button
         type="button"
@@ -56,7 +56,7 @@ export function ChatComposer({ onSend, busy = false }: Props) {
         aria-label="Send message"
         disabled={!canSend}
         onClick={send}
-        className="size-12 shrink-0 cursor-pointer disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100"
+        className="size-12 shrink-0 cursor-pointer rounded-none! border border-champagne/85 bg-transparent text-champagne hover:bg-champagne hover:text-ink disabled:border-mist/40 disabled:bg-transparent disabled:text-mist disabled:opacity-100"
       >
         <ArrowUp className="size-5" aria-hidden="true" />
       </Button>

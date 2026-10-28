@@ -36,4 +36,11 @@ describe('AttachmentUpload', () => {
     fireEvent.click(done)
     expect(onSkip).toHaveBeenCalledWith(true)
   })
+
+  it('styles the choose control as a square gold-outlined CTA', () => {
+    setup()
+    const label = screen.getByText('Choose files')
+    expect(label.className).toContain('border-champagne')
+    expect(label.className).not.toContain('rounded')
+  })
 })
