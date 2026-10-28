@@ -75,7 +75,7 @@ export function PayPlan({ chatId, status, priceCents, returned, onStatus, onRedi
             : 'Thank you. We are confirming your payment…'}
         </p>
         {gaveUp && (
-          <button type="button" className="mt-4 border border-champagne/85 px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50" onClick={() => setRetry(true)}>
+          <button type="button" className="mt-4 border border-champagne/85 px-6 py-3.5 sm:px-10 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50" onClick={() => setRetry(true)}>
             I did not finish paying
           </button>
         )}
@@ -118,7 +118,7 @@ export function PayPlan({ chatId, status, priceCents, returned, onStatus, onRedi
           {error}
         </p>
       )}
-      <button type="button" onClick={pay} disabled={sending || blocked} className="mt-5 border border-champagne/85 bg-champagne px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-ink uppercase transition-colors hover:bg-transparent hover:text-champagne focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
+      <button type="button" onClick={pay} disabled={sending || blocked} className="mt-5 border border-champagne/85 bg-champagne px-6 py-3.5 sm:px-10 font-caslon text-xs tracking-[0.28em] text-ink uppercase transition-colors hover:bg-transparent hover:text-champagne focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
         {sending ? 'Redirecting…' : label}
       </button>
     </section>

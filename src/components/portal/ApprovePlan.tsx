@@ -60,10 +60,10 @@ export function ApprovePlan({ chatId, status, onApproved }: Props) {
       <div className="mt-4 flex flex-wrap gap-3">
         {confirming ? (
           <>
-            <button type="button" onClick={approve} disabled={sending || blocked} ref={confirmButton} className="border border-champagne/85 bg-champagne px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-ink uppercase transition-colors hover:bg-transparent hover:text-champagne focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
+            <button type="button" onClick={approve} disabled={sending || blocked} ref={confirmButton} className="border border-champagne/85 bg-champagne px-6 py-3.5 sm:px-10 font-caslon text-xs tracking-[0.28em] text-ink uppercase transition-colors hover:bg-transparent hover:text-champagne focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
               {sending ? 'Approving…' : 'Confirm approval'}
             </button>
-            <button type="button" onClick={() => setConfirming(false)} disabled={sending} className="border border-champagne/85 px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
+            <button type="button" onClick={() => setConfirming(false)} disabled={sending} className="border border-champagne/85 px-6 py-3.5 sm:px-10 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
               Cancel
             </button>
           </>
@@ -71,7 +71,7 @@ export function ApprovePlan({ chatId, status, onApproved }: Props) {
           <button
             type="button"
             ref={approveButton}
-            className="border border-champagne/85 bg-champagne px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-ink uppercase transition-colors hover:bg-transparent hover:text-champagne focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50"
+            className="border border-champagne/85 bg-champagne px-6 py-3.5 sm:px-10 font-caslon text-xs tracking-[0.28em] text-ink uppercase transition-colors hover:bg-transparent hover:text-champagne focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50"
             onClick={() => {
               setMoved(true)
               setConfirming(true)

@@ -81,14 +81,14 @@ export function CommentSection({ chatId, status, comments, onPosted }: Props) {
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? `${id}-error` : undefined}
             rows={4}
-            className="w-full border border-rule bg-ink p-3 text-cream focus-visible:border-champagne/85 focus-visible:outline-none aria-invalid:border-destructive"
+            className="w-full border border-rule bg-ink p-3 text-cream focus-visible:border-champagne focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne aria-invalid:border-destructive"
           />
           {error && (
             <p id={`${id}-error`} role="alert" className="text-sm text-destructive">
               {error}
             </p>
           )}
-          <button type="submit" disabled={!trimmed || sending} className="self-start border border-champagne/85 px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
+          <button type="submit" disabled={!trimmed || sending} className="self-start border border-champagne/85 px-6 py-3.5 sm:px-10 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
             {sending ? 'Sending…' : 'Send comments'}
           </button>
         </form>
