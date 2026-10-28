@@ -17,19 +17,19 @@ type Props = { intake: Record<string, Value>; status: string; progress?: { colle
 export function OnFileCard({ intake, status, progress }: Props) {
   const sections = SECTIONS.map((s) => ({ ...s, rows: s.fields.filter(([key]) => intake[key] != null && intake[key] !== '') })).filter((s) => s.rows.length > 0)
   return (
-    <section aria-label="On file" className="rounded-3xl bg-velvet-deep/50 px-5 py-5 sm:px-7">
+    <section aria-label="On file" className="border border-rule bg-velvet-deep/50 px-5 py-5 sm:px-7">
       <div className="flex items-baseline justify-between gap-3">
-        <h2 className="font-display text-xl text-champagne">On file</h2>
-        {status === 'intake' && progress && <p className="text-xs text-muted-foreground">{progress.collected} of {progress.total} collected</p>}
+        <h2 className="font-display text-2xl text-cream italic">On file</h2>
+        {status === 'intake' && progress && <p className="font-caslon text-xs tracking-[0.26em] text-mist uppercase">{progress.collected} of {progress.total} collected</p>}
       </div>
       {sections.map((s) => (
         <div key={s.title} className="mt-5">
-          <h3 className="font-display text-base text-foreground">{s.title}</h3>
-          <dl className="mt-2 divide-y divide-champagne/10 text-sm">
+          <h3 className="font-caslon text-xs tracking-[0.3em] text-champagne uppercase">{s.title}</h3>
+          <dl className="mt-2 divide-y divide-rule text-sm">
             {s.rows.map(([key, label]) => (
               <div key={key} className="flex justify-between gap-6 py-2">
-                <dt className="shrink-0 text-muted-foreground">{label}</dt>
-                <dd className="text-right">{show(intake[key])}</dd>
+                <dt className="shrink-0 text-mist">{label}</dt>
+                <dd className="text-right text-cream">{show(intake[key])}</dd>
               </div>
             ))}
           </dl>

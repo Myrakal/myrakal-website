@@ -48,3 +48,11 @@ test('refetches when version changes', async () => {
   rerender(<AttachmentsCard chatId="c1" version={1} />)
   await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2))
 })
+
+test('uses the hairline square card style', () => {
+  global.fetch = jest.fn(() => new Promise(() => {})) as unknown as typeof fetch
+  render(<AttachmentsCard chatId="c1" version={0} />)
+  const card = screen.getByRole('region', { name: 'Your documents' })
+  expect(card.className).toContain('border-rule')
+  expect(card.className).not.toContain('rounded')
+})

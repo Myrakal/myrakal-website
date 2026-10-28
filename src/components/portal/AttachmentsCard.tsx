@@ -32,21 +32,21 @@ export function AttachmentsCard({ chatId, version }: { chatId: string; version: 
   }, [chatId, version])
 
   return (
-    <section aria-label="Your documents" className="rounded-3xl bg-velvet-deep/50 px-5 py-5 sm:px-7">
-      <h2 className="font-display text-xl text-champagne">Your documents</h2>
-      {state.phase === 'loading' && <p role="status" className="mt-4 text-sm text-muted-foreground">Loading…</p>}
+    <section aria-label="Your documents" className="border border-rule bg-velvet-deep/50 px-5 py-5 sm:px-7">
+      <h2 className="font-display text-2xl text-cream italic">Your documents</h2>
+      {state.phase === 'loading' && <p role="status" className="mt-4 text-sm text-mist">Loading…</p>}
       {state.phase === 'error' && <p role="alert" className="mt-4 text-sm text-destructive">We could not load your documents.</p>}
-      {state.phase === 'ready' && state.items.length === 0 && <p className="mt-4 text-sm text-muted-foreground">No documents yet</p>}
+      {state.phase === 'ready' && state.items.length === 0 && <p className="mt-4 text-sm text-mist">No documents yet</p>}
       {state.phase === 'ready' && state.items.length > 0 && (
-        <ul className="mt-3 divide-y divide-champagne/10 text-sm">
+        <ul className="mt-3 divide-y divide-rule text-sm text-cream">
           {state.items.map((item) => (
             <li key={item.path} className="flex items-center justify-between gap-4 py-2">
               <div className="min-w-0">
                 <p className="truncate">{item.name}</p>
-                <p className="text-xs text-muted-foreground">{formatSize(item.size)} · {formatDate(item.createdAt)}</p>
+                <p className="text-xs text-mist">{formatSize(item.size)} · {formatDate(item.createdAt)}</p>
               </div>
               {item.url && (
-                <a href={item.url} target="_blank" rel="noopener noreferrer" className="shrink-0 text-champagne underline-offset-4 hover:underline">
+                <a href={item.url} target="_blank" rel="noopener noreferrer" className="shrink-0 font-caslon text-xs tracking-[0.26em] text-champagne uppercase underline-offset-4 hover:underline">
                   View
                 </a>
               )}

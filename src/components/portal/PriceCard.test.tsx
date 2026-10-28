@@ -24,3 +24,10 @@ test('says payment is due once the plan is approved', () => {
   render(<PriceCard status="awaiting_payment" priceCents={15000} paid={false} />)
   expect(screen.getByText('Payment is due')).toBeInTheDocument()
 })
+
+test('uses the hairline square card style', () => {
+  render(<PriceCard status="plan_ready" priceCents={5000} paid={false} />)
+  const card = screen.getByRole('region', { name: 'Your price' })
+  expect(card.className).toContain('border-rule')
+  expect(card.className).not.toContain('rounded')
+})
