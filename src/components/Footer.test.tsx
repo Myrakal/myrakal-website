@@ -56,10 +56,19 @@ describe('Footer', () => {
 
   it('offers the talk-with-us address with copy and webmail fallbacks', () => {
     render(<Footer />)
-    expect(screen.getAllByText(TALK_EMAIL).length).toBeGreaterThan(0)
+    expect(screen.getByText(TALK_EMAIL)).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Copy address' })).toBeTruthy()
     const gmail = new URL(screen.getByRole('link', { name: 'Open in Gmail' }).getAttribute('href')!)
     expect(gmail.searchParams.get('to')).toBe(TALK_EMAIL)
+  })
+
+  it('prints the address exactly once whether or not the fallback is shown', () => {
+    for (const talk of [true, false]) {
+      const { container, unmount } = render(<Footer talk={talk} />)
+      expect(container.textContent!.split(TALK_EMAIL).length - 1).toBe(1)
+      expect(screen.getByRole('link', { name: TALK_EMAIL }).getAttribute('href')).toBe(`mailto:${TALK_EMAIL}`)
+      unmount()
+    }
   })
 
   it('can leave the talk-with-us fallback out', () => {

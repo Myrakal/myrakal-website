@@ -29,10 +29,10 @@ export function Footer({ talk = true }: { talk?: boolean }) {
             <a href="/" aria-label="Myrakal home" className={`inline-block ${link}`}>
               <img src={wordmark.src} alt="" className="h-8 w-auto opacity-90 sm:h-9" />
             </a>
-            <a href="mailto:eshaansood@myrakal.com" className={`block text-[15px] ${link}`}>
-              eshaansood@myrakal.com
+            <a href={`mailto:${TALK_EMAIL}`} className={`block text-[15px] ${link}`}>
+              {TALK_EMAIL}
             </a>
-            {talk && <MailFallback address={TALK_EMAIL} subject={TALK_SUBJECT} body={TALK_BODY} />}
+            {talk && <MailFallback hideAddress address={TALK_EMAIL} subject={TALK_SUBJECT} body={TALK_BODY} />}
             <p className="text-[15px]">Chicago, Illinois</p>
           </div>
           <div className="flex flex-wrap gap-x-10 gap-y-8 sm:gap-x-20">
