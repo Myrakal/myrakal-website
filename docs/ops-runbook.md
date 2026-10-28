@@ -62,7 +62,7 @@ The patient page only serves a signed link to the PDF while the status is `plan_
 
 ## Set a custom price
 
-The default is env `PLAN_PRICE_CENTS` (15000 = $150.00). To override for one chat, before the patient approves:
+The default is env `PLAN_PRICE_CENTS` (5000 = $50.00). To override for one chat, before the patient approves:
 
 ```sql
 update chats set price_cents = 42000 where id = '<chat id>';

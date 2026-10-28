@@ -26,7 +26,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
   const origin = request.headers.get('origin') ?? new URL(request.url).origin
   const configured = Number(process.env.PLAN_PRICE_CENTS)
-  const fallback = Number.isInteger(configured) && configured >= 50 ? configured : 15000
+  const fallback = Number.isInteger(configured) && configured >= 50 ? configured : 5000
   const session = await stripe().checkout.sessions.create({
     mode: 'payment',
     client_reference_id: id,
