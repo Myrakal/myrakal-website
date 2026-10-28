@@ -11,7 +11,7 @@ import { LoginForm } from '@/components/auth/LoginForm'
 
 const read = (path: string) => readFileSync(join(__dirname, path), 'utf8')
 
-describe('text contrast on cream surfaces', () => {
+describe('form control text contrast', () => {
   it('sets a dark text colour on every form control by default', () => {
     const css = read('index.css')
     const rule = css.match(/input,\s*textarea,\s*select\s*\{[^}]*\}/)?.[0] ?? ''
@@ -22,15 +22,18 @@ describe('text contrast on cream surfaces', () => {
     expect(read('index.css')).toMatch(/::placeholder\s*\{[^}]*--card-foreground/)
   })
 
-  it('gives AuthField inputs dark text on the cream background', () => {
+  it('gives AuthField inputs light text on the dark ink background', () => {
     render(<AuthField label="Email" />)
-    expect(screen.getByLabelText('Email').className).toMatch(/\btext-card-foreground\b/)
+    const { className } = screen.getByLabelText('Email')
+    expect(className).toMatch(/\bbg-ink\b/)
+    expect(className).toMatch(/\btext-cream\b/)
   })
 
-  it('gives the login form inputs dark text on the cream background', () => {
+  it('gives the login form inputs light text on the dark ink background', () => {
     render(<LoginForm />)
     for (const field of [screen.getByLabelText('Email'), screen.getByLabelText('Password')]) {
-      expect(field.className).toMatch(/\btext-card-foreground\b/)
+      expect(field.className).toMatch(/\bbg-ink\b/)
+      expect(field.className).toMatch(/\btext-cream\b/)
     }
   })
 })
