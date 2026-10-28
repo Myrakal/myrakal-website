@@ -52,7 +52,7 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
         <a
           href="/dashboard"
           aria-label="New chat"
-          className={cn('inline-flex items-center justify-center gap-2 border border-champagne/85 bg-ink/35 font-caslon text-xs tracking-[0.26em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne', collapsed ? 'h-11 px-4 lg:size-8 lg:px-0' : 'h-11 px-4')}
+          className={cn('inline-flex items-center justify-center gap-2 [&_svg]:size-4 [&_svg]:shrink-0 border border-champagne/85 bg-ink/35 font-caslon text-xs tracking-[0.26em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne', collapsed ? 'h-11 px-4 lg:size-8 lg:px-0' : 'h-11 px-4')}
         >
           <Plus aria-hidden="true" />
           <span className={cn(collapsed && 'lg:hidden')}>New chat</span>
@@ -82,7 +82,7 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
                   <time dateTime={chat.createdAt} className="font-caslon text-xs tracking-[0.12em] text-mist">
                     {new Date(chat.createdAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}
                   </time>
-                  <span className="border border-champagne/50 px-2 py-0.5 font-caslon text-[10px] tracking-[0.18em] text-champagne uppercase">{STATUS_LABELS[chat.status] ?? chat.status}</span>
+                  <span className="border border-champagne/50 px-2 py-0.5 font-caslon text-xs tracking-[0.14em] text-champagne uppercase">{STATUS_LABELS[chat.status] ?? chat.status}</span>
                 </span>
               </a>
             </li>

@@ -77,7 +77,7 @@ export function Workspace({ chatId }: { chatId: string | null }) {
             >
               {caseId !== null && lockedId === caseId ? (
                 <>
-                  <p role="status" className="my-6 text-center font-caslon text-xs tracking-[0.2em] text-mist uppercase">
+                  <p role="status" className="my-6 text-center text-sm text-mist">
                     This conversation is closed. A doctor is working on your case, and updates appear in the case details.
                   </p>
                   <div role="log" aria-label="Conversation" className="flex flex-col gap-4 pb-8">
