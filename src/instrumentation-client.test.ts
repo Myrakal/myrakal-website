@@ -37,6 +37,15 @@ describe('analytics', () => {
     )
   })
 
+  it('injects its scripts into the head so they stay out of the hydrated body', async () => {
+    process.env['NEXT_PUBLIC_POSTHOG_KEY'] = 'phc_test'
+    const { posthog } = await load()
+    expect(posthog.init).toHaveBeenCalledWith(
+      'phc_test',
+      expect.objectContaining({ external_scripts_inject_target: 'head' }),
+    )
+  })
+
   it('does nothing without a key', async () => {
     process.env['NEXT_PUBLIC_POSTHOG_KEY'] = ''
     const { posthog } = await load()

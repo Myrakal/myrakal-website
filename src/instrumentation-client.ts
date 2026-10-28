@@ -9,5 +9,6 @@ if (key) {
     autocapture: false,
     disable_session_recording: true,
     person_profiles: 'identified_only',
+    external_scripts_inject_target: 'head',
   })
 }
