@@ -112,4 +112,19 @@ describe('Navbar', () => {
     expect(screen.getByRole('link', { name }).getAttribute('aria-current')).toBe('page')
     mockPathname = '/'
   })
+
+  it('keeps the logo left of the call to action on phones', () => {
+    render(<Navbar />)
+    const classes = screen.getByRole('banner').className.split(' ')
+    expect(classes).toContain('justify-start')
+    expect(classes).toContain('sm:justify-center')
+  })
+
+  it('hides the scrolled tagline on phones so it cannot collide with the actions', () => {
+    render(<Navbar />)
+    scrollTo(200)
+    const classes = screen.getByText('Healthcare, as it should be').className.split(' ')
+    expect(classes).toContain('hidden')
+    expect(classes).toContain('sm:inline')
+  })
 })
