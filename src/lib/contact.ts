@@ -1,4 +1,4 @@
-export const TALK_EMAIL = 'anikuppili@myrakal.com'
+export const TALK_EMAIL = 'eshaansood@myrakal.com'
 export const TALK_SUBJECT = 'Talking with Myrakal'
 export const TALK_BODY = "Hey, I'm looking to "
 

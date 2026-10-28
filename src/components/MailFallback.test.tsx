@@ -61,15 +61,15 @@ describe('MailFallback', () => {
   })
 
   it('can target another address and prefill the body', async () => {
-    render(<MailFallback subject="Talking with Myrakal" address="anikuppili@myrakal.com" body="Hey, I'm looking to " />)
-    expect(screen.getByText('anikuppili@myrakal.com')).toBeTruthy()
+    render(<MailFallback subject="Talking with Myrakal" address="eshaansood@myrakal.com" body="Hey, I'm looking to " />)
+    expect(screen.getByText('eshaansood@myrakal.com')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Copy address' }))
-    expect(writeText).toHaveBeenCalledWith('anikuppili@myrakal.com')
+    expect(writeText).toHaveBeenCalledWith('eshaansood@myrakal.com')
     const g = new URL(screen.getByRole('link', { name: 'Open in Gmail' }).getAttribute('href')!)
     const o = new URL(screen.getByRole('link', { name: 'Open in Outlook' }).getAttribute('href')!)
-    expect(g.searchParams.get('to')).toBe('anikuppili@myrakal.com')
+    expect(g.searchParams.get('to')).toBe('eshaansood@myrakal.com')
     expect(g.searchParams.get('body')).toBe("Hey, I'm looking to ")
-    expect(o.searchParams.get('to')).toBe('anikuppili@myrakal.com')
+    expect(o.searchParams.get('to')).toBe('eshaansood@myrakal.com')
     expect(o.searchParams.get('body')).toBe("Hey, I'm looking to ")
   })
 

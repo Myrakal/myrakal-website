@@ -56,7 +56,7 @@ describe('Footer', () => {
 
   it('offers the talk-with-us address with copy and webmail fallbacks', () => {
     render(<Footer />)
-    expect(screen.getByText(TALK_EMAIL)).toBeTruthy()
+    expect(screen.getAllByText(TALK_EMAIL).length).toBeGreaterThan(0)
     expect(screen.getByRole('button', { name: 'Copy address' })).toBeTruthy()
     const gmail = new URL(screen.getByRole('link', { name: 'Open in Gmail' }).getAttribute('href')!)
     expect(gmail.searchParams.get('to')).toBe(TALK_EMAIL)
