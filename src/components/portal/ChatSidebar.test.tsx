@@ -54,6 +54,8 @@ describe('ChatSidebar', () => {
     expect(active.className).toContain('border-champagne')
     expect(active.className).not.toContain('rounded')
     expect(screen.getByRole('navigation').className).toContain('border-rule')
+    expect(screen.getByRole('navigation').className).toContain('bg-ink')
+    expect(screen.getByRole('navigation').className).not.toMatch(/bg-card|velvet/)
     expect(screen.getByRole('link', { name: /Dental implants/ }).getAttribute('aria-current')).toBeNull()
   })
 

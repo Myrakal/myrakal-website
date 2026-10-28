@@ -38,7 +38,7 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
   }, [router])
 
   return (
-    <nav aria-label="Your chats" className={cn('flex shrink-0 flex-col gap-4 border-r border-rule bg-velvet-deep/40 p-3 h-full min-h-0', 'w-72', collapsed && 'lg:w-16 lg:items-center')}>
+    <nav aria-label="Your chats" className={cn('flex shrink-0 flex-col gap-4 border-r border-rule bg-ink p-3 h-full min-h-0', 'w-72', collapsed && 'lg:w-16 lg:items-center')}>
       <div className={cn('flex items-center gap-2', 'justify-between', collapsed && 'lg:flex-col lg:justify-start')}>
         <button
           type="button"
