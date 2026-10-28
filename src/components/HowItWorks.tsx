@@ -1,68 +1,63 @@
-import glass from '@/assets/scene-glass.webp'
-import glassSmall from '@/assets/scene-glass-960.webp'
-import glasses from '@/assets/scene-glasses.webp'
-import glassesSmall from '@/assets/scene-glasses-960.webp'
-import pen from '@/assets/scene-pen.webp'
-import penSmall from '@/assets/scene-pen-960.webp'
-import watch from '@/assets/scene-watch.webp'
-import watchSmall from '@/assets/scene-watch-960.webp'
-import { Closing } from '@/components/Closing'
+import braid from '@/assets/liquid-braid.webp'
+import braidSmall from '@/assets/liquid-braid-960.webp'
+import ribbons from '@/assets/liquid-ribbons.webp'
+import ribbonsSmall from '@/assets/liquid-ribbons-960.webp'
+import ripple from '@/assets/liquid-ripple.webp'
+import rippleSmall from '@/assets/liquid-ripple-960.webp'
+import sphere from '@/assets/liquid-sphere.webp'
+import sphereSmall from '@/assets/liquid-sphere-960.webp'
 import { Scene } from '@/components/Scene'
-import { ScrollScenes } from '@/components/ScrollScenes'
 
 export function HowItWorks() {
   return (
-    <section aria-labelledby="how-it-works">
-      <ScrollScenes>
-        <div className="flex min-h-[60svh] flex-col items-center justify-center bg-charcoal px-6 text-center">
-          <p className="font-grotesk text-xs tracking-[0.3em] text-champagne uppercase">How it works</p>
-          <h2 id="how-it-works" className="mx-auto mt-6 max-w-3xl font-display text-4xl leading-tight text-cream sm:text-6xl">
-            Any care, at home or abroad, <i className="text-champagne">for less.</i>
-          </h2>
-        </div>
-        <Scene
-          image={pen.src}
-          imageSmall={penSmall.src}
-          alt="A claret fountain pen with a gold band and clip resting on a cream correspondence card"
-          textSide="left"
-          numeral="I"
-          title="Tell us what you need"
-        >
-          Come with or without a diagnosis. Our AI gathers your history, labs, imaging, and insurance.
-        </Scene>
-        <Scene
-          image={glasses.src}
-          imageSmall={glassesSmall.src}
-          alt="Gold-rimmed reading glasses resting on a closed claret leather folder"
-          textSide="right"
-          numeral="II"
-          title="A licensed doctor reviews"
-        >
-          A licensed doctor reviews your case for a flat $150, credited toward your treatment.
-        </Scene>
-        <Scene
-          image={watch.src}
-          imageSmall={watchSmall.src}
-          alt="A slim gold dress watch with a blank cream dial lying on its side"
-          textSide="left"
-          numeral="III"
-          title="Everything, arranged"
-        >
-          Choose care at home, abroad, or both. We book the appointments, travel, and stay, and find your prescriptions
-          for less.
-        </Scene>
-        <Scene
-          image={glass.src}
-          imageSmall={glassSmall.src}
-          alt="A cut crystal glass of water with a slice of blood orange, casting warm light across the linen"
-          textSide="right"
-          numeral="IV"
-          title="Recover beautifully"
-        >
-          Rest wherever you choose, with check-ins and aftercare along the way.
-        </Scene>
-        <Closing />
-      </ScrollScenes>
+    <section aria-labelledby="how-it-works" className="bg-ink">
+      <div className="flex flex-col items-center gap-6 px-6 pt-32 pb-24 text-center sm:px-12 lg:pt-40 lg:pb-28">
+        <p className="font-caslon text-xs tracking-[0.32em] text-champagne uppercase">How it works</p>
+        <h2 id="how-it-works" className="max-w-4xl font-display text-4xl leading-tight text-cream sm:text-6xl lg:text-7xl">
+          Any care, at home or abroad, <i className="text-champagne">for less.</i>
+        </h2>
+      </div>
+      <Scene
+        image={braid}
+        imageSmall={braidSmall}
+        alt="Two ribbons of claret and gold liquid braiding together against the dark"
+        textSide="right"
+        numeral="I"
+        title="Tell us what you need"
+      >
+        Come with or without a diagnosis. Our AI gathers your history, labs, imaging, and insurance.
+      </Scene>
+      <Scene
+        image={sphere}
+        imageSmall={sphereSmall}
+        alt="A sphere of translucent claret liquid suspended above a still surface, lit with gold"
+        textSide="left"
+        numeral="II"
+        title="Get a doctor’s review"
+      >
+        A licensed doctor reviews your case for a flat $50, credited toward your treatment.
+      </Scene>
+      <Scene
+        image={ribbons}
+        imageSmall={ribbonsSmall}
+        alt="Four ribbons of translucent claret liquid flowing together in a gentle wave, edged with gold"
+        textSide="right"
+        numeral="III"
+        title="Choose your care"
+      >
+        Choose care at home, abroad, or both. We book the appointments, travel, and stay, and find your prescriptions
+        for less.
+      </Scene>
+      <Scene
+        image={ripple}
+        imageSmall={rippleSmall}
+        alt="A still claret surface with a single ripple spreading outward, lit with gold"
+        textSide="left"
+        numeral="IV"
+        title="Recover beautifully"
+      >
+        Rest wherever you choose, with check-ins and aftercare along the way.
+      </Scene>
     </section>
   )
 }

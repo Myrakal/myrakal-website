@@ -36,7 +36,7 @@ describe('Individual page', () => {
     expect(within(rows[0]).getAllByRole('columnheader').map((c) => c.textContent)).toEqual(['Item', 'Price', 'Notes'])
     expect(rows.slice(1).map((r) => within(r).getByRole('rowheader').textContent)).toEqual([
       'Doctor review',
-      'Plan',
+      'Your plan',
       'Financing',
       'Insurance',
     ])
@@ -84,7 +84,7 @@ describe('Individual page', () => {
   it('names the pricing table and heads each row for screen readers', () => {
     render(<Individual />)
     const table = screen.getByRole('table', { name: /what you pay/i })
-    for (const item of ['Doctor review', 'Plan', 'Financing', 'Insurance'])
+    for (const item of ['Doctor review', 'Your plan', 'Financing', 'Insurance'])
       expect(within(table).getByRole('rowheader', { name: item })).toBeTruthy()
   })
 
