@@ -151,7 +151,7 @@ export default function Individual() {
         </section>
 
         <section aria-label="Get started" className="relative isolate flex h-[440px] flex-col items-center gap-7 overflow-hidden px-6 pt-16 text-center sm:h-[520px] sm:pt-20">
-          <img src={horizon.src} srcSet={`${horizonSmall.src} 960w, ${horizon.src} 1672w`} sizes="100vw" alt="" loading="lazy" className="absolute inset-0 -z-20 size-full object-cover object-top" />
+          <img src={horizon.src} srcSet={`${horizonSmall.src} 960w, ${horizon.src} 1672w`} sizes="100vw" alt="" loading="lazy" className="absolute inset-0 -z-20 size-full object-cover object-[50%_70%]" />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-ink/25" />
           <p className="font-display text-5xl italic sm:text-7xl">Healthcare, as it should be.</p>
           <TalkWithUs />

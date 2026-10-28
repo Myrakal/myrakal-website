@@ -3,12 +3,12 @@ import { render, screen } from '@testing-library/react'
 import { Closing } from '@/components/Closing'
 
 describe('Closing', () => {
-  it('ends on the glowing horizon, anchored to the top so the glow sits low', () => {
+  it('ends on the glowing horizon, shifted up so the lake stays in view', () => {
     render(<Closing />)
     const img = screen.getByRole('img', { name: /horizon/i })
     expect(img.getAttribute('src')).toMatch(/liquid-horizon/)
     expect(img.getAttribute('srcset')).toMatch(/liquid-horizon-960/)
-    expect(img.className).toMatch(/object-top/)
+    expect(img.className).toMatch(/object-\[50%_70%\]/)
   })
 
   it('places the copy in the dark upper part under a light ink overlay', () => {
