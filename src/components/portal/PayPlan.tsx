@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
 import { formatUsd } from './statusCopy'
 
 type Props = {
@@ -69,16 +68,16 @@ export function PayPlan({ chatId, status, priceCents, returned, onStatus, onRedi
 
   if (waiting) {
     return (
-      <section id="payment" aria-label="Payment" className="mt-8">
-        <p role="status" className="text-sm">
+      <section id="payment" aria-label="Payment" className="mt-10 border-t border-rule pt-8">
+        <p role="status" className="text-sm text-mist">
           {gaveUp
             ? 'Your payment is taking longer than usual to confirm. Please check again in a few minutes before paying again.'
             : 'Thank you. We are confirming your payment…'}
         </p>
         {gaveUp && (
-          <Button type="button" variant="outline" className="mt-4" onClick={() => setRetry(true)}>
+          <button type="button" className="mt-4 border border-champagne/85 px-6 py-3.5 sm:px-10 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50" onClick={() => setRetry(true)}>
             I did not finish paying
-          </Button>
+          </button>
         )}
       </section>
     )
@@ -111,17 +110,17 @@ export function PayPlan({ chatId, status, priceCents, returned, onStatus, onRedi
   const label = priceCents === null ? 'Pay now' : `Pay ${formatUsd(priceCents)}`
 
   return (
-    <section id="payment" aria-label="Payment" className="mt-8">
-      <h2 className="text-xl">Ready to book?</h2>
-      <p className="mt-2 text-sm">Your payment covers all reservation costs. You will pay securely with Stripe.</p>
+    <section id="payment" aria-label="Payment" className="mt-10 border-t border-rule pt-8">
+      <h2 className="font-display text-3xl text-cream italic">Ready to book?</h2>
+      <p className="mt-3 text-sm text-mist">Your payment covers all reservation costs. You will pay securely with Stripe.</p>
       {error && (
         <p role="alert" className="mt-3 text-sm text-destructive">
           {error}
         </p>
       )}
-      <Button type="button" onClick={pay} disabled={sending || blocked} className="mt-4">
+      <button type="button" onClick={pay} disabled={sending || blocked} className="mt-5 border border-champagne/85 bg-champagne px-6 py-3.5 sm:px-10 font-caslon text-xs tracking-[0.28em] text-ink uppercase transition-colors hover:bg-transparent hover:text-champagne focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
         {sending ? 'Redirecting…' : label}
-      </Button>
+      </button>
     </section>
   )
 }

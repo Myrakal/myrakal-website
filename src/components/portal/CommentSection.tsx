@@ -2,8 +2,6 @@
 
 import { useId, useState, type FormEvent } from 'react'
 
-import { Button } from '@/components/ui/button'
-
 export type PlanComment = { id: string; text: string; createdAt: string }
 
 type Props = {
@@ -57,12 +55,12 @@ export function CommentSection({ chatId, status, comments, onPosted }: Props) {
 
   return (
     <section aria-label="Comments" className="mt-8">
-      <h2 className="text-xl">Your comments</h2>
+      <h2 className="font-display text-3xl text-cream italic">Your comments</h2>
       {comments.length > 0 && (
         <ul aria-label="Previous comments" className="mt-4 flex flex-col gap-3">
           {comments.map((c) => (
-            <li key={c.id} className="rounded-2xl border border-border bg-card px-5 py-3 text-card-foreground">
-              <time dateTime={c.createdAt} className="block text-xs text-card-foreground/70">
+            <li key={c.id} className="border border-rule bg-velvet-deep/40 px-5 py-4 text-cream">
+              <time dateTime={c.createdAt} className="block font-caslon text-xs tracking-[0.2em] text-mist uppercase">
                 {new Date(c.createdAt).toLocaleString()}
               </time>
               <p className="mt-1 break-words whitespace-pre-wrap">{c.text}</p>
@@ -72,7 +70,7 @@ export function CommentSection({ chatId, status, comments, onPosted }: Props) {
       )}
       {canComment && (
         <form onSubmit={submit} className="mt-4 flex flex-col gap-3">
-          <label htmlFor={id} className="text-sm font-medium">
+          <label htmlFor={id} className="font-caslon text-xs tracking-[0.26em] text-champagne uppercase">
             Your comments on the plan
           </label>
           <textarea
@@ -83,16 +81,16 @@ export function CommentSection({ chatId, status, comments, onPosted }: Props) {
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? `${id}-error` : undefined}
             rows={4}
-            className="w-full rounded-2xl border border-border bg-card p-3 text-card-foreground focus-visible:ring-2 focus-visible:ring-foreground/40 focus-visible:outline-none"
+            className="w-full border border-rule bg-ink p-3 text-cream focus-visible:border-champagne focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne aria-invalid:border-destructive"
           />
           {error && (
             <p id={`${id}-error`} role="alert" className="text-sm text-destructive">
               {error}
             </p>
           )}
-          <Button type="submit" disabled={!trimmed || sending} className="self-start">
+          <button type="submit" disabled={!trimmed || sending} className="self-start border border-champagne/85 px-6 py-3.5 sm:px-10 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
             {sending ? 'Sending…' : 'Send comments'}
-          </Button>
+          </button>
         </form>
       )}
     </section>

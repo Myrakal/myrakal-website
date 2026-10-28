@@ -24,6 +24,13 @@ afterAll(() => {
 })
 
 describe('ApprovePlan', () => {
+  it('styles the approve button as a square gold call to action', () => {
+    setup()
+    const button = screen.getByRole('button', { name: /^approve plan$/i })
+    expect(button.className).toContain('bg-champagne')
+    expect(button.className).not.toContain('rounded')
+  })
+
   it('shows the approve button in plan_ready', () => {
     setup()
     expect(screen.getByRole('button', { name: /^approve plan$/i })).toBeTruthy()
