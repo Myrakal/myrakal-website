@@ -83,7 +83,7 @@ export function ResetPasswordForm() {
     return (
       <p className="mt-8 text-sm text-mist">
         This reset link is invalid or has expired.{' '}
-        <a href="/forgot-password" className="text-champagne underline underline-offset-4 hover:text-cream">
+        <a href="/forgot-password" className="text-champagne underline underline-offset-4 hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne">
           Request a new reset link
         </a>
       </p>

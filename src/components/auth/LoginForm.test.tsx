@@ -118,7 +118,7 @@ describe('LoginForm', () => {
     expect(submit.className).toContain('border-champagne')
     expect(submit.className).not.toContain('rounded')
     const input = screen.getByLabelText('Email')
-    expect(input.className).toContain('border-rule')
+    expect(input.className).toContain('border-champagne')
     expect(input.className).not.toContain('rounded')
     expect(screen.getByRole('heading', { name: 'Welcome back' }).className).toContain('italic')
   })

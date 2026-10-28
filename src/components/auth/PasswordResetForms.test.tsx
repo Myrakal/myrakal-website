@@ -99,6 +99,6 @@ describe('reset form styling', () => {
     const submit = screen.getByRole('button', { name: 'Send reset link' })
     expect(submit.className).toContain('border-champagne')
     expect(submit.className).not.toContain('rounded')
-    expect(screen.getByLabelText('Email').className).toContain('border-rule')
+    expect(screen.getByLabelText('Email').className).toContain('border-champagne')
   })
 })
