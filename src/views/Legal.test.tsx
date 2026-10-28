@@ -1,4 +1,9 @@
+jest.mock('@/hooks/useSession', () => ({ useSession: () => ({ user: null, loading: false }) }))
+jest.mock('@/lib/supabase', () => ({ getSupabase: () => null }))
+jest.mock('next/navigation', () => ({ usePathname: () => '/privacy/' }))
+
 import { render } from '@testing-library/react'
+import Accessibility from '@/views/Accessibility'
 import Contact from '@/views/Contact'
 import Privacy from '@/views/Privacy'
 import Terms from '@/views/Terms'
@@ -24,5 +29,19 @@ describe('legal pages reflect the intake and consult product', () => {
     for (const term of [/intake/i, /consult/i, /licensed (doctor|physician)/i, /\bAI\b/])
       expect(t).toMatch(term)
     expect(t).not.toMatch(/does not currently complete medical bookings/i)
+  })
+})
+
+describe('legal pages match the site design', () => {
+  it('use the site navigation, the ink ground and Caslon body text', () => {
+    for (const page of [<Terms key="terms" />, <Privacy key="privacy" />, <Contact key="contact" />, <Accessibility key="a11y" />]) {
+      const { container, unmount } = render(page)
+      expect(container.querySelector('nav[aria-label="Primary"]')).not.toBeNull()
+      const main = container.querySelector('main')!
+      expect(main.className).toMatch(/bg-ink/)
+      expect(main.className).toMatch(/font-caslon/)
+      expect(container.innerHTML).not.toMatch(/rounded-2xl|font-heading/)
+      unmount()
+    }
   })
 })
