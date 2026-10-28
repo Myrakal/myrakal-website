@@ -39,6 +39,21 @@ describe('Velvet + Pearl palette', () => {
     }
   })
 
+  it('defines the ink ground, mist text and rule colors', () => {
+    expect(token('ink')?.toLowerCase()).toBe('#120709')
+    expect(token('mist')?.toLowerCase()).toBe('#c9b8ad')
+    expect(token('rule')?.toLowerCase()).toBe('#3a1419')
+  })
+
+  it('sets the nav and footer in Caslon on the ink ground', () => {
+    for (const file of ['Navbar', 'Footer']) {
+      const source = read(`./components/${file}.tsx`)
+      expect(source).toMatch(/font-caslon/)
+      expect(source).not.toMatch(/font-grotesk/)
+      expect(source).toMatch(/bg-ink/)
+    }
+  })
+
   it('leaves no legacy hardcoded white/black in components', () => {
     expect(howItWorks).not.toMatch(/\bbg-white\b|ring-black/)
   })

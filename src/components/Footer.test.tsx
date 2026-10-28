@@ -40,6 +40,12 @@ describe('Footer', () => {
     expect(container.textContent).toMatch(/Chicago, Illinois/)
   })
 
+  it('splits section and legal links into separate labelled groups', () => {
+    render(<Footer />)
+    expect(screen.getByRole('navigation', { name: 'Sections' })).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: 'Legal' })).toBeInTheDocument()
+  })
+
   it('shows the wordmark as a link home', () => {
     const { container } = render(<Footer />)
     const home = screen.getByRole('link', { name: 'Myrakal home' })

@@ -9,7 +9,7 @@ import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { getSupabase } from '@/lib/supabase'
 
 const authLink =
-  'font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-foreground uppercase underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne'
+  'font-caslon text-xs tracking-[0.26em] whitespace-nowrap text-foreground uppercase underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne'
 
 const SECTIONS = [
   ['Care', '/care'],
@@ -18,7 +18,7 @@ const SECTIONS = [
 ]
 
 const navItem =
-  'font-grotesk text-[11px] tracking-[0.2em] text-foreground uppercase transition-colors hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
+  'font-caslon text-xs tracking-[0.26em] text-foreground uppercase decoration-champagne/60 underline-offset-8 transition-colors hover:text-champagne aria-[current=page]:text-champagne aria-[current=page]:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -36,7 +36,7 @@ export function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 flex px-4 py-3 transition-colors sm:px-12 sm:py-5 ${
-        scrolled ? 'justify-start bg-background pr-56 sm:pr-[34rem]' : 'justify-center bg-transparent'
+        scrolled ? 'justify-start border-b border-rule bg-ink pr-56 sm:pr-[34rem]' : 'justify-center bg-transparent'
       }`}
     >
       <motion.a
@@ -56,7 +56,7 @@ export function Navbar() {
             key="tagline"
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="truncate text-sm font-medium text-foreground sm:text-lg lg:text-2xl"
+            className="truncate font-display text-sm text-champagne italic sm:text-lg lg:text-2xl"
           >
             Healthcare, as it should be
           </motion.span>
@@ -86,7 +86,7 @@ export function Navbar() {
         )}
         <a
           href={TALK_WITH_US_HREF}
-          className="border border-champagne/85 px-4 py-2 font-grotesk text-[11px] tracking-[0.2em] whitespace-nowrap text-champagne uppercase transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:px-5"
+          className="border border-champagne/85 px-4 py-2 font-caslon text-xs tracking-[0.26em] whitespace-nowrap text-champagne uppercase transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:px-5"
         >
           Talk with us<span className="sr-only"> (opens email)</span>
         </a>

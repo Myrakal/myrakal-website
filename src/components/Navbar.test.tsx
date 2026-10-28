@@ -82,10 +82,10 @@ describe('Navbar', () => {
     expect(screen.getByRole('link', { name: 'Myrakal home' })).toBeTruthy()
   })
 
-  it('turns solid once scrolled', () => {
+  it('turns solid ink once scrolled', () => {
     const { container } = render(<Navbar />)
     scrollTo(200)
-    expect(container.querySelector('header')!.className).toMatch(/bg-background/)
+    expect(container.querySelector('header')!.className).toMatch(/bg-ink/)
   })
 
   it('shows Care, Individual and Business before Talk with us', () => {
