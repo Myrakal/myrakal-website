@@ -23,9 +23,9 @@ export function HowItWorks() {
         alt="Two ribbons of claret and gold liquid braiding together against the dark"
         textSide="right"
         numeral="I"
-        title="Tell us what you need"
+        title="Doctors"
       >
-        Come with or without a diagnosis. Our AI gathers your history, labs, imaging, and insurance.
+        We find the right doctor for your treatment, matched to your needs, your schedule and your budget.
       </Scene>
       <Scene
         image={sphere}
@@ -33,9 +33,9 @@ export function HowItWorks() {
         alt="A sphere of translucent claret liquid suspended above a still surface, lit with gold"
         textSide="left"
         numeral="II"
-        title="Get a doctor’s review"
+        title="Insurance and financing"
       >
-        A licensed doctor reviews your case for a flat $50, credited toward your treatment.
+        We work with your insurance to cover what it can, and help you arrange financing for the rest.
       </Scene>
       <Scene
         image={ribbons}
@@ -43,10 +43,10 @@ export function HowItWorks() {
         alt="Four ribbons of translucent claret liquid flowing together in a gentle wave, edged with gold"
         textSide="right"
         numeral="III"
-        title="Choose your care"
+        title="Booking and travel"
       >
-        Choose care at home, abroad, or both. We book the appointments, travel, and stay, and find your prescriptions
-        for less.
+        We compare prices, fill out the paperwork, and book your appointments, and your hotel and transport when you
+        travel.
       </Scene>
       <Scene
         image={ripple}
@@ -54,9 +54,9 @@ export function HowItWorks() {
         alt="A still claret surface with a single ripple spreading outward, lit with gold"
         textSide="left"
         numeral="IV"
-        title="Recover beautifully"
+        title="Aftercare and prescriptions"
       >
-        Rest wherever you choose, with check-ins and aftercare along the way.
+        We follow up after treatment, coordinate what comes next, and deliver your medications at the best price.
       </Scene>
     </section>
   )
