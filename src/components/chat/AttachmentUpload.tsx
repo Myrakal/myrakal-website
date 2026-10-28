@@ -24,9 +24,9 @@ export function AttachmentUpload({ label, onUpload, onSkip, busy = false }: Prop
   }
 
   return (
-    <div className="mb-3 rounded-3xl border border-dashed border-border bg-card p-4 text-card-foreground">
-      <p className="text-sm font-medium">Please upload {label}</p>
-      <p className="mt-1 text-xs text-card-foreground/80">
+    <div className="mb-3 border border-dashed border-champagne/50 bg-velvet-deep/40 p-4 text-cream">
+      <p className="font-display text-lg text-cream italic">Please upload {label}</p>
+      <p className="mt-1 text-sm leading-6 text-mist">
         Our AI does not read your files. Only your doctor will see them. PDF, JPG, PNG, WEBP or HEIC, up to 10 MB each.
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -41,11 +41,11 @@ export function AttachmentUpload({ label, onUpload, onSkip, busy = false }: Prop
         />
         <label
           htmlFor={id}
-          className={`inline-flex min-h-10 cursor-pointer items-center rounded-full bg-background px-4 text-sm font-medium text-foreground peer-focus-visible:ring-2 peer-focus-visible:ring-card-foreground ${locked ? 'pointer-events-none opacity-60' : ''}`}
+          className={`inline-flex min-h-10 cursor-pointer items-center border border-champagne/85 px-5 font-caslon text-xs tracking-[0.26em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-champagne ${locked ? 'pointer-events-none opacity-60' : ''}`}
         >
           {uploading ? 'Uploading…' : 'Choose files'}
         </label>
-        <Button type="button" variant="ghost" disabled={locked} onClick={() => onSkip(uploaded)} className="cursor-pointer">
+        <Button type="button" variant="ghost" disabled={locked} onClick={() => onSkip(uploaded)} className="cursor-pointer rounded-none font-caslon text-xs tracking-[0.22em] text-mist uppercase hover:bg-transparent hover:text-champagne">
           {uploaded ? 'Done uploading' : "Skip, I don't have this"}
         </Button>
       </div>
