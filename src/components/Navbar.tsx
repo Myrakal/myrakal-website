@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import logo from '@/assets/myrakal-logo.svg'
@@ -24,6 +24,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const { user, loading } = useSession()
   const pathname = usePathname()
+  const reduceMotion = useReducedMotion()
   const authClass = `${authLink} ${scrolled ? 'inline' : 'hidden sm:inline'}`
 
   useEffect(() => {
@@ -51,7 +52,7 @@ export function Navbar() {
         />
         {scrolled && (
           <motion.span
-            initial={{ width: 0, opacity: 0 }}
+            initial={reduceMotion ? false : { width: 0, opacity: 0 }}
             animate={{ width: 'auto', opacity: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className="hidden truncate font-display text-sm text-champagne italic sm:inline-block sm:text-lg lg:text-2xl"

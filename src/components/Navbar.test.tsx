@@ -6,6 +6,9 @@ const mockUseSession = jest.fn(() => ({ user: null, loading: false }))
 jest.mock('@/hooks/useSession', () => ({ useSession: () => mockUseSession() }))
 jest.mock('@/lib/supabase', () => ({ getSupabase: () => ({ auth: { signOut: mockSignOut } }) }))
 
+let mockReduceMotion = false
+jest.mock('motion/react', () => ({ ...jest.requireActual('motion/react'), useReducedMotion: () => mockReduceMotion }))
+
 let mockPathname = '/'
 jest.mock('next/navigation', () => ({ usePathname: () => mockPathname }))
 
@@ -24,6 +27,7 @@ describe('Navbar', () => {
     mockSignOut.mockResolvedValue({ error: null })
     mockUseSession.mockReturnValue({ user: null, loading: false })
     mockPathname = '/'
+    mockReduceMotion = false
   })
 
   it('offers log in to signed-out visitors', () => {
@@ -131,6 +135,15 @@ describe('Navbar', () => {
     expect(tagline.style.width).toBe('0px')
     expect(tagline.style.opacity).toBe('0')
     expect(tagline.className).toMatch(/truncate/)
+  })
+
+  it('shows the tagline at full size straight away when the visitor prefers reduced motion', () => {
+    mockReduceMotion = true
+    render(<Navbar />)
+    scrollTo(200)
+    const tagline = screen.getByText('Healthcare, as it should be')
+    expect(tagline.style.width).not.toBe('0px')
+    expect(tagline.style.opacity).not.toBe('0')
   })
 
   it('hides the scrolled tagline on phones so it cannot collide with the actions', () => {
