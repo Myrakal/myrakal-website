@@ -27,3 +27,10 @@ test('shows collected count only during intake', () => {
   rerender(<OnFileCard intake={intake} status="doctor_review" progress={{ collected: 3, total: 7 }} />)
   expect(screen.queryByText('3 of 7 collected')).not.toBeInTheDocument()
 })
+
+test('uses the hairline square card style', () => {
+  render(<OnFileCard intake={intake} status="doctor_review" />)
+  const card = screen.getByRole('region', { name: 'On file' })
+  expect(card.className).toContain('border-rule')
+  expect(card.className).not.toContain('rounded')
+})

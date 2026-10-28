@@ -28,3 +28,10 @@ describe('CaseJourney', () => {
     expect(container.firstChild).toBeNull()
   })
 })
+
+test('uses the hairline square card style', () => {
+  render(<CaseJourney status="plan_ready" />)
+  const card = screen.getByRole('region', { name: 'Your journey' })
+  expect(card.className).toContain('border-rule')
+  expect(card.className).not.toContain('rounded')
+})

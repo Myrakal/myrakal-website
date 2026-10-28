@@ -50,3 +50,14 @@ describe('CaseHero', () => {
     expect(screen.queryAllByRole('link')).toHaveLength(0)
   })
 })
+
+describe('CaseHero landing style', () => {
+  it('uses square gold-outlined actions', () => {
+    render(<CaseHero chatId="c1" status="plan_ready" />)
+    for (const link of screen.getAllByRole('link')) {
+      expect(link.className).not.toContain('rounded')
+      expect(link.className).toContain('font-caslon')
+    }
+    expect(screen.getByRole('region', { name: 'Case status' }).className).not.toContain('rounded')
+  })
+})

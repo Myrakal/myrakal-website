@@ -4,10 +4,10 @@ export function CaseJourney({ status }: { status: string }) {
   const stage = STAGES[status]
   if (!stage) return null
   return (
-    <section aria-label="Your journey" className="mt-4 rounded-3xl border border-border bg-velvet-deep/40 px-6 py-5 sm:px-8">
+    <section aria-label="Your journey" className="mt-4 border border-rule bg-velvet-deep/40 px-6 py-5 sm:px-8">
       <div className="flex items-baseline justify-between">
-        <h2 className="font-display text-xl">Your journey</h2>
-        <p className="text-sm text-muted-foreground">
+        <h2 className="font-display text-2xl text-cream italic">Your journey</h2>
+        <p className="font-caslon text-xs tracking-[0.26em] text-mist uppercase">
           Step {stage.step + 1} of {STEPS.length}
         </p>
       </div>
@@ -16,8 +16,8 @@ export function CaseJourney({ status }: { status: string }) {
           const state = i < stage.step ? 'done' : i === stage.step ? 'current' : 'todo'
           return (
             <li key={name} aria-current={state === 'current' ? 'step' : undefined} className="flex flex-col gap-2">
-              <span className={`h-1.5 rounded-full ${state === 'todo' ? 'bg-border' : state === 'done' ? 'bg-champagne/60' : 'bg-champagne'}`} />
-              <span className={`text-xs leading-tight max-sm:sr-only ${state === 'current' ? 'font-medium text-foreground' : 'text-muted-foreground'}`}>
+              <span className={`h-px ${state === 'todo' ? 'bg-rule' : state === 'done' ? 'bg-champagne/60' : 'bg-champagne'}`} />
+              <span className={`font-caslon text-[10px] leading-tight tracking-[0.2em] uppercase max-sm:sr-only ${state === 'current' ? 'text-champagne' : 'text-mist'}`}>
                 {name}
                 <span className="sr-only">{state === 'done' ? 'Completed' : state === 'todo' ? 'Upcoming' : null}</span>
               </span>
