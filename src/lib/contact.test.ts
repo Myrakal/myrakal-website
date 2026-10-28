@@ -9,8 +9,8 @@ describe('TALK_WITH_US_HREF', () => {
     expect(decodeURIComponent(url.pathname)).toBe('eshaansood@myrakal.com')
   })
 
-  it('prefills a subject and a body that starts the sentence for the sender', () => {
+  it('prefills a subject and a complete message body', () => {
     expect(url.searchParams.get('subject')).toBeTruthy()
-    expect(url.searchParams.get('body')).toMatch(/^Hey, I'm looking to/)
+    expect(url.searchParams.get('body')).toBe("Hey, I'm looking to get a treatment. Can Myrakal help me make it cheaper?")
   })
 })
