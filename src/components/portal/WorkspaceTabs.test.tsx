@@ -79,6 +79,8 @@ describe('WorkspaceTabs', () => {
     expect(screen.getByRole('tab', { name: 'Case' }).getAttribute('tabindex')).toBe('0')
     expect(screen.getByRole('tab', { name: 'Chat' }).getAttribute('tabindex')).toBe('-1')
     expect(screen.getByRole('tab', { name: 'Case' }).className).toContain('min-h-11')
+    expect(screen.getByRole('tablist').className).toContain('border-rule')
+    expect(screen.getByRole('tab', { name: 'Case' }).className).toContain('font-caslon')
   })
 
   it('switches once to the preferred tab when the user has not chosen one', () => {

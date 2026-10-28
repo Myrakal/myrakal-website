@@ -38,7 +38,7 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
   }, [router])
 
   return (
-    <nav aria-label="Your chats" className={cn('flex shrink-0 flex-col gap-4 border-r border-champagne/20 bg-card/40 p-3 h-full min-h-0', 'w-72', collapsed && 'lg:w-16 lg:items-center')}>
+    <nav aria-label="Your chats" className={cn('flex shrink-0 flex-col gap-4 border-r border-rule bg-ink p-3 h-full min-h-0', 'w-72', collapsed && 'lg:w-16 lg:items-center')}>
       <div className={cn('flex items-center gap-2', 'justify-between', collapsed && 'lg:flex-col lg:justify-start')}>
         <button
           type="button"
@@ -52,19 +52,19 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
         <a
           href="/dashboard"
           aria-label="New chat"
-          className={buttonVariants({ size: 'lg', className: collapsed ? 'px-4 lg:size-8 lg:px-0' : 'px-4' })}
+          className={cn('inline-flex items-center justify-center gap-2 [&_svg]:size-4 [&_svg]:shrink-0 border border-champagne/85 bg-ink/35 font-caslon text-xs tracking-[0.26em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne', collapsed ? 'h-11 px-4 lg:size-8 lg:px-0' : 'h-11 px-4')}
         >
           <Plus aria-hidden="true" />
           <span className={cn(collapsed && 'lg:hidden')}>New chat</span>
         </a>
       </div>
       <div className={cn('contents', collapsed && 'lg:hidden')}>
-      {state === 'loading' && <p role="status" className="text-sm">Loading your chats…</p>}
-      {state === 'signed-out' && <p role="status" className="text-sm">Redirecting to log in…</p>}
+      {state === 'loading' && <p role="status" className="text-sm text-mist">Loading your chats…</p>}
+      {state === 'signed-out' && <p role="status" className="text-sm text-mist">Redirecting to log in…</p>}
       {state === 'error' && (
         <p role="alert" className="text-sm text-destructive">We could not load your chats. Please refresh the page.</p>
       )}
-      {state === 'ready' && chats?.length === 0 && <p className="text-sm">No chats yet. Start one to tell us about your care.</p>}
+      {state === 'ready' && chats?.length === 0 && <p className="text-sm text-mist">No chats yet. Start one to tell us about your care.</p>}
       {state === 'ready' && !!chats?.length && (
         <ul className="flex min-h-0 flex-col gap-2 overflow-y-auto">
           {chats.map((chat) => (
@@ -73,16 +73,16 @@ export function ChatSidebar({ activeId = null }: { activeId?: string | null }) {
                 href={`/dashboard/${chat.id}`}
                 aria-current={chat.id === activeId ? 'page' : undefined}
                 className={cn(
-                  'flex flex-col gap-1 rounded-2xl border bg-card px-4 py-3 text-card-foreground no-underline transition-colors hover:bg-primary/90',
-                  chat.id === activeId ? 'border-champagne' : 'border-border',
+                  'flex flex-col gap-1 border bg-velvet-deep/60 px-4 py-3 text-cream no-underline transition-colors hover:bg-velvet/60',
+                  chat.id === activeId ? 'border-champagne' : 'border-rule',
                 )}
               >
-                <span className="truncate font-medium">{chat.summary || (chat.status === 'intake' ? 'New conversation' : 'Your case')}</span>
+                <span className="truncate font-display text-base italic">{chat.summary || (chat.status === 'intake' ? 'New conversation' : 'Your case')}</span>
                 <span className="flex items-center justify-between gap-2">
-                  <time dateTime={chat.createdAt} className="text-xs text-card-foreground/70">
+                  <time dateTime={chat.createdAt} className="font-caslon text-xs tracking-[0.12em] text-mist">
                     {new Date(chat.createdAt).toLocaleDateString('en-US', { dateStyle: 'medium' })}
                   </time>
-                  <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">{STATUS_LABELS[chat.status] ?? chat.status}</span>
+                  <span className="border border-champagne/50 px-2 py-0.5 font-caslon text-xs tracking-[0.14em] text-champagne uppercase">{STATUS_LABELS[chat.status] ?? chat.status}</span>
                 </span>
               </a>
             </li>

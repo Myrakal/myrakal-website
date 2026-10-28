@@ -35,4 +35,11 @@ describe('PortalShell', () => {
     expect(screen.getByRole('main').className).toContain('justify-center')
     expect(screen.getByRole('heading', { level: 1 }).className).toContain('text-center')
   })
+
+  it('uses the ink ground with hairline rules and caslon labels', () => {
+    const { container } = render(<PortalShell title="Your case" />)
+    expect((container.firstChild as HTMLElement).className).toContain('bg-ink')
+    expect(screen.getByRole('banner').className).toContain('border-rule')
+    expect(screen.getByText('Member area').className).toContain('font-caslon')
+  })
 })
