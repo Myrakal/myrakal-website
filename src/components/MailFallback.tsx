@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react'
 const DEFAULT_ADDRESS = 'eshaansood@myrakal.com'
 const linkClass = 'underline underline-offset-4 hover:decoration-2'
 
-type Props = { subject: string; address?: string; body?: string }
+type Props = { subject: string; address?: string; body?: string; hideAddress?: boolean }
 
-export function MailFallback({ subject, address = DEFAULT_ADDRESS, body }: Props) {
+export function MailFallback({ subject, address = DEFAULT_ADDRESS, body, hideAddress = false }: Props) {
   const [message, setMessage] = useState('')
   useEffect(() => {
     if (!message) return
@@ -30,7 +30,7 @@ export function MailFallback({ subject, address = DEFAULT_ADDRESS, body }: Props
 
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-      <span className="select-all">{address}</span>
+      {!hideAddress && <span className="select-all">{address}</span>}
       <button type="button" onClick={copy} className={linkClass}>
         Copy address
       </button>

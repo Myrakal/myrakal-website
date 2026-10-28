@@ -15,6 +15,13 @@ describe('MailFallback', () => {
     expect(screen.getByText('eshaansood@myrakal.com').tagName).not.toBe('A')
   })
 
+  it('can omit the address text and still copy it', () => {
+    render(<MailFallback subject="Myrakal inquiry" hideAddress />)
+    expect(screen.queryByText('eshaansood@myrakal.com')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Copy address' }))
+    expect(writeText).toHaveBeenCalledWith('eshaansood@myrakal.com')
+  })
+
   it('copies the address and confirms', async () => {
     render(<MailFallback subject="Myrakal inquiry" />)
     fireEvent.click(screen.getByRole('button', { name: 'Copy address' }))
