@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import logo from '@/assets/myrakal-logo.svg'
@@ -24,6 +24,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const { user, loading } = useSession()
   const pathname = usePathname()
+  const reduceMotion = useReducedMotion()
   const authClass = `${authLink} ${scrolled ? 'inline' : 'hidden sm:inline'}`
 
   useEffect(() => {
@@ -35,15 +36,13 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 flex px-4 py-3 transition-colors sm:px-12 sm:py-5 ${
-        scrolled ? 'justify-start border-b border-rule bg-ink pr-56 sm:pr-[34rem]' : 'justify-start bg-transparent sm:justify-center'
+      className={`fixed inset-x-0 top-0 z-50 flex justify-start px-4 py-3 transition-colors sm:px-12 sm:py-5 ${
+        scrolled ? 'border-b border-rule bg-ink pr-56 sm:pr-[34rem]' : 'bg-transparent'
       }`}
     >
-      <motion.a
+      <a
         href="/"
         aria-label="Myrakal home"
-        layout
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className="flex min-w-0 items-center gap-2 focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground sm:gap-4"
       >
         <img
@@ -53,15 +52,15 @@ export function Navbar() {
         />
         {scrolled && (
           <motion.span
-            key="tagline"
-            initial={{ opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="hidden truncate font-display text-sm text-champagne italic sm:inline sm:text-lg lg:text-2xl"
+            initial={reduceMotion ? false : { width: 0, opacity: 0 }}
+            animate={{ width: 'auto', opacity: 1 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="hidden truncate font-display text-sm text-champagne italic sm:inline-block sm:text-lg lg:text-2xl"
           >
             Healthcare, as it should be
           </motion.span>
         )}
-      </motion.a>
+      </a>
       <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-4 sm:right-12 sm:gap-6">
         <nav aria-label="Primary" className="hidden items-center gap-6 sm:flex">
           {SECTIONS.map(([label, href]) => (
