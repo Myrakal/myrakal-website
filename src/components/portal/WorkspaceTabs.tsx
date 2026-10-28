@@ -72,7 +72,7 @@ export function WorkspaceTabs({ initial, preferred, chats, details, chat }: Prop
         role="tablist"
         aria-label="Workspace sections"
         onKeyDown={onKeyDown}
-        className="flex shrink-0 border-t border-champagne/20 bg-background pb-[env(safe-area-inset-bottom)] lg:hidden"
+        className="flex shrink-0 border-t border-rule bg-ink pb-[env(safe-area-inset-bottom)] lg:hidden"
       >
         {TABS.map((tab) => (
           <button
@@ -88,8 +88,8 @@ export function WorkspaceTabs({ initial, preferred, chats, details, chat }: Prop
             tabIndex={tab.id === active ? 0 : -1}
             onClick={() => setActive(tab.id)}
             className={cn(
-              'min-h-11 flex-1 px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-champagne',
-              tab.id === active ? 'border-t-2 border-champagne text-champagne' : 'border-t-2 border-transparent text-muted-foreground',
+              'min-h-11 flex-1 px-4 font-caslon text-xs tracking-[0.26em] uppercase transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-champagne',
+              tab.id === active ? 'border-t-2 border-champagne text-champagne' : 'border-t-2 border-transparent text-mist hover:text-champagne',
             )}
           >
             {tab.label}

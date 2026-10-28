@@ -51,6 +51,9 @@ describe('ChatSidebar', () => {
     render(<ChatSidebar activeId="b2" />)
     const active = await screen.findByRole('link', { name: /Knee replacement in Spain/ })
     expect(active.getAttribute('aria-current')).toBe('page')
+    expect(active.className).toContain('border-champagne')
+    expect(active.className).not.toContain('rounded')
+    expect(screen.getByRole('navigation').className).toContain('border-rule')
     expect(screen.getByRole('link', { name: /Dental implants/ }).getAttribute('aria-current')).toBeNull()
   })
 

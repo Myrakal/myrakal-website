@@ -36,8 +36,8 @@ export function Workspace({ chatId }: { chatId: string | null }) {
   const caseId = chatId ?? createdId
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
-      <header className="flex shrink-0 items-center border-b border-champagne/20 px-4 py-3 sm:px-6">
+    <div className="flex h-dvh flex-col overflow-hidden bg-ink text-cream">
+      <header className="flex shrink-0 items-center border-b border-rule px-4 py-3 sm:px-6">
         <a
           href="/"
           aria-label="Myrakal home"
@@ -73,11 +73,11 @@ export function Workspace({ chatId }: { chatId: string | null }) {
           chat={
             <section
               aria-label="Chat"
-              className="flex flex-col px-4 max-lg:flex-1 lg:min-h-0 lg:w-[26rem] lg:shrink-0 lg:overflow-y-auto lg:border-l lg:border-champagne/20"
+              className="flex flex-col px-4 max-lg:flex-1 lg:min-h-0 lg:w-[26rem] lg:shrink-0 lg:overflow-y-auto lg:border-l lg:border-rule"
             >
               {caseId !== null && lockedId === caseId ? (
                 <>
-                  <p role="status" className="my-6 text-center text-sm text-muted-foreground">
+                  <p role="status" className="my-6 text-center font-caslon text-xs tracking-[0.2em] text-mist uppercase">
                     This conversation is closed. A doctor is working on your case, and updates appear in the case details.
                   </p>
                   <div role="log" aria-label="Conversation" className="flex flex-col gap-4 pb-8">
