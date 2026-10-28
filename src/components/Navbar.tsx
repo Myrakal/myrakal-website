@@ -36,7 +36,7 @@ export function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 flex px-4 py-3 transition-colors sm:px-12 sm:py-5 ${
-        scrolled ? 'justify-start border-b border-rule bg-ink pr-56 sm:pr-[34rem]' : 'justify-center bg-transparent'
+        scrolled ? 'justify-start border-b border-rule bg-ink pr-56 sm:pr-[34rem]' : 'justify-start bg-transparent sm:justify-center'
       }`}
     >
       <motion.a
@@ -56,7 +56,7 @@ export function Navbar() {
             key="tagline"
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
-            className="truncate font-display text-sm text-champagne italic sm:text-lg lg:text-2xl"
+            className="hidden truncate font-display text-sm text-champagne italic sm:inline sm:text-lg lg:text-2xl"
           >
             Healthcare, as it should be
           </motion.span>
