@@ -3,8 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useEffect, useId, useRef, useState, type FormEvent } from 'react'
 
-import { authInputClass, authLabelClass, authPanelClass } from '@/components/auth/AuthField'
-import { Button } from '@/components/ui/button'
+import { authButtonClass, authInputClass, authLabelClass, authLinkClass, authPanelClass } from '@/components/auth/AuthField'
 import { useSession } from '@/hooks/useSession'
 import { getSupabase } from '@/lib/supabase'
 
@@ -53,7 +52,7 @@ export function LoginForm() {
 
   return (
     <form onSubmit={submit} className={authPanelClass}>
-      <h2 className="font-display text-2xl">{signup ? 'Create your account' : 'Welcome back'}</h2>
+      <h2 className="font-display text-3xl text-cream italic">{signup ? 'Create your account' : 'Welcome back'}</h2>
       <div className="flex flex-col gap-1.5">
         <label htmlFor={emailId} className={authLabelClass}>
           Email
@@ -75,23 +74,23 @@ export function LoginForm() {
           className={authInputClass}
         />
       </div>
-      {notice && <p role="status" className="text-sm">{notice}</p>}
+      {notice && <p role="status" className="text-sm text-cream">{notice}</p>}
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}
         </p>
       )}
       {!signup && (
-        <a href="/forgot-password" className="text-sm text-champagne underline underline-offset-4">
+        <a href="/forgot-password" className={authLinkClass}>
           Forgot password?
         </a>
       )}
-      <Button type="submit" size="lg" disabled={busy} className="h-11">
+      <button type="submit" disabled={busy} className={authButtonClass}>
         {busy ? 'Please wait…' : signup ? 'Sign up' : 'Log in'}
-      </Button>
-      <Button type="button" variant="link" disabled={busy} onClick={() => { setMode(signup ? 'login' : 'signup'); setError(''); setNotice('') }}>
+      </button>
+      <button type="button" disabled={busy} className={authLinkClass} onClick={() => { setMode(signup ? 'login' : 'signup'); setError(''); setNotice('') }}>
         {signup ? 'I already have an account' : 'Create an account'}
-      </Button>
+      </button>
     </form>
   )
 }

@@ -92,3 +92,13 @@ describe('ResetPasswordForm', () => {
     expect(screen.getByRole('link', { name: /new reset link/i }).getAttribute('href')).toBe('/forgot-password')
   })
 })
+
+describe('reset form styling', () => {
+  it('uses the square gold-outlined landing styling', () => {
+    render(<ForgotPasswordForm />)
+    const submit = screen.getByRole('button', { name: 'Send reset link' })
+    expect(submit.className).toContain('border-champagne')
+    expect(submit.className).not.toContain('rounded')
+    expect(screen.getByLabelText('Email').className).toContain('border-rule')
+  })
+})
