@@ -4,7 +4,7 @@ import { STATUS_COPY } from './statusCopy'
 const ACTION_STATUSES = ['intake', 'plan_ready', 'awaiting_payment']
 
 const focus = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne'
-const base = `${focus} border px-8 py-3 font-caslon text-xs tracking-[0.28em] uppercase transition-colors`
+const base = `${focus} border px-6 py-3 text-center font-caslon text-xs tracking-[0.28em] uppercase transition-colors`
 const pill = `${base} border-rule text-champagne hover:border-champagne hover:bg-champagne/10`
 const primary = `${base} border-champagne/85 bg-ink/35 text-champagne hover:bg-champagne hover:text-ink`
 

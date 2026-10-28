@@ -16,7 +16,7 @@ export function CaseJourney({ status }: { status: string }) {
           const state = i < stage.step ? 'done' : i === stage.step ? 'current' : 'todo'
           return (
             <li key={name} aria-current={state === 'current' ? 'step' : undefined} className="flex flex-col gap-2">
-              <span className={`h-px ${state === 'todo' ? 'bg-rule' : state === 'done' ? 'bg-champagne/60' : 'bg-champagne'}`} />
+              <span className={`h-0.5 ${state === 'todo' ? 'bg-mist/25' : state === 'done' ? 'bg-champagne/60' : 'bg-champagne'}`} />
               <span className={`font-caslon text-[10px] leading-tight tracking-[0.2em] uppercase max-sm:sr-only ${state === 'current' ? 'text-champagne' : 'text-mist'}`}>
                 {name}
                 <span className="sr-only">{state === 'done' ? 'Completed' : state === 'todo' ? 'Upcoming' : null}</span>
