@@ -131,7 +131,7 @@ describe('Individual page', () => {
     const horizon = closing.querySelector('img')!
     expect(horizon.getAttribute('src')).toMatch(/liquid-horizon/)
     expect(horizon.getAttribute('srcset')).toMatch(/liquid-horizon-960/)
-    expect(horizon.className).toMatch(/object-top/)
+    expect(horizon.className).toMatch(/object-\[50%_70%\]/)
     expect(within(closing).getByText('Healthcare, as it should be.')).toBeTruthy()
   })
 

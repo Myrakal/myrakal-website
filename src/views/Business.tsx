@@ -159,7 +159,7 @@ export default function Business() {
             sizes="100vw"
             alt=""
             loading="lazy"
-            className="absolute inset-0 -z-20 size-full object-cover object-top"
+            className="absolute inset-0 -z-20 size-full object-cover object-[50%_70%]"
           />
           <div aria-hidden="true" className="absolute inset-0 -z-10 bg-ink/25" />
           <div className={`${band} flex flex-col items-start gap-8 pt-20`}>

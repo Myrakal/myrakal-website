@@ -11,7 +11,7 @@ export function Closing() {
         sizes="100vw"
         alt="A dark claret sea meeting a bright gold horizon glow"
         loading="lazy"
-        className="absolute inset-0 -z-20 size-full object-cover object-top"
+        className="absolute inset-0 -z-20 size-full object-cover object-[50%_70%]"
       />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-ink/25" />
       <h2 className="font-display text-4xl text-cream italic sm:text-7xl">The art of vitality.</h2>

@@ -17,6 +17,13 @@ describe('Business page', () => {
     expect(em?.className).toMatch(/text-champagne/)
   })
 
+  it('shifts the closing horizon up so the lake stays in view', () => {
+    render(<Business />)
+    const horizon = screen.getByRole('region', { name: /book a call/i }).querySelector('img')!
+    expect(horizon.getAttribute('src')).toMatch(/liquid-horizon/)
+    expect(horizon.className).toMatch(/object-\[50%_70%\]/)
+  })
+
   it('leaves no bracketed placeholders on the page', () => {
     const { container } = render(<Business />)
     expect(container.textContent).not.toMatch(/[[\]]/)
