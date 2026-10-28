@@ -111,4 +111,15 @@ describe('LoginForm', () => {
     render(<LoginForm />)
     expect(screen.getByRole('link', { name: 'Forgot password?' }).getAttribute('href')).toBe('/forgot-password')
   })
+
+  it('uses the square gold-outlined landing styling', () => {
+    render(<LoginForm />)
+    const submit = screen.getByRole('button', { name: 'Log in' })
+    expect(submit.className).toContain('border-champagne')
+    expect(submit.className).not.toContain('rounded')
+    const input = screen.getByLabelText('Email')
+    expect(input.className).toContain('border-champagne')
+    expect(input.className).not.toContain('rounded')
+    expect(screen.getByRole('heading', { name: 'Welcome back' }).className).toContain('italic')
+  })
 })

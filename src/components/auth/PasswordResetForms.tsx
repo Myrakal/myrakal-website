@@ -3,8 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState, type FormEvent } from 'react'
 
-import { AuthField, authPanelClass } from '@/components/auth/AuthField'
-import { Button } from '@/components/ui/button'
+import { AuthField, authButtonClass, authLinkClass, authPanelClass } from '@/components/auth/AuthField'
 import { useSession } from '@/hooks/useSession'
 import { getSupabase } from '@/lib/supabase'
 
@@ -54,13 +53,13 @@ export function ForgotPasswordForm() {
     <form onSubmit={submit} className={authPanelClass}>
       <AuthField label="Email" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <ErrorText error={error} />
-      <p role="status" className="text-sm">
+      <p role="status" className="text-sm text-cream">
         {sent && 'Check your email for a link to reset your password.'}
       </p>
-      <Button type="submit" size="lg" disabled={busy} className="h-11">
+      <button type="submit" disabled={busy} className={authButtonClass}>
         Send reset link
-      </Button>
-      <a href="/login" className="text-center text-sm text-champagne underline underline-offset-4">
+      </button>
+      <a href="/login" className={`${authLinkClass} text-center`}>
         Back to log in
       </a>
     </form>
@@ -82,9 +81,9 @@ export function ResetPasswordForm() {
   if (loading) return null
   if (!user)
     return (
-      <p className="mt-8 text-sm">
+      <p className="mt-8 text-sm text-mist">
         This reset link is invalid or has expired.{' '}
-        <a href="/forgot-password" className="text-champagne underline underline-offset-4">
+        <a href="/forgot-password" className="text-champagne underline underline-offset-4 hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne">
           Request a new reset link
         </a>
       </p>
@@ -94,9 +93,9 @@ export function ResetPasswordForm() {
     <form onSubmit={submit} className={authPanelClass}>
       <AuthField label="New password" type="password" minLength={8} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
       <ErrorText error={error} />
-      <Button type="submit" size="lg" disabled={busy} className="h-11">
+      <button type="submit" disabled={busy} className={authButtonClass}>
         Save new password
-      </Button>
+      </button>
     </form>
   )
 }
