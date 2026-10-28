@@ -1,3 +1,4 @@
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 
@@ -47,7 +48,7 @@ const body = 'font-light text-muted-foreground'
 const cta = 'inline-block border border-champagne/85 px-8 py-4 font-display text-2xl text-champagne transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
 const cell = 'border-b border-champagne/20 py-5 pr-4 align-top sm:pr-6'
 
-const TalkWithUs = () => <a href="/dashboard" className={cta}>Talk with us <span aria-hidden="true">→</span></a>
+const TalkWithUs = () => <a href={TALK_WITH_US_HREF} className={cta}>Talk with us<span className="sr-only"> (opens email)</span> <span aria-hidden="true">→</span></a>
 
 export default function Individual() {
   return (
