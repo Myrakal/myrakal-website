@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-import { Button } from '@/components/ui/button'
-
 type Props = { chatId: string; status: string; onApproved: (status: string) => void }
 
 export function ApprovePlan({ chatId, status, onApproved }: Props) {
@@ -51,9 +49,9 @@ export function ApprovePlan({ chatId, status, onApproved }: Props) {
   }
 
   return (
-    <section id="approve" aria-label="Approve your plan" className="mt-8">
-      <h2 className="text-xl">Happy with the plan?</h2>
-      <p className="mt-2 text-sm">Approving moves you on to payment. If you want changes first, send your comments above.</p>
+    <section id="approve" aria-label="Approve your plan" className="mt-10 border-t border-rule pt-8">
+      <h2 className="font-display text-3xl text-cream italic">Happy with the plan?</h2>
+      <p className="mt-3 text-sm text-mist">Approving moves you on to payment. If you want changes first, send your comments above.</p>
       {error && (
         <p role="alert" className="mt-3 text-sm text-destructive">
           {error}
@@ -62,24 +60,25 @@ export function ApprovePlan({ chatId, status, onApproved }: Props) {
       <div className="mt-4 flex flex-wrap gap-3">
         {confirming ? (
           <>
-            <Button type="button" onClick={approve} disabled={sending || blocked} ref={confirmButton}>
+            <button type="button" onClick={approve} disabled={sending || blocked} ref={confirmButton} className="border border-champagne/85 bg-champagne px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-ink uppercase transition-colors hover:bg-transparent hover:text-champagne focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
               {sending ? 'Approving…' : 'Confirm approval'}
-            </Button>
-            <Button type="button" variant="outline" onClick={() => setConfirming(false)} disabled={sending}>
+            </button>
+            <button type="button" onClick={() => setConfirming(false)} disabled={sending} className="border border-champagne/85 px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50">
               Cancel
-            </Button>
+            </button>
           </>
         ) : (
-          <Button
+          <button
             type="button"
             ref={approveButton}
+            className="border border-champagne/85 bg-champagne px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-ink uppercase transition-colors hover:bg-transparent hover:text-champagne focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne disabled:pointer-events-none disabled:opacity-50"
             onClick={() => {
               setMoved(true)
               setConfirming(true)
             }}
           >
             Approve plan
-          </Button>
+          </button>
         )}
       </div>
     </section>

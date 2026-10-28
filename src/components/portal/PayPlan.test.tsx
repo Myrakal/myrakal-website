@@ -27,6 +27,13 @@ afterAll(() => {
 })
 
 describe('PayPlan', () => {
+  it('styles the pay button as a square gold call to action', () => {
+    setup()
+    const button = screen.getByRole('button', { name: 'Pay $150.00' })
+    expect(button.className).toContain('bg-champagne')
+    expect(button.className).not.toContain('rounded')
+  })
+
   it('shows the price on the pay button', () => {
     setup()
     expect(screen.getByRole('button', { name: 'Pay $150.00' })).toBeTruthy()

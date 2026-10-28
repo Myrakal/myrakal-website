@@ -28,6 +28,13 @@ afterAll(() => {
 })
 
 describe('CommentSection', () => {
+  it('styles the comment box on the dark ground', () => {
+    setup()
+    const box = screen.getByLabelText(/your comments/i)
+    expect(box.className).toContain('bg-ink')
+    expect(box.className).not.toContain('rounded')
+  })
+
   it('shows the form only in plan_ready', () => {
     setup()
     expect(screen.getByLabelText(/your comments/i)).toBeTruthy()

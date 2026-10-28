@@ -15,6 +15,14 @@ afterAll(() => {
 })
 
 describe('PlanViewer', () => {
+  it('frames the preview with a hairline rule', async () => {
+    respond(200, { url: 'https://signed.example/plan.pdf' })
+    await act(async () => {
+      render(<PlanViewer chatId="c1" />)
+    })
+    expect(screen.getByTitle('Plan PDF preview').className).toContain('border-rule')
+  })
+
   it('requests the signed plan url for the chat', async () => {
     respond(200, { url: 'https://files.test/plan.pdf?sig=1' })
     render(<PlanViewer chatId="c1" />)

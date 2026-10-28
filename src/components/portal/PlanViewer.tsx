@@ -37,8 +37,8 @@ export function PlanViewer({ chatId }: { chatId: string }) {
     return () => clearInterval(timer)
   }, [chatId, state.phase])
 
-  if (state.phase === 'loading') return <p role="status" className="mt-6 text-sm">Loading your plan…</p>
-  if (state.phase === 'missing') return <p role="status" className="mt-6 text-sm">Your plan is not available yet.</p>
+  if (state.phase === 'loading') return <p role="status" className="mt-6 font-caslon text-xs tracking-[0.26em] text-mist uppercase">Loading your plan…</p>
+  if (state.phase === 'missing') return <p role="status" className="mt-6 font-caslon text-xs tracking-[0.26em] text-mist uppercase">Your plan is not available yet.</p>
   if (state.phase === 'error') {
     return (
       <p role="alert" className="mt-6 text-sm text-destructive">
@@ -48,9 +48,9 @@ export function PlanViewer({ chatId }: { chatId: string }) {
   }
   return (
     <section id="plan" aria-label="Your plan" className="mt-8">
-      <h2 className="text-xl">Your plan</h2>
-      <iframe title="Plan PDF preview" src={state.url} className="mt-4 h-[70vh] w-full rounded-2xl border border-border bg-card" />
-      <a href={linkUrl ?? state.url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-sm font-medium underline underline-offset-4">
+      <h2 className="font-display text-3xl text-cream italic">Your plan</h2>
+      <iframe title="Plan PDF preview" src={state.url} className="mt-4 h-[70vh] w-full border border-rule bg-ink" />
+      <a href={linkUrl ?? state.url} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block border-b border-champagne/85 pb-1 font-caslon text-xs tracking-[0.26em] text-champagne uppercase transition-colors hover:text-cream focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne">
         Open or download your plan (PDF)
       </a>
     </section>
