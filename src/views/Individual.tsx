@@ -18,7 +18,7 @@ const STEPS = [
 ]
 
 const PRICES = [
-  ['Doctor review', '$150', 'Credited toward any care you book through Myrakal'],
+  ['Doctor review', '$50', 'Credited toward any care you book through Myrakal'],
   ['Your plan', 'One all-in price', 'Quoted in full before you commit; covers everything listed in your plan'],
   ['Financing', 'On request', 'Ask your coordinator about paying over time'],
   ['Insurance', 'Your plan’s terms', 'We use your coverage wherever it lowers what you pay'],
