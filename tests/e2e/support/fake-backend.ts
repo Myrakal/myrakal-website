@@ -39,7 +39,7 @@ export class FakeBackend {
       route.fulfill({ contentType: 'text/html', body: '<h1>Myrakal care plan</h1><p>Knee replacement, 12 days.</p>' }),
     )
     await page.route('**/mock-stripe', (route) =>
-      route.fulfill({ contentType: 'text/html', body: '<h1>Stripe Checkout</h1><p>Pay $150.00 to Myrakal.</p>' }),
+      route.fulfill({ contentType: 'text/html', body: '<h1>Stripe Checkout</h1><p>Pay $50.00 to Myrakal.</p>' }),
     )
   }
 
@@ -76,7 +76,7 @@ export class FakeBackend {
         id: this.id,
         status: this.status,
         createdAt: new Date().toISOString(),
-        priceCents: 15000,
+        priceCents: 5000,
         paid: ['reservations', 'booked'].includes(this.status),
         intake: { condition: 'Knee replacement', symptomsDuration: 'Two years', name: 'Ada', dob: 'December 10, 1815', allergies: 'None', insurance: false, passportValid: true },
         progress: this.progress(),

@@ -39,7 +39,7 @@ Allowed API transitions only: `intake->doctor_review`, `plan_ready->clarificatio
 
 - A chat not owned by the caller returns 404, never 403. No session returns 401.
 - Plan = PDF in a private Supabase Storage bucket `plans`, file `{chatId}_plan.pdf`. Revisions overwrite the same file. The server returns a short-lived signed URL, only when status is `plan_ready`, `clarification_review`, `awaiting_payment`, `reservations` or `booked`; otherwise 404.
-- Price: `Chat.priceCents` (nullable) overrides env `PLAN_PRICE_CENTS` (default `15000`). The payment covers all reservation costs.
+- Price: `Chat.priceCents` (nullable) overrides env `PLAN_PRICE_CENTS` (default `5000`). The payment covers all reservation costs.
 - Comments are a per-chat list with timestamps; no cancel flow; no record uploads.
 - AI replies are not streamed (single JSON response). Model name in env `ANTHROPIC_MODEL` (Sonnet). The system prompt forbids diagnosing and sends emergencies to 911.
 - The old scripted intake, emergency detector branches and doctor token page are not carried over.

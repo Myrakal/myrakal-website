@@ -64,7 +64,7 @@ describe('POST /api/chats/:id/checkout', () => {
         metadata: { chatId: ID },
         success_url: `https://myrakal.com/dashboard/${ID}?paid=1`,
         cancel_url: `https://myrakal.com/dashboard/${ID}`,
-        line_items: [expect.objectContaining({ quantity: 1, price_data: expect.objectContaining({ currency: 'usd', unit_amount: 15000 }) })],
+        line_items: [expect.objectContaining({ quantity: 1, price_data: expect.objectContaining({ currency: 'usd', unit_amount: 5000 }) })],
       }),
       expect.any(Object),
     )
@@ -119,6 +119,6 @@ describe('POST /api/chats/:id/checkout', () => {
   it('ignores an invalid PLAN_PRICE_CENTS', async () => {
     process.env.PLAN_PRICE_CENTS = '150.5'
     await call()
-    expect(sessionsCreate.mock.calls[0][0].line_items[0].price_data.unit_amount).toBe(15000)
+    expect(sessionsCreate.mock.calls[0][0].line_items[0].price_data.unit_amount).toBe(5000)
   })
 })

@@ -17,7 +17,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   })
   if (!chat) return json({ error: 'not found' }, 404)
   const label = (chat.intake as Record<string, unknown> | null)?.attachmentRequest
-  const fallback = Number(process.env.PLAN_PRICE_CENTS) || 15000
+  const fallback = Number(process.env.PLAN_PRICE_CENTS) || 5000
   return json({
     id: chat.id,
     status: chat.status,

@@ -51,7 +51,7 @@ describe('GET /api/chats/:id', () => {
       id: ID,
       status: 'intake',
       createdAt: t.toISOString(),
-      priceCents: 15000,
+      priceCents: 5000,
       paid: false,
       progress: { collected: 1, total: expect.any(Number) },
       attachmentRequest: null,

@@ -61,11 +61,11 @@ test('a patient goes from sign up to booked', async ({ page }) => {
     await page.getByRole('button', { name: 'Approve plan' }).click()
     await page.getByRole('button', { name: 'Confirm approval' }).click()
     await expect(page.getByRole('region', { name: 'Case status' })).toContainText('You approved your plan')
-    await expect(page.getByRole('button', { name: 'Pay $150.00' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Pay $50.00' })).toBeVisible()
   })
 
   await test.step('paying sends the patient to Stripe and back', async () => {
-    await page.getByRole('button', { name: 'Pay $150.00' }).click()
+    await page.getByRole('button', { name: 'Pay $50.00' }).click()
     await expect(page).toHaveURL(/\/mock-stripe$/)
     await expect(page.getByRole('heading', { name: 'Stripe Checkout' })).toBeVisible()
     await page.goto(`/dashboard/${backend.id}?paid=1`)
