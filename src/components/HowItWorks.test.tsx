@@ -4,13 +4,13 @@ import { HowItWorks } from '@/components/HowItWorks'
 const stepTitles = () => screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
 
 describe('HowItWorks', () => {
-  it('walks through the four steps in order', () => {
+  it('lists the four use cases in order', () => {
     render(<HowItWorks />)
     expect(stepTitles()).toEqual([
-      'Tell us what you need',
-      'Get a doctor’s review',
-      'Choose your care',
-      'Recover beautifully',
+      'Doctors',
+      'Insurance and financing',
+      'Booking and travel',
+      'Aftercare and prescriptions',
     ])
   })
 
@@ -19,22 +19,13 @@ describe('HowItWorks', () => {
     expect(screen.getByRole('heading', { level: 2, name: /any care, at home or abroad, for less/i })).toBeTruthy()
   })
 
-  it('describes each step of the workflow', () => {
+  it('describes each use case', () => {
     const { container } = render(<HowItWorks />)
-    const t = container.textContent ?? ''
-    for (const term of [
-      /labs/i,
-      /imaging/i,
-      /insurance/i,
-      /licensed doctor/i,
-      /\$50\b/,
-      /choose/i,
-      /or both/i,
-      /book/i,
-      /prescriptions/i,
-      /aftercare/i,
-    ])
-      expect(t).toMatch(term)
+    const blurbs = [...container.querySelectorAll('h3 + p')].map((p) => p.textContent ?? '')
+    expect(blurbs[0]).toMatch(/right doctor.*your needs, your schedule and your budget/i)
+    expect(blurbs[1]).toMatch(/your insurance.*financing/i)
+    expect(blurbs[2]).toMatch(/compare prices.*paperwork.*book.*hotel and transport/i)
+    expect(blurbs[3]).toMatch(/follow up.*medications/i)
   })
 
   it('keeps every blurb quick to read', () => {
