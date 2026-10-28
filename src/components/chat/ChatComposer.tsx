@@ -56,7 +56,7 @@ export function ChatComposer({ onSend, busy = false }: Props) {
         aria-label="Send message"
         disabled={!canSend}
         onClick={send}
-        className="size-12 shrink-0 cursor-pointer rounded-none border border-champagne/85 bg-transparent text-champagne hover:bg-champagne hover:text-ink disabled:border-rule disabled:bg-transparent disabled:text-mist/60 disabled:opacity-100"
+        className="size-12 shrink-0 cursor-pointer rounded-none! border border-champagne/85 bg-transparent text-champagne hover:bg-champagne hover:text-ink disabled:border-mist/40 disabled:bg-transparent disabled:text-mist disabled:opacity-100"
       >
         <ArrowUp className="size-5" aria-hidden="true" />
       </Button>

@@ -40,6 +40,11 @@ describe('ChatPanel', () => {
     expect(theirs.className).not.toContain('rounded')
   })
 
+  it('renders a square send button', () => {
+    render(<ChatPanel chatId={null} />)
+    expect(screen.getByRole('button', { name: 'Send message' }).className).toContain('rounded-none!')
+  })
+
   it('loads messages and progress for a chat id', async () => {
     fetchMock.mockResolvedValue({
       ok: true,

@@ -45,7 +45,7 @@ export function AttachmentUpload({ label, onUpload, onSkip, busy = false }: Prop
         >
           {uploading ? 'Uploading…' : 'Choose files'}
         </label>
-        <Button type="button" variant="ghost" disabled={locked} onClick={() => onSkip(uploaded)} className="cursor-pointer rounded-none font-caslon text-xs tracking-[0.22em] text-mist uppercase hover:bg-transparent hover:text-champagne">
+        <Button type="button" variant="ghost" disabled={locked} onClick={() => onSkip(uploaded)} className="cursor-pointer rounded-none! font-caslon text-xs tracking-[0.22em] text-mist uppercase hover:bg-transparent hover:text-champagne">
           {uploaded ? 'Done uploading' : "Skip, I don't have this"}
         </Button>
       </div>
