@@ -1,3 +1,4 @@
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { render, screen, within } from '@testing-library/react'
 
 jest.mock('@/hooks/useSession', () => ({ useSession: () => ({ user: null, loading: false }) }))
@@ -58,12 +59,12 @@ describe('Individual page', () => {
     }
   })
 
-  it('points every Talk with us link to chat in a gold outline', () => {
+  it('points every Talk with us link to a prefilled email in a gold outline', () => {
     render(<Individual />)
     const ctas = screen.getAllByRole('link', { name: /talk with us/i })
     expect(ctas.length).toBeGreaterThanOrEqual(2)
     for (const cta of ctas) {
-      expect(cta.getAttribute('href')).toBe('/dashboard')
+      expect(cta.getAttribute('href')).toBe(TALK_WITH_US_HREF)
       expect(cta.className).toMatch(/border-champagne/)
       expect(cta.className).not.toMatch(/alabaster/)
     }

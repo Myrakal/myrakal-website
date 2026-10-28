@@ -9,4 +9,12 @@ describe('home page', () => {
     expect(how?.textContent).toMatch(/The art of vitality/)
     expect(how?.nextElementSibling?.textContent).toMatch(/Frequently asked questions/)
   })
+
+  it('keeps the page content inside one main landmark', () => {
+    const { container } = render(<Home />)
+    const mains = container.querySelectorAll('main')
+    expect(mains).toHaveLength(1)
+    expect(mains[0].querySelector('h1')).toBeTruthy()
+    expect(mains[0].querySelector('section[aria-labelledby="how-it-works"]')).toBeTruthy()
+  })
 })

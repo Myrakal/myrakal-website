@@ -1,3 +1,4 @@
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 import sphere from '@/assets/liquid-sphere.webp'
@@ -55,7 +56,11 @@ const gold = 'border-champagne/60'
 const cta = 'inline-block border border-champagne/85 bg-ink/35 px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne sm:text-[13px]'
 const cell = `${gold} pt-6 pr-4 align-baseline sm:border-t sm:pr-8 sm:pb-6`
 
-const TalkWithUs = () => <a href="/dashboard" className={cta}>Talk with us</a>
+const TalkWithUs = () => (
+  <a href={TALK_WITH_US_HREF} className={cta}>
+    Talk with us<span className="sr-only"> (opens email)</span>
+  </a>
+)
 
 const Intro = ({ id, title, heading }: { id: string; title: string; heading?: string }) => (
   <div>
