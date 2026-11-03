@@ -32,15 +32,3 @@ export const faqPage = (items: FaqItem[]) => ({
     acceptedAnswer: { '@type': 'Answer', text: answer },
   })),
 })
-
-export const CARE_SERVICE = {
-  '@context': context,
-  '@type': 'Service',
-  name: 'Care coordination',
-  serviceType: 'Healthcare coordination',
-  url: `${SITE}/care`,
-  areaServed: 'US',
-  provider: { '@id': `${SITE}/#organization`, name: 'Myrakal' },
-  description:
-    'Myrakal finds the right doctor and price, works with your insurance and financing, arranges appointments, paperwork and travel, and coordinates aftercare and prescriptions. A licensed doctor reviews every plan.',
-}
