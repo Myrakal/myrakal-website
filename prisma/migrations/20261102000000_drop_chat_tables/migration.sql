@@ -1,7 +1,0 @@
-DROP TABLE IF EXISTS "comments";
-
-DROP TABLE IF EXISTS "messages";
-
-DROP TABLE IF EXISTS "chats";
-
-DROP TYPE IF EXISTS "ChatStatus";

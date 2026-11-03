@@ -28,7 +28,6 @@ playwright-report
 
 .env
 
-generated
 
 .next
 next-env.d.ts

@@ -31,14 +31,12 @@ The app runs on http://localhost:3000. Variables are listed in `.env.example`.
 | `pnpm test` | Jest unit tests |
 | `pnpm test:e2e` | Playwright tests |
 | `pnpm screenshot [path ...]` | Screenshots of a running dev server into `.screenshots/` |
-| `pnpm db:migrate` / `pnpm db:deploy` | Prisma migrations |
 
 ## Layout
 
 - `src/app`: routes and metadata
 - `src/views`: page bodies used by routes
 - `src/components`: UI components
-- `prisma`: schema and migrations
 - `tests/e2e`: Playwright specs
 
 ## Conventions
