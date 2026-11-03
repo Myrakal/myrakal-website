@@ -1,12 +1,12 @@
-import { TALK_WITH_US_HREF } from '@/lib/contact'
+import { TalkWithUs } from '@/components/TalkWithUs'
 import liquid from '@/assets/hero-liquid.webp'
 import liquidSmall from '@/assets/hero-liquid-960.webp'
 import wordmark from '@/assets/myrakal-wordmark.svg'
 import { HeroVideo } from '@/components/HeroVideo'
 
 const PILLARS = [
-  ['Fully coordinated', 'Doctors, travel, insurance and aftercare,', 'all handled for you.'],
-  ['For far less', 'The best care at the best price,', 'in the U.S. or abroad.'],
+  ['Fully coordinated', 'We find the right prescription,', 'all handled for you.'],
+  ['Doctor reviewed', 'A licensed doctor checks every prescription,', 'at the best price.'],
 ]
 
 export function Hero() {
@@ -48,12 +48,11 @@ export function Hero() {
           </div>
         ))}
       </div>
-      <a
-        href={TALK_WITH_US_HREF}
+      <TalkWithUs
         className="mt-8 border border-champagne/85 bg-charcoal/35 px-10 py-3.5 font-caslon text-xs tracking-[0.28em] text-champagne uppercase backdrop-blur-sm transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne sm:text-[13px]"
       >
-        Talk with us<span className="sr-only"> (opens email)</span>
-      </a>
+        Talk with us
+      </TalkWithUs>
     </section>
   )
 }

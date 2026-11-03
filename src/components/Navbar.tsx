@@ -3,7 +3,7 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useState } from 'react'
 import logo from '@/assets/myrakal-logo.svg'
-import { TALK_WITH_US_HREF } from '@/lib/contact'
+import { TalkWithUs } from '@/components/TalkWithUs'
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -44,12 +44,11 @@ export function Navbar() {
         )}
       </a>
       <div className="absolute top-1/2 right-4 flex -translate-y-1/2 items-center gap-4 sm:right-12 sm:gap-6">
-        <a
-          href={TALK_WITH_US_HREF}
+        <TalkWithUs
           className="border border-champagne/85 px-4 py-2 font-caslon text-xs tracking-[0.26em] whitespace-nowrap text-champagne uppercase transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne sm:px-5"
         >
-          Talk with us<span className="sr-only"> (opens email)</span>
-        </a>
+          Talk with us
+        </TalkWithUs>
       </div>
     </header>
   )

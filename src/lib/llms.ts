@@ -2,23 +2,20 @@ import { SITE } from '@/lib/site'
 
 export const LLMS_TEXT = `# Myrakal
 
-> Myrakal is a healthcare coordination company based in Chicago, Illinois. It finds the right doctor at the best price for each person's care, from lab tests and prescriptions to surgery, and arranges every detail. A licensed doctor reviews every plan before anything is arranged.
+> Myrakal is a healthcare coordination company based in Chicago, Illinois. It finds the best price on prescriptions for each person and arranges every detail, including delivery. A licensed doctor reviews every plan before anything is arranged.
 
 Myrakal is not a medical provider and does not diagnose or treat. Information on this website is not medical advice. In an emergency, call 911 or your local emergency number.
 
 ## What Myrakal does
 
-- Finds the right doctor for a person's treatment, matched to their needs, schedule and budget
+- Finds the best price on a person's prescriptions
 - Works with the person's insurance and offers financing
-- Compares prices, fills out paperwork, and books appointments, plus travel and stays when care is away from home
-- Coordinates aftercare and follow-up after treatment
-- Finds the best price on prescriptions and has them delivered
+- Compares prices, fills out paperwork, and arranges delivery
+- Coordinates refills and follow-up
 
 ## What Myrakal covers
 
-- Everyday care: lab tests and bloodwork, prescriptions, doctor consults and second opinions, imaging
-- Ongoing care: dental care, fertility and IVF, recurring care and follow-ups
-- Major care: cosmetic procedures, hair restoration, orthopedic surgery
+- Prescription medications, including ongoing and recurring prescriptions
 
 ## Pages
 
