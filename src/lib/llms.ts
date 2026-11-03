@@ -23,7 +23,6 @@ Myrakal is not a medical provider and does not diagnose or treat. Information on
 ## Pages
 
 - [Home](${SITE}): overview and frequently asked questions
-- [Care](${SITE}/care): everything Myrakal arranges and its standards
 - [Contact](${SITE}/contact): how to reach Myrakal
 - [Privacy Policy](${SITE}/privacy)
 - [Terms of Service](${SITE}/terms)
