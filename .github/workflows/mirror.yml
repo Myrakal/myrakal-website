@@ -3,13 +3,30 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: mirror-main
+  cancel-in-progress: true
+
 jobs:
   mirror:
+    if: github.repository == 'Myrakal/myrakal-website'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
-      - run: |
-          git push --force https://x-access-token:${{ secrets.MIRROR_PAT }}@github.com/EshaanSood/myrakalsite.git HEAD:refs/heads/main
+      - name: Configure mirror deploy key
+        env:
+          MIRROR_SSH_KEY: ${{ secrets.MIRROR_SSH_KEY }}
+        run: |
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$MIRROR_SSH_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          ssh-keyscan -t ed25519 github.com >> "$HOME/.ssh/known_hosts"
+      - name: Mirror main branch
+        run: |
+          git push --force git@github.com:EshaanSood/myrakalsite.git HEAD:refs/heads/main
