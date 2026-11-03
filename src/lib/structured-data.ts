@@ -1,4 +1,3 @@
-import type { FaqItem } from '@/components/FAQ'
 import { DESCRIPTION, SITE } from '@/lib/site'
 
 const context = 'https://schema.org'
@@ -10,7 +9,7 @@ export const ORGANIZATION = {
   name: 'Myrakal',
   url: SITE,
   logo: `${SITE}/logo.png`,
-  slogan: 'Healthcare, as it should be',
+  slogan: 'Healthcare that costs less',
   description: DESCRIPTION,
   address: { '@type': 'PostalAddress', addressLocality: 'Chicago', addressRegion: 'IL', addressCountry: 'US' },
 }
@@ -21,26 +20,4 @@ export const WEBSITE = {
   name: 'Myrakal',
   url: SITE,
   publisher: { '@id': `${SITE}/#organization` },
-}
-
-export const faqPage = (items: FaqItem[]) => ({
-  '@context': context,
-  '@type': 'FAQPage',
-  mainEntity: items.map(({ question, answer }) => ({
-    '@type': 'Question',
-    name: question,
-    acceptedAnswer: { '@type': 'Answer', text: answer },
-  })),
-})
-
-export const CARE_SERVICE = {
-  '@context': context,
-  '@type': 'Service',
-  name: 'Care coordination',
-  serviceType: 'Healthcare coordination',
-  url: `${SITE}/care`,
-  areaServed: 'US',
-  provider: { '@id': `${SITE}/#organization`, name: 'Myrakal' },
-  description:
-    'Myrakal finds the right doctor and price, works with your insurance and financing, arranges appointments, paperwork and travel, and coordinates aftercare and prescriptions. A licensed doctor reviews every plan.',
 }

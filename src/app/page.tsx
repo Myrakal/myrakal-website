@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 
 import { Closing } from '@/components/Closing'
-import { FAQ } from '@/components/FAQ'
 import { Footer } from '@/components/Footer'
 import { Hero } from '@/components/Hero'
 import { HowItWorks } from '@/components/HowItWorks'
@@ -11,7 +10,7 @@ import { DESCRIPTION } from '@/lib/site'
 import { ORGANIZATION, WEBSITE } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
-  title: 'Myrakal: Healthcare, as it should be',
+  title: 'Myrakal: Healthcare that costs less',
   description: DESCRIPTION,
   alternates: { canonical: '/' },
 }
@@ -24,7 +23,6 @@ export default function Home() {
       <main>
         <Hero />
         <HowItWorks />
-        <FAQ />
         <Closing />
       </main>
       <Footer />

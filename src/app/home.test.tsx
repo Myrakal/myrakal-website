@@ -1,21 +1,43 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import Home from '@/app/page'
 
-describe('home page', () => {
-  it('runs how it works into the FAQ, then closes on the art of vitality', () => {
-    const { container } = render(<Home />)
-    const how = container.querySelector('section[aria-labelledby="how-it-works"]')
-    expect(how).toBeTruthy()
-    const faq = how?.nextElementSibling
-    expect(faq?.textContent).toMatch(/Frequently asked/)
-    expect(faq?.nextElementSibling?.textContent).toMatch(/The art of vitality/)
-  })
-
-  it('keeps the page content inside one main landmark', () => {
+describe('landing page', () => {
+  it('has one main landmark with one h1', () => {
     const { container } = render(<Home />)
     const mains = container.querySelectorAll('main')
     expect(mains).toHaveLength(1)
-    expect(mains[0].querySelector('h1')).toBeTruthy()
-    expect(mains[0].querySelector('section[aria-labelledby="how-it-works"]')).toBeTruthy()
+    expect(mains[0].querySelectorAll('h1')).toHaveLength(1)
+  })
+
+  it('pitches cheaper healthcare through a free text-us flow', () => {
+    render(<Home />)
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/cheaper|less/i)
+    expect(screen.getAllByText(/free/i).length).toBeGreaterThan(0)
+  })
+
+  it('frames Myrakal as an intelligent data platform with an autonomous system', () => {
+    const { container } = render(<Home />)
+    expect(container.textContent).toMatch(/intelligent data platform/i)
+    expect(container.textContent).toMatch(/autonomous system/i)
+  })
+
+  it('walks through three steps from texting us to cheaper options', () => {
+    const { container } = render(<Home />)
+    const how = container.querySelector('section[aria-labelledby="how-it-works"]')
+    expect(how?.querySelectorAll('li')).toHaveLength(3)
+  })
+
+  it('offers Text us! as a button that does nothing', () => {
+    render(<Home />)
+    const buttons = screen.getAllByRole('button', { name: 'Text us!' })
+    expect(buttons.length).toBeGreaterThanOrEqual(3)
+    for (const button of buttons) expect(button).toHaveAttribute('type', 'button')
+    expect(screen.queryByRole('link', { name: /text us|talk with us/i })).toBeNull()
+  })
+
+  it('has no navigation to other pages', () => {
+    render(<Home />)
+    expect(screen.queryByRole('navigation')).toBeNull()
+    for (const link of screen.queryAllByRole('link')) expect(link.getAttribute('href')).toBe('/')
   })
 })
