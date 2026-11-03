@@ -31,10 +31,23 @@ describe('chats migration', () => {
     }
   })
 
-  it('matches the prisma models', () => {
-    expect(schema).toMatch(/model Chat \{/)
-    expect(schema).toMatch(/model Message \{/)
-    expect(schema).toMatch(/model Comment \{/)
-    expect(schema).not.toMatch(/model Intake \{/)
+  it('leaves the prisma schema without models or enums', () => {
+    expect(schema).not.toMatch(/^model /m)
+    expect(schema).not.toMatch(/^enum /m)
+  })
+})
+
+describe('drop chat tables migration', () => {
+  const drop = readFileSync(resolve(process.cwd(), 'prisma/migrations/20261102000000_drop_chat_tables/migration.sql'), 'utf8')
+
+  it('drops comments, messages and chats before the enum, using IF EXISTS', () => {
+    const order = ['DROP TABLE IF EXISTS "comments"', 'DROP TABLE IF EXISTS "messages"', 'DROP TABLE IF EXISTS "chats"', 'DROP TYPE IF EXISTS "ChatStatus"']
+    const positions = order.map((statement) => drop.indexOf(statement))
+    expect(positions.every((position) => position >= 0)).toBe(true)
+    expect([...positions].sort((a, b) => a - b)).toEqual(positions)
+  })
+
+  it('does not touch intakes', () => {
+    expect(drop).not.toMatch(/intakes/)
   })
 })

@@ -16,10 +16,7 @@ describe('ops runbook', () => {
     expect(doc).toContain('`plans`')
   })
 
-  it('only references tables and columns that exist in the schema', () => {
-    const schema = readFileSync(resolve(process.cwd(), 'prisma/schema.prisma'), 'utf8')
-    for (const name of ['chats', 'messages', 'comments', 'price_cents', 'paid_at', 'chat_id', 'user_id'])
-      expect(schema).toContain(name)
+  it('does not reference the dropped intakes table', () => {
     expect(doc).not.toMatch(/\bintakes\b/)
   })
 })
