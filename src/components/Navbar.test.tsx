@@ -1,4 +1,3 @@
-import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { act, render, screen } from '@testing-library/react'
 
 
@@ -20,9 +19,9 @@ describe('Navbar', () => {
     mockReduceMotion = false
   })
 
-  it('points Talk with us at a prefilled email', () => {
+  it('opens the contact form from Talk with us', () => {
     render(<Navbar />)
-    expect(screen.getByRole('link', { name: /^Talk with us/ }).getAttribute('href')).toBe(TALK_WITH_US_HREF)
+    expect(screen.getByRole('button', { name: /^Talk with us/ })).toBeInTheDocument()
   })
 
   it('shows the new tagline after scrolling', () => {

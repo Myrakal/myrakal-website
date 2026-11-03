@@ -7,25 +7,25 @@ describe('HowItWorks', () => {
   it('lists the four use cases in order', () => {
     render(<HowItWorks />)
     expect(stepTitles()).toEqual([
-      'Doctors',
-      'Insurance and financing',
-      'Booking and travel',
-      'Aftercare and prescriptions',
+      'Tell us',
+      'We compare',
+      'We coordinate',
+      'A doctor reviews',
     ])
   })
 
   it('introduces the section with a heading', () => {
     render(<HowItWorks />)
-    expect(screen.getByRole('heading', { level: 2, name: /any care, at home or abroad, for less/i })).toBeTruthy()
+    expect(screen.getByRole('heading', { level: 2, name: /the right prescription, at the best price/i })).toBeTruthy()
   })
 
   it('describes each use case', () => {
     const { container } = render(<HowItWorks />)
     const blurbs = [...container.querySelectorAll('h3 + p')].map((p) => p.textContent ?? '')
-    expect(blurbs[0]).toMatch(/right doctor.*your needs, your schedule and your budget/i)
-    expect(blurbs[1]).toMatch(/your insurance.*financing/i)
-    expect(blurbs[2]).toMatch(/compare prices.*paperwork.*book.*hotel and transport/i)
-    expect(blurbs[3]).toMatch(/follow up.*medications/i)
+    expect(blurbs[0]).toMatch(/prescription/i)
+    expect(blurbs[1]).toMatch(/best price/i)
+    expect(blurbs[2]).toMatch(/coordinate|handle/i)
+    expect(blurbs[3]).toMatch(/licensed doctor/i)
   })
 
   it('keeps every blurb quick to read', () => {
@@ -35,11 +35,11 @@ describe('HowItWorks', () => {
     for (const blurb of blurbs) expect(blurb.trim().split(/\s+/).length).toBeLessThanOrEqual(25)
   })
 
-  it('keeps the international angle while covering any care', () => {
+  it('focuses solely on prescriptions', () => {
     const { container } = render(<HowItWorks />)
     const t = container.textContent ?? ''
-    expect(t).toMatch(/abroad|international|overseas/i)
-    expect(t).toMatch(/home|domestic|local/i)
+    expect(t).toMatch(/prescription/i)
+    expect(t).not.toMatch(/hotel|flight|surgery|abroad/i)
   })
 
   it('never quotes the old $150 review fee', () => {

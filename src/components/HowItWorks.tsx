@@ -14,7 +14,7 @@ export function HowItWorks() {
       <div className="flex flex-col items-center gap-6 px-6 pt-32 pb-24 text-center sm:px-12 lg:pt-40 lg:pb-28">
         <p className="font-caslon text-xs tracking-[0.32em] text-champagne uppercase">How it works</p>
         <h2 id="how-it-works" className="max-w-4xl font-display text-4xl leading-tight text-cream sm:text-6xl lg:text-7xl">
-          Any care, at home or abroad, <i className="text-champagne">for less.</i>
+          The right prescription, <i className="text-champagne">at the best price.</i>
         </h2>
       </div>
       <Scene
@@ -23,9 +23,9 @@ export function HowItWorks() {
         alt="Two ribbons of claret and gold liquid braiding together against the dark"
         textSide="right"
         numeral="I"
-        title="Doctors"
+        title="Tell us"
       >
-        We find the right doctor for your treatment, matched to your needs, your schedule and your budget.
+        Share the prescription you need or take.
       </Scene>
       <Scene
         image={sphere}
@@ -33,9 +33,9 @@ export function HowItWorks() {
         alt="A sphere of translucent claret liquid suspended above a still surface, lit with gold"
         textSide="left"
         numeral="II"
-        title="Insurance and financing"
+        title="We compare"
       >
-        We work with your insurance to cover what it can, and help you arrange financing for the rest.
+        We search pharmacies to find the best price.
       </Scene>
       <Scene
         image={ribbons}
@@ -43,10 +43,9 @@ export function HowItWorks() {
         alt="Four ribbons of translucent claret liquid flowing together in a gentle wave, edged with gold"
         textSide="right"
         numeral="III"
-        title="Booking and travel"
+        title="We coordinate"
       >
-        We compare prices, fill out the paperwork, and book your appointments, and your hotel and transport when you
-        travel.
+        We handle the paperwork and the delivery.
       </Scene>
       <Scene
         image={ripple}
@@ -54,9 +53,9 @@ export function HowItWorks() {
         alt="A still claret surface with a single ripple spreading outward, lit with gold"
         textSide="left"
         numeral="IV"
-        title="Aftercare and prescriptions"
+        title="A doctor reviews"
       >
-        We follow up after treatment, coordinate what comes next, and deliver your medications at the best price.
+        A licensed doctor reviews every prescription.
       </Scene>
     </section>
   )
