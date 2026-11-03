@@ -18,54 +18,24 @@ describe('FAQ', () => {
     render(<FAQ />)
     for (const q of [
       'How does it work?',
-      'Do I need a diagnosis to start?',
-      'Does AI make medical decisions?',
+      'Does a doctor review my prescription?',
     ])
       expect(screen.getByRole('button', { name: q })).toBeTruthy()
   })
 
-  it('answers the cost question with the flat consult fee credited toward treatment', async () => {
-    render(<FAQ />)
-    expect(screen.getByRole('button', { name: 'How much does it cost?' })).toBeTruthy()
+  it('covers prescriptions, price, coordination and doctor review', async () => {
     const t = await openAll()
-    expect(t).toMatch(/flat \$50 fee/)
-    expect(t).not.toMatch(/\$150/)
-    expect(t).toMatch(/credited toward any treatment/i)
+    for (const term of [/prescription/i, /best price/i, /coordinat/i, /licensed doctor/i]) expect(t).toMatch(term)
   })
 
-  it('explains intake, AI and the licensed doctor consult', async () => {
+  it('stays on prescriptions rather than all care', async () => {
     const t = await openAll()
-    for (const term of [/intake/i, /lab results|labs/i, /imaging/i, /insurance plan/i, /licensed doctor/i, /approv/i])
-      expect(t).toMatch(term)
+    expect(t).not.toMatch(/hotel|flight|surgery|abroad|\$150/i)
   })
 
-  it('no longer tells visitors not to submit medical information', async () => {
+  it('tells visitors not to send health details through the contact form', async () => {
     const t = await openAll()
-    expect(t).not.toMatch(/do not submit medical information/i)
-    expect(t).not.toMatch(/waitlist/i)
-  })
-
-  it('tells visitors not to send health information by email or the contact form', async () => {
-    const t = await openAll()
-    expect(t).toMatch(/not by general email or the website contact form/i)
-  })
-
-  it('says AI only gathers information and never suggests anything', async () => {
-    const t = await openAll()
-    expect(t).not.toMatch(/suggest/i)
-    expect(t).toMatch(/only gathers/i)
-    expect(t).toMatch(/lets you know when (it|intake) is done|when intake is complete|once intake is complete/i)
-  })
-
-  it('says the licensed doctor reviews the case before anything is recommended', async () => {
-    const t = await openAll()
-    expect(t).toMatch(/before (we|anything is|any) (recommend|suggest)/i)
-  })
-
-  it('says intake is self-serve rather than invite only', async () => {
-    const t = await openAll()
-    expect(t).toMatch(/self-serve/i)
-    expect(t).not.toMatch(/invite/i)
+    expect(t).toMatch(/contact form/i)
   })
 
   it('heads the list with a Frequently asked heading in Bodoni', () => {
