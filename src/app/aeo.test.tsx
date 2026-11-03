@@ -1,11 +1,8 @@
 import { render } from '@testing-library/react'
 
-jest.mock('@/hooks/useSession', () => ({ useSession: () => ({ user: null, loading: false }) }))
-jest.mock('@/lib/supabase', () => ({ getSupabase: () => null }))
 
 import Home from '@/app/page'
 import { JsonLd } from '@/components/JsonLd'
-import Care from '@/views/Care'
 
 const graph = (container: HTMLElement) =>
   [...container.querySelectorAll('script[type="application/ld+json"]')].flatMap((s) => {
@@ -47,14 +44,6 @@ describe('answer engine markup', () => {
     for (const word of [/insurance/i, /flights/i, /hotels/i, /documents/i, /aftercare/i]) expect(handles.acceptedAnswer.text).toMatch(word)
   })
 
-  it('describes care as a coordination service, never a medical provider', () => {
-    const items = graph(render(<Care />).container)
-    const service = items.find((i) => i['@type'] === 'Service')
-    expect(items.find((i) => i['@type'] === 'Organization')?.['@id']).toBe(service.provider['@id'])
-    expect(service).toMatchObject({ serviceType: 'Healthcare coordination', areaServed: 'US', provider: { name: 'Myrakal' } })
-    expect(JSON.stringify(items)).not.toMatch(/Medical(Organization|Clinic|Business)|Physician|Hospital/)
-  })
-
   it('escapes markup inside structured data', () => {
     const { container } = render(<JsonLd data={{ name: '</script><b>x</b>' }} />)
     expect(container.querySelector('script')!.innerHTML).not.toContain('</script>')
@@ -64,6 +53,6 @@ describe('answer engine markup', () => {
   it('publishes a plain-language summary for AI crawlers on the configured address', async () => {
     const { LLMS_TEXT: text } = await import('@/lib/llms')
     expect(text.startsWith('# Myrakal')).toBe(true)
-    for (const phrase of [/licensed doctor/i, /https:\/\/www\.myrakal\.com\/care/, /not medical advice/i]) expect(text).toMatch(phrase)
+    for (const phrase of [/licensed doctor/i, /https:\/\/www\.myrakal\.com\/contact/, /not medical advice/i]) expect(text).toMatch(phrase)
   })
 })

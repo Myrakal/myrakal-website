@@ -3,9 +3,6 @@ import { TALK_BODY, TALK_EMAIL, TALK_SUBJECT } from '@/lib/contact'
 import wordmark from '@/assets/myrakal-wordmark.svg'
 
 const SECTIONS = [
-  ['Care', '/care'],
-  ['Individual', '/individual'],
-  ['Business', '/business'],
   ['Contact', '/contact/'],
 ]
 
