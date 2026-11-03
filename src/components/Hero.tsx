@@ -24,7 +24,7 @@ export function Hero() {
         Healthcare that costs less
       </h1>
       <p className="mt-5 max-w-xl font-caslon text-base leading-relaxed text-balance text-cream/95 [text-shadow:0_1px_14px_var(--charcoal)] sm:text-lg">
-        Message us what you need. We&apos;ll get back to you with <i>free</i> data on cheaper options.
+        An intelligent data platform. We have the data; text us what you need and our autonomous system gets back to you after a little analysis with <i>free</i> cheaper options.
       </p>
       <TextUsButton className="mt-8" />
     </section>

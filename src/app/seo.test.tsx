@@ -9,7 +9,7 @@ const SITE = 'https://www.myrakal.com'
 describe('search and sharing', () => {
   it('resolves every URL against the live site', () => {
     expect(String(layout.metadataBase)).toBe(`${SITE}/`)
-    expect(layout.description).toMatch(/cheaper/i)
+    expect(layout.description).toMatch(/intelligent data platform/i)
     expect(layout.openGraph).toMatchObject({ siteName: 'Myrakal', type: 'website', locale: 'en_US' })
   })
 

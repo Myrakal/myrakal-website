@@ -1,7 +1,7 @@
 const STEPS = [
   ['I', 'Text us', 'Tell us what care you need, in your own words.'],
-  ['II', 'We do the digging', 'We compare prices from providers near you and beyond.'],
-  ['III', 'Get your free data', 'We send back cheaper options, with the numbers, at no cost.'],
+  ['II', 'Our system analyzes', 'Our autonomous system runs your request against our healthcare pricing data.'],
+  ['III', 'Get your free data', 'After a little analysis, we send back cheaper options, with the numbers, at no cost.'],
 ]
 
 export function HowItWorks() {

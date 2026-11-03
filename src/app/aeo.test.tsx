@@ -20,6 +20,7 @@ describe('answer engine markup', () => {
     const { LLMS_TEXT: text } = await import('@/lib/llms')
     expect(text.startsWith('# Myrakal')).toBe(true)
     expect(text).toMatch(/free/i)
+    expect(text).toMatch(/autonomous/i)
     expect(text).toMatch(/not medical advice/i)
   })
 })

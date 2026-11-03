@@ -15,6 +15,12 @@ describe('landing page', () => {
     expect(screen.getAllByText(/free/i).length).toBeGreaterThan(0)
   })
 
+  it('frames Myrakal as an intelligent data platform with an autonomous system', () => {
+    const { container } = render(<Home />)
+    expect(container.textContent).toMatch(/intelligent data platform/i)
+    expect(container.textContent).toMatch(/autonomous system/i)
+  })
+
   it('walks through three steps from texting us to cheaper options', () => {
     const { container } = render(<Home />)
     const how = container.querySelector('section[aria-labelledby="how-it-works"]')
