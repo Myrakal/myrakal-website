@@ -9,10 +9,9 @@ describe('landing page', () => {
     expect(mains[0].querySelectorAll('h1')).toHaveLength(1)
   })
 
-  it('pitches cheaper healthcare through a free text-us flow', () => {
+  it('uses the selected healthcare-cost hero headline', () => {
     render(<Home />)
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/cheaper|less/i)
-    expect(screen.getAllByText(/free/i).length).toBeGreaterThan(0)
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Care costs too much. Text us.')
   })
 
   it('frames Myrakal as an intelligent data platform with an autonomous system', () => {

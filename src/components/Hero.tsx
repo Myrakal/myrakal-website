@@ -21,7 +21,7 @@ export function Hero() {
         <img src={wordmark.src} alt="" className="pointer-events-none w-[min(92vw,1080px,120svh)] opacity-95" />
       </div>
       <h1 className="font-display text-3xl text-champagne italic [text-shadow:0_2px_24px_var(--charcoal)] sm:text-[2.625rem]">
-        Cheaper healthcare, over text
+        Care costs too much. Text us.
       </h1>
       <p className="mt-5 max-w-xl font-caslon text-base leading-relaxed text-balance text-cream/95 [text-shadow:0_1px_14px_var(--charcoal)] sm:text-lg">
         Made for people who need healthcare to be more affordable and accessible
