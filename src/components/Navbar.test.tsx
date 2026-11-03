@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { act, render, screen } from '@testing-library/react'
 
 
@@ -79,5 +81,9 @@ describe('Navbar', () => {
     const classes = screen.getByText('Healthcare, as it should be').className.split(' ')
     expect(classes).toContain('hidden')
     expect(classes).toContain('sm:inline-block')
+  })
+
+  it('keeps the Talk with us hover more than a 10% tint', () => {
+    expect(readFileSync(join(process.cwd(), 'src/components/Navbar.tsx'), 'utf8')).not.toMatch(/hover:bg-alabaster\/10/)
   })
 })
