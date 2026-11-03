@@ -32,7 +32,7 @@ describe('Velvet + Pearl palette', () => {
   })
 
   it('draws every call to action as a gold outline instead of solid alabaster', () => {
-    for (const file of ['Hero', 'Closing', 'Navbar']) {
+    for (const file of ['TextUsButton']) {
       const source = read(`./components/${file}.tsx`)
       expect(source).toMatch(/border-champagne/)
       expect(source).not.toMatch(/\bbg-alabaster\b|border-alabaster/)
@@ -46,7 +46,7 @@ describe('Velvet + Pearl palette', () => {
   })
 
   it('sets the nav and footer in Caslon on the ink ground', () => {
-    for (const file of ['Navbar', 'Footer']) {
+    for (const file of ['TextUsButton', 'Footer']) {
       const source = read(`./components/${file}.tsx`)
       expect(source).toMatch(/font-caslon/)
       expect(source).not.toMatch(/font-grotesk/)

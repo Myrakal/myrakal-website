@@ -1,36 +1,14 @@
 import { render, screen } from '@testing-library/react'
-
-jest.mock('@/hooks/useSession', () => ({ useSession: () => ({ user: null, loading: false }) }))
-jest.mock('@/lib/supabase', () => ({ getSupabase: () => null }))
-
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
-  useSearchParams: () => new URLSearchParams(),
-  usePathname: () => '/',
-}))
-
-const routes = [
-  ['privacy', 'Privacy Policy: Myrakal'],
-  ['terms', 'Terms of Service: Myrakal'],
-  ['contact', 'Contact: Myrakal'],
-  ['accessibility', 'Accessibility: Myrakal'],
-  ['care', 'Care: Myrakal'],
-  ['individual', 'Individual: Myrakal'],
-  ['business', 'Business: Myrakal'],
-] as const
+import { existsSync } from 'node:fs'
 
 describe('app routes', () => {
-  it.each(routes)('/%s exports its title and renders', async (route, title) => {
-    const page = await import(`./${route}/page`)
-    expect(page.metadata.title).toBe(title)
-    const Page = page.default
-    render(<Page />)
-    expect(screen.getAllByRole('link').length).toBeGreaterThan(0)
-  })
+  it.each(['api', 'care', 'individual', 'business', 'contact', 'privacy', 'terms', 'accessibility', 'login', 'dashboard', 'forgot-password', 'reset-password'])(
+    '/%s no longer exists',
+    (route) => expect(existsSync(`${__dirname}/${route}`)).toBe(false),
+  )
 
-  it.each(['individual', 'business'])('keeps the draft %s page out of search results', async (route) => {
-    const page = await import(`./${route}/page`)
-    expect(page.metadata.robots).toEqual({ index: false })
+  it('has no server code left', () => {
+    for (const path of ['../server', '../proxy.ts', '../hooks', '../lib/supabase.ts']) expect(existsSync(`${__dirname}/${path}`)).toBe(false)
   })
 
   it('not-found renders a heading and a way home', async () => {

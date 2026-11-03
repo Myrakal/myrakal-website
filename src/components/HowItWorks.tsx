@@ -1,63 +1,31 @@
-import braid from '@/assets/liquid-braid.webp'
-import braidSmall from '@/assets/liquid-braid-960.webp'
-import ribbons from '@/assets/liquid-ribbons.webp'
-import ribbonsSmall from '@/assets/liquid-ribbons-960.webp'
-import ripple from '@/assets/liquid-ripple.webp'
-import rippleSmall from '@/assets/liquid-ripple-960.webp'
-import sphere from '@/assets/liquid-sphere.webp'
-import sphereSmall from '@/assets/liquid-sphere-960.webp'
-import { Scene } from '@/components/Scene'
+const STEPS = [
+  ['I', 'Text us', 'Tell us what care you need, in your own words.'],
+  ['II', 'We do the digging', 'We compare prices from providers near you and beyond.'],
+  ['III', 'Get your free data', 'We send back cheaper options, with the numbers, at no cost.'],
+]
 
 export function HowItWorks() {
   return (
-    <section aria-labelledby="how-it-works" className="bg-ink">
-      <div className="flex flex-col items-center gap-6 px-6 pt-32 pb-24 text-center sm:px-12 lg:pt-40 lg:pb-28">
-        <p className="font-caslon text-xs tracking-[0.32em] text-champagne uppercase">How it works</p>
-        <h2 id="how-it-works" className="max-w-4xl font-display text-4xl leading-tight text-cream sm:text-6xl lg:text-7xl">
-          Any care, at home or abroad, <i className="text-champagne">for less.</i>
-        </h2>
+    <section aria-labelledby="how-it-works" className="bg-ink px-6 py-24 sm:px-12 lg:py-32">
+      <div className="mx-auto flex max-w-6xl flex-col items-center gap-14 text-center">
+        <div className="flex flex-col items-center gap-6">
+          <p className="font-caslon text-xs tracking-[0.32em] text-champagne uppercase">How it works</p>
+          <h2 id="how-it-works" className="max-w-3xl font-display text-4xl leading-tight text-cream sm:text-6xl">
+            A text away from <i className="text-champagne">paying less.</i>
+          </h2>
+        </div>
+        <ol className="grid w-full gap-px bg-rule md:grid-cols-3">
+          {STEPS.map(([numeral, title, body]) => (
+            <li key={numeral} className="flex flex-col items-center gap-4 bg-ink px-6 py-10 md:px-10">
+              <span aria-hidden="true" className="font-caslon text-xs tracking-[0.32em] text-champagne">
+                {numeral}
+              </span>
+              <h3 className="font-display text-3xl text-cream">{title}</h3>
+              <p className="max-w-xs font-caslon text-lg leading-relaxed text-mist">{body}</p>
+            </li>
+          ))}
+        </ol>
       </div>
-      <Scene
-        image={braid}
-        imageSmall={braidSmall}
-        alt="Two ribbons of claret and gold liquid braiding together against the dark"
-        textSide="right"
-        numeral="I"
-        title="Doctors"
-      >
-        We find the right doctor for your treatment, matched to your needs, your schedule and your budget.
-      </Scene>
-      <Scene
-        image={sphere}
-        imageSmall={sphereSmall}
-        alt="A sphere of translucent claret liquid suspended above a still surface, lit with gold"
-        textSide="left"
-        numeral="II"
-        title="Insurance and financing"
-      >
-        We work with your insurance to cover what it can, and help you arrange financing for the rest.
-      </Scene>
-      <Scene
-        image={ribbons}
-        imageSmall={ribbonsSmall}
-        alt="Four ribbons of translucent claret liquid flowing together in a gentle wave, edged with gold"
-        textSide="right"
-        numeral="III"
-        title="Booking and travel"
-      >
-        We compare prices, fill out the paperwork, and book your appointments, and your hotel and transport when you
-        travel.
-      </Scene>
-      <Scene
-        image={ripple}
-        imageSmall={rippleSmall}
-        alt="A still claret surface with a single ripple spreading outward, lit with gold"
-        textSide="left"
-        numeral="IV"
-        title="Aftercare and prescriptions"
-      >
-        We follow up after treatment, coordinate what comes next, and deliver your medications at the best price.
-      </Scene>
     </section>
   )
 }
