@@ -1,5 +1,7 @@
 import { existsSync } from 'node:fs'
 
+jest.mock('@/hooks/useSession', () => ({ useSession: () => ({ user: null, loading: false }) }))
+jest.mock('@/lib/supabase', () => ({ getSupabase: () => null }))
 jest.mock('next/navigation', () => ({
   useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
   useSearchParams: () => new URLSearchParams(),
@@ -11,7 +13,8 @@ import robots from './robots'
 import sitemap from './sitemap'
 
 const SITE = 'https://www.myrakal.com'
-const PUBLIC = ['', '/contact', '/privacy', '/terms', '/accessibility']
+const PUBLIC = ['', '/care', '/contact', '/privacy', '/terms', '/accessibility']
+const PRIVATE = ['/chat', '/chats', '/dashboard', '/login', '/forgot-password', '/reset-password']
 
 describe('search and sharing', () => {
   it('resolves every URL against the live site and describes Myrakal by default', () => {
@@ -21,17 +24,29 @@ describe('search and sharing', () => {
     expect(layout.twitter).toMatchObject({ card: 'summary_large_image' })
   })
 
-  it('lists every public page in the sitemap', () => {
+  it('lists every public page in the sitemap and no private ones', () => {
     const urls = sitemap().map((entry) => entry.url)
     expect(urls).toEqual(PUBLIC.map((path) => `${SITE}${path}`))
+    for (const path of [...PRIVATE, '/api']) expect(urls.some((u) => u.startsWith(`${SITE}${path}`))).toBe(false)
   })
 
-  it('points crawlers at the sitemap and does not block public pages', () => {
+  it('points crawlers at the sitemap and keeps them out of private areas', () => {
     const rules = robots()
     expect(rules.sitemap).toBe(`${SITE}/sitemap.xml`)
     const rule = Array.isArray(rules.rules) ? rules.rules[0] : rules.rules
     expect(rule.allow).toBe('/')
-    expect(rule.disallow).toBeUndefined()
+    expect(rule.disallow).toEqual(['/api/'])
+  })
+
+  it.each([
+    ['/dashboard', './dashboard/page'],
+    ['/login', './login/page'],
+    ['/forgot-password', './forgot-password/page'],
+    ['/reset-password', './reset-password/page'],
+  ])('leaves %s crawlable so its noindex tag is seen', async (path, file) => {
+    expect(robots().rules).not.toMatchObject({ disallow: expect.arrayContaining([path]) })
+    const { metadata } = await import(file)
+    expect(metadata.robots).toEqual({ index: false })
   })
 
   it('reads the site address from the environment, defaulting to the live site', async () => {
@@ -44,6 +59,7 @@ describe('search and sharing', () => {
 
   it.each([
     ['', './page'],
+    ['/care', './care/page'],
     ['/contact', './contact/page'],
     ['/privacy', './privacy/page'],
     ['/terms', './terms/page'],

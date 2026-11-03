@@ -46,6 +46,7 @@
     "src",
     "scripts",
     "tests",
+    "prisma.config.ts",
     "jest.config.ts",
     "next.config.ts",
     ".next/types/**/*.ts",

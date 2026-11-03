@@ -1,3 +1,4 @@
+import { TALK_WITH_US_HREF } from '@/lib/contact'
 import { render, screen } from '@testing-library/react'
 import { Hero } from '@/components/Hero'
 
@@ -18,17 +19,17 @@ describe('Hero', () => {
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Healthcare, as it should be')
   })
 
-  it('has a Talk with us button that opens the contact form', () => {
+  it('has a short call to action that emails us a prefilled message', () => {
     render(<Hero />)
-    expect(screen.getByRole('button', { name: /^Talk with us/ })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /^Talk with us/ }).getAttribute('href')).toBe(TALK_WITH_US_HREF)
   })
 
-  it('states both pillars: coordinated prescriptions and doctor review', () => {
+  it('states both pillars: coordinated care and lower cost', () => {
     render(<Hero />)
     expect(screen.getByText('Fully coordinated')).toBeInTheDocument()
-    expect(screen.getByText('Doctor reviewed')).toBeInTheDocument()
-    expect(screen.getByText(/at the best price/, { selector: 'i' })).toBeInTheDocument()
-    expect(screen.getByText(/every prescription/)).toBeInTheDocument()
+    expect(screen.getByText('For far less')).toBeInTheDocument()
+    expect(screen.getByText(/all handled for you/)).toBeInTheDocument()
+    expect(screen.getByText(/in the U\.S\. or abroad/)).toBeInTheDocument()
   })
 
   it('shows the liquid still with a description', () => {

@@ -1,0 +1,103 @@
+import { render, screen, within } from '@testing-library/react'
+
+jest.mock('@/hooks/useSession', () => ({ useSession: () => ({ user: null, loading: false }) }))
+jest.mock('@/lib/supabase', () => ({ getSupabase: () => null }))
+jest.mock('next/navigation', () => ({ usePathname: () => '/care' }))
+
+import Care from '@/views/Care'
+
+describe('Care page', () => {
+  it('has a single page heading', () => {
+    render(<Care />)
+    expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1)
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/every kind of care, arranged/i)
+  })
+
+  it('explains everything Myrakal does for a patient', () => {
+    render(<Care />)
+    const services = screen.getByRole('region', { name: /one team, start to finish/i })
+    expect(within(services).getByRole('heading', { level: 2, name: 'One team, start to finish' })).toBeTruthy()
+    expect(within(services).getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual([
+      'Doctors',
+      'Insurance and financing',
+      'Booking and travel',
+      'Aftercare',
+      'Prescriptions',
+      'Guidance',
+    ])
+    expect(within(services).getByText(/paperwork/i)).toBeTruthy()
+    expect(within(services).getByText(/hotel/i)).toBeTruthy()
+  })
+
+  it('sets the page on the ink ground with a single velvet band for standards', () => {
+    const { container } = render(<Care />)
+    expect(container.querySelector('main')?.className).toMatch(/\bbg-ink\b/)
+    const bands = container.querySelectorAll('.bg-velvet')
+    expect(bands).toHaveLength(1)
+    expect(bands[0].getAttribute('aria-labelledby')).toBe('standards')
+    expect(container.innerHTML).not.toMatch(/font-grotesk|font-sans|velvet-deep/)
+  })
+
+  it('shows a liquid image beside the header', () => {
+    const { container } = render(<Care />)
+    const img = container.querySelector('main header img')
+    expect(img?.getAttribute('src')).toMatch(/liquid-sheet\.webp/)
+    expect(img?.getAttribute('srcset')).toMatch(/liquid-sheet-960\.webp 960w/)
+  })
+
+  it('shows what we cover in everyday, ongoing and major tiers', () => {
+    render(<Care />)
+    const cover = screen.getByRole('region', { name: /from a blood test to surgery/i })
+    const tiers = within(cover).getAllByRole('heading', { level: 3 }).map((h) => h.textContent)
+    expect(tiers).toEqual(['Everyday', 'Ongoing', 'Major'])
+    expect(within(cover).getByRole('heading', { level: 2 }).textContent).toBe('From a blood test to surgery.')
+    for (const name of [
+      'Your numbers', 'Your prescriptions', 'Your second opinion', 'Your scans',
+      'Your smile', 'Your family', 'Your follow-ups',
+      'Your face and body', 'Your hair', 'Your joints',
+    ]) expect(within(cover).getByText(name)).toBeTruthy()
+  })
+
+  it('shows clinical detail without hiding it behind a click', () => {
+    render(<Care />)
+    expect(screen.getByText('Your numbers')).toBeTruthy()
+    expect(screen.getByText(/lab tests and bloodwork/i)).toBeTruthy()
+    expect(screen.getByText(/joint and orthopedic surgery/i)).toBeTruthy()
+    expect(screen.queryAllByRole('button', { expanded: false })).toHaveLength(0)
+  })
+
+  it('matches the approved copy', () => {
+    render(<Care />)
+    expect(screen.getByText(/we find the right doctor and the right price/i)).toBeTruthy()
+    expect(screen.getByText(/matched to your needs, your schedule and your budget/i)).toBeTruthy()
+    expect(screen.getByText(/book your appointments, and your hotel and transport when you travel/i)).toBeTruthy()
+    expect(screen.getByText(/help you arrange financing for the rest/i)).toBeTruthy()
+    expect(screen.queryByText(/offer financing/i)).toBeNull()
+  })
+
+  it('never tags care with a location', () => {
+    render(<Care />)
+    expect(screen.queryByText(/abroad/i)).toBeNull()
+  })
+
+  it('invites requests that are not listed', () => {
+    render(<Care />)
+    expect(screen.getByText(/if it can be planned, we can arrange it/i)).toBeTruthy()
+  })
+
+  it('covers standards for clinics, doctors and protection', () => {
+    render(<Care />)
+    const standards = screen.getByRole('region', { name: /what we hold every partner to/i })
+    for (const title of ['Clinics', 'Doctors', 'Protection']) {
+      expect(within(standards).getByRole('heading', { name: title })).toBeTruthy()
+    }
+  })
+
+  it('splits visitors toward individual and business paths with visible focus', () => {
+    render(<Care />)
+    const self = screen.getByRole('link', { name: /for yourself/i })
+    expect(self.getAttribute('href')).toBe('/individual')
+    expect(self.className).toMatch(/focus-visible:outline-champagne/)
+    expect(screen.getByRole('link', { name: /for your team/i }).getAttribute('href')).toBe('/business')
+  })
+})
