@@ -1,7 +1,7 @@
 const STEPS = [
-  ['I', 'Text us', 'Tell us what care you need, in your own words.'],
-  ['II', 'Our system analyzes', 'Our autonomous system runs your request against our healthcare pricing data.'],
-  ['III', 'Get your free data', 'After a little analysis, we send back cheaper options, with the numbers, at no cost.'],
+  ['I', 'Text us', 'Talk to our autonomous system about what\'s expensive.'],
+  ['II', 'We work it out', 'Our system runs your request against our healthcare pricing data.'],
+  ['III', 'Get cheaper options', 'After a little analysis, we send back cheaper options, with the numbers, at no cost.'],
 ]
 
 export function HowItWorks() {
@@ -11,7 +11,7 @@ export function HowItWorks() {
         <div className="flex flex-col items-center gap-6">
           <p className="font-caslon text-xs tracking-[0.32em] text-champagne uppercase">How it works</p>
           <h2 id="how-it-works" className="max-w-3xl font-display text-4xl leading-tight text-cream sm:text-6xl">
-            A text away from <i className="text-champagne">paying less.</i>
+            You're one text away from <i className="text-champagne">paying less.</i>
           </h2>
         </div>
         <ol className="grid w-full gap-px bg-rule md:grid-cols-3">
