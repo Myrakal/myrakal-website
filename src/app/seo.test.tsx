@@ -12,7 +12,6 @@ import sitemap from './sitemap'
 
 const SITE = 'https://www.myrakal.com'
 const PUBLIC = ['', '/contact', '/privacy', '/terms', '/accessibility']
-const PRIVATE = ['/chat', '/chats', '/dashboard', '/login', '/forgot-password', '/reset-password']
 
 describe('search and sharing', () => {
   it('resolves every URL against the live site and describes Myrakal by default', () => {
@@ -22,10 +21,9 @@ describe('search and sharing', () => {
     expect(layout.twitter).toMatchObject({ card: 'summary_large_image' })
   })
 
-  it('lists every public page in the sitemap and no private ones', () => {
+  it('lists every public page in the sitemap', () => {
     const urls = sitemap().map((entry) => entry.url)
     expect(urls).toEqual(PUBLIC.map((path) => `${SITE}${path}`))
-    for (const path of PRIVATE) expect(urls.some((u) => u.startsWith(`${SITE}${path}`))).toBe(false)
   })
 
   it('points crawlers at the sitemap and does not block public pages', () => {
