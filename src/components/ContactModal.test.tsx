@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { FORMSPREE_ENDPOINT } from '@/lib/contact'
 import { TalkWithUs } from '@/components/TalkWithUs'
@@ -91,5 +91,32 @@ describe('TalkWithUs modal', () => {
     const trap = document.querySelector('input[name="_gotcha"]') as HTMLInputElement
     expect(trap.tabIndex).toBe(-1)
     expect(trap.closest('[aria-hidden="true"]')).not.toBeNull()
+  })
+
+  it('renders the dialog on document.body outside the trigger wrapper', async () => {
+    const { container } = render(
+      <div style={{ transform: 'translateY(-50%)' }}>
+        <TalkWithUs className="x">Talk with us</TalkWithUs>
+      </div>,
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Talk with us' }))
+    expect(container.contains(screen.getByRole('dialog'))).toBe(false)
+  })
+
+  it('stays open when a text selection drag ends on the backdrop', async () => {
+    await open()
+    fireEvent.mouseDown(screen.getByLabelText('Message'))
+    fireEvent.click(screen.getByTestId('contact-backdrop'))
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+
+  it('moves focus into the dialog after a successful send', async () => {
+    fetchMock.mockResolvedValue({ ok: true })
+    const user = await open()
+    await fill(user)
+    await user.click(screen.getByRole('button', { name: 'Send' }))
+    await waitFor(() => expect(screen.getByRole('dialog')).toHaveFocus())
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 })

@@ -14,6 +14,7 @@ export function ContactModal({ onClose }: { onClose: () => void }) {
   const [status, setStatus] = useState<Status>('idle')
   const dialog = useRef<HTMLDivElement>(null)
   const first = useRef<HTMLInputElement>(null)
+  const pressedBackdrop = useRef(false)
 
   useEffect(() => {
     first.current?.focus()
@@ -23,6 +24,10 @@ export function ContactModal({ onClose }: { onClose: () => void }) {
       document.body.style.overflow = previous
     }
   }, [])
+
+  useEffect(() => {
+    if (status === 'success') dialog.current?.focus()
+  }, [status])
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') return onClose()
@@ -54,7 +59,13 @@ export function ContactModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       data-testid="contact-backdrop"
-      onClick={onClose}
+      onMouseDown={(e) => {
+        pressedBackdrop.current = e.target === e.currentTarget
+      }}
+      onClick={(e) => {
+        if (pressedBackdrop.current && e.target === e.currentTarget) onClose()
+        pressedBackdrop.current = false
+      }}
       onKeyDown={onKeyDown}
       className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-ink/80 p-4"
     >
@@ -63,8 +74,8 @@ export function ContactModal({ onClose }: { onClose: () => void }) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="contact-title"
-        onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md border border-champagne/60 bg-charcoal p-6 font-caslon text-cream sm:p-8"
+        tabIndex={-1}
+        className="w-full max-w-md border outline-none border-champagne/60 bg-charcoal p-6 font-caslon text-cream sm:p-8"
       >
         <h2 id="contact-title" className="font-display text-3xl text-champagne italic">
           Talk with us
@@ -90,7 +101,7 @@ export function ContactModal({ onClose }: { onClose: () => void }) {
               <span className={label}>Message</span>
               <textarea name="message" required rows={4} className={field} />
             </label>
-            <div aria-hidden="true" className="absolute -left-[9999px]">
+            <div aria-hidden="true" className="sr-only">
               <input name="_gotcha" tabIndex={-1} autoComplete="off" defaultValue="" />
             </div>
             {status === 'error' && (
