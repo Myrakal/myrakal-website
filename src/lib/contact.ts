@@ -1,5 +1,5 @@
-export const CONTACT_PHONE = '+12025550143'
-export const CONTACT_EMAIL = 'hello@example.com'
+export const CONTACT_PHONE = '+14152265827'
+export const CONTACT_EMAIL = 'eshaansood@myrakal.com'
 
 const MESSAGE = encodeURIComponent('Hi Myra!')
 const SUBJECT = encodeURIComponent('Myrakal inquiry')
