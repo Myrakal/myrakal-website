@@ -26,17 +26,24 @@ describe('landing page', () => {
     expect(how?.querySelectorAll('li')).toHaveLength(3)
   })
 
-  it('offers Text us! as a button that does nothing', () => {
+  it('opens a prefilled text draft with an email fallback', () => {
     render(<Home />)
-    const buttons = screen.getAllByRole('button', { name: 'Text us!' })
-    expect(buttons.length).toBeGreaterThanOrEqual(3)
-    for (const button of buttons) expect(button).toHaveAttribute('type', 'button')
-    expect(screen.queryByRole('link', { name: /text us|talk with us/i })).toBeNull()
+    const textLinks = screen.getAllByRole('link', { name: 'Text us!' })
+    expect(textLinks).toHaveLength(3)
+    for (const link of textLinks) expect(link).toHaveAttribute('href', 'sms:+12025550143?body=Hi%20Myra!')
+
+    const emailLinks = screen.getAllByRole('link', { name: 'Email instead' })
+    expect(emailLinks).toHaveLength(2)
+    for (const link of emailLinks) {
+      expect(link).toHaveAttribute('href', 'mailto:hello@example.com?subject=Myrakal%20inquiry&body=Hi%20Myra!')
+    }
   })
 
   it('has no navigation to other pages', () => {
     render(<Home />)
     expect(screen.queryByRole('navigation')).toBeNull()
-    for (const link of screen.queryAllByRole('link')) expect(link.getAttribute('href')).toBe('/')
+    const pageLinks = screen.queryAllByRole('link').filter((link) => link.getAttribute('href')?.startsWith('/'))
+    expect(pageLinks).toHaveLength(1)
+    expect(pageLinks[0]).toHaveAttribute('href', '/')
   })
 })
