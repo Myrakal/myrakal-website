@@ -30,12 +30,12 @@ describe('landing page', () => {
     render(<Home />)
     const textLinks = screen.getAllByRole('link', { name: 'Text us!' })
     expect(textLinks).toHaveLength(3)
-    for (const link of textLinks) expect(link).toHaveAttribute('href', 'sms:+12025550143?body=Hi%20Myra!')
+    for (const link of textLinks) expect(link).toHaveAttribute('href', 'sms:+14152265827?body=Hi%20Myra!')
 
     const emailLinks = screen.getAllByRole('link', { name: 'Email instead' })
     expect(emailLinks).toHaveLength(2)
     for (const link of emailLinks) {
-      expect(link).toHaveAttribute('href', 'mailto:hello@example.com?subject=Myrakal%20inquiry&body=Hi%20Myra!')
+      expect(link).toHaveAttribute('href', 'mailto:eshaansood@myrakal.com?subject=Myrakal%20inquiry&body=Hi%20Myra!')
     }
   })
 
