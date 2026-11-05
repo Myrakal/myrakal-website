@@ -1,6 +1,6 @@
 const OPTIONS = [
-  { name: 'Lakeshore Imaging, Chicago', price: '$380', link: 'lakeshoreimaging.com/mri' },
-  { name: 'DuPage Diagnostic Center, Naperville', price: '$425', link: 'dupagediagnostic.com/mri' },
+  { name: 'Brightwell Imaging, Chicago', price: '$380', link: 'brightwellimaging.com/mri' },
+  { name: 'Fernhollow Diagnostics, Naperville', price: '$425', link: 'fernhollowdx.com/mri' },
 ]
 
 export function PhoneMockup() {

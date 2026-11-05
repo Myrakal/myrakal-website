@@ -32,6 +32,8 @@ describe('hero', () => {
     const phone = screen.getByRole('figure', { name: /iphone/i })
     const options = within(phone).getAllByTestId('option')
     expect(options).toHaveLength(2)
+    expect(options[0].textContent).toMatch(/Brightwell Imaging/)
+    expect(options[1].textContent).toMatch(/Fernhollow Diagnostics/)
     expect(options[0].textContent).toMatch(/Chicago/)
     expect(options[1].textContent).toMatch(/Naperville/)
     for (const option of options) {
