@@ -11,7 +11,7 @@ describe('landing page', () => {
 
   it('uses the selected healthcare-cost hero headline', () => {
     render(<Home />)
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Care costs too much. Text us.')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('We give you cheaper healthcare options, for free')
   })
 
   it('frames Myrakal as an intelligent data platform with an autonomous system', () => {
