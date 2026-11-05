@@ -24,10 +24,10 @@ export function Hero() {
           <h1 className="mt-8 font-display max-sm:sr-only text-3xl text-champagne italic [text-shadow:0_2px_24px_var(--charcoal)] sm:text-[2.625rem]">
             Cheaper healthcare, over text
           </h1>
-          <p className="mt-5 max-w-xl max-sm:hidden font-caslon text-base leading-relaxed text-balance text-cream/95 [text-shadow:0_1px_14px_var(--charcoal)] sm:text-lg">
+          <p className="mt-5 max-w-xl font-caslon text-base leading-relaxed text-balance text-cream/95 [text-shadow:0_1px_14px_var(--charcoal)] sm:text-lg">
             If you're looking for cheaper healthcare, email us for early access
           </p>
-          <TextUsButton className="mt-8" />
+          <TextUsButton className="mt-8 max-sm:hidden" />
         </div>
         <div data-hero-phone className="flex justify-center lg:justify-end">
           <PhoneMockup />
