@@ -15,13 +15,29 @@ describe('hero', () => {
     expect(right!.contains(screen.getByRole('figure'))).toBe(true)
   })
 
-  it('shows an iPhone mockup with a text conversation in blue messages', () => {
+  it('shows an iPhone mockup with a text conversation that starts with a blue message', () => {
     render(<Hero />)
     const phone = screen.getByRole('figure', { name: /iphone/i })
     const messages = within(phone).getAllByRole('listitem')
-    expect(messages.length).toBeGreaterThanOrEqual(3)
-    const blue = messages.filter((m) => m.className.includes('bg-imessage'))
-    expect(blue.length).toBeGreaterThanOrEqual(2)
+    expect(messages[0].className).toContain('bg-imessage')
+    expect(messages[0].textContent).toContain('My MRI quote is $2,400. Is that normal?')
+    expect(phone.textContent).toContain("No, that doesn't sound right. Let me get back to you, I'll talk to the team.")
+    expect(phone.textContent).toContain(
+      "Definitely not right. We ran your stuff against our data system and found 2 options closer to you. There's one in Chicago, and another in Naperville. Here's the prices and links:",
+    )
+  })
+
+  it('lists a Chicago and a Naperville option with prices and links', () => {
+    render(<Hero />)
+    const phone = screen.getByRole('figure', { name: /iphone/i })
+    const options = within(phone).getAllByTestId('option')
+    expect(options).toHaveLength(2)
+    expect(options[0].textContent).toMatch(/Chicago/)
+    expect(options[1].textContent).toMatch(/Naperville/)
+    for (const option of options) {
+      expect(option.textContent).toMatch(/\$\d/)
+      expect(option.textContent).toMatch(/\.com\//)
+    }
   })
 
   it('hides the headline visually and the CTA on mobile, keeping the white text', () => {

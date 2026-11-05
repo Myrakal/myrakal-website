@@ -1,15 +1,13 @@
-const MESSAGES = [
-  { from: 'you', text: 'My MRI quote is $2,400. Is that normal?' },
-  { from: 'myrakal', text: 'Not even close. Same scan, 6 miles away: $380, cash price.' },
-  { from: 'you', text: 'Wait, really? Can you book it?' },
-  { from: 'myrakal', text: 'Done. Thursday at 9:15am. Free to use, always.' },
+const OPTIONS = [
+  { name: 'Lakeshore Imaging, Chicago', price: '$380', link: 'lakeshoreimaging.com/mri' },
+  { name: 'DuPage Diagnostic Center, Naperville', price: '$425', link: 'dupagediagnostic.com/mri' },
 ]
 
 export function PhoneMockup() {
   return (
     <figure
       aria-label="iPhone showing a text conversation with Myrakal"
-      className="relative mx-auto h-[640px] w-[316px] shrink-0 rounded-[3.25rem] border border-mist/30 bg-ink p-[11px] shadow-[0_30px_80px_-20px_var(--ink)] sm:h-[680px] sm:w-[336px]"
+      className="relative mx-auto h-[700px] w-[316px] shrink-0 rounded-[3.25rem] border border-mist/30 bg-ink p-[11px] shadow-[0_30px_80px_-20px_var(--ink)] sm:h-[720px] sm:w-[336px]"
     >
       <div className="relative flex size-full flex-col overflow-hidden rounded-[2.5rem] bg-ink text-cream">
         <div aria-hidden="true" className="absolute top-2.5 left-1/2 z-10 h-[26px] w-[92px] -translate-x-1/2 rounded-full bg-black" />
@@ -23,18 +21,25 @@ export function PhoneMockup() {
           </div>
           <p className="font-sans text-[11px] text-cream/85">Myrakal</p>
         </div>
-        <ol className="flex flex-1 flex-col justify-end gap-2 px-3.5 pb-4 font-sans text-[15px] leading-snug">
-          {MESSAGES.map(({ from, text }, i) => (
-            <li
-              key={i}
-              className={
-                from === 'you'
-                  ? 'max-w-[78%] self-end rounded-[1.25rem] rounded-br-md bg-imessage px-3.5 py-2 text-white'
-                  : 'max-w-[78%] self-start rounded-[1.25rem] rounded-bl-md bg-cream/15 px-3.5 py-2 text-cream'
-              }
-            >
-              <span className="sr-only">{from === 'you' ? 'You: ' : 'Myrakal: '}</span>
-              {text}
+        <ol className="flex min-h-0 flex-1 flex-col justify-end gap-2 overflow-hidden px-3.5 pb-3 font-sans text-[14px] leading-snug">
+          <li className="max-w-[80%] self-end rounded-[1.25rem] rounded-br-md bg-imessage px-3.5 py-2 text-white">
+            <span className="sr-only">You: </span>
+            My MRI quote is $2,400. Is that normal?
+          </li>
+          <li className="max-w-[80%] self-start rounded-[1.25rem] rounded-bl-md bg-cream/15 px-3.5 py-2 text-cream">
+            <span className="sr-only">Myrakal: </span>
+            No, that doesn&apos;t sound right. Let me get back to you, I&apos;ll talk to the team.
+          </li>
+          <li className="max-w-[88%] self-start rounded-[1.25rem] rounded-bl-md bg-cream/15 px-3.5 py-2 text-cream">
+            <span className="sr-only">Myrakal: </span>
+            Definitely not right. We ran your stuff against our data system and found 2 options closer to you. There&apos;s one in Chicago, and another in Naperville. Here&apos;s the prices and links:
+          </li>
+          {OPTIONS.map(({ name, price, link }) => (
+            <li key={name} data-testid="option" className="max-w-[88%] self-start rounded-[1.25rem] bg-cream/15 px-3.5 py-2 text-cream">
+              <span className="sr-only">Myrakal: </span>
+              <span className="block font-semibold">{name}</span>
+              <span className="block text-cream/85">MRI, {price}</span>
+              <span className="block text-imessage underline">{link}</span>
             </li>
           ))}
         </ol>
