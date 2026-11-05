@@ -27,6 +27,15 @@ describe('hero', () => {
     )
   })
 
+  it('is sized with real iPhone proportions', () => {
+    render(<Hero />)
+    const phone = screen.getByRole('figure', { name: /iphone/i })
+    const width = Number(phone.className.match(/w-\[calc\((\d+)px/)?.[1])
+    const height = Number(phone.className.match(/h-\[calc\((\d+)px/)?.[1])
+    expect(width / height).toBeGreaterThan(0.465)
+    expect(width / height).toBeLessThan(0.495)
+  })
+
   it('lists a Chicago and a Naperville option with prices and links', () => {
     render(<Hero />)
     const phone = screen.getByRole('figure', { name: /iphone/i })
