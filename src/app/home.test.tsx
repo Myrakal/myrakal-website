@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Home from '@/app/page'
 
 describe('landing page', () => {
@@ -33,6 +34,20 @@ describe('landing page', () => {
     const { container } = render(<Home />)
     const how = container.querySelector('section[aria-labelledby="how-it-works"]')
     expect(how?.querySelectorAll('li')).toHaveLength(3)
+  })
+
+  it('toggles the business-model answer under the steps on click', async () => {
+    const { container } = render(<Home />)
+    const how = container.querySelector('section[aria-labelledby="how-it-works"]') as HTMLElement
+    const toggle = within(how).getByText('Wait.. how do you make money?')
+    const details = toggle.closest('details') as HTMLDetailsElement
+    expect(details.open).toBe(false)
+    await userEvent.click(toggle)
+    expect(details.open).toBe(true)
+    expect(details).toHaveTextContent('We think healthcare data should be free for all.')
+    expect(details).toHaveTextContent('coordinating logistics with our healthcare team')
+    await userEvent.click(toggle)
+    expect(details.open).toBe(false)
   })
 
   it('opens a prefilled email draft from every CTA', () => {

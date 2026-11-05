@@ -25,6 +25,15 @@ export function HowItWorks() {
             </li>
           ))}
         </ol>
+        <details className="w-full max-w-2xl">
+          <summary className="cursor-pointer list-none font-caslon text-lg text-champagne underline underline-offset-4 outline-offset-4 focus-visible:outline-2 focus-visible:outline-champagne marker:hidden [&::-webkit-details-marker]:hidden">
+            Wait.. how do you make money?
+          </summary>
+          <p className="mt-6 font-caslon text-lg leading-relaxed text-mist">
+            We think healthcare data should be free for all. We take a flat commission if you want us to book everything
+            and stay with you through the entire journey, coordinating logistics with our healthcare team.
+          </p>
+        </details>
       </div>
     </section>
   )
