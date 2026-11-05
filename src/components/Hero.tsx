@@ -22,7 +22,7 @@ export function Hero() {
         <div data-hero-copy className="flex flex-col items-center text-center lg:items-start lg:text-left">
           <img src={wordmark.src} alt="" className="pointer-events-none w-[min(80vw,520px)] opacity-95" />
           <h1 className="mt-8 font-display max-sm:sr-only text-3xl text-champagne italic [text-shadow:0_2px_24px_var(--charcoal)] sm:text-[2.625rem]">
-            Cheaper healthcare, over text
+            Care costs too much. Text us.
           </h1>
           <p className="mt-5 max-w-xl font-caslon text-base leading-relaxed text-balance text-cream/95 [text-shadow:0_1px_14px_var(--charcoal)] sm:text-lg">
             If you're looking for cheaper healthcare, email us for early access

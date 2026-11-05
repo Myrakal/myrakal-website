@@ -9,9 +9,9 @@ describe('landing page', () => {
     expect(mains[0].querySelectorAll('h1')).toHaveLength(1)
   })
 
-  it('pitches cheaper healthcare', () => {
+  it('uses the selected healthcare-cost hero headline', () => {
     render(<Home />)
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/cheaper|less/i)
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Care costs too much. Text us.')
   })
 
   it('frames Myrakal as an intelligent data platform with an autonomous system', () => {
@@ -26,17 +26,24 @@ describe('landing page', () => {
     expect(how?.querySelectorAll('li')).toHaveLength(3)
   })
 
-  it('offers Email us as a button that does nothing', () => {
+  it('opens a prefilled email draft from every CTA', () => {
     render(<Home />)
-    const buttons = screen.getAllByRole('button', { name: 'Email us' })
-    expect(buttons.length).toBeGreaterThanOrEqual(3)
-    for (const button of buttons) expect(button).toHaveAttribute('type', 'button')
-    expect(screen.queryByRole('link', { name: /email us|talk with us/i })).toBeNull()
+    expect(screen.queryAllByRole('link', { name: 'Text us!' })).toHaveLength(0)
+    expect(screen.queryAllByRole('link', { name: 'Email instead' })).toHaveLength(0)
+    expect(document.querySelector('a[href^="sms:"]')).toBeNull()
+
+    const emailLinks = screen.getAllByRole('link', { name: 'Email us' })
+    expect(emailLinks).toHaveLength(3)
+    for (const link of emailLinks) {
+      expect(link).toHaveAttribute('href', 'mailto:eshaansood@myrakal.com?subject=Myrakal%20inquiry&body=Hi%20Myra!')
+    }
   })
 
   it('has no navigation to other pages', () => {
     render(<Home />)
     expect(screen.queryByRole('navigation')).toBeNull()
-    for (const link of screen.queryAllByRole('link')) expect(link.getAttribute('href')).toBe('/')
+    const pageLinks = screen.queryAllByRole('link').filter((link) => link.getAttribute('href')?.startsWith('/'))
+    expect(pageLinks).toHaveLength(1)
+    expect(pageLinks[0]).toHaveAttribute('href', '/')
   })
 })
