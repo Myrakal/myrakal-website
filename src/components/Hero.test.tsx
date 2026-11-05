@@ -36,6 +36,14 @@ describe('hero', () => {
     expect(width / height).toBeLessThan(0.495)
   })
 
+  it('has a realistic status bar with a carrier, signal, wifi and battery', () => {
+    const { container } = render(<Hero />)
+    const bar = container.querySelector('[data-status-bar]')
+    expect(bar).not.toBeNull()
+    expect(bar!.textContent).toBe('Halcyon')
+    expect(bar!.querySelectorAll('svg')).toHaveLength(3)
+  })
+
   it('lists a Chicago and a Naperville option with prices and links', () => {
     render(<Hero />)
     const phone = screen.getByRole('figure', { name: /iphone/i })
@@ -64,16 +72,16 @@ describe('hero', () => {
     expect(typing.querySelectorAll('[data-dot]')).toHaveLength(3)
   })
 
-  it('hides the headline visually and the CTA on mobile, keeping the white text', () => {
+  it('keeps the headline and white text on mobile but hides the CTA', () => {
     const { container } = render(<Hero />)
     const copy = container.querySelector('[data-hero-copy]') as HTMLElement
-    expect(within(copy).getByRole('heading', { level: 1 }).className).toContain('max-sm:sr-only')
+    expect(within(copy).getByRole('heading', { level: 1 }).className).not.toMatch(/max-sm:(sr-only|hidden)/)
     expect(copy.querySelector('p')!.className).not.toContain('max-sm:hidden')
     expect(within(copy).getByRole('link', { name: 'Email us' }).className).toContain('max-sm:hidden')
   })
 
-  it('invites cheaper-healthcare seekers to email for early access', () => {
+  it('invites visitors to email for early access', () => {
     render(<Hero />)
-    expect(screen.getByText("If you're looking for cheaper healthcare, email us for early access")).toBeInTheDocument()
+    expect(screen.getByText('Email us for early access')).toBeInTheDocument()
   })
 })
