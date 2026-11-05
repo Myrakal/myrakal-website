@@ -12,7 +12,9 @@ const setMotion = (reduce: boolean) => {
   })) as unknown as typeof window.matchMedia
 }
 
-const chatOf = (phone: HTMLElement) => Array.from(phone.querySelectorAll<HTMLElement>('[data-chat] > li'))
+const chatOf = (phone: HTMLElement) =>
+  Array.from(phone.querySelectorAll<HTMLElement>('[data-chat] > li')).filter((li) => li.dataset.testid !== 'receipt')
+const receiptsOf = (phone: HTMLElement) => Array.from(phone.querySelectorAll<HTMLElement>('[data-testid="receipt"]'))
 const chatText = (phone: HTMLElement) => phone.querySelector('[data-chat]')!.textContent ?? ''
 
 describe('hero', () => {
@@ -50,6 +52,15 @@ describe('hero', () => {
     const height = Number(phone.className.match(/h-\[calc\((\d+)px/)?.[1])
     expect(width / height).toBeGreaterThan(0.465)
     expect(width / height).toBeLessThan(0.495)
+  })
+
+  it('marks only your latest message as Read when motion is reduced', () => {
+    render(<Hero />)
+    const phone = screen.getByRole('figure', { name: /iphone/i })
+    const receipts = receiptsOf(phone)
+    expect(receipts).toHaveLength(1)
+    expect(receipts[0].textContent).toBe('Read')
+    expect(receipts[0].previousElementSibling).toHaveTextContent('Can you book the one closest to me?')
   })
 
   it('has a realistic status bar with a carrier, signal, wifi and battery', () => {
@@ -150,6 +161,28 @@ describe('hero background and animated chat', () => {
     expect(readable[0]).toHaveTextContent('You: My dentist quoted me $12,000')
     expect(readable[5]).toHaveTextContent('You: Can you book the one closest to me?')
     expect(phoneOf().querySelector('[data-chat]')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('walks your sent message through Sending, Delivered and Read before Myrakal types', async () => {
+    render(<Hero />)
+    const receipt = () => receiptsOf(phoneOf()).map((r) => r.textContent)
+    await advanceUntil(() => bubbles().length === 1)
+    expect(receipt()).toEqual(['Sending…'])
+    await advanceUntil(() => receipt()[0] === 'Delivered')
+    expect(typing()).toBeNull()
+    await advanceUntil(() => receipt()[0] === 'Read')
+    expect(typing()).toBeNull()
+    await advanceUntil(() => typing() !== null)
+    expect(receipt()).toEqual(['Read'])
+  })
+
+  it('moves the receipt to your newest message and ends on Read', async () => {
+    render(<Hero />)
+    await advanceUntil(() => bubbles().length === 6)
+    expect(receiptsOf(phoneOf()).map((r) => r.textContent)).toEqual(['Sending…'])
+    await advanceUntil(() => typing() !== null && receiptsOf(phoneOf())[0]?.textContent === 'Read')
+    const [receipt] = receiptsOf(phoneOf())
+    expect(receipt.previousElementSibling).toHaveTextContent('Can you book the one closest to me?')
   })
 
   it('server-renders the empty start state so the chat never flashes full', () => {
