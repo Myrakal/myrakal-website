@@ -36,6 +36,14 @@ describe('hero', () => {
     expect(width / height).toBeLessThan(0.495)
   })
 
+  it('has a realistic status bar with a carrier, signal, wifi and battery', () => {
+    const { container } = render(<Hero />)
+    const bar = container.querySelector('[data-status-bar]')
+    expect(bar).not.toBeNull()
+    expect(bar!.textContent).toBe('Halcyon')
+    expect(bar!.querySelectorAll('svg')).toHaveLength(3)
+  })
+
   it('lists a Chicago and a Naperville option with prices and links', () => {
     render(<Hero />)
     const phone = screen.getByRole('figure', { name: /iphone/i })
