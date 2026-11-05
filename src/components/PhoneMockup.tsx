@@ -1,12 +1,113 @@
-const OPTIONS = [
+'use client'
+
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+
+type Option = { name: string; price: string; link: string }
+type Item = { from: 'you' | 'myrakal'; text?: string; option?: Option }
+
+const OPTIONS: Option[] = [
   { name: 'Brightwell Dental Studio, Chicago', price: '$7,200', link: 'brightwelldental.com/veneers' },
   { name: 'Fernhollow Dentistry, Naperville', price: '$7,900', link: 'fernhollowdental.com/veneers' },
 ]
 
+const ITEMS: Item[] = [
+  { from: 'you', text: 'My dentist quoted me $12,000 for 8 porcelain veneers. Is that normal?' },
+  { from: 'myrakal', text: "No, that doesn't sound right. Let me get back to you, I'll talk to the team." },
+  {
+    from: 'myrakal',
+    text: "Definitely not right. We ran your stuff against our data system and found 2 options closer to you. There's one in Chicago, and another in Naperville. Here's the prices and links:",
+  },
+  ...OPTIONS.map((option): Item => ({ from: 'myrakal', option })),
+  { from: 'you', text: 'Can you book the one closest to me?' },
+]
+
+const REDUCED = '(prefers-reduced-motion: reduce)'
+
+const subscribe = (onChange: () => void) => {
+  const media = window.matchMedia(REDUCED)
+  media.addEventListener('change', onChange)
+  return () => media.removeEventListener('change', onChange)
+}
+
+const ENTER = 'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300'
 const SENT = 'self-end rounded-[1.375rem] rounded-br-md bg-imessage px-3.5 py-2 text-white'
 const RECEIVED = 'self-start rounded-[1.375rem] rounded-bl-md bg-cream/15 px-3.5 py-2 text-cream'
 
+function Body({ text, option }: Item) {
+  if (!option) return text
+  return (
+    <>
+      <span className="block font-semibold">{option.name}</span>
+      <span className="block text-cream/85">8 porcelain veneers, {option.price}</span>
+      <span className="block text-imessage underline">{option.link}</span>
+    </>
+  )
+}
+
 export function PhoneMockup() {
+  const animate = useSyncExternalStore(
+    subscribe,
+    () => !window.matchMedia(REDUCED).matches,
+    () => true,
+  )
+  const [played, setPlayed] = useState(0)
+  const [isTyping, setTyping] = useState(false)
+  const count = animate ? played : ITEMS.length
+  const typing = animate ? isTyping : true
+  const [draft, setDraft] = useState('')
+  const inputRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!animate) return
+    const timers = new Set<ReturnType<typeof setTimeout>>()
+    const wait = (ms: number) =>
+      new Promise<void>((resolve) => {
+        const timer = setTimeout(() => {
+          timers.delete(timer)
+          resolve()
+        }, ms)
+        timers.add(timer)
+      })
+    const play = async () => {
+      await wait(900)
+      for (let i = 0; i < ITEMS.length; i++) {
+        const { from, text, option } = ITEMS[i]
+        if (option) await wait(450)
+        else if (from === 'you') {
+          for (let n = 1; n <= text!.length; n++) {
+            setDraft(text!.slice(0, n))
+            await wait(45)
+          }
+          await wait(350)
+          setDraft('')
+        } else {
+          setTyping(true)
+          await wait(i === 1 ? 1600 : 1900)
+          setTyping(false)
+        }
+        setPlayed(i + 1)
+        await wait(500)
+      }
+      setTyping(true)
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        observer.disconnect()
+        void play()
+      },
+      { threshold: 0.5 },
+    )
+    observer.observe(inputRef.current!)
+    return () => {
+      observer.disconnect()
+      setPlayed(0)
+      setDraft('')
+      setTyping(false)
+      timers.forEach(clearTimeout)
+    }
+  }, [animate])
+
   return (
     <figure
       aria-label="iPhone showing a text conversation with Myrakal"
@@ -47,32 +148,26 @@ export function PhoneMockup() {
             </div>
             <p className="font-sans text-xs text-cream/85">Myrakal</p>
           </div>
-          <ol className="flex min-h-0 flex-1 flex-col justify-end gap-2 overflow-hidden px-3 pb-3 font-sans text-base leading-snug">
-            <li className={`max-w-[80%] ${SENT}`}>
-              <span className="sr-only">You: </span>
-              My dentist quoted me $12,000 for 8 porcelain veneers. Is that normal?
-            </li>
-            <li className={`max-w-[80%] ${RECEIVED}`}>
-              <span className="sr-only">Myrakal: </span>
-              No, that doesn&apos;t sound right. Let me get back to you, I&apos;ll talk to the team.
-            </li>
-            <li className={`max-w-[88%] ${RECEIVED}`}>
-              <span className="sr-only">Myrakal: </span>
-              Definitely not right. We ran your stuff against our data system and found 2 options closer to you. There&apos;s one in Chicago, and another in Naperville. Here&apos;s the prices and links:
-            </li>
-            {OPTIONS.map(({ name, price, link }) => (
-              <li key={name} data-testid="option" className={`max-w-[88%] ${RECEIVED}`}>
-                <span className="sr-only">Myrakal: </span>
-                <span className="block font-semibold">{name}</span>
-                <span className="block text-cream/85">8 porcelain veneers, {price}</span>
-                <span className="block text-imessage underline">{link}</span>
+          <ol className="sr-only">
+            {ITEMS.map(({ from, text, option }) => (
+              <li key={text ?? option!.name}>
+                {from === 'you' ? 'You: ' : 'Myrakal: '}
+                <Body text={text} option={option} from={from} />
               </li>
             ))}
-            <li className={`max-w-[80%] ${SENT}`}>
-              <span className="sr-only">You: </span>
-              Can you book the one closest to me?
-            </li>
-            <li data-testid="typing" className="flex items-center gap-1 self-start rounded-[1.375rem] rounded-bl-md bg-cream/15 px-4 py-3.5">
+          </ol>
+          <ol data-chat aria-hidden="true" className="flex min-h-0 flex-1 flex-col justify-end gap-2 overflow-hidden px-3 pb-3 font-sans text-base leading-snug">
+            {ITEMS.slice(0, count).map(({ from, text, option }) => (
+              <li
+                key={text ?? option!.name}
+                data-testid={option ? 'option' : undefined}
+                className={`${from === 'you' ? SENT : RECEIVED} ${!text || text.length > 90 ? 'max-w-[88%]' : 'max-w-[80%]'} ${ENTER}`}
+              >
+                <Body text={text} option={option} from={from} />
+              </li>
+            ))}
+            {typing && (
+            <li data-testid="typing" className={`flex items-center gap-1 self-start rounded-[1.375rem] rounded-bl-md bg-cream/15 px-4 py-3.5 ${ENTER}`}>
               <span className="sr-only">Myrakal is typing</span>
               {[0, 1, 2].map((i) => (
                 <span
@@ -84,10 +179,20 @@ export function PhoneMockup() {
                 />
               ))}
             </li>
+            )}
           </ol>
-          <div aria-hidden="true" className="mx-3 mb-2 flex items-center gap-2">
+          <div ref={inputRef} aria-hidden="true" className="mx-3 mb-2 flex items-center gap-2">
             <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-cream/15 text-xl leading-none">+</span>
-            <span className="flex-1 rounded-full border border-cream/20 px-4 py-2 font-sans text-base text-cream/50">iMessage</span>
+            <span className="relative flex min-h-9 flex-1 items-end gap-2 rounded-[18px] border border-cream/20 py-1.5 pr-1.5 pl-4 font-sans text-base">
+              <span data-testid="draft" className="flex-1 py-px break-words text-cream">
+                {draft}
+              </span>
+              {draft ? (
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-imessage text-sm leading-none font-bold text-white">↑</span>
+              ) : (
+                <span className="absolute text-cream/50">iMessage</span>
+              )}
+            </span>
           </div>
           <div aria-hidden="true" className="mx-auto mb-2 h-[5px] w-[134px] rounded-full bg-cream/80" />
         </div>

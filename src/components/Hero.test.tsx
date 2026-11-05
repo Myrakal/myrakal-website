@@ -1,7 +1,23 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
+import { renderToString } from 'react-dom/server'
+import { PhoneMockup } from '@/components/PhoneMockup'
 import { Hero } from '@/components/Hero'
 
+const setMotion = (reduce: boolean) => {
+  window.matchMedia = ((query: string) => ({
+    matches: reduce,
+    media: query,
+    addEventListener() {},
+    removeEventListener() {},
+  })) as unknown as typeof window.matchMedia
+}
+
+const chatOf = (phone: HTMLElement) => Array.from(phone.querySelectorAll<HTMLElement>('[data-chat] > li'))
+const chatText = (phone: HTMLElement) => phone.querySelector('[data-chat]')!.textContent ?? ''
+
 describe('hero', () => {
+  beforeEach(() => setMotion(true))
+
   it('puts the logo and text on the left and the iPhone on the right', () => {
     const { container } = render(<Hero />)
     const left = container.querySelector('[data-hero-copy]')
@@ -18,11 +34,11 @@ describe('hero', () => {
   it('shows an iPhone mockup with a text conversation that starts with a blue message', () => {
     render(<Hero />)
     const phone = screen.getByRole('figure', { name: /iphone/i })
-    const messages = within(phone).getAllByRole('listitem')
+    const messages = chatOf(phone)
     expect(messages[0].className).toContain('bg-imessage')
     expect(messages[0].textContent).toContain('My dentist quoted me $12,000 for 8 porcelain veneers. Is that normal?')
-    expect(phone.textContent).toContain("No, that doesn't sound right. Let me get back to you, I'll talk to the team.")
-    expect(phone.textContent).toContain(
+    expect(chatText(phone)).toContain("No, that doesn't sound right. Let me get back to you, I'll talk to the team.")
+    expect(chatText(phone)).toContain(
       "Definitely not right. We ran your stuff against our data system and found 2 options closer to you. There's one in Chicago, and another in Naperville. Here's the prices and links:",
     )
   })
@@ -63,7 +79,7 @@ describe('hero', () => {
   it('has the user ask to book the closest one, then shows Myrakal typing', () => {
     render(<Hero />)
     const phone = screen.getByRole('figure', { name: /iphone/i })
-    const items = within(phone).getAllByRole('listitem')
+    const items = chatOf(phone)
     const booking = items[items.length - 2]
     expect(booking.className).toContain('bg-imessage')
     expect(booking.textContent).toContain('Can you book the one closest to me?')
@@ -84,5 +100,103 @@ describe('hero', () => {
   it('invites visitors to email for early access', () => {
     render(<Hero />)
     expect(screen.getByText('Email us for early access')).toBeInTheDocument()
+  })
+})
+
+const setVisibility = (visible: boolean) => {
+  globalThis.IntersectionObserver = class {
+    callback: IntersectionObserverCallback
+    constructor(callback: IntersectionObserverCallback) {
+      this.callback = callback
+    }
+    observe(target: Element) {
+      if (visible) this.callback([{ isIntersecting: true, target } as IntersectionObserverEntry], this as unknown as IntersectionObserver)
+    }
+    unobserve() {}
+    disconnect() {}
+    takeRecords() {
+      return []
+    }
+  } as unknown as typeof IntersectionObserver
+}
+
+describe('hero background and animated chat', () => {
+  beforeEach(() => {
+    setMotion(false)
+    setVisibility(true)
+    jest.useFakeTimers()
+  })
+  afterEach(() => jest.useRealTimers())
+
+  const phoneOf = () => screen.getByRole('figure', { name: /iphone/i })
+  const advanceUntil = async (done: () => boolean) => {
+    for (let i = 0; i < 2000 && !done(); i++) await act(async () => void jest.advanceTimersByTime(50))
+    expect(done()).toBe(true)
+  }
+  const bubbles = () => chatOf(phoneOf()).filter((li) => li.dataset.testid !== 'typing')
+  const chatNow = () => chatText(phoneOf())
+  const typing = () => within(phoneOf()).queryByTestId('typing')
+
+  it('keeps the liquid background static with no video', () => {
+    const { container } = render(<Hero />)
+    expect(container.querySelector('video')).toBeNull()
+    expect(container.querySelector('img[alt^="A ribbon"]')).not.toBeNull()
+  })
+
+  it('lets screen readers read the whole conversation while the chat plays', () => {
+    render(<Hero />)
+    const readable = within(phoneOf()).getAllByRole('listitem')
+    expect(readable).toHaveLength(6)
+    expect(readable[0]).toHaveTextContent('You: My dentist quoted me $12,000')
+    expect(readable[5]).toHaveTextContent('You: Can you book the one closest to me?')
+    expect(phoneOf().querySelector('[data-chat]')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('server-renders the empty start state so the chat never flashes full', () => {
+    const html = renderToString(<PhoneMockup />)
+    const chat = new DOMParser().parseFromString(html, 'text/html').querySelector('[data-chat]')!
+    expect(chat.querySelectorAll('li')).toHaveLength(0)
+  })
+
+  it('waits for the input bar to scroll into view before playing', async () => {
+    setVisibility(false)
+    render(<Hero />)
+    await act(async () => void jest.advanceTimersByTime(30000))
+    expect(bubbles()).toHaveLength(0)
+    expect(within(phoneOf()).getByTestId('draft').textContent).toBe('')
+  })
+
+  it('starts with an empty chat and types the first message into the input', async () => {
+    render(<Hero />)
+    expect(bubbles()).toHaveLength(0)
+    await advanceUntil(() => (within(phoneOf()).getByTestId('draft').textContent ?? '').length > 12)
+    expect(bubbles()).toHaveLength(0)
+    expect(within(phoneOf()).getByTestId('draft').textContent).toMatch(/^My dentist/)
+  })
+
+  it('sends the first message, shows typing, then the reply', async () => {
+    render(<Hero />)
+    await advanceUntil(() => bubbles().length === 1)
+    expect(bubbles()[0].className).toContain('bg-imessage')
+    expect(within(phoneOf()).getByTestId('draft').textContent).toBe('')
+    await advanceUntil(() => typing() !== null)
+    expect(chatNow()).not.toContain("No, that doesn't sound right")
+    await advanceUntil(() => chatNow().includes("No, that doesn't sound right"))
+    expect(typing()).toBeNull()
+  })
+
+  it('ends on the full conversation with the typing dots', async () => {
+    render(<Hero />)
+    await advanceUntil(() => typing() !== null && bubbles().length === 6)
+    expect(chatNow()).toContain('Can you book the one closest to me?')
+    expect(within(phoneOf()).getAllByTestId('option')).toHaveLength(2)
+  })
+
+  it('shows the whole conversation at once when motion is reduced', () => {
+    setMotion(true)
+    render(<Hero />)
+    expect(bubbles()).toHaveLength(6)
+    expect(typing()).not.toBeNull()
+    expect(within(phoneOf()).getByTestId('draft').textContent).toBe('')
   })
 })
