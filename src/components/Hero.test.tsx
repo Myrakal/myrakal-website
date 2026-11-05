@@ -20,7 +20,7 @@ describe('hero', () => {
     const phone = screen.getByRole('figure', { name: /iphone/i })
     const messages = within(phone).getAllByRole('listitem')
     expect(messages[0].className).toContain('bg-imessage')
-    expect(messages[0].textContent).toContain('My MRI quote is $2,400. Is that normal?')
+    expect(messages[0].textContent).toContain('My dentist quoted me $12,000 for 8 porcelain veneers. Is that normal?')
     expect(phone.textContent).toContain("No, that doesn't sound right. Let me get back to you, I'll talk to the team.")
     expect(phone.textContent).toContain(
       "Definitely not right. We ran your stuff against our data system and found 2 options closer to you. There's one in Chicago, and another in Naperville. Here's the prices and links:",
@@ -49,13 +49,14 @@ describe('hero', () => {
     const phone = screen.getByRole('figure', { name: /iphone/i })
     const options = within(phone).getAllByTestId('option')
     expect(options).toHaveLength(2)
-    expect(options[0].textContent).toMatch(/Brightwell Imaging/)
-    expect(options[1].textContent).toMatch(/Fernhollow Diagnostics/)
+    expect(options[0].textContent).toMatch(/Brightwell Dental Studio/)
+    expect(options[1].textContent).toMatch(/Fernhollow Dentistry/)
     expect(options[0].textContent).toMatch(/Chicago/)
     expect(options[1].textContent).toMatch(/Naperville/)
     for (const option of options) {
       expect(option.textContent).toMatch(/\$\d/)
       expect(option.textContent).toMatch(/\.com\//)
+      expect(option.textContent).toMatch(/veneers/i)
     }
   })
 

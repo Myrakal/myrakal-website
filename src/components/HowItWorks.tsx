@@ -30,8 +30,8 @@ export function HowItWorks() {
             Wait.. how do you make money?
           </summary>
           <p className="mt-6 font-caslon text-lg leading-relaxed text-mist">
-            We think healthcare data should be free for all. We take a flat commission if you want us to book everything
-            and stay with you through the entire journey, coordinating logistics with our healthcare team.
+            We think healthcare data should be free for all. We take a commission if you want us to book &amp; coordinate
+            everything.
           </p>
         </details>
       </div>
