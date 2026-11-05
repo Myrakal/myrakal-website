@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { Fragment, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
 type Option = { name: string; price: string; link: string }
 type Item = { from: 'you' | 'myrakal'; text?: string; option?: Option }
@@ -29,6 +29,8 @@ const subscribe = (onChange: () => void) => {
   return () => media.removeEventListener('change', onChange)
 }
 
+const RECEIPTS = { sending: 'Sending…', delivered: 'Delivered', read: 'Read' }
+
 const ENTER = 'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-300'
 const SENT = 'self-end rounded-[1.375rem] rounded-br-md bg-imessage px-3.5 py-2 text-white'
 const RECEIVED = 'self-start rounded-[1.375rem] rounded-bl-md bg-cream/15 px-3.5 py-2 text-cream'
@@ -52,8 +54,11 @@ export function PhoneMockup() {
   )
   const [played, setPlayed] = useState(0)
   const [isTyping, setTyping] = useState(false)
+  const [sentStatus, setReceipt] = useState<keyof typeof RECEIPTS | null>(null)
   const count = animate ? played : ITEMS.length
   const typing = animate ? isTyping : true
+  const receipt = animate ? sentStatus : 'read'
+  const lastSent = ITEMS.slice(0, count).map((item) => item.from).lastIndexOf('you')
   const [draft, setDraft] = useState('')
   const inputRef = useRef<HTMLDivElement>(null)
 
@@ -86,6 +91,13 @@ export function PhoneMockup() {
           setTyping(false)
         }
         setPlayed(i + 1)
+        if (from === 'you') {
+          setReceipt('sending')
+          await wait(500)
+          setReceipt('delivered')
+          await wait(700)
+          setReceipt('read')
+        }
         await wait(500)
       }
       setTyping(true)
@@ -102,6 +114,7 @@ export function PhoneMockup() {
     return () => {
       observer.disconnect()
       setPlayed(0)
+      setReceipt(null)
       setDraft('')
       setTyping(false)
       timers.forEach(clearTimeout)
@@ -157,14 +170,20 @@ export function PhoneMockup() {
             ))}
           </ol>
           <ol data-chat aria-hidden="true" className="flex min-h-0 flex-1 flex-col justify-end gap-2 overflow-hidden px-3 pb-3 font-sans text-base leading-snug">
-            {ITEMS.slice(0, count).map(({ from, text, option }) => (
-              <li
-                key={text ?? option!.name}
-                data-testid={option ? 'option' : undefined}
-                className={`${from === 'you' ? SENT : RECEIVED} ${!text || text.length > 90 ? 'max-w-[88%]' : 'max-w-[80%]'} ${ENTER}`}
-              >
-                <Body text={text} option={option} from={from} />
-              </li>
+            {ITEMS.slice(0, count).map(({ from, text, option }, i) => (
+              <Fragment key={text ?? option!.name}>
+                <li
+                  data-testid={option ? 'option' : undefined}
+                  className={`${from === 'you' ? SENT : RECEIVED} ${!text || text.length > 90 ? 'max-w-[88%]' : 'max-w-[80%]'} ${ENTER}`}
+                >
+                  <Body text={text} option={option} from={from} />
+                </li>
+                {i === lastSent && receipt && (
+                  <li data-testid="receipt" className="-mt-1.5 self-end pr-2 text-xs font-semibold text-cream/50">
+                    {RECEIPTS[receipt]}
+                  </li>
+                )}
+              </Fragment>
             ))}
             {typing && (
             <li data-testid="typing" className={`flex items-center gap-1 self-start rounded-[1.375rem] rounded-bl-md bg-cream/15 px-4 py-3.5 ${ENTER}`}>
