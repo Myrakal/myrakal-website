@@ -42,6 +42,19 @@ describe('hero', () => {
     }
   })
 
+  it('has the user ask to book the closest one, then shows Myrakal typing', () => {
+    render(<Hero />)
+    const phone = screen.getByRole('figure', { name: /iphone/i })
+    const items = within(phone).getAllByRole('listitem')
+    const booking = items[items.length - 2]
+    expect(booking.className).toContain('bg-imessage')
+    expect(booking.textContent).toContain('Can you book the one closest to me?')
+    const typing = items[items.length - 1]
+    expect(typing).toHaveAttribute('data-testid', 'typing')
+    expect(typing.textContent).toBe('Myrakal is typing')
+    expect(typing.querySelectorAll('[data-dot]')).toHaveLength(3)
+  })
+
   it('hides the headline visually and the CTA on mobile, keeping the white text', () => {
     const { container } = render(<Hero />)
     const copy = container.querySelector('[data-hero-copy]') as HTMLElement

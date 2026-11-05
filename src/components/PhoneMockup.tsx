@@ -7,7 +7,7 @@ export function PhoneMockup() {
   return (
     <figure
       aria-label="iPhone showing a text conversation with Myrakal"
-      className="relative mx-auto h-[700px] w-[316px] shrink-0 rounded-[3.25rem] border border-mist/30 bg-ink p-[11px] shadow-[0_30px_80px_-20px_var(--ink)] sm:h-[720px] sm:w-[336px]"
+      className="relative mx-auto h-[760px] w-[316px] shrink-0 rounded-[3.25rem] border border-mist/30 bg-ink p-[11px] shadow-[0_30px_80px_-20px_var(--ink)] sm:h-[780px] sm:w-[336px]"
     >
       <div className="relative flex size-full flex-col overflow-hidden rounded-[2.5rem] bg-ink text-cream">
         <div aria-hidden="true" className="absolute top-2.5 left-1/2 z-10 h-[26px] w-[92px] -translate-x-1/2 rounded-full bg-black" />
@@ -42,6 +42,22 @@ export function PhoneMockup() {
               <span className="block text-imessage underline">{link}</span>
             </li>
           ))}
+          <li className="max-w-[80%] self-end rounded-[1.25rem] rounded-br-md bg-imessage px-3.5 py-2 text-white">
+            <span className="sr-only">You: </span>
+            Can you book the one closest to me?
+          </li>
+          <li data-testid="typing" className="flex items-center gap-1 self-start rounded-[1.25rem] rounded-bl-md bg-cream/15 px-4 py-3.5">
+            <span className="sr-only">Myrakal is typing</span>
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                data-dot
+                aria-hidden="true"
+                style={{ animationDelay: `${i * 150}ms` }}
+                className="size-2 rounded-full bg-cream/60 motion-safe:animate-bounce"
+              />
+            ))}
+          </li>
         </ol>
         <div aria-hidden="true" className="mx-3.5 mb-3 flex items-center rounded-full border border-cream/20 px-4 py-2 text-[14px] text-cream/50">
           iMessage
