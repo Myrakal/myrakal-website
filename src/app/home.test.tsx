@@ -32,7 +32,7 @@ describe('landing page', () => {
     expect(screen.queryAllByRole('link', { name: 'Email instead' })).toHaveLength(0)
     expect(document.querySelector('a[href^="sms:"]')).toBeNull()
 
-    const emailLinks = screen.getAllByRole('link', { name: 'Email us!' })
+    const emailLinks = screen.getAllByRole('link', { name: 'Email us' })
     expect(emailLinks).toHaveLength(3)
     for (const link of emailLinks) {
       expect(link).toHaveAttribute('href', 'mailto:eshaansood@myrakal.com?subject=Myrakal%20inquiry&body=Hi%20Myra!')

@@ -6,7 +6,7 @@ const CTA_CLASSES =
 export function TextUsButton({ className = '' }: { className?: string }) {
   return (
     <a href={EMAIL_HREF} className={`${CTA_CLASSES} ${className}`}>
-      Email us!
+      Email us
     </a>
   )
 }
