@@ -1,7 +1,6 @@
 import liquid from '@/assets/hero-liquid.webp'
 import liquidSmall from '@/assets/hero-liquid-960.webp'
 import wordmark from '@/assets/myrakal-wordmark.svg'
-import { HeroVideo } from '@/components/HeroVideo'
 import { PhoneMockup } from '@/components/PhoneMockup'
 import { TextUsButton } from '@/components/TextUsButton'
 
@@ -16,7 +15,6 @@ export function Hero() {
         fetchPriority="high"
         className="absolute inset-0 -z-30 size-full object-cover"
       />
-      <HeroVideo poster={liquid.src} />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-charcoal/30 max-sm:bg-charcoal/45" />
       <div className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 py-6 lg:grid-cols-2 lg:gap-8">
         <div data-hero-copy className="flex flex-col items-center text-center lg:items-start lg:text-left">
