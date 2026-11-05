@@ -25,7 +25,7 @@ export function Hero() {
             Cheaper healthcare, over text
           </h1>
           <p className="mt-5 max-w-xl max-sm:hidden font-caslon text-base leading-relaxed text-balance text-cream/95 [text-shadow:0_1px_14px_var(--charcoal)] sm:text-lg">
-            Made for people who need healthcare to be more affordable and accessible
+            If you're looking for cheaper healthcare, email us for early access
           </p>
           <TextUsButton className="mt-8" />
         </div>

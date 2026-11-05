@@ -11,7 +11,7 @@ describe('hero', () => {
     expect(left!.compareDocumentPosition(right!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(left!.querySelector('img[src*="wordmark"]')).not.toBeNull()
     expect(within(left as HTMLElement).getByRole('heading', { level: 1 })).toBeInTheDocument()
-    expect(within(left as HTMLElement).getByRole('button', { name: 'Text us!' })).toBeInTheDocument()
+    expect(within(left as HTMLElement).getByRole('button', { name: 'Email us' })).toBeInTheDocument()
     expect(right!.contains(screen.getByRole('figure'))).toBe(true)
   })
 
@@ -29,5 +29,10 @@ describe('hero', () => {
     const copy = container.querySelector('[data-hero-copy]') as HTMLElement
     expect(within(copy).getByRole('heading', { level: 1 }).className).toContain('max-sm:sr-only')
     expect(copy.querySelector('p')!.className).toContain('max-sm:hidden')
+  })
+
+  it('invites cheaper-healthcare seekers to email for early access', () => {
+    render(<Hero />)
+    expect(screen.getByText("If you're looking for cheaper healthcare, email us for early access")).toBeInTheDocument()
   })
 })

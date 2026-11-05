@@ -27,12 +27,12 @@ describe('landing page', () => {
     expect(how?.querySelectorAll('li')).toHaveLength(3)
   })
 
-  it('offers Text us! as a button that does nothing', () => {
+  it('offers Email us as a button that does nothing', () => {
     render(<Home />)
-    const buttons = screen.getAllByRole('button', { name: 'Text us!' })
+    const buttons = screen.getAllByRole('button', { name: 'Email us' })
     expect(buttons.length).toBeGreaterThanOrEqual(3)
     for (const button of buttons) expect(button).toHaveAttribute('type', 'button')
-    expect(screen.queryByRole('link', { name: /text us|talk with us/i })).toBeNull()
+    expect(screen.queryByRole('link', { name: /email us|talk with us/i })).toBeNull()
   })
 
   it('has no navigation to other pages', () => {
