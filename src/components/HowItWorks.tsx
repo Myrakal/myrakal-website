@@ -1,6 +1,6 @@
 const STEPS = [
   ['I', 'Text us', 'Talk to our autonomous system about what\'s expensive.'],
-  ['II', 'We work it out', 'Our system runs your request against our healthcare pricing data.'],
+  ['II', 'We work it out', 'Our team runs your request against our healthcare pricing data.'],
   ['III', 'Get cheaper options', 'We send back cheaper options, with the numbers, at no cost.'],
 ]
 
