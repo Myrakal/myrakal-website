@@ -20,6 +20,15 @@ describe('landing page', () => {
     expect(container.textContent).toMatch(/autonomous system/i)
   })
 
+  it('puts a Meet the team video frame directly before How it works', () => {
+    const { container } = render(<Home />)
+    const meet = container.querySelector('section[aria-labelledby="meet-the-team"]')
+    expect(meet).not.toBeNull()
+    expect(meet?.querySelector('h2')).toHaveTextContent('Meet the team')
+    expect(meet?.querySelector('video')).not.toBeNull()
+    expect(meet?.nextElementSibling).toBe(container.querySelector('section[aria-labelledby="how-it-works"]'))
+  })
+
   it('walks through three steps from texting us to cheaper options', () => {
     const { container } = render(<Home />)
     const how = container.querySelector('section[aria-labelledby="how-it-works"]')
