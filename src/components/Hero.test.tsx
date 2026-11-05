@@ -23,4 +23,11 @@ describe('hero', () => {
     const blue = messages.filter((m) => m.className.includes('bg-imessage'))
     expect(blue.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('hides the headline visually and the tagline on mobile', () => {
+    const { container } = render(<Hero />)
+    const copy = container.querySelector('[data-hero-copy]') as HTMLElement
+    expect(within(copy).getByRole('heading', { level: 1 }).className).toContain('max-sm:sr-only')
+    expect(copy.querySelector('p')!.className).toContain('max-sm:hidden')
+  })
 })
