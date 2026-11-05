@@ -26,14 +26,14 @@ describe('landing page', () => {
     expect(how?.querySelectorAll('li')).toHaveLength(3)
   })
 
-  it('opens a prefilled text draft with an email fallback', () => {
+  it('opens a prefilled email draft from every CTA', () => {
     render(<Home />)
-    const textLinks = screen.getAllByRole('link', { name: 'Text us!' })
-    expect(textLinks).toHaveLength(3)
-    for (const link of textLinks) expect(link).toHaveAttribute('href', 'sms:+14152265827?body=Hi%20Myra!')
+    expect(screen.queryAllByRole('link', { name: 'Text us!' })).toHaveLength(0)
+    expect(screen.queryAllByRole('link', { name: 'Email instead' })).toHaveLength(0)
+    expect(document.querySelector('a[href^="sms:"]')).toBeNull()
 
-    const emailLinks = screen.getAllByRole('link', { name: 'Email instead' })
-    expect(emailLinks).toHaveLength(2)
+    const emailLinks = screen.getAllByRole('link', { name: 'Email us!' })
+    expect(emailLinks).toHaveLength(3)
     for (const link of emailLinks) {
       expect(link).toHaveAttribute('href', 'mailto:eshaansood@myrakal.com?subject=Myrakal%20inquiry&body=Hi%20Myra!')
     }

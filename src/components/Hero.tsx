@@ -26,7 +26,7 @@ export function Hero() {
       <p className="mt-5 max-w-xl font-caslon text-base leading-relaxed text-balance text-cream/95 [text-shadow:0_1px_14px_var(--charcoal)] sm:text-lg">
         Made for people who need healthcare to be more affordable and accessible
       </p>
-      <TextUsButton className="mt-8" showEmailFallback />
+      <TextUsButton className="mt-8" />
     </section>
   )
 }
