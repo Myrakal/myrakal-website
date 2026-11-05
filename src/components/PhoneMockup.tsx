@@ -1,6 +1,6 @@
 const OPTIONS = [
-  { name: 'Brightwell Imaging, Chicago', price: '$380', link: 'brightwellimaging.com/mri' },
-  { name: 'Fernhollow Diagnostics, Naperville', price: '$425', link: 'fernhollowdx.com/mri' },
+  { name: 'Brightwell Dental Studio, Chicago', price: '$7,200', link: 'brightwelldental.com/veneers' },
+  { name: 'Fernhollow Dentistry, Naperville', price: '$7,900', link: 'fernhollowdental.com/veneers' },
 ]
 
 const SENT = 'self-end rounded-[1.375rem] rounded-br-md bg-imessage px-3.5 py-2 text-white'
@@ -50,7 +50,7 @@ export function PhoneMockup() {
           <ol className="flex min-h-0 flex-1 flex-col justify-end gap-2 overflow-hidden px-3 pb-3 font-sans text-base leading-snug">
             <li className={`max-w-[80%] ${SENT}`}>
               <span className="sr-only">You: </span>
-              My MRI quote is $2,400. Is that normal?
+              My dentist quoted me $12,000 for 8 porcelain veneers. Is that normal?
             </li>
             <li className={`max-w-[80%] ${RECEIVED}`}>
               <span className="sr-only">Myrakal: </span>
@@ -64,7 +64,7 @@ export function PhoneMockup() {
               <li key={name} data-testid="option" className={`max-w-[88%] ${RECEIVED}`}>
                 <span className="sr-only">Myrakal: </span>
                 <span className="block font-semibold">{name}</span>
-                <span className="block text-cream/85">MRI, {price}</span>
+                <span className="block text-cream/85">8 porcelain veneers, {price}</span>
                 <span className="block text-imessage underline">{link}</span>
               </li>
             ))}
