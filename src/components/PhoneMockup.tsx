@@ -160,7 +160,7 @@ export function PhoneMockup() {
             <div aria-hidden="true" className="mx-auto mb-1 flex size-[50px] items-center justify-center rounded-full bg-velvet-light font-display text-xl italic">
               M
             </div>
-            <p className="font-sans text-xs text-cream/85">Myrakal</p>
+            <p className="font-sans text-[12px] text-cream/85">Myrakal</p>
           </div>
           <ol className="sr-only">
             {ITEMS.map(({ from, text, option }) => (
@@ -180,7 +180,7 @@ export function PhoneMockup() {
                   <Body text={text} option={option} from={from} />
                 </li>
                 {i === lastSent && receipt && (
-                  <li data-testid="receipt" className="-mt-1.5 self-end pr-2 text-xs font-semibold text-cream/50">
+                  <li data-testid="receipt" className="-mt-1.5 self-end pr-2 text-[12px] font-semibold text-cream/50">
                     {RECEIPTS[receipt]}
                   </li>
                 )}
