@@ -31,7 +31,7 @@ export default function GuidesIndex() {
           </header>
           <ul className="grid gap-px bg-rule md:grid-cols-2">
             {ENTRIES.map(([href, headline, description]) => (
-              <li key={href} className="group relative flex flex-col gap-3 bg-ink p-8 transition-colors hover:bg-velvet has-[:focus-visible]:bg-velvet">
+              <li key={href} className="group relative flex flex-col gap-3 bg-ink p-8 transition-colors md:last:odd:col-span-2 hover:bg-velvet has-[:focus-visible]:bg-velvet">
                 <h2 className="font-display text-2xl leading-snug text-cream">
                   <a href={href} className="transition-colors group-hover:text-champagne focus-visible:text-champagne after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-champagne">
                     {headline}

@@ -69,10 +69,10 @@ export function TreatmentPage({ treatment }: { treatment: Treatment }) {
           <div className="mx-auto flex max-w-2xl flex-col gap-5">
             <h2 id="before-you-decide" className={EYEBROW}>Before you decide</h2>
             <ul className="space-y-3 font-caslon text-lg">
-              {treatment.guides.map((slug) => GUIDES[slug as keyof typeof GUIDES]).map(({ slug, headline }) => (
+              {treatment.guides.flatMap((slug) => GUIDES[slug] ?? []).map(({ slug, headline }) => (
                 <li key={slug}><a href={`/guides/${slug}`} className={LINK}>{headline}</a></li>
               ))}
-              <li><a href="/guides" className={LINK}>All guides →</a></li>
+              <li><a href="/guides" className={LINK}>All guides <span aria-hidden="true">→</span></a></li>
             </ul>
           </div>
         </nav>

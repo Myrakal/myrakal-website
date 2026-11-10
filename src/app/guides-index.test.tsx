@@ -5,6 +5,7 @@ import sitemap from '@/app/sitemap'
 import { Footer } from '@/components/Footer'
 import { TreatmentPage } from '@/components/TreatmentPage'
 import { GUIDES } from '@/lib/guides'
+import { LLMS_TEXT } from '@/lib/llms'
 import { SITE } from '@/lib/site'
 import { TREATMENTS } from '@/lib/treatments'
 
@@ -22,6 +23,7 @@ describe('guides index', () => {
   it('has its own canonical URL and sitemap entry', () => {
     expect(metadata.alternates?.canonical).toBe('/guides')
     expect(sitemap().map((entry) => entry.url)).toContain(`${SITE}/guides`)
+    expect(LLMS_TEXT).toContain(`(${SITE}/guides):`)
   })
 
   it('links treatments, guides and the calculator from the footer', () => {
