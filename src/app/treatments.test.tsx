@@ -47,6 +47,7 @@ describe.each(pages)('/%s', (slug, Page, metadata, topic) => {
   it('describes the service for answer engines', () => {
     const { container } = render(<Page />)
     const items = [...container.querySelectorAll('script[type="application/ld+json"]')].flatMap((s) => JSON.parse(s.textContent!))
+    expect(items.find((i) => i['@type'] === 'Organization')).toMatchObject({ '@id': 'https://www.myrakal.com/#organization', name: 'Myrakal' })
     expect(items.find((i) => i['@type'] === 'Service')).toMatchObject({
       url: `https://www.myrakal.com/${slug}`,
       provider: { '@id': 'https://www.myrakal.com/#organization' },
@@ -64,6 +65,16 @@ describe('treatment pages', () => {
     const { container } = render(<Home />)
     const services = container.querySelector('section[aria-labelledby="services"]') as HTMLElement
     expect(within(services).getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual(['/dental'])
+  })
+
+  it('are listed in llms.txt', async () => {
+    const { LLMS_TEXT } = await import('@/lib/llms')
+    for (const { name, slug } of Object.values(TREATMENTS)) expect(LLMS_TEXT).toContain(`- [${name}](https://www.myrakal.com/${slug})`)
+  })
+
+  it('hide the default disclosure marker on FAQ toggles', () => {
+    const { container } = render(<Dental />)
+    for (const summary of container.querySelectorAll('summary')) expect(summary.className).toContain('list-none')
   })
 
   it('use no em dashes in their copy', () => {

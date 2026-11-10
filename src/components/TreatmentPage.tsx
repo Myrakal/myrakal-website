@@ -3,6 +3,7 @@ import { JsonLd } from '@/components/JsonLd'
 import { Navbar } from '@/components/Navbar'
 import { TextUsButton } from '@/components/TextUsButton'
 import { SITE } from '@/lib/site'
+import { ORGANIZATION } from '@/lib/structured-data'
 import type { Treatment } from '@/lib/treatments'
 
 const EYEBROW = 'font-caslon text-xs tracking-[0.32em] text-champagne uppercase'
@@ -17,7 +18,7 @@ export function TreatmentPage({ treatment }: { treatment: Treatment }) {
   ]
   return (
     <>
-      <JsonLd data={{ '@context': 'https://schema.org', '@type': 'Service', name: `${treatment.name} care, compared and booked`, description: treatment.description, url: `${SITE}/${treatment.slug}`, provider: { '@id': `${SITE}/#organization` } }} />
+      <JsonLd data={[ORGANIZATION, { '@context': 'https://schema.org', '@type': 'Service', name: `${treatment.name} care, compared and booked`, description: treatment.description, url: `${SITE}/${treatment.slug}`, provider: { '@id': `${SITE}/#organization` } }]} />
       <Navbar />
       <main>
         <section className="bg-charcoal px-6 pt-36 pb-24 sm:px-12">
@@ -53,7 +54,7 @@ export function TreatmentPage({ treatment }: { treatment: Treatment }) {
             </h2>
             {faqs.map(([question, answer]) => (
               <details key={question} className="border-b border-rule pb-6">
-                <summary className="cursor-pointer font-display text-2xl text-cream outline-offset-4 focus-visible:outline-2 focus-visible:outline-champagne">
+                <summary className="cursor-pointer list-none font-display text-2xl text-cream outline-offset-4 focus-visible:outline-2 focus-visible:outline-champagne marker:hidden after:ml-3 after:text-champagne after:content-['+'] [&::-webkit-details-marker]:hidden">
                   {question}
                 </summary>
                 <p className="mt-4 font-caslon text-lg leading-relaxed text-mist">{answer}</p>
