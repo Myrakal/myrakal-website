@@ -16,7 +16,7 @@ describe('search and sharing', () => {
   })
 
   it('lists the home page and the treatment pages in the sitemap', () => {
-    expect(sitemap().map((entry) => entry.url)).toEqual([SITE, `${SITE}/dental`, `${SITE}/cosmetic`, `${SITE}/guides/verify-a-dentist-or-surgeon`])
+    expect(sitemap().map((entry) => entry.url)).toEqual([SITE, `${SITE}/dental`, `${SITE}/cosmetic`, `${SITE}/guides/verify-a-dentist-or-surgeon`, `${SITE}/guides/is-dental-work-abroad-safe`])
   })
 
   it('points crawlers at the sitemap and allows everything', () => {
