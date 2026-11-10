@@ -4,9 +4,7 @@ import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 import { CONTACT_EMAIL } from '@/lib/contact'
 
-export const LEGAL_UPDATED = 'November 10, 2026'
-
-export function LegalLayout({ title, eyebrow, lede, children }: { title: string; eyebrow: string; lede: string; children: ReactNode }) {
+export function LegalLayout({ title, eyebrow, lede, updated, children }: { title: string; eyebrow: string; lede: string; updated: string; children: ReactNode }) {
   return (
     <>
       <Navbar />
@@ -16,7 +14,7 @@ export function LegalLayout({ title, eyebrow, lede, children }: { title: string;
             <p className="mb-5 text-xs tracking-[0.32em] text-champagne uppercase">{eyebrow}</p>
             <h1 className="font-display text-[clamp(2.4rem,4.5vw,3.75rem)] leading-[1.02] font-normal text-balance hyphens-auto">{title}</h1>
             <p className="mt-7 text-[1.05rem] leading-7 text-mist">{lede}</p>
-            <p className="mt-6 text-sm text-mist">Last updated: {LEGAL_UPDATED}</p>
+            <p className="mt-6 text-sm text-mist">Last updated: {updated}</p>
           </div>
           <div className="max-w-2xl text-[17px] leading-[1.75] text-cream/90">{children}</div>
         </div>

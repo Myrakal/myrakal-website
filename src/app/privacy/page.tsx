@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalLayout title="Privacy Policy" eyebrow="Legal / Privacy" lede="This policy explains how Myrakal handles information collected through this website, our quote form and the care we help you compare and book.">
+    <LegalLayout title="Privacy Policy" eyebrow="Legal / Privacy" updated="November 10, 2026" lede="This policy explains how Myrakal handles information collected through this website, our quote form and the care we help you compare and book.">
       <Section title="Health information you share" callout>
         <p>Your quote and messages may include details about treatment you need. Share only what is needed to compare options. We use it to find and book care for you and do not use it for advertising.</p>
       </Section>
       <Section title="Information we collect">
-        <p>We collect what you choose to give us: your name, email address, phone number, the treatment you are looking for, your quote or message, and how you heard about us. If you book with us, we also collect the details needed to arrange your care and travel.</p>
+        <p>We collect what you choose to give us: your name, email address, phone number, the treatment you are looking for, your quote or message, how you heard about us, and the page you sent the form from. If you book with us, we also collect the details needed to arrange your care and travel.</p>
         <p>Our hosting, form, analytics and font providers may process technical information needed to run and protect the website, such as your IP address, browser and device details, pages visited and timestamps.</p>
       </Section>
       <Section title="How we use information">
