@@ -49,6 +49,41 @@ describe('quote form', () => {
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(CONTACT_EMAIL))
   })
 
+  it('keeps what you typed if you close and reopen before sending', async () => {
+    render(<TextUsButton />)
+    await userEvent.click(screen.getByRole('button', { name: 'Send your quote' }))
+    await userEvent.type(screen.getByLabelText('Name'), 'Dana')
+    act(() => void fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Send your quote' }))
+    expect(screen.getByLabelText('Name')).toHaveValue('Dana')
+  })
+
+  it('keeps focus usable while sending and links the fallback email', async () => {
+    let finish: (value: { ok: boolean }) => void = () => {}
+    global.fetch = jest.fn(() => new Promise((resolve) => (finish = resolve))) as unknown as typeof fetch
+    render(<TextUsButton />)
+    await userEvent.click(screen.getByRole('button', { name: 'Send your quote' }))
+    await fill()
+    const send = screen.getByRole('button', { name: 'Send' })
+    await userEvent.click(send)
+    const sending = screen.getByRole('button', { name: 'Sending...' })
+    expect(sending).not.toBeDisabled()
+    expect(sending).toHaveAttribute('aria-disabled', 'true')
+    act(() => void fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' }))
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    await act(async () => finish({ ok: false }))
+    expect(screen.getByRole('alert').querySelector(`a[href="mailto:${CONTACT_EMAIL}"]`)).not.toBeNull()
+  })
+
+  it('moves focus to Close after a successful send', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: true }) as unknown as typeof fetch
+    render(<TextUsButton />)
+    await userEvent.click(screen.getByRole('button', { name: 'Send your quote' }))
+    await fill()
+    await userEvent.click(screen.getByRole('button', { name: 'Send' }))
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Close' })).toHaveFocus())
+  })
+
   it('closes on Escape and returns focus to the button', async () => {
     render(<TextUsButton />)
     const trigger = screen.getByRole('button', { name: 'Send your quote' })

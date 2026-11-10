@@ -11,27 +11,29 @@ const LABEL = 'font-caslon text-xs tracking-[0.26em] text-champagne uppercase'
 const FOCUSABLE = 'button:not([disabled]), input:not([tabindex="-1"]), select, textarea'
 const SOURCES = ['Google or another search engine', 'An AI assistant', 'Reddit', 'Instagram or TikTok', 'A friend or family member', 'Other']
 
-export function QuoteForm({ onClose }: { onClose: () => void }) {
+export function QuoteForm({ open, onClose }: { open: boolean; onClose: (sent?: boolean) => void }) {
   const [status, setStatus] = useState<Status>('idle')
   const dialog = useRef<HTMLDivElement>(null)
   const first = useRef<HTMLInputElement>(null)
+  const done = useRef<HTMLButtonElement>(null)
   const pressedBackdrop = useRef(false)
 
   useEffect(() => {
+    if (!open) return
     first.current?.focus()
     const previous = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {
       document.body.style.overflow = previous
     }
-  }, [])
+  }, [open])
 
   useEffect(() => {
-    if (status === 'success') dialog.current?.focus()
+    if (status === 'success') done.current?.focus()
   }, [status])
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') return onClose()
+    if (e.key === 'Escape') return status !== 'sending' && onClose(status === 'success')
     if (e.key !== 'Tab' || !dialog.current) return
     const items = [...dialog.current.querySelectorAll<HTMLElement>(FOCUSABLE)]
     const edge = items[e.shiftKey ? 0 : items.length - 1]
@@ -43,6 +45,7 @@ export function QuoteForm({ onClose }: { onClose: () => void }) {
 
   const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (status === 'sending') return
     const data = { ...Object.fromEntries(new FormData(e.currentTarget)), page: window.location.pathname, _subject: 'New quote request from myrakal.com' }
     setStatus('sending')
     try {
@@ -59,10 +62,11 @@ export function QuoteForm({ onClose }: { onClose: () => void }) {
         pressedBackdrop.current = e.target === e.currentTarget
       }}
       onClick={(e) => {
-        if (pressedBackdrop.current && e.target === e.currentTarget) onClose()
+        if (pressedBackdrop.current && e.target === e.currentTarget && status !== 'sending') onClose(status === 'success')
         pressedBackdrop.current = false
       }}
       onKeyDown={onKeyDown}
+      hidden={!open}
       className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-ink/85 p-4 sm:items-center"
     >
       <div ref={dialog} role="dialog" aria-modal="true" aria-labelledby="quote-title" tabIndex={-1} className="my-auto w-full max-w-lg border border-champagne/60 bg-charcoal p-6 font-caslon text-cream outline-none sm:p-8">
@@ -70,7 +74,7 @@ export function QuoteForm({ onClose }: { onClose: () => void }) {
         {status === 'success' ? (
           <div className="mt-6">
             <p role="status">Thank you. We&apos;ll reply within 2 business days.</p>
-            <button type="button" onClick={onClose} className={`${LABEL} mt-6 underline underline-offset-4`}>Close</button>
+            <button ref={done} type="button" onClick={() => onClose(true)} className={`${LABEL} mt-6 underline underline-offset-4`}>Close</button>
           </div>
         ) : (
           <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
@@ -94,10 +98,10 @@ export function QuoteForm({ onClose }: { onClose: () => void }) {
             </label>
             <div aria-hidden="true" className="sr-only"><input name="_gotcha" tabIndex={-1} autoComplete="off" defaultValue="" /></div>
             <p className="text-sm text-mist">Have a PDF or photo of your quote? We&apos;ll reply and you can send it then.</p>
-            {status === 'error' && <p role="alert" className="text-sm text-cream">Something went wrong. Please try again, or email us at {CONTACT_EMAIL}.</p>}
+            {status === 'error' && <p role="alert" className="text-sm text-cream">Something went wrong. Please try again, or email us at <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-4">{CONTACT_EMAIL}</a>.</p>}
             <div className="flex items-center justify-between gap-4">
-              <button type="button" onClick={onClose} className={`${LABEL} underline underline-offset-4`}>Cancel</button>
-              <button type="submit" disabled={status === 'sending'} className="border border-champagne/85 px-8 py-3 font-caslon text-xs tracking-[0.26em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne disabled:opacity-60">
+              <button type="button" onClick={() => status !== 'sending' && onClose()} className={`${LABEL} underline underline-offset-4`}>Cancel</button>
+              <button type="submit" aria-disabled={status === 'sending'} className="border border-champagne/85 px-8 py-3 font-caslon text-xs tracking-[0.26em] text-champagne uppercase transition-colors hover:bg-champagne hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-champagne aria-disabled:opacity-60">
                 {status === 'sending' ? 'Sending...' : 'Send'}
               </button>
             </div>

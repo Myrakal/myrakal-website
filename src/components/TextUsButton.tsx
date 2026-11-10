@@ -10,17 +10,22 @@ const CTA_CLASSES =
 
 export function TextUsButton({ className = '' }: { className?: string }) {
   const [open, setOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const trigger = useRef<HTMLButtonElement>(null)
-  const close = () => {
+  const close = (sent = false) => {
     setOpen(false)
+    if (sent) setMounted(false)
     trigger.current?.focus()
   }
   return (
     <>
-      <button ref={trigger} type="button" aria-haspopup="dialog" onClick={() => setOpen(true)} className={`${CTA_CLASSES} ${className}`}>
+      <button ref={trigger} type="button" aria-haspopup="dialog" onClick={() => {
+          setMounted(true)
+          setOpen(true)
+        }} className={`${CTA_CLASSES} ${className}`}>
         Send your quote
       </button>
-      {open && createPortal(<QuoteForm onClose={close} />, document.body)}
+      {mounted && createPortal(<QuoteForm open={open} onClose={close} />, document.body)}
     </>
   )
 }
