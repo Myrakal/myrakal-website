@@ -100,6 +100,20 @@ describe('guides', () => {
     expect(text).not.toMatch(/shows you what we found/)
   })
 
+  it.each(slugs)('%s links to every other guide', async (slug) => {
+    const { container } = render(await GuideRoute(params(slug)))
+    const hrefs = [...container.querySelectorAll('nav[aria-labelledby="related"] a')].map((a) => a.getAttribute('href'))
+    expect(hrefs).toEqual(slugs.filter((other) => other !== slug).map((other) => `/guides/${other}`))
+  })
+
+  it('make wide tables keyboard scrollable and avoid raw paths in copy', async () => {
+    const { container } = render(await GuideRoute(params('dental-tourism-facilitators-compared')))
+    const region = container.querySelector('[role="region"]')
+    expect(region).toHaveAttribute('tabIndex', '0')
+    expect(region).toHaveAttribute('aria-label')
+    expect(JSON.stringify(GUIDES)).not.toMatch(/ \/guides\//)
+  })
+
   it('use no em dashes', () => {
     expect(JSON.stringify(GUIDES)).not.toMatch(/—/)
   })
