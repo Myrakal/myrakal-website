@@ -1,7 +1,7 @@
 const PREVIEW = [
   ['All-on-4 implants', 'Chicago', 'Guadalajara'],
-  ['Porcelain veneers, full set', 'Miami', 'Cancún'],
-  ['Single dental implant', 'New York', 'Tijuana'],
+  ['Porcelain veneers, full set', 'Miami', 'Orlando'],
+  ['Single dental implant', 'New York', 'Philadelphia'],
   ['Rhinoplasty', 'Los Angeles', 'Mexico City'],
 ]
 
@@ -22,25 +22,29 @@ export function MyrakalIndex() {
             The Myrakal <i className="text-champagne">Index.</i>
           </h2>
           <p className="max-w-md font-caslon text-lg leading-relaxed text-mist">
-            A public guide to what care really costs, built from real quotes. Compare prices by procedure and city, across the
-            U.S. and abroad, updated every month.
+            A public guide to what care really costs, built from real quotes. Compare prices by procedure and city, near you,
+            across the U.S. and abroad.
           </p>
         </div>
         <div className="border border-gold/40 bg-ink font-grotesk">
-          <div className="flex items-center justify-between border-b border-gold/40 px-5 py-3 text-xs tracking-[0.24em] text-champagne uppercase">
+          <div className="flex items-center justify-between gap-4 border-b border-gold/40 px-5 py-3 text-xs tracking-[0.2em] text-champagne uppercase">
             <span>Procedure</span>
-            <span>Near you / Abroad</span>
+            <span className="shrink-0">
+              <span className="sm:hidden">Prices</span>
+              <span className="hidden sm:inline">Your city / Best option</span>
+            </span>
           </div>
           <ul>
             {PREVIEW.map(([procedure, home, abroad]) => (
               <li key={procedure} className="flex items-center justify-between gap-4 border-b border-rule px-5 py-4 last:border-b-0">
                 <div className="flex min-w-0 flex-col">
-                  <span className="truncate text-cream">{procedure}</span>
+                  <span className="text-cream">{procedure}</span>
                   <span className="text-xs text-mist">
                     {home} vs. {abroad}
                   </span>
                 </div>
                 <div className="flex shrink-0 items-center gap-3">
+                  <span className="sr-only">Prices hidden until launch</span>
                   <Redacted width="w-14 sm:w-20" />
                   <Redacted width="w-10 sm:w-16" />
                 </div>
