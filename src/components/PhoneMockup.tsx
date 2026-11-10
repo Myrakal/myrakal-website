@@ -2,20 +2,21 @@
 
 import { Fragment, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
-type Option = { name: string; price: string }
+type Option = { name: string; price: string; note: string }
 type Item = { from: 'you' | 'myrakal'; text?: string; option?: Option }
 
 const OPTIONS: Option[] = [
-  { name: 'Accredited clinic, Tijuana', price: '$12,900' },
-  { name: 'Accredited clinic, Cancún', price: '$14,400' },
+  { name: 'Verified practice, Chicago', price: '$24,500', note: 'No travel needed' },
+  { name: 'Verified practice, Milwaukee', price: '$22,800', note: 'About 90 minutes away' },
+  { name: 'Accredited clinic, Tijuana', price: '$12,900 all-in', note: 'Flights, hotel and aftercare included' },
 ]
 
 const ITEMS: Item[] = [
-  { from: 'you', text: 'I was quoted $26,000 for All-on-4 on my upper jaw. Is that normal?' },
+  { from: 'you', text: 'I was quoted $34,000 for All-on-4 on my upper jaw. Is that normal?' },
   { from: 'myrakal', text: "That's on the high end. Let me check with the team." },
   {
     from: 'myrakal',
-    text: 'We found 2 verified clinics abroad. Both prices include the procedure, flights, hotel and aftercare:',
+    text: 'We found 3 verified options, 2 in the U.S. and 1 abroad. The abroad price includes flights, hotel and aftercare:',
   },
   ...OPTIONS.map((option): Item => ({ from: 'myrakal', option })),
   { from: 'you', text: 'Can you book the Tijuana one?' },
@@ -40,8 +41,8 @@ function Body({ text, option }: Item) {
   return (
     <>
       <span className="block font-semibold">{option.name}</span>
-      <span className="block text-cream/85">All-on-4, {option.price} all-in</span>
-      <span className="block text-cream/70">Flights, hotel and aftercare included</span>
+      <span className="block text-cream/85">All-on-4, {option.price}</span>
+      <span className="block text-cream/70">{option.note}</span>
     </>
   )
 }

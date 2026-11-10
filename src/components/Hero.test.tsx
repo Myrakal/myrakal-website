@@ -38,10 +38,10 @@ describe('hero', () => {
     const phone = screen.getByRole('figure', { name: /iphone/i })
     const messages = chatOf(phone)
     expect(messages[0].className).toContain('bg-imessage')
-    expect(messages[0].textContent).toContain('I was quoted $26,000 for All-on-4 on my upper jaw. Is that normal?')
+    expect(messages[0].textContent).toContain('I was quoted $34,000 for All-on-4 on my upper jaw. Is that normal?')
     expect(chatText(phone)).toContain("That's on the high end. Let me check with the team.")
     expect(chatText(phone)).toContain(
-      'We found 2 verified clinics abroad. Both prices include the procedure, flights, hotel and aftercare:',
+      'We found 3 verified options, 2 in the U.S. and 1 abroad. The abroad price includes flights, hotel and aftercare:',
     )
   })
 
@@ -71,16 +71,18 @@ describe('hero', () => {
     expect(bar!.querySelectorAll('svg')).toHaveLength(3)
   })
 
-  it('lists a Tijuana and a Cancún clinic with all-in prices', () => {
+  it('lists two U.S. options and one all-in option abroad', () => {
     render(<Hero />)
     const phone = screen.getByRole('figure', { name: /iphone/i })
     const options = within(phone).getAllByTestId('option')
-    expect(options).toHaveLength(2)
-    expect(options[0].textContent).toMatch(/Tijuana/)
-    expect(options[1].textContent).toMatch(/Cancún/)
+    expect(options).toHaveLength(3)
+    expect(options[0].textContent).toMatch(/Chicago/)
+    expect(options[1].textContent).toMatch(/Milwaukee/)
+    expect(options[2].textContent).toMatch(/Tijuana/)
+    expect(options[2].textContent).toMatch(/all-in/)
+    expect(options[2].textContent).toMatch(/Flights, hotel and aftercare included/)
     for (const option of options) {
       expect(option.textContent).toMatch(/\$\d/)
-      expect(option.textContent).toMatch(/all-in/)
       expect(option.textContent).toMatch(/All-on-4/)
     }
   })
@@ -156,9 +158,9 @@ describe('hero background and animated chat', () => {
   it('lets screen readers read the whole conversation while the chat plays', () => {
     render(<Hero />)
     const readable = within(phoneOf()).getAllByRole('listitem')
-    expect(readable).toHaveLength(6)
-    expect(readable[0]).toHaveTextContent('You: I was quoted $26,000')
-    expect(readable[5]).toHaveTextContent('You: Can you book the Tijuana one?')
+    expect(readable).toHaveLength(7)
+    expect(readable[0]).toHaveTextContent('You: I was quoted $34,000')
+    expect(readable[6]).toHaveTextContent('You: Can you book the Tijuana one?')
     expect(phoneOf().querySelector('[data-chat]')).toHaveAttribute('aria-hidden', 'true')
   })
 
@@ -177,7 +179,7 @@ describe('hero background and animated chat', () => {
 
   it('moves the receipt to your newest message and ends on Read', async () => {
     render(<Hero />)
-    await advanceUntil(() => bubbles().length === 6)
+    await advanceUntil(() => bubbles().length === 7)
     expect(receiptsOf(phoneOf()).map((r) => r.textContent)).toEqual(['Sending…'])
     await advanceUntil(() => typing() !== null && receiptsOf(phoneOf())[0]?.textContent === 'Read')
     const [receipt] = receiptsOf(phoneOf())
@@ -219,15 +221,15 @@ describe('hero background and animated chat', () => {
 
   it('ends on the full conversation with the typing dots', async () => {
     render(<Hero />)
-    await advanceUntil(() => typing() !== null && bubbles().length === 6)
+    await advanceUntil(() => typing() !== null && bubbles().length === 7)
     expect(chatNow()).toContain('Can you book the Tijuana one?')
-    expect(within(phoneOf()).getAllByTestId('option')).toHaveLength(2)
+    expect(within(phoneOf()).getAllByTestId('option')).toHaveLength(3)
   })
 
   it('shows the whole conversation at once when motion is reduced', () => {
     setMotion(true)
     render(<Hero />)
-    expect(bubbles()).toHaveLength(6)
+    expect(bubbles()).toHaveLength(7)
     expect(typing()).not.toBeNull()
     expect(within(phoneOf()).getByTestId('draft').textContent).toBe('')
   })
