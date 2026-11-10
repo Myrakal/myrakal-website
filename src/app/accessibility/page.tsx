@@ -15,10 +15,10 @@ export default function AccessibilityPage() {
         <p>We aim to meet the Web Content Accessibility Guidelines, WCAG 2.2 Level AA. We work toward clear structure, keyboard-accessible controls, visible focus, readable contrast, layouts that work at any size, text that can be enlarged, descriptive labels and support for reduced-motion preferences.</p>
       </Section>
       <Section title="Known limits">
-        <p>Accessibility is ongoing work, and some parts of the website may not yet fully meet our target. Our quote form is processed by Formspree, a third-party service, and some content such as fonts and analytics comes from other providers we do not fully control. If something gets in your way, we will help you another way.</p>
+        <p>Accessibility is ongoing work, and some parts of the website may not yet fully meet our target. Our quote form is processed by Formspree, a third-party service, and some content such as fonts and analytics comes from other providers we do not fully control. If something gets in your way, contact us and we will help you compare and book by email or another way that works for you.</p>
       </Section>
       <Section title="Report a problem">
-        <p>If you run into a barrier, email <MailLink subject="Accessibility support" />. It helps to include:</p>
+        <p>If you run into a barrier, email <MailLink subject="Accessibility support" /> or send a note through the quote form and tell us how you would like us to reply. It helps to include:</p>
         <List>
           <li>The page or feature you were trying to use.</li>
           <li>A short description of what happened.</li>

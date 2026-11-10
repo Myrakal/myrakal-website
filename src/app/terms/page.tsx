@@ -16,7 +16,7 @@ export default function TermsPage() {
         <p>These terms are an agreement between you and Myrakal Inc., based in Chicago, Illinois. By using this website or our services, you agree to them. If you do not agree, do not use the website. You must be at least 18 years old to use our services.</p>
       </Section>
       <Section title="Our service">
-        <p>You can send us a quote you received for care that insurance will not cover, such as dental implants, All-on-4, full-mouth work, veneers, rhinoplasty, eyelid surgery or a facelift. We compare verified options near you, elsewhere in the U.S. and abroad, with all-in prices. Comparing is free.</p>
+        <p>You can send us a quote you received for care that insurance will not cover, such as dental implants, All-on-4, full-mouth work, veneers, rhinoplasty, eyelid surgery or a facelift. We compare options we have checked near you, elsewhere in the U.S. and abroad, with all-in prices. Comparing is free.</p>
         <p>If you choose an option and want us to book it, we coordinate your care, travel, paperwork and aftercare for one coordination fee. We never take money from clinics, so our comparison is not shaped by what a clinic pays us.</p>
       </Section>
       <Section title="Not medical advice or emergency service" callout>
@@ -26,7 +26,7 @@ export default function TermsPage() {
         <p>Clinics, dentists and surgeons we compare or book are independent. They are responsible for their own advice, treatment, licensing, conduct and outcomes. Information we share about credentials or accreditation is a starting point, and you should verify it yourself before care. Our guide on <Link href="/guides/verify-a-dentist-or-surgeon" className="text-champagne underline decoration-champagne/50 underline-offset-4 hover:decoration-champagne">verifying a dentist or surgeon</Link> explains how.</p>
       </Section>
       <Section title="Coordination fee, provider payments, cancellations and refunds">
-        <p>We show our coordination fee before you commit, and you pay it only if you ask us to book. The provider’s price, payment terms, cancellation rules and any refund policy are also shown before you commit. Those terms apply to that booking if they conflict with these terms.</p>
+        <p>We show our coordination fee before you commit, and you pay it only if you ask us to book. The provider’s price, payment terms, cancellation rules and any refund policy are also shown before you commit. The provider’s payment, cancellation and refund terms govern the provider’s services.</p>
         <p>You remain responsible for your travel documents, such as passports and visas, for any travel or health insurance, and for follow-up care after you return home.</p>
       </Section>
       <Section title="Guides and calculator">
@@ -39,7 +39,7 @@ export default function TermsPage() {
         <p>The website, brand, design, text, graphics and software are owned by Myrakal or its licensors and are protected by law. These terms give you only a limited, revocable right to use the website as intended.</p>
       </Section>
       <Section title="Third-party services">
-        <p>The website relies on and links to third-party services, such as Formspree for our quote form. Their products, content, availability, terms and privacy practices are their responsibility. A link or reference is not a guarantee or endorsement.</p>
+        <p>The website relies on and links to third-party services, such as Formspree for our quote form. Their products, content, availability, terms and privacy practices are their responsibility. A link or reference is not a guarantee or endorsement. Our <Link href="/privacy" className="text-champagne underline decoration-champagne/50 underline-offset-4 hover:decoration-champagne">Privacy Policy</Link> explains how we handle what you send us.</p>
       </Section>
       <Section title="Disclaimers and limitation of liability">
         <p>The website and our services are provided “as is” and “as available.” To the fullest extent permitted by law, Myrakal disclaims implied warranties and does not guarantee uninterrupted access, complete accuracy, provider availability, travel eligibility, or any medical or financial outcome.</p>
