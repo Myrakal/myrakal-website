@@ -16,7 +16,7 @@ describe('search and sharing', () => {
   })
 
   it('lists the home page and the treatment pages in the sitemap', () => {
-    expect(sitemap().map((entry) => entry.url)).toEqual([SITE, `${SITE}/dental`])
+    expect(sitemap().map((entry) => entry.url)).toEqual([SITE, `${SITE}/dental`, `${SITE}/cosmetic`])
   })
 
   it('points crawlers at the sitemap and allows everything', () => {
