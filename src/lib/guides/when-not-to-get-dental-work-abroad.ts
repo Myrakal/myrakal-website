@@ -13,9 +13,9 @@ export const whenNotToGetDentalWorkAbroad: Guide = {
     {
       heading: 'Signs care at home is better',
       points: [
-        'Your health needs close monitoring. The CDC says your overall risk depends partly on whether your health is good enough for the procedure, and advises talking with your own doctor well before you plan any trip.',
+        'You have health conditions to manage. The CDC says your risk depends on your health as well as the destination and the facility, and advises seeing your doctor or a travel medicine clinician at least 4 to 6 weeks before any trip.',
         'Your treatment comes in stages. Implants usually need two to six months for the bone to bond with the implant before the final crown, and some need a second minor surgery. That often means more than one trip.',
-        'You cannot stay long enough. The CDC advises against flying for about 10 days after chest or abdominal surgery, and both flying and surgery raise the risk of blood clots.',
+        'You cannot stay long enough. Flying soon after surgery raises the risk of blood clots, so ask your surgeon how long to wait before you fly home.',
         'You would struggle to get follow-up care. The CDC notes that follow-up at home can be costly and may not be covered by insurance, and that some clinics abroad charge extra for follow-up.',
         'A problem would be hard to fix. Complications such as infections can add to the first bill, and you may have less legal recourse abroad than in the U.S.',
       ],
@@ -24,8 +24,8 @@ export const whenNotToGetDentalWorkAbroad: Guide = {
       heading: 'Lower-cost options in the U.S.',
       points: [
         'Dental school clinics. Students treat patients under faculty supervision, often at reduced cost. Hours are limited and not every clinic offers every treatment, so call first. Find an accredited school near you with the Commission on Dental Accreditation program search at coda.ada.org.',
-        'Community health centers. HRSA-funded health centers offer dental care, adjust fees based on income and family size, and must serve you even if you cannot pay. Search for one at findahealthcenter.hrsa.gov.',
-        'Phasing treatment over two plan years. Most dental plans have an annual maximum that resets each benefit year, often $1,000 to $2,000. Splitting a plan across two years can let you use two maximums. Ask your plan how timing affects your benefits.',
+        'Community health centers. HRSA-funded health centers treat dental needs, adjust fees based on income and family size, and serve everyone even if they cannot pay. Services and wait times vary, so ask which dental treatments your local center offers. Search for one at findahealthcenter.hrsa.gov.',
+        'Phasing treatment over two plan years. Most dental plans have an annual maximum that resets each benefit year, often $1,000 to $2,000. Spreading treatment across two benefit years may let you use two maximums, but plans differ on implants, waiting periods and coverage for major work. Ask your plan how timing affects your benefits, and ask your dentist whether it is safe to space out the treatment.',
       ],
     },
     {
@@ -38,7 +38,7 @@ export const whenNotToGetDentalWorkAbroad: Guide = {
         'Price follow-up visits and any fixes at home, since your insurance may not cover care for work done abroad.',
         'Compare the totals. If the gap is small, the closer option is usually easier to manage.',
       ],
-      body: 'Myrakal compares verified providers near you, elsewhere in the U.S. and abroad, and will tell you when staying home is the better deal. Comparing options is free.',
+      body: 'Myrakal compares verified providers near you, elsewhere in the U.S. and abroad. Comparing options is free. Myrakal is not a medical provider, and a licensed clinician makes your treatment plan.',
     },
   ],
   sources: [
