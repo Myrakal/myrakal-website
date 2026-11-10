@@ -20,7 +20,7 @@ describe('service cards', () => {
     expect(within(services).getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual(['Dental', 'Cosmetic'])
     expect(services.previousElementSibling?.querySelector('h1')).not.toBeNull()
     expect(services.nextElementSibling).toBe(container.querySelector('section[aria-labelledby="meet-the-team"]'))
-    expect(services).toHaveTextContent("anything else insurance won't cover")
+    expect(services).toHaveTextContent("If insurance won't cover it, just ask.")
   })
 
   it('labels the phone chat as an illustrative example with no invented links', () => {

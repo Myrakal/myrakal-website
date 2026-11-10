@@ -22,7 +22,7 @@ export function ServiceCards() {
           ))}
         </ul>
         <p className="max-w-2xl font-caslon text-lg leading-relaxed text-mist">
-          Fertility, surgery, prescriptions and anything else insurance won't cover. Just ask.
+          Fertility, other procedures, prescriptions and more. If insurance won't cover it, just ask.
         </p>
       </div>
     </section>
