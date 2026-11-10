@@ -24,7 +24,7 @@ export const verifyADentistOrSurgeon: Guide = {
       steps: [
         "Search DocInfo.org, the Federation of State Medical Boards' free database of license history and disciplinary actions across all states.",
         "Check board certification at CertificationMatters.org, the American Board of Medical Specialties' free lookup.",
-        'For cosmetic surgery, look for the American Board of Plastic Surgery. It is the only board the ABMS recognizes for plastic surgery, so "board certified" on its own can mean a different board.',
+        'For cosmetic surgery, check which board certified the surgeon and that it is an ABMS member board. For body procedures that usually means the American Board of Plastic Surgery. Some boards that sound official are not ABMS boards.',
       ],
     },
     {
@@ -43,7 +43,7 @@ export const verifyADentistOrSurgeon: Guide = {
         'Ask which implant or device brand will be used and what the warranty covers.',
         'Get the treatment plan and the price in writing, and arrange follow-up care at home before you travel.',
       ],
-      body: 'Myrakal runs these checks on every provider before we suggest them, and shows you what we found. Comparing options is free.',
+      body: 'Myrakal checks licenses and accreditation before we suggest a provider. Comparing options is free.',
     },
   ],
   sources: [

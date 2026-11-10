@@ -18,5 +18,5 @@ Myrakal is not a medical provider and does not diagnose or treat. Information on
 
 - [Home](${SITE}): overview
 ${Object.values(TREATMENTS).map(({ name, slug, description }) => `- [${name}](${SITE}/${slug}): ${description}`).join('\n')}
-${Object.values(GUIDES).map(({ slug, headline }) => `- [${headline}](${SITE}/guides/${slug})`).join('\n')}
+${Object.values(GUIDES).map(({ slug, headline, description }) => `- [${headline}](${SITE}/guides/${slug}): ${description}`).join('\n')}
 `

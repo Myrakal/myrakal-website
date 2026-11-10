@@ -56,6 +56,25 @@ describe('guides', () => {
     }
   })
 
+  it('give crawlers each guide date and summary', async () => {
+    const { LLMS_TEXT } = await import('@/lib/llms')
+    for (const guide of Object.values(GUIDES)) {
+      expect(sitemap().find((entry) => entry.url === `${SITE}/guides/${guide.slug}`)?.lastModified).toBe(guide.updated)
+      expect(LLMS_TEXT).toContain(`(${SITE}/guides/${guide.slug}): ${guide.description}`)
+    }
+  })
+
+  it('show the site focus ring on source links', async () => {
+    const { container } = render(await GuideRoute(params(slugs[0])))
+    for (const link of container.querySelectorAll('section[aria-labelledby="sources"] a')) expect(link.className).toContain('focus-visible:outline-champagne')
+  })
+
+  it('do not overstate a single plastic surgery board or promise unbuilt features', () => {
+    const text = JSON.stringify(GUIDES)
+    expect(text).not.toMatch(/only board the ABMS recognizes/)
+    expect(text).not.toMatch(/shows you what we found/)
+  })
+
   it('use no em dashes', () => {
     expect(JSON.stringify(GUIDES)).not.toMatch(/—/)
   })

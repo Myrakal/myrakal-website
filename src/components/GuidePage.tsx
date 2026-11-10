@@ -39,7 +39,7 @@ export function GuidePage({ guide }: { guide: Guide }) {
             <h2 id="sources" className="font-caslon text-xs tracking-[0.32em] text-champagne uppercase">Sources</h2>
             <ul className="space-y-2 font-caslon text-sm">
               {guide.sources.map(([label, href]) => (
-                <li key={href}><a href={href} className="text-mist underline underline-offset-4 hover:text-champagne">{label}</a></li>
+                <li key={href}><a href={href} className="text-mist underline underline-offset-4 hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne">{label}</a></li>
               ))}
             </ul>
           </section>
