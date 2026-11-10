@@ -2,23 +2,24 @@
 
 import { Fragment, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 
-type Option = { name: string; price: string; link: string }
+type Option = { name: string; price: string; note: string }
 type Item = { from: 'you' | 'myrakal'; text?: string; option?: Option }
 
 const OPTIONS: Option[] = [
-  { name: 'Brightwell Dental Studio, Chicago', price: '$7,200', link: 'brightwelldental.com/veneers' },
-  { name: 'Fernhollow Dentistry, Naperville', price: '$7,900', link: 'fernhollowdental.com/veneers' },
+  { name: 'Verified practice, Chicago', price: '$24,500', note: 'No travel needed' },
+  { name: 'Verified practice, Milwaukee', price: '$22,800', note: 'About 90 minutes away' },
+  { name: 'Accredited clinic, Tijuana', price: '$12,900 all-in', note: 'Flights, hotel and aftercare included' },
 ]
 
 const ITEMS: Item[] = [
-  { from: 'you', text: 'My dentist quoted me $12,000 for 8 porcelain veneers. Is that normal?' },
-  { from: 'myrakal', text: "No, that doesn't sound right. Let me get back to you, I'll talk to the team." },
+  { from: 'you', text: 'I was quoted $34,000 for All-on-4 on my upper jaw. Is that normal?' },
+  { from: 'myrakal', text: "That's on the high end. Let me check with the team." },
   {
     from: 'myrakal',
-    text: "Definitely not right. We ran your stuff against our data system and found 2 options closer to you. There's one in Chicago, and another in Naperville. Here's the prices and links:",
+    text: 'We found 3 verified options, 2 in the U.S. and 1 abroad. The abroad price includes flights, hotel and aftercare:',
   },
   ...OPTIONS.map((option): Item => ({ from: 'myrakal', option })),
-  { from: 'you', text: 'Can you book the one closest to me?' },
+  { from: 'you', text: 'Can you book the Tijuana one?' },
 ]
 
 const REDUCED = '(prefers-reduced-motion: reduce)'
@@ -40,8 +41,8 @@ function Body({ text, option }: Item) {
   return (
     <>
       <span className="block font-semibold">{option.name}</span>
-      <span className="block text-cream/85">8 porcelain veneers, {option.price}</span>
-      <span className="block text-imessage underline">{option.link}</span>
+      <span className="block text-cream/85">All-on-4, {option.price}</span>
+      <span className="block text-cream/70">{option.note}</span>
     </>
   )
 }
@@ -216,6 +217,9 @@ export function PhoneMockup() {
           <div aria-hidden="true" className="mx-auto mb-2 h-[5px] w-[134px] rounded-full bg-cream/80" />
         </div>
       </div>
+      <figcaption className="absolute inset-x-0 -bottom-8 text-center font-caslon text-xs tracking-[0.2em] text-mist uppercase">
+        Illustrative example
+      </figcaption>
     </figure>
   )
 }
