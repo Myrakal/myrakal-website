@@ -1,5 +1,5 @@
-const SERVICES = [
-  ['Dental', 'Implants, All-on-4, full-mouth work and veneers.'],
+const SERVICES: [string, string, string?][] = [
+  ['Dental', 'Implants, All-on-4, full-mouth work and veneers.', '/dental'],
   ['Cosmetic', 'Rhinoplasty, eyelid surgery, facelifts and other elective procedures.'],
 ]
 
@@ -14,9 +14,20 @@ export function ServiceCards() {
           </h2>
         </div>
         <ul className="grid w-full gap-px bg-rule md:grid-cols-2">
-          {SERVICES.map(([title, body]) => (
+          {SERVICES.map(([title, body, href]) => (
             <li key={title} className="flex flex-col items-center gap-4 bg-ink px-6 py-10 md:px-10">
-              <h3 className="font-display text-3xl text-cream">{title}</h3>
+              <h3 className="font-display text-3xl text-cream">
+                {href ? (
+                  <a
+                    href={href}
+                    className="underline decoration-champagne/50 underline-offset-8 transition-colors hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
+                  >
+                    {title}
+                  </a>
+                ) : (
+                  title
+                )}
+              </h3>
               <p className="max-w-sm font-caslon text-lg leading-relaxed text-mist">{body}</p>
             </li>
           ))}

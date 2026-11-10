@@ -72,11 +72,10 @@ describe('landing page', () => {
     expect(screen.getByText('One quote at a time.')).toBeInTheDocument()
   })
 
-  it('has no navigation to other pages', () => {
+  it('links only to home and the treatment pages', () => {
     render(<Home />)
     expect(screen.queryByRole('navigation')).toBeNull()
     const pageLinks = screen.queryAllByRole('link').filter((link) => link.getAttribute('href')?.startsWith('/'))
-    expect(pageLinks).toHaveLength(1)
-    expect(pageLinks[0]).toHaveAttribute('href', '/')
+    expect(pageLinks.map((link) => link.getAttribute('href'))).toEqual(['/', '/dental'])
   })
 })

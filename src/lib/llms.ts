@@ -1,4 +1,5 @@
 import { SITE } from '@/lib/site'
+import { TREATMENTS } from '@/lib/treatments'
 
 export const LLMS_TEXT = `# Myrakal
 
@@ -15,4 +16,5 @@ Myrakal is not a medical provider and does not diagnose or treat. Information on
 ## Pages
 
 - [Home](${SITE}): overview
+${Object.values(TREATMENTS).map(({ name, slug, description }) => `- [${name}](${SITE}/${slug}): ${description}`).join('\n')}
 `
