@@ -9,6 +9,7 @@ export type Treatment = {
   intro: string
   places: [string, string][]
   faqs: [string, string][]
+  guides: string[]
 }
 
 export const TREATMENTS = {
@@ -32,6 +33,7 @@ export const TREATMENTS = {
         'For care away from home, the price covers the treatment, flights, hotel, local transport and the aftercare we arrange. Each option lists exactly what it includes.',
       ],
     ],
+    guides: ['verify-a-dentist-or-surgeon', 'is-dental-work-abroad-safe', 'when-not-to-get-dental-work-abroad', 'dental-tourism-facilitators-compared'],
   },
   cosmetic: {
     slug: 'cosmetic',
@@ -61,6 +63,7 @@ export const TREATMENTS = {
         "We check each surgeon's license and board certification and the facility's accreditation before we suggest them.",
       ],
     ],
+    guides: ['verify-a-dentist-or-surgeon']
   },
 } satisfies Record<string, Treatment>
 

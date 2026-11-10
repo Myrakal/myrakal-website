@@ -68,10 +68,10 @@ describe('landing page', () => {
     expect(screen.getByText('One quote at a time.')).toBeInTheDocument()
   })
 
-  it('links only to home and the treatment pages', () => {
+  it('links to home, the treatment pages and the footer pages', () => {
     render(<Home />)
-    expect(screen.queryByRole('navigation')).toBeNull()
+    expect(screen.getAllByRole('navigation').map((nav) => nav.getAttribute('aria-label'))).toEqual(['Footer'])
     const pageLinks = screen.queryAllByRole('link').filter((link) => link.getAttribute('href')?.startsWith('/'))
-    expect(pageLinks.map((link) => link.getAttribute('href'))).toEqual(['/', '/dental', '/cosmetic'])
+    expect(pageLinks.map((link) => link.getAttribute('href'))).toEqual(['/', '/dental', '/cosmetic', '/dental', '/cosmetic', '/guides', '/tools/dental-insurance-calculator'])
   })
 })
