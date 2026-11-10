@@ -180,7 +180,7 @@ export function PhoneMockup() {
                   <Body text={text} option={option} from={from} />
                 </li>
                 {i === lastSent && receipt && (
-                  <li data-testid="receipt" className="-mt-1.5 self-end pr-2 text-xs font-semibold text-cream/50">
+                  <li data-testid="receipt" className="-mt-1.5 self-end pr-2 text-[12px] font-semibold text-cream/50">
                     {RECEIPTS[receipt]}
                   </li>
                 )}
