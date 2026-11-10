@@ -53,6 +53,19 @@ describe('/tools/dental-insurance-calculator', () => {
     expect(results()).toEqual({ pays: '$475', you: '$525', share: 'Insurance covers 48% of this quote.' })
   })
 
+  it('never shows two results that add up to more than the quote', () => {
+    render(<Calculator />)
+    set(/quote total/i, '1001')
+    expect(results()).toEqual({ pays: '$476', you: '$525', share: 'Insurance covers 48% of this quote.' })
+  })
+
+  it('keeps inputs visible and results readable on small screens', () => {
+    const { container } = render(<Calculator />)
+    for (const input of container.querySelectorAll('input')) expect(input.className).toContain('border-mist/60')
+    for (const output of container.querySelectorAll('output')) expect(output.className).toMatch(/text-4xl.*break-words/)
+    expect(container.querySelector('[aria-live]')).toBeNull()
+  })
+
   it('updates live when the cap changes', () => {
     render(<Calculator />)
     set(/annual maximum left/i, '3000')

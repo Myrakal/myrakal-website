@@ -24,7 +24,7 @@ export function InsuranceCalculator() {
   )
   const quote = amount(values.quote)
   const coverage = Math.min(100, amount(values.coverage))
-  const pays = Math.min(amount(values.max), Math.max(0, quote - amount(values.deductible)) * (coverage / 100))
+  const pays = Math.round(Math.min(amount(values.max), Math.max(0, quote - amount(values.deductible)) * (coverage / 100)))
   const share = quote > 0 ? Math.round((pays / quote) * 100) : 0
   return (
     <div className="grid w-full gap-px bg-rule md:grid-cols-2">
@@ -40,12 +40,12 @@ export function InsuranceCalculator() {
               inputMode="numeric"
               value={values[key]}
               onChange={(e) => setValues({ ...values, [key]: e.target.value })}
-              className="border border-rule bg-charcoal px-4 py-3 font-caslon text-lg text-cream focus-visible:outline-2 focus-visible:outline-champagne"
+              className="border border-mist/60 bg-charcoal px-4 py-3 font-caslon text-lg text-cream focus-visible:outline-2 focus-visible:outline-champagne"
             />
           </div>
         ))}
       </div>
-      <div aria-live="polite" className="flex flex-col justify-center gap-8 bg-ink p-8 text-center sm:p-10">
+      <div className="flex flex-col justify-center gap-8 bg-ink p-8 text-center sm:p-10">
         {[
           ['pays', 'Insurance pays', pays],
           ['you', 'You pay', quote - pays],
@@ -54,7 +54,7 @@ export function InsuranceCalculator() {
             <p id={`${id}-label`} className="font-caslon text-xs tracking-[0.32em] text-champagne uppercase">
               {label}
             </p>
-            <output aria-labelledby={`${id}-label`} className="font-display text-5xl text-cream sm:text-6xl">
+            <output aria-labelledby={`${id}-label`} className="font-display text-4xl break-words text-cream sm:text-5xl lg:text-6xl">
               {usd.format(Number(value))}
             </output>
           </div>
