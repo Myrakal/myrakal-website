@@ -26,11 +26,28 @@ export function GuidePage({ guide }: { guide: Guide }) {
               Updated <time dateTime={guide.updated}>{updated}</time>
             </p>
           </header>
-          {guide.sections.map(({ heading, steps, points, body }) => (
+          {guide.sections.map(({ heading, steps, points, body, table }) => (
             <section key={heading} className="flex flex-col gap-4">
               <h2 className="font-display text-3xl text-cream">{heading}</h2>
               {steps && <ol className={`list-decimal space-y-3 pl-6 ${BODY}`}>{steps.map((step) => <li key={step}>{step}</li>)}</ol>}
               {points && <ul className={`list-disc space-y-3 pl-6 ${BODY}`}>{points.map((point) => <li key={point}>{point}</li>)}</ul>}
+              {table && (
+                <div className="overflow-x-auto border border-rule">
+                  <table className="w-full min-w-xl border-collapse text-left font-caslon text-base text-mist">
+                    <thead>
+                      <tr>{table.head.map((cell) => <th key={cell} scope="col" className="border-b border-rule p-3 font-normal text-cream">{cell}</th>)}</tr>
+                    </thead>
+                    <tbody>
+                      {table.rows.map(([first, ...rest]) => (
+                        <tr key={first} className="border-b border-rule align-top last:border-b-0">
+                          <th scope="row" className="p-3 font-normal text-cream">{first}</th>
+                          {rest.map((cell, i) => <td key={i} className="p-3">{cell}</td>)}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
               {body && <p className={BODY}>{body}</p>}
             </section>
           ))}
