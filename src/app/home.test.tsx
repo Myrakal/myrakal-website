@@ -17,7 +17,8 @@ describe('landing page', () => {
 
   it('names dental and cosmetic care without cheap-sounding or platform language', () => {
     const { container } = render(<Home />)
-    expect(container.textContent).toMatch(/Dental, cosmetic and other care insurance won't cover/)
+    expect(container.textContent).toMatch(/We find and book the dental, cosmetic and other care your insurance won't cover/)
+    expect(container.textContent).not.toMatch(/one all-in price/)
     expect(container.textContent).not.toMatch(/intelligent data platform|autonomous system|cheaper/i)
   })
 
@@ -46,7 +47,7 @@ describe('landing page', () => {
     await userEvent.click(toggle)
     expect(details.open).toBe(true)
     expect(details).toHaveTextContent('Comparing options is free.')
-    expect(details).toHaveTextContent('you pay us one coordination fee')
+    expect(details).toHaveTextContent('one coordination fee, shown before you commit')
     expect(details).toHaveTextContent('We never take money from clinics.')
     expect(details.textContent).not.toMatch(/commission/)
     await userEvent.click(toggle)
@@ -62,7 +63,7 @@ describe('landing page', () => {
     const emailLinks = screen.getAllByRole('link', { name: 'Send your quote' })
     expect(emailLinks).toHaveLength(3)
     for (const link of emailLinks) {
-      expect(link).toHaveAttribute('href', "mailto:eshaansood@myrakal.com?subject=My%20quote&body=Hi%20Myra!%20Here's%20my%20quote%3A")
+      expect(link).toHaveAttribute('href', "mailto:eshaansood@myrakal.com?subject=My%20quote&body=Hi%20Myra!%20Here's%20my%20quote%20(or%20what%20I%20need)%3A")
     }
   })
 

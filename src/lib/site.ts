@@ -1,4 +1,4 @@
 export const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.myrakal.com'
 
 export const DESCRIPTION =
-  "Myrakal finds, prices and books the expensive care insurance won't cover, from dental implants to cosmetic surgery, in the U.S. or abroad. Send us your quote and we come back with verified options at one all-in price. We never take money from clinics."
+  "Myrakal finds, prices and books the expensive care insurance won't cover, from dental implants to cosmetic surgery, in the U.S. or abroad. Send us your quote and we come back with verified options and all-in prices up front. We never take money from clinics."

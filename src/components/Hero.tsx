@@ -23,7 +23,7 @@ export function Hero() {
             Expensive care, fully handled.
           </h1>
           <p className="mt-5 max-w-xl font-caslon text-base leading-relaxed text-balance text-cream/95 [text-shadow:0_1px_14px_var(--charcoal)] sm:text-lg">
-            Dental, cosmetic and other care insurance won't cover. Send us your quote and we'll come back with verified options in the U.S. or abroad, at one all-in price.
+            We find and book the dental, cosmetic and other care your insurance won't cover. Send us your quote and we'll come back with verified options in the U.S. or abroad, with all-in prices up front.
           </p>
           <TextUsButton className="mt-8 max-sm:hidden" />
         </div>

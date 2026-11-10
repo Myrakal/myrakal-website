@@ -30,8 +30,8 @@ export function HowItWorks() {
             Wait.. how do you make money?
           </summary>
           <p className="mt-6 font-caslon text-lg leading-relaxed text-mist">
-            Comparing options is free. If you want us to book and coordinate everything, you pay us one coordination fee. We
-            never take money from clinics.
+            Comparing options is free. If you want us to book and coordinate everything, we charge one coordination fee, shown
+            before you commit. We never take money from clinics.
           </p>
         </details>
       </div>

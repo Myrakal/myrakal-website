@@ -11,6 +11,7 @@ describe('search and sharing', () => {
     expect(String(layout.metadataBase)).toBe(`${SITE}/`)
     expect(layout.description).toMatch(/insurance won't cover/i)
     expect(layout.description).toMatch(/never take money from clinics/i)
+    expect(layout.description).not.toMatch(/one all-in price/)
     expect(layout.openGraph).toMatchObject({ siteName: 'Myrakal', type: 'website', locale: 'en_US' })
   })
 

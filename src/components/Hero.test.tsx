@@ -110,7 +110,7 @@ describe('hero', () => {
 
   it('asks visitors to send their quote for verified options', () => {
     render(<Hero />)
-    expect(screen.getByText(/Send us your quote and we'll come back with verified options in the U\.S\. or abroad, at one all-in price\./)).toBeInTheDocument()
+    expect(screen.getByText(/Send us your quote and we'll come back with verified options in the U\.S\. or abroad, with all-in prices up front\./)).toBeInTheDocument()
     expect(screen.queryByText('Email us for early access')).toBeNull()
   })
 })
