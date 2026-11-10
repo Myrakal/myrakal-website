@@ -76,6 +76,6 @@ describe('landing page', () => {
     render(<Home />)
     expect(screen.queryByRole('navigation')).toBeNull()
     const pageLinks = screen.queryAllByRole('link').filter((link) => link.getAttribute('href')?.startsWith('/'))
-    expect(pageLinks.map((link) => link.getAttribute('href'))).toEqual(['/', '/dental'])
+    expect(pageLinks.map((link) => link.getAttribute('href'))).toEqual(['/', '/dental', '/cosmetic'])
   })
 })

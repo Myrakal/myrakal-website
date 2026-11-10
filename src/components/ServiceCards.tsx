@@ -1,6 +1,6 @@
 const SERVICES: [string, string, string?][] = [
   ['Dental', 'Implants, All-on-4, full-mouth work and veneers.', '/dental'],
-  ['Cosmetic', 'Rhinoplasty, eyelid surgery, facelifts and other elective procedures.'],
+  ['Cosmetic', 'Rhinoplasty, eyelid surgery, facelifts and other elective procedures.', '/cosmetic'],
 ]
 
 export function ServiceCards() {

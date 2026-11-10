@@ -1,5 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 
+import Cosmetic, { metadata as cosmeticMetadata } from '@/app/cosmetic/page'
 import Dental, { metadata as dentalMetadata } from '@/app/dental/page'
 import Home from '@/app/page'
 import sitemap from '@/app/sitemap'
@@ -16,6 +17,7 @@ beforeEach(() => {
 
 const pages = [
   ['dental', Dental, dentalMetadata, /dental/i],
+  ['cosmetic', Cosmetic, cosmeticMetadata, /cosmetic/i],
 ] as const
 
 describe.each(pages)('/%s', (slug, Page, metadata, topic) => {
@@ -59,12 +61,19 @@ describe('treatment pages', () => {
   it('are listed in the sitemap', () => {
     const urls = sitemap().map((entry) => entry.url)
     expect(urls).toContain('https://www.myrakal.com/dental')
+    expect(urls).toContain('https://www.myrakal.com/cosmetic')
   })
 
   it('are linked from the home page service cards', () => {
     const { container } = render(<Home />)
     const services = container.querySelector('section[aria-labelledby="services"]') as HTMLElement
-    expect(within(services).getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual(['/dental'])
+    expect(within(services).getAllByRole('link').map((a) => a.getAttribute('href'))).toEqual(['/dental', '/cosmetic'])
+  })
+
+  it('asks cosmetic patients about recovery and how surgeons are chosen', () => {
+    render(<Cosmetic />)
+    expect(screen.getByText('When can I fly home after surgery?')).toBeInTheDocument()
+    expect(screen.getByText('How do you choose surgeons?')).toBeInTheDocument()
   })
 
   it('are listed in llms.txt', async () => {

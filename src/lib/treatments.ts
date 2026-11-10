@@ -33,6 +33,31 @@ export const TREATMENTS = {
       ],
     ],
   },
+  cosmetic: {
+    slug: 'cosmetic',
+    name: 'Cosmetic',
+    title: 'Cosmetic surgery, best price anywhere | Myrakal',
+    description:
+      'Send us your quote for rhinoplasty, eyelid surgery, a facelift or another elective procedure. We compare verified surgeons near you, elsewhere in the U.S. and abroad, then book the one you pick.',
+    headline: 'Cosmetic care, at the best price anywhere.',
+    intro:
+      'Rhinoplasty, eyelid surgery, facelifts and other elective procedures. Send us your quote and we compare verified surgeons near you, elsewhere in the U.S. and abroad. Pick one and we book it.',
+    places: [
+      ['Near you', 'Board-certified surgeons in your area, compared on price and on what each quote includes.'],
+      ['Elsewhere in the U.S.', 'Another city can cost less, with recovery and follow-up planned before you go.'],
+      ['Abroad', 'Accredited hospitals priced all-in, with flights, a recovery stay and aftercare included.'],
+    ],
+    faqs: [
+      [
+        'When can I fly home after surgery?',
+        'Your surgeon decides. After major surgery many people need to stay put for one to two weeks, so we plan the trip and the recovery stay around it.',
+      ],
+      [
+        'How do you choose surgeons?',
+        "We check each surgeon's license and board certification and the facility's accreditation before we suggest them.",
+      ],
+    ],
+  },
 } satisfies Record<string, Treatment>
 
 export function treatmentMetadata(treatment: Treatment): Metadata {
