@@ -9,6 +9,7 @@ describe('answer engine markup', () => {
     const items = [...container.querySelectorAll('script[type="application/ld+json"]')].flatMap((s) => JSON.parse(s.textContent!))
     expect(items.find((i) => i['@type'] === 'Organization')).toMatchObject({ name: 'Myrakal', url: 'https://www.myrakal.com' })
     expect(items.find((i) => i['@type'] === 'WebSite')).toMatchObject({ name: 'Myrakal' })
+    expect(items.find((i) => i['@type'] === 'Organization').slogan).toBe('Healthcare, as it should be.')
   })
 
   it('escapes markup inside structured data', () => {
@@ -20,7 +21,9 @@ describe('answer engine markup', () => {
     const { LLMS_TEXT: text } = await import('@/lib/llms')
     expect(text.startsWith('# Myrakal')).toBe(true)
     expect(text).toMatch(/free/i)
-    expect(text).toMatch(/autonomous/i)
+    expect(text).toMatch(/dental/i)
+    expect(text).toMatch(/cosmetic/i)
+    expect(text).not.toMatch(/autonomous|intelligent data platform/i)
     expect(text).toMatch(/not medical advice/i)
   })
 })

@@ -9,7 +9,8 @@ const SITE = 'https://www.myrakal.com'
 describe('search and sharing', () => {
   it('resolves every URL against the live site', () => {
     expect(String(layout.metadataBase)).toBe(`${SITE}/`)
-    expect(layout.description).toMatch(/intelligent data platform/i)
+    expect(layout.description).toMatch(/insurance won't cover/i)
+    expect(layout.description).toMatch(/never take money from clinics/i)
     expect(layout.openGraph).toMatchObject({ siteName: 'Myrakal', type: 'website', locale: 'en_US' })
   })
 
@@ -36,7 +37,7 @@ describe('search and sharing', () => {
   it('gives the home page a canonical URL, title and description', async () => {
     const { metadata } = await import('./page')
     expect(metadata.alternates?.canonical).toBe('/')
-    expect(metadata.title).toMatch(/Myrakal/)
+    expect(metadata.title).toBe('Myrakal | Uncovered care, planned and booked for you')
     expect(metadata.description?.length).toBeGreaterThan(40)
   })
 

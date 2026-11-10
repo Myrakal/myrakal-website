@@ -1,4 +1,4 @@
 export const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.myrakal.com'
 
 export const DESCRIPTION =
-  'Myrakal is an intelligent data platform that makes healthcare cheaper. Text us and our autonomous system gets back to you after a little analysis with free data on cheaper options.'
+  "Myrakal finds, prices and books the expensive care insurance won't cover, from dental implants to cosmetic surgery, in the U.S. or abroad. Send us your quote and we come back with verified options at one all-in price. We never take money from clinics."

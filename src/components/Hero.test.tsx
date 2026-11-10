@@ -29,7 +29,7 @@ describe('hero', () => {
     expect(left!.compareDocumentPosition(right!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(left!.querySelector('img[src*="wordmark"]')).not.toBeNull()
     expect(within(left as HTMLElement).getByRole('heading', { level: 1 })).toBeInTheDocument()
-    expect(within(left as HTMLElement).getByRole('link', { name: 'Email us' })).toBeInTheDocument()
+    expect(within(left as HTMLElement).getByRole('link', { name: 'Send your quote' })).toBeInTheDocument()
     expect(right!.contains(screen.getByRole('figure'))).toBe(true)
   })
 
@@ -105,12 +105,13 @@ describe('hero', () => {
     const copy = container.querySelector('[data-hero-copy]') as HTMLElement
     expect(within(copy).getByRole('heading', { level: 1 }).className).not.toMatch(/max-sm:(sr-only|hidden)/)
     expect(copy.querySelector('p')!.className).not.toContain('max-sm:hidden')
-    expect(within(copy).getByRole('link', { name: 'Email us' }).className).toContain('max-sm:hidden')
+    expect(within(copy).getByRole('link', { name: 'Send your quote' }).className).toContain('max-sm:hidden')
   })
 
-  it('invites visitors to email for early access', () => {
+  it('asks visitors to send their quote for verified options', () => {
     render(<Hero />)
-    expect(screen.getByText('Email us for early access')).toBeInTheDocument()
+    expect(screen.getByText(/Send us your quote and we'll come back with verified options in the U\.S\. or abroad, at one all-in price\./)).toBeInTheDocument()
+    expect(screen.queryByText('Email us for early access')).toBeNull()
   })
 })
 

@@ -1,7 +1,7 @@
 const STEPS = [
-  ['I', 'Text us', 'Talk to our autonomous system about what\'s expensive.'],
-  ['II', 'We work it out', 'Our team runs your request against our healthcare pricing data.'],
-  ['III', 'Get cheaper options', 'We send back cheaper options, with the numbers, at no cost.'],
+  ['I', 'Send your quote', 'Email us the quote you were given, or tell us what you need.'],
+  ['II', 'We find your options', 'Our team compares verified providers in the U.S. and abroad and checks what each price includes.'],
+  ['III', 'We handle the rest', 'Pick one and we book it, along with travel, paperwork and aftercare.'],
 ]
 
 export function HowItWorks() {
@@ -11,7 +11,7 @@ export function HowItWorks() {
         <div className="flex flex-col items-center gap-6">
           <p className="font-caslon text-xs tracking-[0.32em] text-champagne uppercase">How it works</p>
           <h2 id="how-it-works" className="max-w-3xl font-display text-4xl leading-tight text-cream sm:text-6xl">
-            You're one text away from <i className="text-champagne">paying less.</i>
+            You're one quote away from <i className="text-champagne">paying less.</i>
           </h2>
         </div>
         <ol className="grid w-full gap-px bg-rule md:grid-cols-3">
@@ -30,8 +30,8 @@ export function HowItWorks() {
             Wait.. how do you make money?
           </summary>
           <p className="mt-6 font-caslon text-lg leading-relaxed text-mist">
-            We think healthcare data should be free for all. We take a commission if you want us to book &amp; coordinate
-            everything.
+            Comparing options is free. If you want us to book and coordinate everything, you pay us one coordination fee. We
+            never take money from clinics.
           </p>
         </details>
       </div>

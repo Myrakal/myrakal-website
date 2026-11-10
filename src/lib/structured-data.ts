@@ -9,7 +9,7 @@ export const ORGANIZATION = {
   name: 'Myrakal',
   url: SITE,
   logo: `${SITE}/logo.png`,
-  slogan: 'Healthcare that costs less',
+  slogan: 'Healthcare, as it should be.',
   description: DESCRIPTION,
   address: { '@type': 'PostalAddress', addressLocality: 'Chicago', addressRegion: 'IL', addressCountry: 'US' },
 }
