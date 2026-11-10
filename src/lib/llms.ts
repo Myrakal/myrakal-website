@@ -18,6 +18,7 @@ Myrakal is not a medical provider and does not diagnose or treat. Information on
 
 - [Home](${SITE}): overview
 ${Object.values(TREATMENTS).map(({ name, slug, description }) => `- [${name}](${SITE}/${slug}): ${description}`).join('\n')}
+- [Guides](${SITE}/guides): all Myrakal guides and tools in one place
 ${Object.values(GUIDES).map(({ slug, headline, description }) => `- [${headline}](${SITE}/guides/${slug}): ${description}`).join('\n')}
 - [Dental insurance calculator](${SITE}/tools/dental-insurance-calculator): see what your dental plan will pay toward a quote after its annual maximum, coverage and deductible
 `

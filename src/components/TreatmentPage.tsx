@@ -2,11 +2,13 @@ import { Footer } from '@/components/Footer'
 import { JsonLd } from '@/components/JsonLd'
 import { Navbar } from '@/components/Navbar'
 import { TextUsButton } from '@/components/TextUsButton'
+import { GUIDES } from '@/lib/guides'
 import { SITE } from '@/lib/site'
 import { ORGANIZATION } from '@/lib/structured-data'
 import type { Treatment } from '@/lib/treatments'
 
 const EYEBROW = 'font-caslon text-xs tracking-[0.32em] text-champagne uppercase'
+const LINK = 'text-cream underline underline-offset-4 hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne'
 const H2 = 'max-w-3xl font-display text-4xl leading-tight text-cream sm:text-6xl'
 
 export function TreatmentPage({ treatment }: { treatment: Treatment }) {
@@ -63,6 +65,17 @@ export function TreatmentPage({ treatment }: { treatment: Treatment }) {
             <TextUsButton className="mt-6 self-center" />
           </div>
         </section>
+        <nav aria-labelledby="before-you-decide" className="border-t border-rule bg-ink px-6 py-20 sm:px-12">
+          <div className="mx-auto flex max-w-2xl flex-col gap-5">
+            <h2 id="before-you-decide" className={EYEBROW}>Before you decide</h2>
+            <ul className="space-y-3 font-caslon text-lg">
+              {treatment.guides.flatMap((slug) => GUIDES[slug] ?? []).map(({ slug, headline }) => (
+                <li key={slug}><a href={`/guides/${slug}`} className={LINK}>{headline}</a></li>
+              ))}
+              <li><a href="/guides" className={LINK}>All guides <span aria-hidden="true">→</span></a></li>
+            </ul>
+          </div>
+        </nav>
       </main>
       <Footer />
     </>
