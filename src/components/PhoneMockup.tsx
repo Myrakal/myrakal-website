@@ -160,7 +160,7 @@ export function PhoneMockup() {
             <div aria-hidden="true" className="mx-auto mb-1 flex size-[50px] items-center justify-center rounded-full bg-velvet-light font-display text-xl italic">
               M
             </div>
-            <p className="font-sans text-xs text-cream/85">Myrakal</p>
+            <p className="font-sans text-[12px] text-cream/85">Myrakal</p>
           </div>
           <ol className="sr-only">
             {ITEMS.map(({ from, text, option }) => (
