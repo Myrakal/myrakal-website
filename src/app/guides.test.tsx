@@ -18,6 +18,10 @@ describe('guides', () => {
     expect(slugs).toContain('is-dental-work-abroad-safe')
   })
 
+  it('include the guide on when not to go abroad', () => {
+    expect(slugs).toContain('when-not-to-get-dental-work-abroad')
+  })
+
   it.each(slugs)('%s has its own metadata and canonical URL', async (slug) => {
     const metadata = await generateMetadata(params(slug))
     expect(String(metadata.title)).toMatch(/Myrakal/)
