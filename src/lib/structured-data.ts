@@ -1,7 +1,7 @@
+import { CONTACT_EMAIL } from '@/lib/contact'
 import { DESCRIPTION, SITE } from '@/lib/site'
 
 const context = 'https://schema.org'
-const EMAIL = 'eshaansood@myrakal.com'
 
 export const ORGANIZATION = {
   '@context': context,
@@ -17,8 +17,8 @@ export const ORGANIZATION = {
     { '@type': 'Person', name: 'Eshaan Sood', jobTitle: 'Co-founder, product and business' },
     { '@type': 'Person', name: 'Anirudh Kuppili', jobTitle: 'Co-founder, engineering' },
   ],
-  email: EMAIL,
-  contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', email: EMAIL, availableLanguage: 'English' },
+  email: CONTACT_EMAIL,
+  contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', email: CONTACT_EMAIL, availableLanguage: 'English' },
 }
 
 export const WEBSITE = {

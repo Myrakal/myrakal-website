@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from '@/lib/contact'
 import { render } from '@testing-library/react'
 
 import Home from '@/app/page'
@@ -16,8 +17,8 @@ describe('answer engine markup', () => {
     const { ORGANIZATION } = await import('@/lib/structured-data')
     expect(ORGANIZATION.founder.map((f) => f.name)).toEqual(['Eshaan Sood', 'Anirudh Kuppili'])
     expect(ORGANIZATION.founder.every((f) => f['@type'] === 'Person' && f.jobTitle)).toBe(true)
-    expect(ORGANIZATION.email).toBe('eshaansood@myrakal.com')
-    expect(ORGANIZATION.contactPoint).toMatchObject({ '@type': 'ContactPoint', email: 'eshaansood@myrakal.com' })
+    expect(ORGANIZATION.email).toBe(CONTACT_EMAIL)
+    expect(ORGANIZATION.contactPoint).toMatchObject({ '@type': 'ContactPoint', email: CONTACT_EMAIL })
     expect(ORGANIZATION).not.toHaveProperty('sameAs')
   })
 
