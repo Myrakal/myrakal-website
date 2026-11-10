@@ -10,7 +10,7 @@ export function ServiceCards() {
         <div className="flex flex-col items-center gap-6">
           <p className="font-caslon text-xs tracking-[0.32em] text-champagne uppercase">What we handle</p>
           <h2 id="services" className="max-w-3xl font-display text-4xl leading-tight text-cream sm:text-6xl">
-            Start with the <i className="text-champagne">big bills.</i>
+            Starting with the <i className="text-champagne">big bills.</i>
           </h2>
         </div>
         <ul className="grid w-full gap-px bg-rule md:grid-cols-2">

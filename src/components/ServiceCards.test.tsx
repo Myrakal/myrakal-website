@@ -16,7 +16,7 @@ describe('service cards', () => {
     const { container } = render(<Home />)
     const services = container.querySelector('section[aria-labelledby="services"]') as HTMLElement
     expect(services).not.toBeNull()
-    expect(within(services).getByRole('heading', { level: 2 })).toHaveTextContent('Start with the big bills.')
+    expect(within(services).getByRole('heading', { level: 2 })).toHaveTextContent('Starting with the big bills.')
     expect(within(services).getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual(['Dental', 'Cosmetic'])
     expect(services.previousElementSibling?.querySelector('h1')).not.toBeNull()
     expect(services.nextElementSibling).toBe(container.querySelector('section[aria-labelledby="meet-the-team"]'))
