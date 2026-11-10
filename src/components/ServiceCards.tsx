@@ -15,12 +15,12 @@ export function ServiceCards() {
         </div>
         <ul className="grid w-full gap-px bg-rule md:grid-cols-2">
           {SERVICES.map(([title, body, href]) => (
-            <li key={title} className="flex flex-col items-center gap-4 bg-ink px-6 py-10 md:px-10">
+            <li key={title} className={`relative flex flex-col items-center gap-4 bg-ink px-6 py-10 md:px-10 ${href ? 'group transition-colors hover:bg-velvet-deep' : ''}`}>
               <h3 className="font-display text-3xl text-cream">
                 {href ? (
                   <a
                     href={href}
-                    className="underline decoration-champagne/50 underline-offset-8 transition-colors hover:text-champagne focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-champagne"
+                    className="transition-colors group-hover:text-champagne after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-champagne"
                   >
                     {title}
                   </a>
@@ -29,6 +29,11 @@ export function ServiceCards() {
                 )}
               </h3>
               <p className="max-w-sm font-caslon text-lg leading-relaxed text-mist">{body}</p>
+              {href && (
+                <span aria-hidden="true" className="mt-2 border-b border-champagne/60 pb-1 font-caslon text-xs tracking-[0.28em] text-champagne uppercase transition-colors group-hover:border-champagne">
+                  See options →
+                </span>
+              )}
             </li>
           ))}
         </ul>

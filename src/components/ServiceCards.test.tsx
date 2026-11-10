@@ -30,4 +30,19 @@ describe('service cards', () => {
     expect(phone.querySelector('figcaption')).toBeNull()
     for (const option of within(phone).getAllByTestId('option')) expect(option.textContent).not.toMatch(/\.com/)
   })
+
+  it('makes each treatment card look and act like one big link', () => {
+    const { container } = render(<Home />)
+    const services = container.querySelector('section[aria-labelledby="services"]') as HTMLElement
+    for (const [name, href] of [['Dental', '/dental'], ['Cosmetic', '/cosmetic']]) {
+      const link = within(services).getByRole('link', { name })
+      expect(link).toHaveAttribute('href', href)
+      expect(link.className).toMatch(/after:absolute/)
+      expect(link.className).toMatch(/after:inset-0/)
+      const card = link.closest('li') as HTMLElement
+      expect(card.className).toMatch(/\brelative\b/)
+      expect(card.className).toMatch(/hover:/)
+      expect(within(card).getByText(/^See options/)).toBeInTheDocument()
+    }
+  })
 })
