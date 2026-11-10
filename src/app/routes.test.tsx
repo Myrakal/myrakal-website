@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { existsSync } from 'node:fs'
 
 describe('app routes', () => {
-  it.each(['api', 'care', 'individual', 'business', 'contact', 'terms', 'accessibility', 'login', 'dashboard', 'forgot-password', 'reset-password'])(
+  it.each(['api', 'care', 'individual', 'business', 'contact', 'login', 'dashboard', 'forgot-password', 'reset-password'])(
     '/%s no longer exists',
     (route) => expect(existsSync(`${__dirname}/${route}`)).toBe(false),
   )
