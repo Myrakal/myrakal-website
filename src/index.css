@@ -9,6 +9,8 @@
     --font-display: 'Bodoni Moda', Didot, Georgia, serif;
     --font-caslon: 'Libre Caslon Text', Caslon, Georgia, serif;
     --font-grotesk: 'Space Grotesk', system-ui, sans-serif;
+    --text-xs: 0.8125rem;
+    --text-lg: 1.1875rem;
     --font-sans:
       'Source Sans 3', 'Helvetica Neue', Helvetica, Arial, system-ui,
       sans-serif;
@@ -71,16 +73,16 @@
     /* Myrakal Velvet + Pearl palette */
     color-scheme: dark;
     --imessage: #0a84ff;
-    --velvet: #4d0f1a;
+    --velvet: #47171d;
     --ink: #120709;
     --mist: #c9b8ad;
-    --rule: #3a1419;
-    --velvet-deep: #2e0810;
-    --velvet-light: #6b2230;
+    --rule: #36181b;
+    --velvet-deep: #2a0c12;
+    --velvet-light: #632a33;
     --ivory: var(--velvet-light);
     --cream: #f6eee4;
     --charcoal: var(--velvet-deep);
-    --greige: #3d0c15;
+    --greige: #381217;
     --pearl: #ebd3da;
     --gold: #c9a36b;
     --champagne: #f2d38a;
@@ -138,6 +140,9 @@
     }
   h1, h2, h3, h4 {
     @apply font-heading font-medium;
+    }
+  .font-display {
+    font-variation-settings: 'opsz' 18;
     }
   @media (prefers-reduced-motion: no-preference) {
     html {

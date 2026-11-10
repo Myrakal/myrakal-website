@@ -13,7 +13,7 @@ export function Hero() {
         sizes="(max-aspect-ratio: 16/9) 178svh, 100vw"
         alt="A ribbon of translucent claret liquid twisting through the dark, lit with gold"
         fetchPriority="high"
-        className="absolute inset-0 -z-30 size-full object-cover"
+        className="absolute inset-0 -z-30 size-full object-cover saturate-90"
       />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-charcoal/30 max-sm:bg-charcoal/45" />
       <div className="mx-auto grid w-full max-w-6xl flex-1 items-center gap-12 py-6 lg:grid-cols-2 lg:gap-8">
