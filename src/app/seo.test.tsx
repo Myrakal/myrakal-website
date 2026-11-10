@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 import { metadata as layout } from './layout'
 import robots from './robots'
@@ -45,5 +45,18 @@ describe('search and sharing', () => {
   it('ships a share image with alt text', () => {
     expect(existsSync(`${__dirname}/opengraph-image.jpg`)).toBe(true)
     expect(existsSync(`${__dirname}/opengraph-image.alt.txt`)).toBe(true)
+  })
+
+  it('sizes the share image at 1200 by 630', () => {
+    const bytes = readFileSync(`${__dirname}/opengraph-image.jpg`)
+    expect(bytes.readUInt16BE(0)).toBe(0xffd8)
+    let offset = 2
+    let size: { width: number; height: number } | undefined
+    while (offset < bytes.length && !size) {
+      const marker = bytes[offset + 1]
+      if (marker === 0xc0 || marker === 0xc2) size = { height: bytes.readUInt16BE(offset + 5), width: bytes.readUInt16BE(offset + 7) }
+      offset += 2 + bytes.readUInt16BE(offset + 2)
+    }
+    expect(size).toEqual({ width: 1200, height: 630 })
   })
 })

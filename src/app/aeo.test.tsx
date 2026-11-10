@@ -12,6 +12,15 @@ describe('answer engine markup', () => {
     expect(items.find((i) => i['@type'] === 'Organization').slogan).toBe('Healthcare, as it should be.')
   })
 
+  it('names the founders and a support contact without inventing social profiles', async () => {
+    const { ORGANIZATION } = await import('@/lib/structured-data')
+    expect(ORGANIZATION.founder.map((f) => f.name)).toEqual(['Eshaan Sood', 'Anirudh Kuppili'])
+    expect(ORGANIZATION.founder.every((f) => f['@type'] === 'Person' && f.jobTitle)).toBe(true)
+    expect(ORGANIZATION.email).toBe('eshaansood@myrakal.com')
+    expect(ORGANIZATION.contactPoint).toMatchObject({ '@type': 'ContactPoint', email: 'eshaansood@myrakal.com' })
+    expect(ORGANIZATION).not.toHaveProperty('sameAs')
+  })
+
   it('escapes markup inside structured data', () => {
     const { container } = render(<JsonLd data={{ name: '</script><b>x</b>' }} />)
     expect(container.querySelector('script')!.innerHTML).not.toContain('</script>')
