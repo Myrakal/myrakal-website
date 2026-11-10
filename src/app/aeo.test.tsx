@@ -1,3 +1,4 @@
+import { CONTACT_EMAIL } from '@/lib/contact'
 import { render } from '@testing-library/react'
 
 import Home from '@/app/page'
@@ -10,6 +11,15 @@ describe('answer engine markup', () => {
     expect(items.find((i) => i['@type'] === 'Organization')).toMatchObject({ name: 'Myrakal', url: 'https://www.myrakal.com' })
     expect(items.find((i) => i['@type'] === 'WebSite')).toMatchObject({ name: 'Myrakal' })
     expect(items.find((i) => i['@type'] === 'Organization').slogan).toBe('Healthcare, as it should be.')
+  })
+
+  it('names the founders and a support contact without inventing social profiles', async () => {
+    const { ORGANIZATION } = await import('@/lib/structured-data')
+    expect(ORGANIZATION.founder.map((f) => f.name)).toEqual(['Eshaan Sood', 'Anirudh Kuppili'])
+    expect(ORGANIZATION.founder.every((f) => f['@type'] === 'Person' && f.jobTitle)).toBe(true)
+    expect(ORGANIZATION.email).toBe(CONTACT_EMAIL)
+    expect(ORGANIZATION.contactPoint).toMatchObject({ '@type': 'ContactPoint', email: CONTACT_EMAIL })
+    expect(ORGANIZATION).not.toHaveProperty('sameAs')
   })
 
   it('escapes markup inside structured data', () => {
