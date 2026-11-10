@@ -217,9 +217,6 @@ export function PhoneMockup() {
           <div aria-hidden="true" className="mx-auto mb-2 h-[5px] w-[134px] rounded-full bg-cream/80" />
         </div>
       </div>
-      <figcaption className="absolute inset-x-0 -bottom-8 text-center font-caslon text-xs tracking-[0.2em] text-mist uppercase">
-        Illustrative example
-      </figcaption>
     </figure>
   )
 }
