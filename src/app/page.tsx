@@ -6,6 +6,7 @@ import { Hero } from '@/components/Hero'
 import { HowItWorks } from '@/components/HowItWorks'
 import { JsonLd } from '@/components/JsonLd'
 import { MeetTheTeam } from '@/components/MeetTheTeam'
+import { MyrakalIndex } from '@/components/MyrakalIndex'
 import { Navbar } from '@/components/Navbar'
 import { ServiceCards } from '@/components/ServiceCards'
 import { DESCRIPTION } from '@/lib/site'
@@ -27,6 +28,7 @@ export default function Home() {
         <ServiceCards />
         <MeetTheTeam />
         <HowItWorks />
+        <MyrakalIndex />
         <Closing />
       </main>
       <Footer />
