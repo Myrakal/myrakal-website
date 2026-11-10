@@ -74,6 +74,7 @@ describe('treatment pages', () => {
     render(<Cosmetic />)
     expect(screen.getByText('When can I fly home after surgery?')).toBeInTheDocument()
     expect(screen.getByText('How do you choose surgeons?')).toBeInTheDocument()
+    expect(screen.getByText('What does all-in include?')).toBeInTheDocument()
   })
 
   it('are listed in llms.txt', async () => {
@@ -84,6 +85,10 @@ describe('treatment pages', () => {
   it('hide the default disclosure marker on FAQ toggles', () => {
     const { container } = render(<Dental />)
     for (const summary of container.querySelectorAll('summary')) expect(summary.className).toContain('list-none')
+  })
+
+  it('all say comparing is free in their descriptions', () => {
+    for (const { description } of Object.values(TREATMENTS)) expect(description).toMatch(/Comparing is free\./)
   })
 
   it('use no em dashes in their copy', () => {

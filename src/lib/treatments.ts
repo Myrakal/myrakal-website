@@ -38,7 +38,7 @@ export const TREATMENTS = {
     name: 'Cosmetic',
     title: 'Cosmetic surgery, best price anywhere | Myrakal',
     description:
-      'Send us your quote for rhinoplasty, eyelid surgery, a facelift or another elective procedure. We compare verified surgeons near you, elsewhere in the U.S. and abroad, then book the one you pick.',
+      'Send us your quote for rhinoplasty, eyelid surgery, a facelift or another elective procedure. We compare verified surgeons near you, elsewhere in the U.S. and abroad, then book the one you pick. Comparing is free.',
     headline: 'Cosmetic care, at the best price anywhere.',
     intro:
       'Rhinoplasty, eyelid surgery, facelifts and other elective procedures. Send us your quote and we compare verified surgeons near you, elsewhere in the U.S. and abroad. Pick one and we book it.',
@@ -48,6 +48,10 @@ export const TREATMENTS = {
       ['Abroad', 'Accredited hospitals priced all-in, with flights, a recovery stay and aftercare included.'],
     ],
     faqs: [
+      [
+        'What does all-in include?',
+        'For care away from home, the price covers the procedure, flights, a recovery stay, local transport and the aftercare we arrange. Each option lists exactly what it includes.',
+      ],
       [
         'When can I fly home after surgery?',
         'Your surgeon decides. After major surgery many people need to stay put for one to two weeks, so we plan the trip and the recovery stay around it.',
