@@ -11,7 +11,7 @@ import { DESCRIPTION } from '@/lib/site'
 import { ORGANIZATION, WEBSITE } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
-  title: 'Myrakal: Healthcare that costs less',
+  title: 'Myrakal | Uncovered care, planned and booked for you',
   description: DESCRIPTION,
   alternates: { canonical: '/' },
 }
