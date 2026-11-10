@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react'
 
+import { GuidePage } from '@/components/GuidePage'
 import GuideRoute, { generateMetadata, generateStaticParams } from '@/app/guides/[slug]/page'
 import sitemap from '@/app/sitemap'
 import { GUIDES } from '@/lib/guides'
@@ -20,6 +21,22 @@ describe('guides', () => {
 
   it('include the guide on when not to go abroad', () => {
     expect(slugs).toContain('when-not-to-get-dental-work-abroad')
+  })
+
+  it('include the dental tourism services comparison and disclose that Myrakal publishes it', () => {
+    expect(slugs).toContain('dental-tourism-facilitators-compared')
+    const guide = GUIDES['dental-tourism-facilitators-compared' as keyof typeof GUIDES]
+    expect(guide.answer).toMatch(/Myrakal publishes this page/)
+  })
+
+  it('render a section table with column and row headers', () => {
+    const guide = { ...GUIDES['verify-a-dentist-or-surgeon'], sections: [{ heading: 'Compared', table: { head: ['Service', 'Who pays it'], rows: [['A', 'Clinics'], ['B', 'Patients']] } }] }
+    const { container } = render(<GuidePage guide={guide} />)
+    const table = container.querySelector('section table')!
+    expect([...table.querySelectorAll('thead th[scope="col"]')].map((th) => th.textContent)).toEqual(['Service', 'Who pays it'])
+    expect([...table.querySelectorAll('tbody th[scope="row"]')].map((th) => th.textContent)).toEqual(['A', 'B'])
+    expect([...table.querySelectorAll('tbody td')].map((td) => td.textContent)).toEqual(['Clinics', 'Patients'])
+    expect(table.parentElement).toHaveClass('overflow-x-auto')
   })
 
   it.each(slugs)('%s has its own metadata and canonical URL', async (slug) => {
@@ -81,6 +98,20 @@ describe('guides', () => {
     const text = JSON.stringify(GUIDES)
     expect(text).not.toMatch(/only board the ABMS recognizes/)
     expect(text).not.toMatch(/shows you what we found/)
+  })
+
+  it.each(slugs)('%s links to every other guide', async (slug) => {
+    const { container } = render(await GuideRoute(params(slug)))
+    const hrefs = [...container.querySelectorAll('nav[aria-labelledby="related"] a')].map((a) => a.getAttribute('href'))
+    expect(hrefs).toEqual(slugs.filter((other) => other !== slug).map((other) => `/guides/${other}`))
+  })
+
+  it('make wide tables keyboard scrollable and avoid raw paths in copy', async () => {
+    const { container } = render(await GuideRoute(params('dental-tourism-facilitators-compared')))
+    const region = container.querySelector('[role="region"]')
+    expect(region).toHaveAttribute('tabIndex', '0')
+    expect(region).toHaveAttribute('aria-label')
+    expect(JSON.stringify(GUIDES)).not.toMatch(/ \/guides\//)
   })
 
   it('use no em dashes', () => {
