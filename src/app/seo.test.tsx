@@ -15,8 +15,8 @@ describe('search and sharing', () => {
     expect(layout.openGraph).toMatchObject({ siteName: 'Myrakal', type: 'website', locale: 'en_US' })
   })
 
-  it('lists the home page and the treatment pages in the sitemap', () => {
-    expect(sitemap().map((entry) => entry.url)).toEqual([SITE, `${SITE}/dental`, `${SITE}/cosmetic`, `${SITE}/guides/verify-a-dentist-or-surgeon`, `${SITE}/guides/is-dental-work-abroad-safe`, `${SITE}/guides/when-not-to-get-dental-work-abroad`, `${SITE}/guides/dental-tourism-facilitators-compared`])
+  it('lists the home page, treatment pages, guides and the calculator in the sitemap', () => {
+    expect(sitemap().map((entry) => entry.url)).toEqual([SITE, `${SITE}/dental`, `${SITE}/cosmetic`, `${SITE}/guides/verify-a-dentist-or-surgeon`, `${SITE}/guides/is-dental-work-abroad-safe`, `${SITE}/guides/when-not-to-get-dental-work-abroad`, `${SITE}/guides/dental-tourism-facilitators-compared`, `${SITE}/tools/dental-insurance-calculator`])
   })
 
   it('points crawlers at the sitemap and allows everything', () => {
