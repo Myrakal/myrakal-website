@@ -1,5 +1,5 @@
 const STEPS = [
-  ['I', 'Send your quote', 'Email us the quote you were given, or tell us what you need.'],
+  ['I', 'Send your quote', 'Send us the quote you were given, or tell us what you need.'],
   ['II', 'We find your options', 'Our team compares verified providers in the U.S. and abroad and checks what each price includes.'],
   ['III', 'We handle the rest', 'Pick one and we book it, along with travel, paperwork and aftercare.'],
 ]

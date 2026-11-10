@@ -43,7 +43,7 @@ describe.each(pages)('/%s', (slug, Page, metadata, topic) => {
   it('answers what it costs and sends a quote by email', () => {
     const { container } = render(<Page />)
     expect(container.textContent).toMatch(/We never take money from clinics\./)
-    expect(screen.getAllByRole('link').some((link) => link.getAttribute('href')?.startsWith('mailto:'))).toBe(true)
+    expect(screen.getAllByRole('button', { name: 'Send your quote' }).length).toBeGreaterThan(0)
   })
 
   it('describes the service for answer engines', () => {

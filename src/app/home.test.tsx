@@ -36,6 +36,7 @@ describe('landing page', () => {
     const how = container.querySelector('section[aria-labelledby="how-it-works"]')
     expect(how?.querySelectorAll('li')).toHaveLength(3)
     expect(how?.querySelectorAll('h3')[0]).toHaveTextContent('Send your quote')
+    expect(how).not.toHaveTextContent(/Email us/)
   })
 
   it('toggles the business-model answer under the steps on click', async () => {
@@ -54,17 +55,12 @@ describe('landing page', () => {
     expect(details.open).toBe(false)
   })
 
-  it('opens a prefilled quote email from every CTA', () => {
+  it('opens the quote form from every CTA instead of an email draft', () => {
     render(<Home />)
-    expect(screen.queryAllByRole('link', { name: 'Text us!' })).toHaveLength(0)
-    expect(screen.queryAllByRole('link', { name: 'Email instead' })).toHaveLength(0)
-    expect(document.querySelector('a[href^="sms:"]')).toBeNull()
-
-    const emailLinks = screen.getAllByRole('link', { name: 'Send your quote' })
-    expect(emailLinks).toHaveLength(3)
-    for (const link of emailLinks) {
-      expect(link).toHaveAttribute('href', "mailto:eshaansood@myrakal.com?subject=My%20quote&body=Hi%20Myra!%20Here's%20my%20quote%20(or%20what%20I%20need)%3A")
-    }
+    expect(document.querySelector('a[href^="sms:"], a[href^="mailto:"]')).toBeNull()
+    const buttons = screen.getAllByRole('button', { name: 'Send your quote' })
+    expect(buttons).toHaveLength(3)
+    for (const button of buttons) expect(button).toHaveAttribute('aria-haspopup', 'dialog')
   })
 
   it('closes on one quote at a time', () => {

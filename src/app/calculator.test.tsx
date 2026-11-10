@@ -92,7 +92,7 @@ describe('/tools/dental-insurance-calculator', () => {
     const sources = screen.getByRole('list', { name: /sources/i })
     expect(sources.querySelectorAll('a[href^="https://"]').length).toBeGreaterThanOrEqual(2)
     expect(container.textContent).toMatch(/send us your quote/i)
-    expect(screen.getAllByRole('link').some((link) => link.getAttribute('href')?.startsWith('mailto:'))).toBe(true)
+    expect(screen.getAllByRole('button', { name: 'Send your quote' }).length).toBeGreaterThan(0)
   })
 
   it('uses no em dashes or cheap language', () => {
