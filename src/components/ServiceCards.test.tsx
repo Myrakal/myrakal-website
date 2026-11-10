@@ -23,10 +23,11 @@ describe('service cards', () => {
     expect(services).toHaveTextContent("If insurance won't cover it, just ask.")
   })
 
-  it('labels the phone chat as an illustrative example with no invented links', () => {
+  it('shows the phone chat with no caption and no invented links', () => {
     render(<Home />)
     const phone = screen.getByRole('figure', { name: /iphone/i })
-    expect(within(phone).getByText('Illustrative example').tagName).toBe('FIGCAPTION')
+    expect(within(phone).queryByText(/illustrative example/i)).toBeNull()
+    expect(phone.querySelector('figcaption')).toBeNull()
     for (const option of within(phone).getAllByTestId('option')) expect(option.textContent).not.toMatch(/\.com/)
   })
 })
