@@ -5,12 +5,13 @@ import { JsonLd } from '@/components/JsonLd'
 import { Navbar } from '@/components/Navbar'
 import { TextUsButton } from '@/components/TextUsButton'
 import { GUIDES } from '@/lib/guides'
+import { pageMetadata } from '@/lib/site'
 import { ORGANIZATION } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
   title: 'Guides to expensive dental and cosmetic care | Myrakal',
   description: 'Plain answers on verifying a dentist or surgeon, whether dental work abroad is safe, when not to go, how facilitators compare, and what insurance will really pay.',
-  alternates: { canonical: '/guides' },
+  ...pageMetadata('/guides'),
 }
 
 const ENTRIES = [

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+import { pageMetadata } from '@/lib/site'
+
 export type Treatment = {
   slug: string
   name: string
@@ -68,5 +70,5 @@ export const TREATMENTS = {
 } satisfies Record<string, Treatment>
 
 export function treatmentMetadata(treatment: Treatment): Metadata {
-  return { title: treatment.title, description: treatment.description, alternates: { canonical: `/${treatment.slug}` } }
+  return { title: treatment.title, description: treatment.description, ...pageMetadata(`/${treatment.slug}`) }
 }
