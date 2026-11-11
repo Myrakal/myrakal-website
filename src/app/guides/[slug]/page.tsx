@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 
 import { GuidePage } from '@/components/GuidePage'
 import { GUIDES } from '@/lib/guides'
+import { pageMetadata } from '@/lib/site'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -17,7 +18,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const guide = find((await params).slug)
   if (!guide) return {}
-  return { title: guide.title, description: guide.description, alternates: { canonical: `/guides/${guide.slug}` } }
+  return { title: guide.title, description: guide.description, ...pageMetadata(`/guides/${guide.slug}`) }
 }
 
 export default async function GuideRoute({ params }: Props) {

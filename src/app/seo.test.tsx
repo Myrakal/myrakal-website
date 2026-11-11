@@ -19,12 +19,22 @@ describe('search and sharing', () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([SITE, `${SITE}/dental`, `${SITE}/cosmetic`, `${SITE}/guides`, `${SITE}/guides/verify-a-dentist-or-surgeon`, `${SITE}/guides/is-dental-work-abroad-safe`, `${SITE}/guides/when-not-to-get-dental-work-abroad`, `${SITE}/guides/dental-tourism-facilitators-compared`, `${SITE}/tools/dental-insurance-calculator`])
   })
 
-  it('points crawlers at the sitemap and allows everything', () => {
-    const rules = robots()
-    expect(rules.sitemap).toBe(`${SITE}/sitemap.xml`)
-    const rule = Array.isArray(rules.rules) ? rules.rules[0] : rules.rules
-    expect(rule.allow).toBe('/')
-    expect(rule.disallow).toBeUndefined()
+  it('allows discovery and user fetchers without opting into model training', () => {
+    const robotsFile = robots()
+    expect(robotsFile.sitemap).toBe(`${SITE}/sitemap.xml`)
+    expect(Array.isArray(robotsFile.rules)).toBe(true)
+    const rules = Array.isArray(robotsFile.rules) ? robotsFile.rules : [robotsFile.rules]
+    const ruleFor = (agent: string) => rules.find((rule) =>
+      (Array.isArray(rule.userAgent) ? rule.userAgent : [rule.userAgent]).includes(agent),
+    )
+
+    for (const agent of ['Googlebot', 'Bingbot', 'OAI-SearchBot', 'ChatGPT-User', 'Claude-SearchBot', 'Claude-User', 'PerplexityBot', 'Perplexity-User']) {
+      expect(ruleFor(agent)?.allow).toBe('/')
+    }
+    for (const agent of ['GPTBot', 'ClaudeBot', 'Google-Extended']) {
+      expect(ruleFor(agent)?.disallow).toBe('/')
+    }
+    expect(ruleFor('*')?.allow).toBe('/')
   })
 
   it('reads the site address from the environment, defaulting to the live site', async () => {
@@ -40,6 +50,22 @@ describe('search and sharing', () => {
     expect(metadata.alternates?.canonical).toBe('/')
     expect(metadata.title).toBe('Myrakal | Uncovered care, planned and booked for you')
     expect(metadata.description?.length).toBeGreaterThan(40)
+  })
+
+  it('pairs every canonical URL with a page-specific Open Graph URL', async () => {
+    const [{ metadata: home }, { metadata: dental }, { metadata: cosmetic }, { metadata: guides }, { metadata: calculator }, guideRoute] = await Promise.all([
+      import('./page'),
+      import('./dental/page'),
+      import('./cosmetic/page'),
+      import('./guides/page'),
+      import('./tools/dental-insurance-calculator/page'),
+      import('./guides/[slug]/page'),
+    ])
+    const guide = await guideRoute.generateMetadata({ params: Promise.resolve({ slug: 'is-dental-work-abroad-safe' }) })
+
+    for (const page of [home, dental, cosmetic, guides, calculator, guide]) {
+      expect((page.openGraph as { url?: string })?.url).toBe(page.alternates?.canonical)
+    }
   })
 
   it('ships a share image with alt text', () => {

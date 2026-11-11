@@ -5,7 +5,7 @@ import { InsuranceCalculator } from '@/components/InsuranceCalculator'
 import { JsonLd } from '@/components/JsonLd'
 import { Navbar } from '@/components/Navbar'
 import { TextUsButton } from '@/components/TextUsButton'
-import { SITE } from '@/lib/site'
+import { SITE, pageMetadata } from '@/lib/site'
 import { ORGANIZATION } from '@/lib/structured-data'
 
 const PATH = '/tools/dental-insurance-calculator'
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   title: 'Dental insurance calculator: what your plan will really pay | Myrakal',
   description:
     'Enter your dental quote, annual maximum, coverage and deductible to see what insurance will pay for implants, All-on-4 or other major work, and what you pay yourself. Free.',
-  alternates: { canonical: PATH },
+  ...pageMetadata(PATH),
 }
 
 const SOURCES = [
