@@ -9,6 +9,7 @@ const shared = {
 
 const client = createJestConfig({
   ...shared,
+  moduleNameMapper: { ...shared.moduleNameMapper, '^@react-three/(drei|fiber)$': '<rootDir>/tests/r3f-stub.tsx' },
   displayName: 'client',
   testEnvironment: 'jsdom',
   testMatch: ['<rootDir>/src/**/*.test.{ts,tsx}'],
