@@ -25,6 +25,12 @@ describe('quote form', () => {
     }
   })
 
+  it('links the privacy policy from the form', async () => {
+    render(<TextUsButton />)
+    await userEvent.click(screen.getByRole('button', { name: 'Send your quote' }))
+    expect(screen.getByRole('link', { name: 'Privacy Policy' })).toHaveAttribute('href', '/privacy')
+  })
+
   it('sends the request to the Formspree form and thanks the visitor', async () => {
     const fetchMock = jest.fn().mockResolvedValue({ ok: true })
     global.fetch = fetchMock as unknown as typeof fetch

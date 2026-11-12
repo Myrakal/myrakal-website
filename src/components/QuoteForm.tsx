@@ -98,6 +98,7 @@ export function QuoteForm({ open, onClose }: { open: boolean; onClose: (sent?: b
             </label>
             <div aria-hidden="true" className="sr-only"><input name="_gotcha" tabIndex={-1} autoComplete="off" defaultValue="" /></div>
             <p className="text-sm text-mist">Have a PDF or photo of your quote? We&apos;ll reply and you can send it then.</p>
+            <p className="text-sm text-mist">We use what you send only to compare and book your care. See our <a href="/privacy" target="_blank" rel="noopener" className="underline underline-offset-4 hover:text-champagne">Privacy Policy</a>.</p>
             {status === 'error' && <p role="alert" className="text-sm text-cream">Something went wrong. Please try again, or email us at <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-4">{CONTACT_EMAIL}</a>.</p>}
             <div className="flex items-center justify-between gap-4">
               <button type="button" onClick={() => status !== 'sending' && onClose()} className={`${LABEL} underline underline-offset-4`}>Cancel</button>
