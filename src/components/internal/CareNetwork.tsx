@@ -26,14 +26,6 @@ export default function CareNetwork({ raw }: { raw: RawGraph }) {
         <City city={city} hover={hover} setHover={setHover} />
         <OrbitControls makeDefault enableDamping minZoom={7} maxZoom={50} maxPolarAngle={1.25} target={[0, 0, 0]} />
       </Canvas>
-      <header className="hud">
-        <h1>Care network</h1>
-        <p className="tagline">Every clinic, doctor and price, on one map.</p>
-        <p className="stats">
-          {city.clinics.length} clinics &nbsp;·&nbsp; {city.doctors.length} doctors
-        </p>
-      </header>
-      <p className="hint">Drag to rotate &nbsp;·&nbsp; scroll to zoom &nbsp;·&nbsp; hover for details</p>
       <Tooltip city={city} hover={hover} />
     </div>
   )
