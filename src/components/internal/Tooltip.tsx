@@ -13,7 +13,12 @@ export default function Tooltip({ city, hover }: { city: City; hover: Hover }) {
     return () => window.removeEventListener('pointermove', move)
   }, [])
   useEffect(() => {
-    document.body.style.cursor = hover ? 'pointer' : 'auto'
+    if (!hover) return
+    const previous = document.body.style.cursor
+    document.body.style.cursor = 'pointer'
+    return () => {
+      document.body.style.cursor = previous
+    }
   }, [hover])
   if (!hover) return null
 
@@ -22,10 +27,11 @@ export default function Tooltip({ city, hover }: { city: City; hover: Hover }) {
 
   if (hover.type === 'clinic') {
     const c = city.clinicById[hover.id]
+    if (!c) return null
     return (
       <div className={styles.tip} style={{ left, top }}>
         <h2>{c.name}</h2>
-        <div className={styles.sub}>{[c.kind?.replace('_', ' '), c.city, c.region].filter(Boolean).join(' · ')}</div>
+        <div className={styles.sub}>{[c.kind?.replaceAll('_', ' '), c.city, c.region].filter(Boolean).join(' · ')}</div>
         {c.address && <div>{c.address}</div>}
         {c.phone && <div>{c.phone}</div>}
         {c.website && <div>{c.website.replace('https://', '')}</div>}
@@ -56,6 +62,7 @@ export default function Tooltip({ city, hover }: { city: City; hover: Hover }) {
   }
 
   const d = city.docById[hover.id]
+  if (!d) return null
   return (
     <div className={styles.tip} style={{ left, top }}>
       <h2>

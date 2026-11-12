@@ -53,4 +53,25 @@ describe('Tooltip', () => {
     expect(tip.style.top).toBe('138px')
     expect(document.body.style.cursor).toBe('pointer')
   })
+
+  it('renders nothing when the hovered id is unknown', () => {
+    const clinic = render(<Tooltip city={city} hover={{ type: 'clinic', id: 'missing' }} />)
+    expect(clinic.container).toBeEmptyDOMElement()
+    const doctor = render(<Tooltip city={city} hover={{ type: 'doctor', id: 'missing' }} />)
+    expect(doctor.container).toBeEmptyDOMElement()
+  })
+
+  it('replaces every underscore in the kind', () => {
+    const multi = { ...city, clinicById: { ...city.clinicById, p1: { ...city.clinicById.p1, kind: 'day_surgery_center' } } }
+    render(<Tooltip city={multi} hover={{ type: 'clinic', id: 'p1' }} />)
+    expect(screen.getByText('day surgery center · Austin · TX')).toBeInTheDocument()
+  })
+
+  it('restores the previous cursor on unmount', () => {
+    document.body.style.cursor = 'crosshair'
+    const { unmount } = render(<Tooltip city={city} hover={{ type: 'doctor', id: 'd1' }} />)
+    expect(document.body.style.cursor).toBe('pointer')
+    unmount()
+    expect(document.body.style.cursor).toBe('crosshair')
+  })
 })
