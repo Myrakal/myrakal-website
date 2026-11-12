@@ -15,12 +15,10 @@ const raw: RawGraph = {
 }
 
 describe('CareNetwork', () => {
-  it('shows the HUD with counts', () => {
+  it('shows no HUD text, only the map', () => {
     const { container } = render(<CareNetwork raw={raw} />)
-    expect(screen.getByRole('heading', { name: /care network/i })).toBeTruthy()
-    expect(screen.getByText(/every clinic, doctor and price/i)).toBeTruthy()
-    expect(container.textContent).toMatch(/2 clinics\s*·\s*1 doctors/)
-    expect(screen.getByText(/drag to rotate/i)).toBeTruthy()
+    expect(screen.queryByRole('heading')).toBeNull()
+    expect(container.textContent).toBe('')
   })
 
   it('scopes everything under the wrapper class', () => {

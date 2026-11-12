@@ -8,14 +8,14 @@ const zIndex = (selector: string) => {
 }
 
 describe('internal.css stacking', () => {
-  it('puts the HUD, hint and status above the labels (max 5)', () => {
-    for (const s of ['.internal-root .hud', '.internal-root .hint', '.internal-root .status']) {
+  it('puts the status above the labels (max 5)', () => {
+    for (const s of ['.internal-root .status']) {
       expect(zIndex(s)).toBeGreaterThan(5)
     }
   })
 
   it('keeps them below the tooltip (10) and sign out (20)', () => {
-    for (const s of ['.internal-root .hud', '.internal-root .hint', '.internal-root .status']) {
+    for (const s of ['.internal-root .status']) {
       expect(zIndex(s)).toBeLessThan(10)
     }
   })

@@ -17,16 +17,5 @@
     radial-gradient(ellipse 80% 40% at 50% 100%, rgba(232, 166, 60, 0.08) 0%, transparent 70%),
     var(--ink);
 }
-.internal-root .hud { z-index: 6; position: fixed; left: 40px; top: 32px; pointer-events: none; }
-.internal-root .hud h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 44px; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.05; }
-.internal-root .hud .tagline { margin: 8px 0 0; font-style: italic; font-size: 20px; color: var(--champagne); }
-.internal-root .hud .stats { margin: 18px 0 0; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--cyan); }
-.internal-root .hint { z-index: 6; position: fixed; left: 40px; bottom: 28px; margin: 0; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mist); opacity: 0.7; pointer-events: none; }
 .internal-root .status { z-index: 6; position: fixed; inset: 0; display: grid; place-items: center; font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); }
 .internal-root .status.error { color: var(--champagne); padding: 24px; text-align: center; letter-spacing: 0.04em; text-transform: none; font-size: 15px; }
-@media (max-width: 640px) {
-  .internal-root .hud { left: 20px; top: 20px; }
-  .internal-root .hud h1 { font-size: 28px; }
-  .internal-root .hud .tagline { font-size: 15px; }
-  .internal-root .hint { left: 20px; bottom: 20px; }
-}
