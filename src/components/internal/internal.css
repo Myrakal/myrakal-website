@@ -1,0 +1,33 @@
+.internal-root {
+  --ink: #120709;
+  --cream: #f6eee4;
+  --mist: #c9b8ad;
+  --gold: #c9a36b;
+  --champagne: #f2d38a;
+  --display: 'Bodoni Moda', Didot, Georgia, serif;
+  --serif: 'Libre Caslon Text', Caslon, Georgia, serif;
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--serif);
+  color: var(--cream);
+  background:
+    radial-gradient(ellipse 70% 60% at 78% 18%, rgba(107, 34, 48, 0.75) 0%, rgba(77, 15, 26, 0.55) 35%, transparent 70%),
+    radial-gradient(ellipse 80% 70% at 12% 100%, rgba(77, 15, 26, 0.6) 0%, transparent 65%),
+    var(--ink);
+}
+.internal-root .hud { position: fixed; left: 40px; top: 32px; pointer-events: none; }
+.internal-root .hud img { width: 48px; height: 48px; display: block; margin-bottom: 18px; }
+.internal-root .hud h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 44px; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.05; }
+.internal-root .hud .tagline { margin: 8px 0 0; font-style: italic; font-size: 20px; color: var(--champagne); }
+.internal-root .hud .stats { margin: 18px 0 0; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); }
+.internal-root .hint { position: fixed; left: 40px; bottom: 28px; margin: 0; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--mist); opacity: 0.7; pointer-events: none; }
+.internal-root .status { position: fixed; inset: 0; display: grid; place-items: center; font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); }
+.internal-root .status.error { color: var(--champagne); padding: 24px; text-align: center; letter-spacing: 0.04em; text-transform: none; font-size: 15px; }
+.internal-root .label { font-size: 10px; font-weight: 400; letter-spacing: 0.2em; text-transform: uppercase; white-space: nowrap; color: var(--cream); background: rgba(18, 7, 9, 0.82); border: 1px solid var(--gold); padding: 4px 9px; pointer-events: none; transform: translateY(-6px); }
+@media (max-width: 640px) {
+  .internal-root .hud { left: 20px; top: 20px; }
+  .internal-root .hud h1 { font-size: 28px; }
+  .internal-root .hud .tagline { font-size: 15px; }
+  .internal-root .hint { left: 20px; bottom: 20px; }
+}
