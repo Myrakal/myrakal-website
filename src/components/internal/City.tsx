@@ -6,6 +6,7 @@ import type { City as CityModel, Clinic, Doctor, Hover, Vec2, Vec3 } from '@/lib
 import { ClinicBuilding } from './buildings'
 import { DoctorFigure, FillerBlock, Tree } from './figures'
 import { CHAMPAGNE, GOLD } from './palette'
+import { Street } from './vehicles'
 
 type SetHover = (hover: Hover) => void
 
@@ -73,6 +74,7 @@ export default function City({ city, hover, setHover }: { city: CityModel; hover
   return (
     <>
       <Ground extent={city.extent} />
+      <Street city={city} />
       {city.filler.map((f, i) => (
         <group key={i} position={[f.pos[0], 0, f.pos[1]]}>
           {f.kind === 'tree' ? <Tree /> : <FillerBlock h={f.h} w={f.w} />}
