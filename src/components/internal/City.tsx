@@ -3,6 +3,8 @@ import { Html, Line } from '@react-three/drei'
 
 import { relatedTo } from '@/lib/internal/city'
 import type { City as CityModel, Clinic, Doctor, Hover, Vec2, Vec3 } from '@/lib/internal/types'
+import { scaleFor } from '@/lib/internal/scale'
+
 import { ClinicBuilding } from './buildings'
 import { DoctorFigure, FillerBlock, Tree } from './figures'
 import { CHAMPAGNE, GOLD } from './palette'
@@ -42,6 +44,7 @@ function hoverHandlers(type: 'clinic' | 'doctor', id: string, setHover: SetHover
 }
 
 function ClinicPad({ clinic, hot, dim, setHover }: { clinic: Clinic; hot: boolean; dim: boolean; setHover: SetHover }) {
+  const scale = scaleFor(clinic)
   return (
     <group position={[clinic.pos[0], 0, clinic.pos[1]]} {...hoverHandlers('clinic', clinic.id, setHover)}>
       <mesh rotation-x={-Math.PI / 2} position={[0, 0.01, 0]}>
@@ -49,8 +52,8 @@ function ClinicPad({ clinic, hot, dim, setHover }: { clinic: Clinic; hot: boolea
         <meshStandardMaterial color={hot ? '#5a1624' : '#2e0810'} />
       </mesh>
       <Line points={PLATFORM} color={hot ? CHAMPAGNE : GOLD} lineWidth={1.4} />
-      <ClinicBuilding kind={clinic.kind} hot={hot} />
-      <Html position={[0, 5.4, 0]} center zIndexRange={[5, 0]} style={{ opacity: dim ? 0.35 : 1 }}>
+      <ClinicBuilding kind={clinic.kind} hot={hot} scale={scale} />
+      <Html position={[0, 3 + 2.4 * scale.h, 0]} center zIndexRange={[5, 0]} style={{ opacity: dim ? 0.35 : 1 }}>
         <div className="label">{clinic.name}</div>
       </Html>
     </group>
