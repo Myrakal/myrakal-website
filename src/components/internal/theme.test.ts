@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
-import { CYAN, DIM_EDGE, FOG, GOLD, GROUND, MOON, WALL } from './palette'
+import { CYAN, DIM_EDGE, GOLD, GROUND, MOON, WALL } from './palette'
 
 const read = (f: string) => readFileSync(join(__dirname, f), 'utf8')
 const luma = (hex: string) => {
@@ -11,7 +11,7 @@ const luma = (hex: string) => {
 
 describe('gotham palette', () => {
   it('uses near-black surfaces', () => {
-    for (const c of [GROUND, FOG, WALL, DIM_EDGE]) expect(luma(c)).toBeLessThan(0.25)
+    for (const c of [GROUND, WALL, DIM_EDGE]) expect(luma(c)).toBeLessThan(0.25)
   })
 
   it('uses bright accents and moonlight', () => {
@@ -29,5 +29,15 @@ describe('gotham styling', () => {
 
   it('has no Myrakal logo in the HUD', () => {
     expect(read('CareNetwork.tsx')).not.toMatch(/internal-logo|Myrakal/)
+  })
+
+  it('uses one colour for the fog and the background', () => {
+    const src = read('CareNetwork.tsx')
+    expect(src).toMatch(/attach="background" args=\{\[GROUND\]\}/)
+    expect(src).toMatch(/attach="fog" args=\{\[GROUND,/)
+  })
+
+  it('keeps the old cream out of the buildings', () => {
+    expect(read('buildings.tsx').toLowerCase()).not.toContain('#f6eee4')
   })
 })

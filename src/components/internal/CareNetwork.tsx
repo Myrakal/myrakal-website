@@ -7,7 +7,7 @@ import { Canvas } from '@react-three/fiber'
 import { buildCity } from '@/lib/internal/city'
 import type { Hover, RawGraph } from '@/lib/internal/types'
 import City from './City'
-import { FOG, GROUND, MOON } from './palette'
+import { GROUND, MOON } from './palette'
 import Tooltip from './Tooltip'
 
 export default function CareNetwork({ raw }: { raw: RawGraph }) {
@@ -19,7 +19,7 @@ export default function CareNetwork({ raw }: { raw: RawGraph }) {
     <div className="internal-root">
       <Canvas orthographic dpr={[1, 2]} camera={{ position: [60, 52, 60], zoom: 15, near: -300, far: 600 }}>
         <color attach="background" args={[GROUND]} />
-        <fog attach="fog" args={[FOG, 120, 260]} />
+        <fog attach="fog" args={[GROUND, 120, 260]} />
         <ambientLight intensity={1.0} color="#5b7aa3" />
         <directionalLight position={[-30, 60, 25]} intensity={1.6} color={MOON} />
         <directionalLight position={[40, 18, -45]} intensity={0.7} color="#ff9a3c" />
