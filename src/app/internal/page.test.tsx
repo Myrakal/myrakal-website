@@ -29,10 +29,13 @@ describe('/internal page', () => {
 
   it('shows the error state when loading fails', async () => {
     isAuthed.mockResolvedValue(true)
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
     loadGraph.mockRejectedValue(new Error('db down'))
     const { default: Page } = await import('./page')
     render(await Page())
-    expect(screen.getByText('error:db down')).toBeTruthy()
+    expect(screen.queryByText(/db down/)).toBeNull()
+    expect(screen.getByText('error:The care network data is unavailable. Please try again.')).toBeTruthy()
+    expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining('internal'), expect.objectContaining({ message: 'db down' }))
   })
 
   it('shows the tool when authed', async () => {

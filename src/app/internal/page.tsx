@@ -13,7 +13,8 @@ async function load() {
   try {
     return { raw: await loadGraph() }
   } catch (e) {
-    return { error: e instanceof Error ? e.message : String(e) }
+    console.error('internal graph load failed', e)
+    return { error: 'The care network data is unavailable. Please try again.' }
   }
 }
 
