@@ -8,9 +8,10 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: ['Googlebot', 'Bingbot', 'OAI-SearchBot', 'ChatGPT-User', 'Claude-SearchBot', 'Claude-User', 'PerplexityBot', 'Perplexity-User'],
         allow: '/',
+        disallow: '/internal',
       },
       { userAgent: ['GPTBot', 'ClaudeBot', 'Google-Extended'], disallow: '/' },
-      { userAgent: '*', allow: '/' },
+      { userAgent: '*', allow: '/', disallow: '/internal' },
     ],
     sitemap: `${SITE}/sitemap.xml`,
   }

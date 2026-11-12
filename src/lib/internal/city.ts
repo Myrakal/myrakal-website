@@ -14,7 +14,7 @@ function mulberry32(seed: number) {
   }
 }
 
-export const money = (cents: number | string) => `$${Math.round(Number(cents) / 100).toLocaleString()}`
+export const money = (cents: number | string) => `$${Math.round(Number(cents) / 100).toLocaleString('en-US')}`
 
 export function priceLabel(p: PriceLine) {
   if (p.type === 'range' && p.max) return `${money(p.amount)}–${money(p.max)}`
@@ -39,10 +39,13 @@ export function buildCity(raw: RawGraph): City {
   )
   const order = Object.fromEntries(clinics.map((c, i) => [c.id, i]))
 
+  const seen = new Set<string>()
   for (const a of raw.affiliations) {
     const c = clinicById[a.provider_id]
     const d = docById[a.doctor_id]
-    if (!c || !d) continue
+    const key = `${a.doctor_id}:${a.provider_id}`
+    if (!c || !d || seen.has(key)) continue
+    seen.add(key)
     c.doctors.push(d)
     d.clinics.push(c)
   }
