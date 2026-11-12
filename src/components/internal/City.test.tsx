@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { isValidElement, type ReactElement } from 'react'
 
 import { buildCity } from '@/lib/internal/city'
@@ -67,5 +68,23 @@ describe('City', () => {
     const dg = inner(withProp(parts, 'doctor')[0])
     dg.props.onPointerOver({ stopPropagation })
     expect(setHover).toHaveBeenLastCalledWith({ type: 'doctor', id: 'd1' })
+  })
+
+  it('draws clinic labels with Text and no Html', () => {
+    const src = readFileSync(`${__dirname}/City.tsx`, 'utf8')
+    expect(src).not.toMatch(/\bHtml\b/)
+    const parts = flatten(City({ city, hover: null, setHover: jest.fn() }))
+    const pad = inner(withProp(parts, 'clinic')[0])
+    const label = flatten(pad).find((p) => p.props.font)!
+    expect(label.props.children).toBe(city.clinics[0].name.toUpperCase())
+    expect(label.props.font).toBe('/fonts/label.woff')
+  })
+
+  it('dims the label of non-hovered clinics', () => {
+    const [c1] = city.clinics
+    const parts = flatten(City({ city, hover: { type: 'clinic', id: c1.id }, setHover: jest.fn() }))
+    const other = withProp(parts, 'clinic').find((p) => p.props.clinic.id !== c1.id)!
+    const label = flatten(inner(other)).find((p) => p.props.font)!
+    expect(label.props.fillOpacity).toBe(0.35)
   })
 })
