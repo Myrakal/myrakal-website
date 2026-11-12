@@ -43,6 +43,19 @@ describe('Tooltip', () => {
     expect(screen.getByText('Beta Clinic')).toBeInTheDocument()
   })
 
+  it('shows a doctor whose languages are null', () => {
+    const nullLang = buildCity({
+      providers: [{ id: 'p1', slug: 'a', name: 'Alpha Clinic', kind: 'clinic', address: null, city: null, region: null, country: null, postal_code: null, phone: null, website: null }],
+      doctors: [{ id: 'd9', slug: 'n', name: 'No Langs', specialty: null, credentials: null, languages: null }],
+      affiliations: [{ id: 'a9', doctor_id: 'd9', provider_id: 'p1', role: null }],
+      procedures: [],
+      prices: [],
+    })
+    render(<Tooltip city={nullLang} hover={{ type: 'doctor', id: 'd9' }} />)
+    expect(screen.getByRole('heading', { name: 'No Langs' })).toBeInTheDocument()
+    expect(screen.queryByText(/Speaks/)).not.toBeInTheDocument()
+  })
+
   it('follows the pointer and sets the cursor', () => {
     render(<Tooltip city={city} hover={{ type: 'doctor', id: 'd1' }} />)
     act(() => {

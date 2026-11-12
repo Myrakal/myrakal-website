@@ -20,7 +20,7 @@ export type DoctorRow = {
   name: string
   specialty: string | null
   credentials: string | null
-  languages: string[]
+  languages: string[] | null
 }
 export type AffiliationRow = { id: string; doctor_id: string; provider_id: string; role: string | null }
 export type ProcedureRow = { id: string; slug: string; name: string; category: string | null }

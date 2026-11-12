@@ -70,7 +70,7 @@ export default function Tooltip({ city, hover }: { city: City; hover: Hover }) {
         {d.credentials ? `, ${d.credentials}` : ''}
       </h2>
       <div className={styles.sub}>{d.specialty}</div>
-      {d.languages.length > 0 && <div>Speaks: {d.languages.join(', ')}</div>}
+      {d.languages && d.languages.length > 0 && <div>Speaks: {d.languages.join(', ')}</div>}
       <h3>Affiliated clinics</h3>
       <ul>
         {d.clinics.map((c) => (
