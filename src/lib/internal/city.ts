@@ -1,9 +1,9 @@
 import type { City, Clinic, Doctor, Filler, Hover, Link, PriceLine, RawGraph, Vec2 } from './types'
 
-const SPACING = 18
+export const SPACING = 18
 const COLS = 4
 
-function mulberry32(seed: number) {
+export function mulberry32(seed: number) {
   let a = seed
   return () => {
     a |= 0
