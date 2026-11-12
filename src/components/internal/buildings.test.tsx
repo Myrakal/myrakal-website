@@ -17,7 +17,7 @@ describe('ClinicBuilding', () => {
     expect(el.type).toBe(Comp)
   })
 
-  it.each([null, 'unknown'])('falls back to Clinic for %s', (kind) => {
+  it.each([null, 'unknown', 'constructor', 'toString', '__proto__'])('falls back to Clinic for %s', (kind) => {
     expect((ClinicBuilding({ kind, hot: true }) as ReactElement).type).toBe(Clinic)
   })
 

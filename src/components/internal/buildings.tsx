@@ -78,6 +78,6 @@ const BY_KIND: Record<string, (props: HotProps) => React.JSX.Element> = {
 }
 
 export function ClinicBuilding({ kind, hot }: { kind: string | null } & HotProps) {
-  const Comp = (kind && BY_KIND[kind]) || Clinic
+  const Comp = kind && Object.hasOwn(BY_KIND, kind) ? BY_KIND[kind] : Clinic
   return <Comp hot={hot} />
 }
