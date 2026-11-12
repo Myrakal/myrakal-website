@@ -36,4 +36,17 @@ describe('ClinicBuilding', () => {
       (Hospital({ hot: false, grand }) as ReactElement<{ children: unknown[] }>).props.children.filter(Boolean).length
     expect(count(true)).toBeGreaterThan(count(false))
   })
+
+  it.each(kinds)('%s stays on the platform at max width', (_kind, Comp) => {
+    const parts = (Comp({ hot: false, grand: true }) as ReactElement<{ children: unknown }>).props.children
+    const boxes = (Array.isArray(parts) ? parts : [parts]).filter(
+      (e): e is ReactElement<{ position: number[]; size: number[] }> => !!e && !!(e as ReactElement<{ size?: number[] }>).props?.size,
+    )
+    const far = Math.max(
+      ...boxes.flatMap(({ props: { position: [x, , z], size: [w, , d] } }) =>
+        [-1, 1].flatMap((a) => [-1, 1].map((b) => Math.hypot((x + (a * w) / 2) * 1.35, (z + (b * d) / 2) * 1.35))),
+      ),
+    )
+    expect(far).toBeLessThanOrEqual(5.3)
+  })
 })

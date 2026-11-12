@@ -35,4 +35,11 @@ describe('scaleFor', () => {
     expect(s.w).toBeLessThanOrEqual(1.35)
     expect(s.h).toBeLessThanOrEqual(2.2)
   })
+
+  it('ignores non-finite amounts', () => {
+    const s = scaleFor(clinic(2, [{ amount: NaN }, { amount: 5000, max: Infinity }]))
+    expect(Number.isFinite(s.w)).toBe(true)
+    expect(Number.isFinite(s.h)).toBe(true)
+    expect(s.h).toBeLessThanOrEqual(2.2)
+  })
 })

@@ -10,7 +10,7 @@ type HotProps = { hot?: boolean; grand?: boolean }
 export function Hospital({ hot, grand }: HotProps) {
   return (
     <>
-      {grand && <Tower position={[2.9, 1.5, 1.2]} size={[1.8, 3, 1.8]} rows={4} hot={hot} />}
+      {grand && <Tower position={[1.9, 1.5, 1.8]} size={[1.6, 3, 1.6]} rows={4} hot={hot} />}
       <Tower position={[0.4, 2.1, -0.3]} size={[3.2, 4.2, 2.6]} rows={5} hot={hot} />
       <Tower position={[-1.9, 1.15, 0.9]} size={[2, 2.3, 2]} rows={3} hot={hot} />
       <Block position={[0.4, 4.3, -0.3]} size={[1.1, 0.12, 0.34]} color="#f6eee4" emissive="#f6eee4" noEdge />
