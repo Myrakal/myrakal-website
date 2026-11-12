@@ -32,6 +32,13 @@ describe('money and priceLabel', () => {
   it('formats cents as whole dollars', () => {
     expect(money(123456)).toBe('$1,235')
   })
+  it('uses en-US grouping regardless of locale', () => {
+    const spy = jest.spyOn(Number.prototype, 'toLocaleString').mockImplementation(function (this: number, l?: unknown) {
+      return l === 'en-US' ? String(this).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : String(this).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+    })
+    expect(money(123456)).toBe('$1,235')
+    spy.mockRestore()
+  })
   it('formats ranges and singles', () => {
     expect(priceLabel({ procedureId: 'x', name: 'n', type: 'range', amount: 100000, max: 200000 })).toBe('$1,000–$2,000')
     expect(priceLabel({ procedureId: 'x', name: 'n', type: 'cash', amount: 100000, max: null })).toBe('$1,000')
@@ -70,6 +77,21 @@ describe('buildCity', () => {
 
   it('is deterministic', () => {
     expect(buildCity(raw).filler).toEqual(city.filler)
+  })
+})
+
+describe('duplicate affiliations', () => {
+  const dup: RawGraph = {
+    ...raw,
+    affiliations: [...raw.affiliations, { id: 'a5', doctor_id: 'd1', provider_id: 'p1', role: null }, { id: 'a6', doctor_id: 'd1', provider_id: 'p2', role: null }],
+  }
+  const city = buildCity(dup)
+  it('keeps one entry per doctor and clinic pair', () => {
+    expect(city.docById.d1.clinics.map((c) => c.id)).toEqual(['p1', 'p2'])
+    expect(city.clinicById.p1.doctors.map((d) => d.id)).toEqual(['d1'])
+  })
+  it('creates no self-links or duplicate link ids', () => {
+    expect(city.links.map((l) => l.id)).toEqual(['d1:p2'])
   })
 })
 
