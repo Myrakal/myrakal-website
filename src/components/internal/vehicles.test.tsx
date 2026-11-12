@@ -69,6 +69,19 @@ describe('vehicle parts', () => {
     }
   })
 
+  it('draws a soft layered warm glow on the ground', () => {
+    const parts = flatten(Streetlamp())
+    const radii = parts.filter((p) => p.type === 'circleGeometry').map((p) => p.props.args[0] as number)
+    expect(radii.length).toBeGreaterThanOrEqual(3)
+    expect(Math.max(...radii)).toBeLessThanOrEqual(1.6)
+    const mats = parts.filter((p) => p.type === 'meshBasicMaterial')
+    expect(mats).toHaveLength(radii.length)
+    for (const m of mats) {
+      expect(m.props.color).toBe('#ffd28a')
+      expect(m.props.opacity).toBeLessThanOrEqual(0.14)
+    }
+  })
+
   it('has a glowing emissive lamp head above the pole', () => {
     const head = flatten(Streetlamp()).find((p) => p.props.color === '#ffd28a' && p.props.position?.[1] > 3)
     expect(head).toBeDefined()

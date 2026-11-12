@@ -7,3 +7,5 @@ export const Line = Nothing
 export const OrbitControls = Nothing
 export const Canvas = Nothing
 export const Html = ({ children }: { children?: ReactNode }) => <>{children}</>
+export const Text = ({ children }: { children?: ReactNode }) => <>{children}</>
+export const Billboard = ({ children }: { children?: ReactNode }) => <>{children}</>

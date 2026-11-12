@@ -59,6 +59,8 @@ export function Ambulance() {
   )
 }
 
+const GLOW = [[1.5, 0.05], [0.95, 0.07], [0.5, 0.1]] as const
+
 export function Streetlamp() {
   return (
     <group>
@@ -67,10 +69,12 @@ export function Streetlamp() {
         <meshStandardMaterial color="#15171c" />
       </mesh>
       <Lit position={[0, 3.25, 0]} size={[0.5, 0.14, 0.3]} color={LAMP} />
-      <mesh rotation-x={-Math.PI / 2} position={[0, 0.03, 0]}>
-        <circleGeometry args={[2.2, 24]} />
-        <meshBasicMaterial color={LAMP} transparent opacity={0.16} depthWrite={false} />
-      </mesh>
+      {GLOW.map(([radius, opacity]) => (
+        <mesh key={radius} rotation-x={-Math.PI / 2} position={[0, 0.03, 0]}>
+          <circleGeometry args={[radius, 24]} />
+          <meshBasicMaterial color={LAMP} transparent opacity={opacity} depthWrite={false} />
+        </mesh>
+      ))}
     </group>
   )
 }

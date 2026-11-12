@@ -1,4 +1,5 @@
-import { isValidElement, type ReactElement } from 'react'
+import { readFileSync } from 'node:fs'
+import { isValidElement, Suspense, type ReactElement } from 'react'
 
 import { buildCity } from '@/lib/internal/city'
 import type { RawGraph } from '@/lib/internal/types'
@@ -67,5 +68,41 @@ describe('City', () => {
     const dg = inner(withProp(parts, 'doctor')[0])
     dg.props.onPointerOver({ stopPropagation })
     expect(setHover).toHaveBeenLastCalledWith({ type: 'doctor', id: 'd1' })
+  })
+
+  it('draws clinic labels with Text and no Html', () => {
+    const src = readFileSync(`${__dirname}/City.tsx`, 'utf8')
+    expect(src).not.toMatch(/\bHtml\b/)
+    const parts = flatten(City({ city, hover: null, setHover: jest.fn() }))
+    const pad = inner(withProp(parts, 'clinic')[0])
+    const label = flatten(pad).find((p) => p.props.font)!
+    expect(label.props.children).toBe(city.clinics[0].name.toUpperCase())
+    expect(label.props.font).toBe('/fonts/label.woff')
+  })
+
+  it('dims the label of non-hovered clinics', () => {
+    const [c1] = city.clinics
+    const parts = flatten(City({ city, hover: { type: 'clinic', id: c1.id }, setHover: jest.fn() }))
+    const other = withProp(parts, 'clinic').find((p) => p.props.clinic.id !== c1.id)!
+    const label = flatten(inner(other)).find((p) => p.props.font)!
+    expect(label.props.fillOpacity).toBe(0.35)
+  })
+
+  it('wraps each label in its own Suspense with no fallback', () => {
+    const parts = flatten(City({ city, hover: null, setHover: jest.fn() }))
+    const pad = inner(withProp(parts, 'clinic')[0])
+    const boundary = flatten(pad).find((p) => p.type === Suspense)!
+    expect(boundary.props.fallback).toBeNull()
+    expect(flatten(boundary.props.children).some((p) => p.props.font)).toBe(true)
+  })
+
+  it('keeps the label out of raycasting so it cannot steal hover', () => {
+    const parts = flatten(City({ city, hover: null, setHover: jest.fn() }))
+    const label = flatten(inner(withProp(parts, 'clinic')[0])).find((p) => p.props.font)!
+    expect(label.props.raycast()).toBeNull()
+  })
+
+  it('stubs Billboard for the r3f mock', () => {
+    expect(typeof require('../../../tests/r3f-stub').Billboard).toBe('function')
   })
 })
