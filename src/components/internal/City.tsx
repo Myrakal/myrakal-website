@@ -7,7 +7,7 @@ import { scaleFor } from '@/lib/internal/scale'
 
 import { ClinicBuilding } from './buildings'
 import { DoctorFigure, FillerBlock, Tree } from './figures'
-import { CHAMPAGNE, GOLD } from './palette'
+import { CHAMPAGNE, DIM_EDGE, GOLD, GROUND, WALL } from './palette'
 
 type SetHover = (hover: Hover) => void
 
@@ -26,9 +26,9 @@ function Ground({ extent }: { extent: Vec2 }) {
     <>
       <mesh rotation-x={-Math.PI / 2} position={[0, -0.02, 0]} renderOrder={-1}>
         <planeGeometry args={[size, size]} />
-        <meshStandardMaterial color="#120709" transparent opacity={0.6} depthWrite={false} />
+        <meshStandardMaterial color={GROUND} transparent opacity={0.85} depthWrite={false} />
       </mesh>
-      <gridHelper args={[size, Math.round(size / 3), '#4a1a22', '#2e1015']} position={[0, 0, 0]} />
+      <gridHelper args={[size, Math.round(size / 3), DIM_EDGE, WALL]} position={[0, 0, 0]} />
     </>
   )
 }
@@ -49,7 +49,7 @@ function ClinicPad({ clinic, hot, dim, setHover }: { clinic: Clinic; hot: boolea
     <group position={[clinic.pos[0], 0, clinic.pos[1]]} {...hoverHandlers('clinic', clinic.id, setHover)}>
       <mesh rotation-x={-Math.PI / 2} position={[0, 0.01, 0]}>
         <circleGeometry args={[5.3, 48]} />
-        <meshStandardMaterial color={hot ? '#5a1624' : '#2e0810'} />
+        <meshStandardMaterial color={hot ? '#26364a' : '#0c121b'} />
       </mesh>
       <Line points={PLATFORM} color={hot ? CHAMPAGNE : GOLD} lineWidth={1.4} />
       <ClinicBuilding kind={clinic.kind} hot={hot} scale={scale} />

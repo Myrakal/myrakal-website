@@ -2,7 +2,7 @@ import { Edges } from '@react-three/drei'
 
 import type { Scale } from '@/lib/internal/scale'
 
-import { CHAMPAGNE, GOLD, WALL } from './palette'
+import { CHAMPAGNE, CREAM, GOLD, WALL } from './palette'
 import { Block, Tower, Windows } from './primitives'
 
 type HotProps = { hot?: boolean; grand?: boolean }
@@ -13,8 +13,8 @@ export function Hospital({ hot, grand }: HotProps) {
       {grand && <Tower position={[1.9, 1.5, 1.8]} size={[1.6, 3, 1.6]} rows={4} hot={hot} />}
       <Tower position={[0.4, 2.1, -0.3]} size={[3.2, 4.2, 2.6]} rows={5} hot={hot} />
       <Tower position={[-1.9, 1.15, 0.9]} size={[2, 2.3, 2]} rows={3} hot={hot} />
-      <Block position={[0.4, 4.3, -0.3]} size={[1.1, 0.12, 0.34]} color="#f6eee4" emissive="#f6eee4" noEdge />
-      <Block position={[0.4, 4.3, -0.3]} size={[0.34, 0.12, 1.1]} color="#f6eee4" emissive="#f6eee4" noEdge />
+      <Block position={[0.4, 4.3, -0.3]} size={[1.1, 0.12, 0.34]} color={CREAM} emissive={CHAMPAGNE} noEdge />
+      <Block position={[0.4, 4.3, -0.3]} size={[0.34, 0.12, 1.1]} color={CREAM} emissive={CHAMPAGNE} noEdge />
     </>
   )
 }
