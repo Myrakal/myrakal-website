@@ -1,0 +1,6 @@
+export const GOLD = '#c9a36b'
+export const CHAMPAGNE = '#f2d38a'
+export const CREAM = '#f6eee4'
+export const WALL = '#3a0d16'
+export const GLASS = '#c9a36b'
+export const DIM_EDGE = '#5a2029'
