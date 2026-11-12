@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, Suspense } from 'react'
 import { Billboard, Line, Text } from '@react-three/drei'
 
 import { relatedTo } from '@/lib/internal/city'
@@ -9,6 +9,8 @@ import { ClinicBuilding } from './buildings'
 import { DoctorFigure, FillerBlock, Tree } from './figures'
 import { CHAMPAGNE, CREAM, DIM_EDGE, GOLD, GROUND, WALL } from './palette'
 import { Street } from './vehicles'
+
+const noRaycast = () => null
 
 type SetHover = (hover: Hover) => void
 
@@ -54,20 +56,23 @@ function ClinicPad({ clinic, hot, dim, setHover }: { clinic: Clinic; hot: boolea
       </mesh>
       <Line points={PLATFORM} color={hot ? CHAMPAGNE : GOLD} lineWidth={1.4} />
       <ClinicBuilding kind={clinic.kind} hot={hot} scale={scale} />
-      <Billboard position={[0, 3 + 2.4 * scale.h, 0]}>
-        <Text
-          font="/fonts/label.woff"
-          fontSize={0.9}
-          letterSpacing={0.18}
-          color={CREAM}
-          outlineWidth={0.07}
-          outlineColor={GROUND}
-          fillOpacity={dim ? 0.35 : 1}
-          outlineOpacity={dim ? 0.35 : 1}
-        >
-          {clinic.name.toUpperCase()}
-        </Text>
-      </Billboard>
+      <Suspense fallback={null}>
+        <Billboard position={[0, 3 + 2.4 * scale.h, 0]}>
+          <Text
+            font="/fonts/label.woff"
+            fontSize={0.9}
+            letterSpacing={0.18}
+            color={CREAM}
+            outlineWidth={0.07}
+            outlineColor={GROUND}
+            fillOpacity={dim ? 0.35 : 1}
+            outlineOpacity={dim ? 0.35 : 1}
+            raycast={noRaycast}
+          >
+            {clinic.name.toUpperCase()}
+          </Text>
+        </Billboard>
+      </Suspense>
     </group>
   )
 }
