@@ -7,7 +7,7 @@ import { loadGraph } from '@/lib/internal/graph'
 import { logout } from './actions'
 import { LoginForm } from './LoginForm'
 
-export const metadata: Metadata = { title: 'Internal: Myrakal', robots: { index: false } }
+export const metadata: Metadata = { title: 'Internal', robots: { index: false } }
 
 async function load() {
   try {
@@ -32,7 +32,7 @@ export default async function InternalPage() {
     <>
       <InternalTool {...data} />
       <form action={logout} className="fixed right-6 top-5 z-20">
-        <button type="submit" className="text-xs uppercase tracking-[0.2em] text-[#c9a36b] underline underline-offset-4">
+        <button type="submit" className="text-xs uppercase tracking-[0.2em] text-[#e8a63c] underline underline-offset-4">
           Sign out
         </button>
       </form>
