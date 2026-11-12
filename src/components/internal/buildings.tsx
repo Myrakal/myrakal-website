@@ -1,13 +1,16 @@
 import { Edges } from '@react-three/drei'
 
+import type { Scale } from '@/lib/internal/scale'
+
 import { CHAMPAGNE, CREAM, GOLD, WALL } from './palette'
 import { Block, Tower, Windows } from './primitives'
 
-type HotProps = { hot?: boolean }
+type HotProps = { hot?: boolean; grand?: boolean }
 
-export function Hospital({ hot }: HotProps) {
+export function Hospital({ hot, grand }: HotProps) {
   return (
     <>
+      {grand && <Tower position={[1.9, 1.5, 1.8]} size={[1.6, 3, 1.6]} rows={4} hot={hot} />}
       <Tower position={[0.4, 2.1, -0.3]} size={[3.2, 4.2, 2.6]} rows={5} hot={hot} />
       <Tower position={[-1.9, 1.15, 0.9]} size={[2, 2.3, 2]} rows={3} hot={hot} />
       <Block position={[0.4, 4.3, -0.3]} size={[1.1, 0.12, 0.34]} color={CREAM} emissive={CHAMPAGNE} noEdge />
@@ -77,7 +80,12 @@ const BY_KIND: Record<string, (props: HotProps) => React.JSX.Element> = {
   specialty_clinic: Specialty,
 }
 
-export function ClinicBuilding({ kind, hot }: { kind: string | null } & HotProps) {
+export function ClinicBuilding({ kind, hot, scale }: { kind: string | null; scale?: Scale } & HotProps) {
   const Comp = kind && Object.hasOwn(BY_KIND, kind) ? BY_KIND[kind] : Clinic
-  return <Comp hot={hot} />
+  if (!scale) return <Comp hot={hot} />
+  return (
+    <group scale={[scale.w, scale.h, scale.w]}>
+      <Comp hot={hot} grand={scale.h > 1.6} />
+    </group>
+  )
 }
