@@ -21,11 +21,17 @@ test('throws when env is missing', async () => {
   expect(mockFrom).not.toHaveBeenCalled()
 })
 
+const orderFn = jest.fn()
+
+const withRange = (rangeFn: (from: number, to: number) => Promise<unknown>) => {
+  orderFn.mockReturnValue({ range: rangeFn })
+  return { select: () => ({ order: orderFn }) }
+}
+const ok = (data: unknown[] | null) => async () => ({ data, error: null })
+
 test('returns all five tables', async () => {
   setEnv()
-  mockFrom.mockImplementation((t: string) => ({
-    select: () => ({ range: async () => ({ data: [{ id: t }], error: null }) }),
-  }))
+  mockFrom.mockImplementation((t: string) => withRange(async (from: number) => ({ data: from === 0 ? [{ id: t }] : [], error: null })))
   const graph = await loadGraph()
   expect(Object.keys(graph).sort()).toEqual(['affiliations', 'doctors', 'prices', 'procedures', 'providers'])
   expect(graph.providers).toEqual([{ id: 'providers' }])
@@ -33,35 +39,38 @@ test('returns all five tables', async () => {
 
 test('treats null data as an empty table', async () => {
   setEnv()
-  mockFrom.mockImplementation(() => ({ select: () => ({ range: async () => ({ data: null, error: null }) }) }))
+  mockFrom.mockImplementation(() => withRange(ok(null)))
   const graph = await loadGraph()
   expect(graph.doctors).toEqual([])
 })
 
 test('names the table in a query error', async () => {
   setEnv()
-  mockFrom.mockImplementation((t: string) => ({
-    select: () => ({
-      range: async () => (t === 'prices' ? { data: null, error: { message: 'boom' } } : { data: [], error: null }),
-    }),
-  }))
+  mockFrom.mockImplementation((t: string) =>
+    withRange(async () => (t === 'prices' ? { data: null, error: { message: 'boom' } } : { data: [], error: null })),
+  )
   await expect(loadGraph()).rejects.toThrow('prices: boom')
 })
 
-test('pages through tables larger than one page', async () => {
+test('orders by id before ranging', async () => {
   setEnv()
-  const page = (n: number) => Array.from({ length: n }, (_, i) => ({ id: String(i) }))
+  mockFrom.mockImplementation(() => withRange(ok([])))
+  await loadGraph()
+  expect(orderFn).toHaveBeenCalledWith('id')
+})
+
+test('keeps paging past a short page until an empty one', async () => {
+  setEnv()
   const ranges: number[][] = []
-  mockFrom.mockImplementation((t: string) => ({
-    select: () => ({
-      range: async (from: number, to: number) => {
-        if (t === 'prices') ranges.push([from, to])
-        const data = t === 'prices' ? (from === 0 ? page(1000) : page(5)) : []
-        return { data, error: null }
-      },
+  const pages = [[{ id: 'a' }, { id: 'b' }], [{ id: 'c' }], []]
+  mockFrom.mockImplementation((t: string) =>
+    withRange(async (from: number, to: number) => {
+      if (t !== 'prices') return { data: [], error: null }
+      ranges.push([from, to])
+      return { data: pages.shift() ?? [], error: null }
     }),
-  }))
+  )
   const graph = await loadGraph()
-  expect(graph.prices).toHaveLength(1005)
-  expect(ranges).toEqual([[0, 999], [1000, 1999]])
+  expect(graph.prices).toEqual([{ id: 'a' }, { id: 'b' }, { id: 'c' }])
+  expect(ranges).toEqual([[0, 999], [1000, 1999], [2000, 2999]])
 })

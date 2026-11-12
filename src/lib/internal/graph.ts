@@ -15,10 +15,10 @@ export async function loadGraph(): Promise<RawGraph> {
     TABLES.map(async (table) => {
       const rows: unknown[] = []
       for (let from = 0; ; from += PAGE) {
-        const { data, error } = await sb.from(table).select('*').range(from, from + PAGE - 1)
+        const { data, error } = await sb.from(table).select('*').order('id').range(from, from + PAGE - 1)
         if (error) throw new Error(`${table}: ${error.message}`)
         rows.push(...(data ?? []))
-        if (!data || data.length < PAGE) break
+        if (!data || data.length === 0) break
       }
       return [table, rows] as const
     }),
