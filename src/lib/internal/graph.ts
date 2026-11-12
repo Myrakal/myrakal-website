@@ -5,10 +5,10 @@ const PAGE = 1000
 const TABLES = ['providers', 'doctors', 'affiliations', 'procedures', 'prices'] as const
 
 export async function loadGraph(): Promise<RawGraph> {
-  const url = process.env.SUPABASE_URL
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const url = process.env.KNOWLEDGE_URL
+  const key = process.env.KNOWLEDGE_SERVICE_KEY
   if (!url || !key) {
-    throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set')
+    throw new Error('KNOWLEDGE_URL and KNOWLEDGE_SERVICE_KEY must be set')
   }
   const sb = createClient(url, key, { auth: { persistSession: false } })
   const entries = await Promise.all(

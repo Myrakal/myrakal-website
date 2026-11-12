@@ -6,18 +6,18 @@ jest.mock('@supabase/supabase-js', () => ({
 }))
 
 const setEnv = () => {
-  process.env.SUPABASE_URL = 'http://localhost'
-  process.env.SUPABASE_SERVICE_ROLE_KEY = 'key'
+  process.env.KNOWLEDGE_URL = 'http://localhost'
+  process.env.KNOWLEDGE_SERVICE_KEY = 'key'
 }
 
 beforeEach(() => {
   mockFrom.mockReset()
-  delete process.env.SUPABASE_URL
-  delete process.env.SUPABASE_SERVICE_ROLE_KEY
+  delete process.env.KNOWLEDGE_URL
+  delete process.env.KNOWLEDGE_SERVICE_KEY
 })
 
 test('throws when env is missing', async () => {
-  await expect(loadGraph()).rejects.toThrow('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY must be set')
+  await expect(loadGraph()).rejects.toThrow('KNOWLEDGE_URL and KNOWLEDGE_SERVICE_KEY must be set')
   expect(mockFrom).not.toHaveBeenCalled()
 })
 
