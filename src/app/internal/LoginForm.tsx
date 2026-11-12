@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useEffect, useRef } from 'react'
 
 import { Button } from '@/components/ui/button'
 
@@ -8,6 +8,10 @@ import { login, type LoginState } from './actions'
 
 export function LoginForm() {
   const [state, action, pending] = useActionState<LoginState, FormData>(login, {})
+  const input = useRef<HTMLInputElement>(null)
+  useEffect(() => {
+    if (state.error) input.current?.focus()
+  }, [state])
   return (
     <form action={action} className="flex w-full max-w-sm flex-col gap-4">
       <label htmlFor="password" className="text-foreground">
@@ -15,6 +19,7 @@ export function LoginForm() {
       </label>
       <input
         id="password"
+        ref={input}
         name="password"
         type="password"
         required
