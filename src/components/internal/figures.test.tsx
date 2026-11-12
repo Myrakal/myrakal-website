@@ -16,9 +16,9 @@ describe('FillerBlock', () => {
   it('renders a dim block and windows sized from its height', () => {
     const parts = flatten(FillerBlock({ h: 4.4, w: 2 }))
     const block = parts.find((p) => p.type === Block)!
-    expect(block.props).toMatchObject({ position: [0, 2.2, 0], size: [2, 4.4, 2], color: '#1c0a0e', edge: DIM_EDGE })
+    expect(block.props).toMatchObject({ position: [0, 2.2, 0], size: [2, 4.4, 2], color: '#0f1823', edge: DIM_EDGE })
     const windows = parts.find((p) => p.type === Windows)!
-    expect(windows.props).toMatchObject({ rows: 4, glass: '#5a2029', edge: DIM_EDGE })
+    expect(windows.props).toMatchObject({ rows: 4, glass: '#9a7434', edge: DIM_EDGE })
   })
 
   it('never renders fewer than one window row', () => {
