@@ -4,6 +4,7 @@ const LINKS = [
   ['Dental', '/dental'],
   ['Cosmetic', '/cosmetic'],
   ['Guides', '/guides'],
+  ['How we verify', '/how-we-verify'],
   ['Insurance calculator', '/tools/dental-insurance-calculator'],
 ] as const
 

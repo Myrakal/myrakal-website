@@ -9,7 +9,17 @@ export function MeetTheTeam() {
           </h2>
         </div>
         <div className="aspect-video w-full border border-rule bg-black">
-          <video controls playsInline preload="metadata" aria-label="Meet the Myrakal team" className="size-full object-contain" src="/video.mp4" />
+          <video
+            autoPlay
+            muted
+            controls
+            playsInline
+            preload="auto"
+            poster="/video-poster.jpg"
+            aria-label="Meet the Myrakal team"
+            className="size-full object-contain"
+            src="/video.mp4"
+          />
         </div>
       </div>
     </section>

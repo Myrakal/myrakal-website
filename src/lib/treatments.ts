@@ -20,7 +20,7 @@ export const TREATMENTS = {
     name: 'Dental',
     title: 'Dental implants and All-on-4, best price anywhere | Myrakal',
     description:
-      'Send us your dental quote for implants, All-on-4, full-mouth work or veneers. We compare verified dentists near you, elsewhere in the U.S. and abroad, then book the one you pick. Comparing is free.',
+      'Send your quote for implants, All-on-4, full-mouth work, or veneers. Compare verified dentists in the U.S. or abroad and book your choice. Comparing is free.',
     headline: 'Your dental work, at the best price anywhere.',
     intro:
       'Implants, All-on-4, full-mouth work and veneers. Send us your quote and we compare verified dentists near you, elsewhere in the U.S. and abroad. Pick one and we book it.',
@@ -42,7 +42,7 @@ export const TREATMENTS = {
     name: 'Cosmetic',
     title: 'Cosmetic surgery, best price anywhere | Myrakal',
     description:
-      'Send us your quote for rhinoplasty, eyelid surgery, a facelift or another elective procedure. We compare verified surgeons near you, elsewhere in the U.S. and abroad, then book the one you pick. Comparing is free.',
+      'Compare verified surgeons in the U.S. or abroad for rhinoplasty, eyelid surgery, facelifts, or other elective care, then book your choice. Comparing is free.',
     headline: 'Cosmetic care, at the best price anywhere.',
     intro:
       'Rhinoplasty, eyelid surgery, facelifts and other elective procedures. Send us your quote and we compare verified surgeons near you, elsewhere in the U.S. and abroad. Pick one and we book it.',

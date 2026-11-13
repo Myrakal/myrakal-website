@@ -43,6 +43,7 @@ describe('guides', () => {
     const metadata = await generateMetadata(params(slug))
     expect(String(metadata.title)).toMatch(/Myrakal/)
     expect(metadata.description?.length).toBeGreaterThan(80)
+    expect(metadata.description?.length).toBeLessThanOrEqual(160)
     expect(metadata.alternates?.canonical).toBe(`/guides/${slug}`)
   })
 

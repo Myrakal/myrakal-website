@@ -72,6 +72,6 @@ describe('landing page', () => {
     render(<Home />)
     expect(screen.getAllByRole('navigation').map((nav) => nav.getAttribute('aria-label'))).toEqual(['Footer'])
     const pageLinks = screen.queryAllByRole('link').filter((link) => link.getAttribute('href')?.startsWith('/'))
-    expect(pageLinks.map((link) => link.getAttribute('href'))).toEqual(['/', '/dental', '/cosmetic', '/dental', '/cosmetic', '/guides', '/tools/dental-insurance-calculator'])
+    expect(pageLinks.map((link) => link.getAttribute('href'))).toEqual(['/', '/dental', '/cosmetic', '/dental', '/cosmetic', '/guides', '/how-we-verify', '/tools/dental-insurance-calculator'])
   })
 })

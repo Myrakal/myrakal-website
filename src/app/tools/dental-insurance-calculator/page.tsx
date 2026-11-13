@@ -13,7 +13,7 @@ const PATH = '/tools/dental-insurance-calculator'
 export const metadata: Metadata = {
   title: 'Dental insurance calculator: what your plan will really pay | Myrakal',
   description:
-    'Enter your dental quote, annual maximum, coverage and deductible to see what insurance will pay for implants, All-on-4 or other major work, and what you pay yourself. Free.',
+    'Estimate what dental insurance may pay for implants, All-on-4, or other major work using your quote, annual maximum, coverage, and deductible.',
   ...pageMetadata(PATH),
 }
 

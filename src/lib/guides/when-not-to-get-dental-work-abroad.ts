@@ -4,7 +4,7 @@ export const whenNotToGetDentalWorkAbroad: Guide = {
   slug: 'when-not-to-get-dental-work-abroad',
   title: 'When not to get dental work abroad | Myrakal',
   description:
-    'An honest look at when dental work abroad is the wrong call, the lower-cost options at home such as dental schools and community health centers, and how to compare the full cost fairly.',
+    'Learn when dental work abroad may be the wrong choice, which lower-cost options exist at home, and how to compare the full cost fairly.',
   headline: 'When dental work abroad is not the right call',
   answer:
     'Going abroad is not the right call if your health needs close watching, if your treatment needs several trips or months of healing between stages, or if you cannot stay long enough and fly safely afterward. It is also not worth it when flights, nights and follow-up eat up the savings. In those cases, dental schools, community health centers and phased treatment can lower the cost at home.',

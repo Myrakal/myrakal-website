@@ -4,7 +4,7 @@ export const dentalTourismFacilitatorsCompared: Guide = {
   slug: 'dental-tourism-facilitators-compared',
   title: 'Dental tourism services compared: who pays them, and what they do | Myrakal',
   description:
-    'How Bookimed, Dental Departures, Doctours, booking a clinic directly and Myrakal are paid, what each one does and what each costs a patient, from their own published statements.',
+    'Compare how Bookimed, Dental Departures, Doctours, direct clinic booking, and Myrakal are paid, plus what each option does for patients.',
   headline: 'Dental tourism services compared: who pays them, and what they do',
   answer:
     'Myrakal publishes this page and is one of the options compared. Bookimed, Dental Departures and Doctours say they are free for patients. Bookimed says partner clinics pay it a commission, Doctours was reported in October 2026 to be paid by participating clinics, and we could not find a public statement of how Dental Departures is paid. Booking a clinic directly has no middleman fee, but you do the vetting, travel planning and follow-up yourself.',

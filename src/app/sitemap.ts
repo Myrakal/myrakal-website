@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...Object.values(TREATMENTS).map(({ slug }) => ({ url: `${SITE}/${slug}`, changeFrequency: 'monthly' as const, priority: 0.8 })),
     { url: `${SITE}/guides`, changeFrequency: 'monthly', priority: 0.7 },
     ...Object.values(GUIDES).map(({ slug, updated }) => ({ url: `${SITE}/guides/${slug}`, lastModified: updated, changeFrequency: 'monthly' as const, priority: 0.7 })),
+    { url: `${SITE}/how-we-verify`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${SITE}/tools/dental-insurance-calculator`, changeFrequency: 'monthly', priority: 0.6 },
   ]
 }

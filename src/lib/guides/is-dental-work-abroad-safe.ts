@@ -4,7 +4,7 @@ export const isDentalWorkAbroadSafe: Guide = {
   slug: 'is-dental-work-abroad-safe',
   title: 'Is dental work abroad safe? What to check first | Myrakal',
   description:
-    'A balanced look at dental implants, All-on-4 and full-mouth work in Mexico or elsewhere: the real risks the CDC describes, the steps that lower them, and the questions to ask a dentist abroad.',
+    'Review the documented risks of dental work abroad, steps that may lower them, and questions to ask before choosing a dentist or treatment plan.',
   headline: 'Is dental work abroad safe?',
   answer:
     'It can be, with a qualified dentist, a clean facility and a plan for follow-up care at home. The risks are real, though, and some come from the travel itself: infections, language gaps, gaps in follow-up and flying soon after surgery. Research and planning before you book can lower some of them.',

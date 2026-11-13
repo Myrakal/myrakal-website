@@ -10,7 +10,7 @@ import { ORGANIZATION } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
   title: 'Guides to expensive dental and cosmetic care | Myrakal',
-  description: 'Plain answers on verifying a dentist or surgeon, whether dental work abroad is safe, when not to go, how facilitators compare, and what insurance will really pay.',
+  description: 'Practical guides to verifying dentists and surgeons, comparing dental care abroad, understanding facilitator fees, and estimating insurance coverage.',
   ...pageMetadata('/guides'),
 }
 
