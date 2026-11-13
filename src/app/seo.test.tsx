@@ -16,7 +16,7 @@ describe('search and sharing', () => {
   })
 
   it('lists the home page, treatment pages, guides and the calculator in the sitemap', () => {
-    expect(sitemap().map((entry) => entry.url)).toEqual([SITE, `${SITE}/dental`, `${SITE}/cosmetic`, `${SITE}/guides`, `${SITE}/guides/verify-a-dentist-or-surgeon`, `${SITE}/guides/is-dental-work-abroad-safe`, `${SITE}/guides/when-not-to-get-dental-work-abroad`, `${SITE}/guides/dental-tourism-facilitators-compared`, `${SITE}/tools/dental-insurance-calculator`])
+    expect(sitemap().map((entry) => entry.url)).toEqual([SITE, `${SITE}/dental`, `${SITE}/cosmetic`, `${SITE}/guides`, `${SITE}/guides/verify-a-dentist-or-surgeon`, `${SITE}/guides/is-dental-work-abroad-safe`, `${SITE}/guides/when-not-to-get-dental-work-abroad`, `${SITE}/guides/dental-tourism-facilitators-compared`, `${SITE}/how-we-verify`, `${SITE}/tools/dental-insurance-calculator`])
   })
 
   it('allows discovery and user fetchers without opting into model training', () => {
@@ -50,20 +50,22 @@ describe('search and sharing', () => {
     expect(metadata.alternates?.canonical).toBe('/')
     expect(metadata.title).toBe('Myrakal | Uncovered care, planned and booked for you')
     expect(metadata.description?.length).toBeGreaterThan(40)
+    expect(metadata.description?.length).toBeLessThanOrEqual(160)
   })
 
   it('pairs every canonical URL with a page-specific Open Graph URL', async () => {
-    const [{ metadata: home }, { metadata: dental }, { metadata: cosmetic }, { metadata: guides }, { metadata: calculator }, guideRoute] = await Promise.all([
+    const [{ metadata: home }, { metadata: dental }, { metadata: cosmetic }, { metadata: guides }, { metadata: verification }, { metadata: calculator }, guideRoute] = await Promise.all([
       import('./page'),
       import('./dental/page'),
       import('./cosmetic/page'),
       import('./guides/page'),
+      import('./how-we-verify/page'),
       import('./tools/dental-insurance-calculator/page'),
       import('./guides/[slug]/page'),
     ])
     const guide = await guideRoute.generateMetadata({ params: Promise.resolve({ slug: 'is-dental-work-abroad-safe' }) })
 
-    for (const page of [home, dental, cosmetic, guides, calculator, guide]) {
+    for (const page of [home, dental, cosmetic, guides, verification, calculator, guide]) {
       expect((page.openGraph as { url?: string })?.url).toBe(page.alternates?.canonical)
     }
   })

@@ -4,7 +4,7 @@ export const verifyADentistOrSurgeon: Guide = {
   slug: 'verify-a-dentist-or-surgeon',
   title: 'How to verify a dentist or surgeon in the U.S. or Mexico | Myrakal',
   description:
-    'Free official lookups to check a dentist or surgeon before you book: state boards and DocInfo in the U.S., board certification through ABMS, and the SEP and CMCPER registries in Mexico.',
+    'Use official U.S. and Mexican registries to check licenses, disciplinary history, and board certification before choosing a dentist or surgeon.',
   headline: 'How to check a dentist or surgeon before you book',
   answer:
     'Look the provider up in the official registry for the place they practice. In the U.S. that is the state licensing board, and DocInfo covers physicians in every state. In Mexico it is the SEP professional registry, plus the CMCPER directory for plastic surgeons. All of these are free.',

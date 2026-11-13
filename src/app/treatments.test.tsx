@@ -25,6 +25,7 @@ describe.each(pages)('/%s', (slug, Page, metadata, topic) => {
     expect(String(metadata.title)).toMatch(topic)
     expect(String(metadata.title)).toMatch(/Myrakal/)
     expect(metadata.description?.length).toBeGreaterThan(80)
+    expect(metadata.description?.length).toBeLessThanOrEqual(160)
     expect(metadata.alternates?.canonical).toBe(`/${slug}`)
   })
 

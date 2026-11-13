@@ -22,6 +22,8 @@ describe('guides index', () => {
 
   it('has its own canonical URL and sitemap entry', () => {
     expect(metadata.alternates?.canonical).toBe('/guides')
+    expect(metadata.description?.length).toBeGreaterThan(80)
+    expect(metadata.description?.length).toBeLessThanOrEqual(160)
     expect(sitemap().map((entry) => entry.url)).toContain(`${SITE}/guides`)
     expect(LLMS_TEXT).toContain(`(${SITE}/guides):`)
   })
@@ -30,7 +32,7 @@ describe('guides index', () => {
     render(<Footer />)
     const nav = screen.getByRole('navigation', { name: /footer/i })
     const hrefs = within(nav).getAllByRole('link').map((a) => a.getAttribute('href'))
-    expect(hrefs).toEqual(['/dental', '/cosmetic', '/guides', CALCULATOR])
+    expect(hrefs).toEqual(['/dental', '/cosmetic', '/guides', '/how-we-verify', CALCULATOR])
   })
 
   it('links each treatment page to its related guides', () => {

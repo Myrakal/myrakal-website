@@ -104,6 +104,7 @@ describe('/tools/dental-insurance-calculator', () => {
   it('has its own title, description and canonical URL', () => {
     expect(metadata.title).toBe('Dental insurance calculator: what your plan will really pay | Myrakal')
     expect(metadata.description?.length).toBeGreaterThan(80)
+    expect(metadata.description?.length).toBeLessThanOrEqual(160)
     expect(metadata.alternates?.canonical).toBe('/tools/dental-insurance-calculator')
   })
 
