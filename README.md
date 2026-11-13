@@ -1,4 +1,4 @@
-# Myrakal
+# Myrakal 
 
 Landing page for Myrakal, an intelligent health platform that makes healthcare cheaper. Message us and we get back with free data on cheaper options.
 
